@@ -61,6 +61,8 @@ No installation needed. Open the link and get started.
 
 | Name | Role |
 |------|------|
-| [Name] | [Role] |
-| [Name] | [Role] |
+| Essey Araya | Backend Lead |
+| Bright Feitsop | Data Lead |
+| Naod Ksmu | Frontend Lead |
+
 
