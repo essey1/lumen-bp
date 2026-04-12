@@ -291,42 +291,51 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     }
   }
 
-  // STEP 3: Add GEM perspective courses (Ways of Knowing)
-  const wokCategories = [
+  // STEP 3: Calculate how many GEM/elective courses we need
+  // Total slots = 32 (8 semesters x 4 credits)
+  // L&I courses already placed = 4
+  // Major-related courses (core + upper + capstone) = variable
+  const totalMajorRelatedCourses = coreMajorCourses.length + upperMajorCourses.length + capstoneCourses.length;
+  const remainingSlots = 32 - 4 - totalMajorRelatedCourses; // 32 total - 4 L&I - major courses
+  
+  // Add just enough GEM/perspective courses to fill remaining slots
+  // Many perspectives overlap with major courses, so we don't need all of them
+  const perspectiveCategories = [
     "Applied Studies",
     "Creative Arts", 
-    "Cultural & Ethnic Studies",
     "Humanities",
-    "Quantitative Focus",
-    "Natural Science",
-    "Natural Science", // Need 2
     "Social Science",
+    "International Perspective",
+    "Writing Intensive",
   ];
+  
   const interestForWoK = profile.interests[0] || undefined;
-  for (const wok of wokCategories) {
-    gemCourses.push(createWoKPlaceholder(wok, interestForWoK));
+  let gemCount = 0;
+  for (const category of perspectiveCategories) {
+    if (gemCount >= remainingSlots) break;
+    gemCourses.push(createWoKPlaceholder(category, interestForWoK));
+    gemCount++;
   }
 
-  // Add Richness requirements
-  gemCourses.push(createRichnessPlaceholder("International"));
-  gemCourses.push(createRichnessPlaceholder("Quantitative"));
-  gemCourses.push(createRichnessPlaceholder("Writing"));
-  gemCourses.push(createRichnessPlaceholder("Writing")); // Need 2
+  // Add ALE if we have room
+  if (gemCount < remainingSlots) {
+    gemCourses.push({
+      code: "ALE",
+      name: "Applied Learning Experience",
+      credits: 1,
+      fulfills: ["ALE"],
+      category: "GEM",
+      isPlaceholder: true,
+      placeholderCategory: "Applied Learning",
+    });
+    gemCount++;
+  }
 
-  // Add ALE
-  gemCourses.push({
-    code: "ALE",
-    name: "Applied Learning Experience",
-    credits: 1,
-    fulfills: ["ALE"],
-    category: "GEM",
-    isPlaceholder: true,
-    placeholderCategory: "Applied Learning",
-  });
-
-  // STEP 4: Add interest-based electives
-  for (const interest of profile.interests.slice(0, 3)) {
+  // Fill any remaining with interest-based electives
+  for (const interest of profile.interests) {
+    if (gemCount >= remainingSlots) break;
     electiveCourses.push(createInterestPlaceholder(interest));
+    gemCount++;
   }
 
   // STEP 5: Sort courses to ensure prerequisites come before dependents
@@ -371,20 +380,27 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     const currentCredits = semesters[semIdx].totalCredits;
     const neededCredits = 4 - currentCredits;
     
-    // Count current major courses in this semester
+    // Count current major-prefix courses only (not collateral like CHM, MAT)
+    // Only courses with category "Major" count toward the 2-per-semester limit
     let currentMajorCount = semesters[semIdx].courses.filter(c => c.category === "Major").length;
 
     let creditsAdded = 0;
 
-    // Year 1-2: Add core major courses (max 2 per semester)
+    // Year 1-2: Add core courses (both major and collateral)
+    // Only actual major-prefix courses count toward the 2-per-semester limit
     if (year <= 2) {
-      for (let i = 0; i < coreMajorCourses.length && creditsAdded < neededCredits && currentMajorCount < 2; ) {
+      for (let i = 0; i < coreMajorCourses.length && creditsAdded < neededCredits; ) {
         const course = coreMajorCourses[i];
+        // Check if we'd exceed major limit (only for actual major courses)
+        if (course.category === "Major" && currentMajorCount >= 2) {
+          i++;
+          continue;
+        }
         if (canPlaceInSemester(semesters, course, semIdx)) {
           semesters[semIdx].courses.push(course);
           semesters[semIdx].totalCredits += course.credits;
           creditsAdded += course.credits;
-          currentMajorCount++;
+          if (course.category === "Major") currentMajorCount++;
           coreMajorCourses.splice(i, 1);
         } else {
           i++;
@@ -392,15 +408,19 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
       }
     }
 
-    // Year 3-4: Add upper major courses (max 2 per semester)
+    // Year 3-4: Add upper major courses (max 2 actual major courses per semester)
     if (year >= 3) {
-      for (let i = 0; i < upperMajorCourses.length && creditsAdded < neededCredits && currentMajorCount < 2; ) {
+      for (let i = 0; i < upperMajorCourses.length && creditsAdded < neededCredits; ) {
         const course = upperMajorCourses[i];
+        if (course.category === "Major" && currentMajorCount >= 2) {
+          i++;
+          continue;
+        }
         if (canPlaceInSemester(semesters, course, semIdx)) {
           semesters[semIdx].courses.push(course);
           semesters[semIdx].totalCredits += course.credits;
           creditsAdded += course.credits;
-          currentMajorCount++;
+          if (course.category === "Major") currentMajorCount++;
           upperMajorCourses.splice(i, 1);
         } else {
           i++;
@@ -410,13 +430,17 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
 
     // Year 4: Add capstones
     if (year === 4) {
-      for (let i = 0; i < capstoneCourses.length && creditsAdded < neededCredits && currentMajorCount < 2; ) {
+      for (let i = 0; i < capstoneCourses.length && creditsAdded < neededCredits; ) {
         const course = capstoneCourses[i];
+        if (course.category === "Major" && currentMajorCount >= 2) {
+          i++;
+          continue;
+        }
         if (canPlaceInSemester(semesters, course, semIdx)) {
           semesters[semIdx].courses.push(course);
           semesters[semIdx].totalCredits += course.credits;
           creditsAdded += course.credits;
-          currentMajorCount++;
+          if (course.category === "Major") currentMajorCount++;
           capstoneCourses.splice(i, 1);
         } else {
           i++;
