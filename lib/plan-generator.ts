@@ -183,6 +183,8 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
   }
 
   // STEP 2: Collect major courses
+  // Only courses with the major's prefix (e.g., BIO for Biology) count as "Major"
+  // Collateral courses (CHM, MAT, etc.) count as "Elective" (outside major credits)
   for (const majorCode of profile.majors) {
     const major = MAJORS[majorCode];
     if (!major) continue;
@@ -193,6 +195,13 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
                           req.category.toLowerCase().includes("distribution") ||
                           req.category.toLowerCase().includes("advanced") ||
                           req.category.toLowerCase().includes("exploratory");
+      const isCollateral = req.category.toLowerCase().includes("collateral");
+
+      // Helper to determine if course is in the major's department
+      const isMajorCourse = (courseCode: string): boolean => {
+        const prefix = courseCode.split(" ")[0];
+        return prefix === majorCode;
+      };
 
       // Add must-include courses
       if (req.mustInclude) {
@@ -201,17 +210,23 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
 
           const courseData = COURSE_CATALOG[courseCode];
           if (courseData) {
+            // Only count as "Major" if it has the major's prefix
+            const category = isMajorCourse(courseCode) ? "Major" : "Elective";
             const course: PlannedCourse = {
               code: courseData.code,
               name: courseData.name,
               credits: courseData.credits,
               fulfills: [`${major.name}: ${req.category}`],
-              category: "Major",
+              category: category,
             };
             plannedCourses.add(courseCode);
             
             const level = parseInt(courseCode.match(/\d+/)?.[0] || "100");
-            if (isCapstone) {
+            
+            // Collateral courses go to core (taken early) but marked as Elective
+            if (isCollateral || !isMajorCourse(courseCode)) {
+              coreMajorCourses.push(course);
+            } else if (isCapstone) {
               capstoneCourses.push(course);
             } else if (level >= 300 || isUpperLevel) {
               upperMajorCourses.push(course);
@@ -238,17 +253,20 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
             
             const courseData = COURSE_CATALOG[courseCode];
             if (courseData) {
+              const category = isMajorCourse(courseCode) ? "Major" : "Elective";
               const course: PlannedCourse = {
                 code: courseData.code,
                 name: courseData.name,
                 credits: courseData.credits,
                 fulfills: [`${major.name}: ${req.category}`],
-                category: "Major",
+                category: category,
               };
               plannedCourses.add(courseCode);
               
               const level = parseInt(courseCode.match(/\d+/)?.[0] || "100");
-              if (isCapstone) {
+              if (isCollateral || !isMajorCourse(courseCode)) {
+                coreMajorCourses.push(course);
+              } else if (isCapstone) {
                 capstoneCourses.push(course);
               } else if (level >= 300 || isUpperLevel) {
                 upperMajorCourses.push(course);
