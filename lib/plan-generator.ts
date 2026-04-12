@@ -298,8 +298,8 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
   const totalMajorRelatedCourses = coreMajorCourses.length + upperMajorCourses.length + capstoneCourses.length;
   const remainingSlots = 32 - 4 - totalMajorRelatedCourses; // 32 total - 4 L&I - major courses
   
-  // Add just enough GEM/perspective courses to fill remaining slots
-  // Many perspectives overlap with major courses, so we don't need all of them
+  // Add GEM/perspective courses to fill slots
+  // Many perspectives overlap with major courses
   const perspectiveCategories = [
     "Applied Studies",
     "Creative Arts", 
@@ -311,6 +311,9 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
   
   const interestForWoK = profile.interests[0] || undefined;
   let gemCount = 0;
+  let freeElectiveCount = 0;
+  const MAX_FREE_ELECTIVES = 3;
+  
   for (const category of perspectiveCategories) {
     if (gemCount >= remainingSlots) break;
     gemCourses.push(createWoKPlaceholder(category, interestForWoK));
@@ -331,11 +334,31 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     gemCount++;
   }
 
-  // Fill any remaining with interest-based electives
-  for (const interest of profile.interests) {
-    if (gemCount >= remainingSlots) break;
+  // Fill remaining with free electives (max 3)
+  // For Biology majors, suggest Microbiology as one option
+  if (gemCount < remainingSlots && freeElectiveCount < MAX_FREE_ELECTIVES) {
+    if (profile.majors.includes("BIO")) {
+      electiveCourses.push({
+        code: "BIO 311",
+        name: "Microbiology",
+        credits: 1,
+        fulfills: ["Free Elective", "Biology Elective"],
+        category: "Elective",
+        isPlaceholder: false,
+      });
+    } else {
+      electiveCourses.push(createInterestPlaceholder(profile.interests[0] || "General Studies"));
+    }
+    gemCount++;
+    freeElectiveCount++;
+  }
+  
+  // Add interest-based electives for remaining slots (up to max 3 total)
+  for (const interest of profile.interests.slice(0, 2)) {
+    if (gemCount >= remainingSlots || freeElectiveCount >= MAX_FREE_ELECTIVES) break;
     electiveCourses.push(createInterestPlaceholder(interest));
     gemCount++;
+    freeElectiveCount++;
   }
 
   // STEP 5: Sort courses to ensure prerequisites come before dependents
