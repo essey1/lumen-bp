@@ -1,5 +1,9 @@
 import { generateText } from "ai";
-import { google } from "@ai-sdk/google";
+import { createGroq } from "@ai-sdk/groq";
+
+const groq = createGroq({
+  apiKey: process.env.GROQ_API_KEY,
+});
 
 export async function POST(req: Request) {
   try {
@@ -48,7 +52,7 @@ One concrete suggestion for gaining relevant experience (internships, projects, 
 Keep the tone encouraging and practical. Be specific to Berea College's unique work-study culture and their career goals.`;
 
     const result = await generateText({
-      model: google("gemini-2.0-flash"),
+      model: groq("llama-3.3-70b-versatile"),
       prompt,
     });
 
