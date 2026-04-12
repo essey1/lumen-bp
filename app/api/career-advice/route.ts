@@ -1,5 +1,4 @@
 import { generateText } from "ai";
-import { google } from "@ai-sdk/google";
 
 export async function POST(req: Request) {
   try {
@@ -48,15 +47,16 @@ One concrete suggestion for gaining relevant experience (internships, projects, 
 Keep the tone encouraging and practical. Be specific to Berea College's unique work-study culture and their career goals.`;
 
     const result = await generateText({
-      model: google("gemini-1.5-flash"),
+      model: "google/gemini-2.0-flash",
       prompt,
     });
 
     return Response.json({ advice: result.text });
   } catch (error) {
-    console.error("Career advice API error:", error);
+    console.error("[v0] Career advice API error:", error);
+    console.error("[v0] Error details:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
     return Response.json(
-      { error: "Failed to generate career advice" },
+      { error: "Failed to generate career advice", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }

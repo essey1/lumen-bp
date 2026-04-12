@@ -38,15 +38,18 @@ export function CareerAdvice({
         }),
       });
 
+      const data = await response.json();
+      
       if (!response.ok) {
-        throw new Error("Failed to get career advice");
+        console.error("[v0] API Error:", data);
+        throw new Error(data.details || "Failed to get career advice");
       }
 
-      const data = await response.json();
       setAdvice(data.advice);
     } catch (err) {
-      setError("Unable to generate career advice. Please try again.");
-      console.error(err);
+      const errorMessage = err instanceof Error ? err.message : "Unknown error";
+      setError(`Unable to generate career advice: ${errorMessage}`);
+      console.error("[v0] Career advice fetch error:", err);
     } finally {
       setLoading(false);
     }
