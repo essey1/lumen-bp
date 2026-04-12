@@ -13,6 +13,7 @@ import {
 import { StudentProfile } from "@/components/plan/student-profile"
 import { SemesterCard } from "@/components/plan/semester-card"
 import { OverflowWarning } from "@/components/plan/overflow-warning"
+import { CareerAdvice } from "@/components/plan/career-advice"
 import { generateAcademicPlan, getPlanStats } from "@/lib/plan-generator"
 import type { StudentProfile as StudentProfileType, AcademicPlan } from "@/lib/types"
 import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types"
@@ -147,6 +148,14 @@ function PlanContent() {
             warnings={plan.warnings}
           />
         )}
+
+        {/* Career Advice from AI */}
+        <CareerAdvice
+          careerGoals={profile.careerGoals}
+          majors={profile.majors}
+          courses={plan.semesters.flatMap(s => s.courses.map(c => ({ code: c.code, name: c.name })))}
+          interests={profile.interests}
+        />
 
         {/* Summary Stats */}
         <Card className="mt-8 border-border bg-card">
