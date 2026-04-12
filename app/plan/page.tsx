@@ -24,14 +24,13 @@ function PlanContent() {
   
   // Parse profile from URL params or use defaults
   const majorsParam = searchParams.get("majors")
-  const minorsParam = searchParams.get("minors")
   const interestsParam = searchParams.get("interests")
   const hobbiesParam = searchParams.get("hobbies")
   const careerGoalsParam = searchParams.get("careerGoals")
 
   const profile: StudentProfileType = {
     majors: majorsParam ? majorsParam.split(",") : ["CSC"],
-    minors: minorsParam ? minorsParam.split(",") : [],
+    minors: [], // Minors removed from planner
     interests: interestsParam ? interestsParam.split(",") : ["Technology"],
     hobbies: hobbiesParam ? hobbiesParam.split(",") : [],
     careerGoals: careerGoalsParam ? careerGoalsParam.split(",") : ["Software Engineer"],
@@ -101,7 +100,6 @@ function PlanContent() {
         {/* Student Profile Summary */}
         <StudentProfile profile={{
           majors: profile.majors,
-          minors: profile.minors,
           interests: profile.interests,
           careerGoals: profile.careerGoals,
         }} />

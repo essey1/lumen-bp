@@ -31,37 +31,55 @@ const INTEREST_SUGGESTIONS: Record<string, string> = {
   "Mental Health": "Psychology/Counseling",
 };
 
-// GEM courses for the new curriculum
-const GEM_COURSES: PlannedCourse[] = [
-  // Learning & Inquiry Core (4 courses)
-  {
-    code: "GSTR 110",
+// L&I (Learning & Inquiry) courses for new GEM curriculum
+// L&I 100 prereq for 200, 200 prereq for 300
+// L&I 100, 200 = Freshman only
+// L&I 300 = Sophomore or Junior  
+// L&I 400 = Senior only
+const LI_COURSES = {
+  "L&I 100": {
+    code: "L&I 100",
     name: "Explorations",
     credits: 1,
-    fulfills: ["LIC 1: Explorations"],
-    category: "GEM",
+    fulfills: ["L&I 100: Explorations"],
+    category: "GEM" as const,
+    yearRestriction: [1], // Freshman only
+    semesterHint: 0, // Fall Year 1
   },
-  {
-    code: "GSTR 210",
+  "L&I 200": {
+    code: "L&I 200", 
     name: "Discoveries",
     credits: 1,
-    fulfills: ["LIC 2: Discoveries"],
-    category: "GEM",
+    fulfills: ["L&I 200: Discoveries"],
+    category: "GEM" as const,
+    yearRestriction: [1], // Freshman only
+    semesterHint: 1, // Spring Year 1
+    prerequisites: ["L&I 100"],
   },
-  {
-    code: "GSTR 310",
+  "L&I 300": {
+    code: "L&I 300",
     name: "Intersectional Justice in U.S.",
     credits: 1,
-    fulfills: ["LIC 3: Intersectional Justice"],
-    category: "GEM",
+    fulfills: ["L&I 300: Intersectional Justice"],
+    category: "GEM" as const,
+    yearRestriction: [2, 3], // Sophomore or Junior
+    semesterHint: 4, // Fall Year 3 (can be earlier)
+    prerequisites: ["L&I 200"],
   },
-  {
-    code: "GSTR 410",
+  "L&I 400": {
+    code: "L&I 400",
     name: "Global Issues",
     credits: 1,
-    fulfills: ["LIC 4: Global Issues"],
-    category: "GEM",
+    fulfills: ["L&I 400: Global Issues"],
+    category: "GEM" as const,
+    yearRestriction: [4], // Senior only
+    semesterHint: 6, // Fall Year 4
+    prerequisites: ["L&I 300"],
   },
+};
+
+// Other GEM courses
+const OTHER_GEM_COURSES: PlannedCourse[] = [
   // Physical Activity (2 required, 0 credit each)
   {
     code: "PED 100A",
@@ -158,7 +176,6 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
 
   // Track planned courses
   const plannedCourses = new Set<string>();
-  const allCourses: PlannedCourse[] = [];
 
   // Initialize 8 semesters (4 years)
   for (let year = 1; year <= 4; year++) {
@@ -189,97 +206,157 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     );
   }
 
-  // Process each major's requirements
+  // Helper to add course to specific semester
+  const addToSemester = (semIdx: number, course: PlannedCourse) => {
+    semesters[semIdx].courses.push(course);
+    semesters[semIdx].totalCredits += course.credits;
+  };
+
+  // Helper to get year from semester index
+  const getYear = (semIdx: number) => Math.floor(semIdx / 2) + 1;
+
+  // STEP 1: Place L&I courses in their required semesters
+  // L&I 100 - Fall Year 1 (semIdx 0)
+  addToSemester(0, {
+    code: "L&I 100",
+    name: "Explorations",
+    credits: 1,
+    fulfills: ["L&I 100: Explorations"],
+    category: "GEM",
+  });
+
+  // L&I 200 - Spring Year 1 (semIdx 1) - prereq L&I 100
+  addToSemester(1, {
+    code: "L&I 200",
+    name: "Discoveries",
+    credits: 1,
+    fulfills: ["L&I 200: Discoveries"],
+    category: "GEM",
+  });
+
+  // L&I 300 - Sophomore or Junior (semIdx 2-5, we'll place in Fall Year 2)
+  addToSemester(2, {
+    code: "L&I 300",
+    name: "Intersectional Justice in U.S.",
+    credits: 1,
+    fulfills: ["L&I 300: Intersectional Justice"],
+    category: "GEM",
+  });
+
+  // L&I 400 - Senior only (semIdx 6 or 7, we'll place in Fall Year 4)
+  addToSemester(6, {
+    code: "L&I 400",
+    name: "Global Issues",
+    credits: 1,
+    fulfills: ["L&I 400: Global Issues"],
+    category: "GEM",
+  });
+
+  // Add other GEM courses (Physical Activity, ALE)
+  for (const gemCourse of OTHER_GEM_COURSES) {
+    // Spread these across early semesters
+    const targetSem = gemCourse.code === "ALE 100" ? 3 : gemCourse.code === "PED 100A" ? 0 : 1;
+    addToSemester(targetSem, { ...gemCourse });
+  }
+
+  // STEP 2: Collect major courses - separate core (100-200 level) from upper (300-400 level)
+  const coreMajorCourses: PlannedCourse[] = [];
+  const upperMajorCourses: PlannedCourse[] = [];
+  const capstoneCourses: PlannedCourse[] = [];
+
   for (const majorCode of profile.majors) {
     const major = MAJORS[majorCode];
     if (!major) continue;
 
     for (const req of major.requirements) {
-      let coursesAdded = 0;
-      const neededCourses = req.coursesRequired;
+      const isCapstone = req.category.toLowerCase().includes("capstone");
+      const isUpperLevel = req.category.toLowerCase().includes("upper") || 
+                          req.category.toLowerCase().includes("distribution") ||
+                          req.category.toLowerCase().includes("advanced");
 
-      // Add must-include courses first (these are specific required courses)
+      // Add must-include courses
       if (req.mustInclude) {
         for (const courseCode of req.mustInclude) {
           if (plannedCourses.has(courseCode)) continue;
 
           const courseData = COURSE_CATALOG[courseCode];
           if (courseData) {
-            allCourses.push({
+            const course: PlannedCourse = {
               code: courseData.code,
               name: courseData.name,
               credits: courseData.credits,
               fulfills: [`${major.name}: ${req.category}`],
               category: "Major",
-            });
+            };
             plannedCourses.add(courseCode);
-            coursesAdded++;
+            
+            const level = parseInt(courseCode.match(/\d+/)?.[0] || "100");
+            if (isCapstone) {
+              capstoneCourses.push(course);
+            } else if (level >= 300 || isUpperLevel) {
+              upperMajorCourses.push(course);
+            } else {
+              coreMajorCourses.push(course);
+            }
           }
         }
       }
 
-      // For categories with selectFromCategories (like CSC upper-level)
+      // Handle selectFromCategories (like CSC Design/Foundations/Systems)
       if (req.selectFromCategories) {
         for (const subCat of req.selectFromCategories) {
-          // Add placeholder for each subcategory requirement
-          const placeholder = createMajorPlaceholder(
-            majorCode,
-            subCat.category,
-            "Upper-level"
-          );
-          allCourses.push(placeholder);
-          coursesAdded++;
+          const placeholder = createMajorPlaceholder(majorCode, subCat.category, "Upper-level");
+          upperMajorCourses.push(placeholder);
         }
-
-        // If we need a 400-level, add that placeholder
-        if (req.minUpperLevel && req.minUpperLevel > 0) {
-          const placeholder = createMajorPlaceholder(
-            majorCode,
-            "400-Level Elective",
-            "400-level"
-          );
-          // Don't add extra if already covered
-        }
-      } else {
-        // Fill remaining with actual courses or placeholders
-        const remainingNeeded = neededCourses - coursesAdded;
-        let addedFromList = 0;
-
-        for (const courseCode of req.courses) {
-          if (addedFromList >= remainingNeeded) break;
-          if (plannedCourses.has(courseCode)) continue;
-          if (req.mustInclude?.includes(courseCode)) continue;
-
-          const courseData = COURSE_CATALOG[courseCode];
-          if (courseData) {
-            allCourses.push({
-              code: courseData.code,
-              name: courseData.name,
-              credits: courseData.credits,
-              fulfills: [`${major.name}: ${req.category}`],
-              category: "Major",
-            });
-            plannedCourses.add(courseCode);
-            addedFromList++;
+      } else if (!req.mustInclude || req.coursesRequired > (req.mustInclude?.length || 0)) {
+        // Fill remaining with placeholders or available courses
+        const needed = req.coursesRequired - (req.mustInclude?.length || 0);
+        for (let i = 0; i < needed; i++) {
+          // Try to find an actual course
+          let found = false;
+          for (const courseCode of req.courses) {
+            if (plannedCourses.has(courseCode)) continue;
+            if (req.mustInclude?.includes(courseCode)) continue;
+            
+            const courseData = COURSE_CATALOG[courseCode];
+            if (courseData) {
+              const course: PlannedCourse = {
+                code: courseData.code,
+                name: courseData.name,
+                credits: courseData.credits,
+                fulfills: [`${major.name}: ${req.category}`],
+                category: "Major",
+              };
+              plannedCourses.add(courseCode);
+              
+              const level = parseInt(courseCode.match(/\d+/)?.[0] || "100");
+              if (isCapstone) {
+                capstoneCourses.push(course);
+              } else if (level >= 300 || isUpperLevel) {
+                upperMajorCourses.push(course);
+              } else {
+                coreMajorCourses.push(course);
+              }
+              found = true;
+              break;
+            }
           }
-        }
-
-        // If we still need more, add placeholders
-        const stillNeeded = remainingNeeded - addedFromList;
-        for (let i = 0; i < stillNeeded; i++) {
-          const placeholder = createMajorPlaceholder(majorCode, req.category);
-          allCourses.push(placeholder);
+          
+          if (!found) {
+            // Add placeholder
+            const placeholder = createMajorPlaceholder(majorCode, req.category);
+            if (isUpperLevel || isCapstone) {
+              upperMajorCourses.push(placeholder);
+            } else {
+              coreMajorCourses.push(placeholder);
+            }
+          }
         }
       }
     }
   }
 
-  // Add GEM courses
-  for (const gemCourse of GEM_COURSES) {
-    allCourses.push({ ...gemCourse });
-  }
-
-  // Add Ways of Knowing placeholders (these may overlap with major courses)
+  // STEP 3: Add Ways of Knowing placeholders (Perspectives)
   const wokCategories = [
     "Applied Studies",
     "Creative Arts",
@@ -290,51 +367,38 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     "Natural Science", // Need 2
     "Social Science",
   ];
-
-  // Find an interest to suggest for each WoK
+  const perspectivePlaceholders: PlannedCourse[] = [];
   const interestForWoK = profile.interests[0] || undefined;
   for (const wok of wokCategories) {
-    allCourses.push(createWoKPlaceholder(wok, interestForWoK));
+    perspectivePlaceholders.push(createWoKPlaceholder(wok, interestForWoK));
   }
 
-  // Add Richness requirements
-  allCourses.push(createRichnessPlaceholder("International"));
-  allCourses.push(createRichnessPlaceholder("Quantitative"));
-  allCourses.push(createRichnessPlaceholder("Writing"));
-  allCourses.push(createRichnessPlaceholder("Writing")); // Need 2
+  // Add Richness requirements as perspectives
+  perspectivePlaceholders.push(createRichnessPlaceholder("International"));
+  perspectivePlaceholders.push(createRichnessPlaceholder("Quantitative"));
+  perspectivePlaceholders.push(createRichnessPlaceholder("Writing"));
+  perspectivePlaceholders.push(createRichnessPlaceholder("Writing")); // Need 2
 
-  // Add interest-based electives
+  // STEP 4: Place courses by year
+  // Freshman & Sophomore: Core major courses + Perspectives
+  // Junior & Senior: Upper-level major courses + Capstones
+  
+  const coursesToPlace = [
+    ...coreMajorCourses,
+    ...perspectivePlaceholders,
+  ];
+  const upperCoursesToPlace = [
+    ...upperMajorCourses,
+  ];
+
+  // Interest-based electives
   for (const interest of profile.interests.slice(0, 2)) {
-    allCourses.push(createInterestPlaceholder(interest));
+    coursesToPlace.push(createInterestPlaceholder(interest));
   }
 
-  // Sort courses by level for proper sequencing
-  allCourses.sort((a, b) => {
-    // GEM LIC courses in specific order
-    if (a.code === "GSTR 110") return -1;
-    if (b.code === "GSTR 110") return 1;
-    if (a.code === "GSTR 210") return -1;
-    if (b.code === "GSTR 210") return 1;
-
-    // Capstones go last
-    if (a.fulfills.some((f) => f.includes("Capstone"))) return 1;
-    if (b.fulfills.some((f) => f.includes("Capstone"))) return -1;
-
-    // Physical activity can go anywhere
-    if (a.code.startsWith("PED")) return 0;
-    if (b.code.startsWith("PED")) return 0;
-
-    // Sort by course number
-    const aLevel = parseInt(a.code.match(/\d+/)?.[0] || "100");
-    const bLevel = parseInt(b.code.match(/\d+/)?.[0] || "100");
-    return aLevel - bLevel;
-  });
-
-  // Distribute courses to semesters based on credit loading rules
-  const coursesToPlace = [...allCourses];
-
-  for (let semIdx = 0; semIdx < 8; semIdx++) {
-    const year = Math.floor(semIdx / 2) + 1;
+  // Place core courses and perspectives in freshman/sophomore years (semIdx 0-3)
+  for (let semIdx = 0; semIdx < 4; semIdx++) {
+    const year = getYear(semIdx);
     const semester = semIdx % 2 === 0 ? "Fall" : "Spring";
     const targetCredits = getSemesterCredits(year, semester as "Fall" | "Spring");
 
@@ -342,80 +406,58 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
       semesters[semIdx].totalCredits < targetCredits &&
       coursesToPlace.length > 0
     ) {
-      // Find appropriate course for this semester level
-      let courseIdx = -1;
-
-      // First, try to find LIC courses for the right year
-      if (semIdx === 0) {
-        courseIdx = coursesToPlace.findIndex((c) => c.code === "GSTR 110");
-      } else if (semIdx === 1) {
-        courseIdx = coursesToPlace.findIndex((c) => c.code === "GSTR 210");
-      } else if (semIdx === 4) {
-        courseIdx = coursesToPlace.findIndex((c) => c.code === "GSTR 310");
-      } else if (semIdx === 6) {
-        courseIdx = coursesToPlace.findIndex((c) => c.code === "GSTR 410");
-      }
-
-      // Capstones go in year 4
-      if (courseIdx === -1 && semIdx >= 6) {
-        courseIdx = coursesToPlace.findIndex((c) =>
-          c.fulfills.some((f) => f.includes("Capstone"))
-        );
-      }
-
-      // 400-level courses go in year 3-4
-      if (courseIdx === -1 && semIdx >= 4) {
-        courseIdx = coursesToPlace.findIndex((c) => {
-          const level = parseInt(c.code.match(/\d+/)?.[0] || "0");
-          return level >= 400 && !c.fulfills.some((f) => f.includes("Capstone"));
-        });
-      }
-
-      // 300-level courses go in year 2-4
-      if (courseIdx === -1 && semIdx >= 2) {
-        courseIdx = coursesToPlace.findIndex((c) => {
-          const level = parseInt(c.code.match(/\d+/)?.[0] || "0");
-          return level >= 300 && level < 400;
-        });
-      }
-
-      // Take any remaining course
-      if (courseIdx === -1 && coursesToPlace.length > 0) {
-        courseIdx = 0;
-      }
-
-      if (courseIdx !== -1) {
-        const course = coursesToPlace.splice(courseIdx, 1)[0];
-        semesters[semIdx].courses.push(course);
-        semesters[semIdx].totalCredits += course.credits;
-      } else {
-        break;
-      }
+      const course = coursesToPlace.shift()!;
+      addToSemester(semIdx, course);
     }
   }
 
-  // Add any remaining courses to available semesters
-  for (const course of coursesToPlace) {
-    let placed = false;
+  // Place upper-level courses in junior/senior years (semIdx 4-7)
+  for (let semIdx = 4; semIdx < 8; semIdx++) {
+    const year = getYear(semIdx);
+    const semester = semIdx % 2 === 0 ? "Fall" : "Spring";
+    const targetCredits = getSemesterCredits(year, semester as "Fall" | "Spring");
 
-    // Try to find a semester with room
+    // Reserve space for capstones in senior year
+    const reserveForCapstone = semIdx >= 6 && capstoneCourses.length > 0 ? 1 : 0;
+
+    while (
+      semesters[semIdx].totalCredits < targetCredits - reserveForCapstone &&
+      upperCoursesToPlace.length > 0
+    ) {
+      const course = upperCoursesToPlace.shift()!;
+      addToSemester(semIdx, course);
+    }
+  }
+
+  // Place capstones in senior year
+  for (const capstone of capstoneCourses) {
+    // Try fall senior first, then spring
+    if (semesters[6].totalCredits < getSemesterCredits(4, "Fall")) {
+      addToSemester(6, capstone);
+    } else if (semesters[7].totalCredits < getSemesterCredits(4, "Spring") + 1) {
+      addToSemester(7, capstone);
+    } else {
+      unfulfilledRequirements.push(`${capstone.name} (${capstone.fulfills.join(", ")})`);
+    }
+  }
+
+  // Place any remaining courses
+  const allRemaining = [...coursesToPlace, ...upperCoursesToPlace];
+  for (const course of allRemaining) {
+    let placed = false;
     for (let semIdx = 0; semIdx < 8 && !placed; semIdx++) {
-      const year = Math.floor(semIdx / 2) + 1;
+      const year = getYear(semIdx);
       const semester = semIdx % 2 === 0 ? "Fall" : "Spring";
       const targetCredits = getSemesterCredits(year, semester as "Fall" | "Spring");
 
       if (semesters[semIdx].totalCredits + course.credits <= targetCredits + 1) {
-        semesters[semIdx].courses.push(course);
-        semesters[semIdx].totalCredits += course.credits;
+        addToSemester(semIdx, course);
         placed = true;
       }
     }
 
     if (!placed) {
-      // Course couldn't be placed
-      unfulfilledRequirements.push(
-        `${course.name} (${course.fulfills.join(", ")})`
-      );
+      unfulfilledRequirements.push(`${course.name} (${course.fulfills.join(", ")})`);
     }
   }
 

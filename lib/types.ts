@@ -96,7 +96,7 @@ export interface Minor {
 
 export interface StudentProfile {
   majors: string[];
-  minors: string[];
+  minors: string[]; // Kept for compatibility but not used in planner
   interests: string[];
   hobbies: string[];
   careerGoals: string[];
@@ -115,7 +115,7 @@ export interface PlannedCourse {
   name: string;
   credits: number;
   fulfills: string[]; // What requirements this fulfills
-  category: "Major" | "Minor" | "GEM" | "Elective";
+  category: "Major" | "GEM" | "Elective"; // Minor removed
   isPlaceholder?: boolean; // True if this is a placeholder course
   placeholderCategory?: string; // Category for placeholder (e.g., "Design", "Systems")
 }

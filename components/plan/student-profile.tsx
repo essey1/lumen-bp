@@ -1,11 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { BookOpen, Briefcase, Heart, Lightbulb } from "lucide-react"
+import { BookOpen, Briefcase, Heart } from "lucide-react"
 
 interface StudentProfileProps {
   profile: {
     majors: string[]
-    minors: string[]
     interests: string[]
     careerGoals: string[]
   }
@@ -15,7 +14,7 @@ export function StudentProfile({ profile }: StudentProfileProps) {
   return (
     <Card className="mb-8 border-border bg-card">
       <CardContent className="py-6">
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-6 md:grid-cols-3">
           {/* Majors */}
           <div>
             <div className="mb-2 flex items-center gap-2">
@@ -30,27 +29,6 @@ export function StudentProfile({ profile }: StudentProfileProps) {
                   {major}
                 </Badge>
               ))}
-            </div>
-          </div>
-
-          {/* Minors */}
-          <div>
-            <div className="mb-2 flex items-center gap-2">
-              <Lightbulb className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">
-                Minors
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {profile.minors.length > 0 ? (
-                profile.minors.map((minor) => (
-                  <Badge key={minor} variant="secondary" className="text-xs">
-                    {minor}
-                  </Badge>
-                ))
-              ) : (
-                <span className="text-sm text-muted-foreground">None</span>
-              )}
             </div>
           </div>
 

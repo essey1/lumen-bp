@@ -22,12 +22,6 @@ export const MAJORS: Record<string, Major> = {
           "CSC 124",
           "CSC 126",
           "CSC 127",
-          "ETAD 130",
-          "ETAD 180",
-          "ETAD 330",
-          "ETAD 382",
-          "ETAD 455",
-          "ETAD 460",
           "PHY 221",
           "SENS 320",
         ],
@@ -95,63 +89,7 @@ export const MAJORS: Record<string, Major> = {
         category: "Collateral - Electronics",
         description: "One electricity/electronics course",
         coursesRequired: 1,
-        courses: ["ETAD 265", "ETAD 460"],
-      },
-    ],
-  },
-
-  ETAD: {
-    code: "ETAD",
-    name: "Engineering Technologies and Applied Design",
-    degree: "B.S.",
-    totalMajorCredits: 11,
-    requirements: [
-      {
-        category: "Required Core Courses",
-        description: "Core ETAD courses",
-        coursesRequired: 6,
-        courses: [
-          "ETAD 130",
-          "ETAD 140",
-          "ETAD 180",
-          "ETAD 245",
-          "ETAD 265",
-          "ETAD 275",
-        ],
-        mustInclude: [
-          "ETAD 130",
-          "ETAD 140",
-          "ETAD 180",
-          "ETAD 245",
-          "ETAD 265",
-          "ETAD 275",
-        ],
-      },
-      {
-        category: "Capstone",
-        description: "Research in Technology",
-        coursesRequired: 1,
-        courses: ["ETAD 488"],
-        mustInclude: ["ETAD 488"],
-      },
-      {
-        category: "Advanced Distribution",
-        description: "Three 300 or 400 level ETAD courses",
-        coursesRequired: 3,
-        courses: [
-          "ETAD 330",
-          "ETAD 382",
-          "ETAD 455",
-          "ETAD 460",
-          "ETAD 470",
-          "ETAD 480",
-        ],
-      },
-      {
-        category: "Collateral - Math",
-        description: "MAT 105 or higher level math",
-        coursesRequired: 1,
-        courses: ["MAT 105", "MAT 115", "MAT 135", "MAT 216", "MAT 225"],
+        courses: ["PHY 221", "PHY 127"],
       },
     ],
   },
@@ -481,51 +419,6 @@ export const COURSE_CATALOG: Record<
   },
   "CSC 495": { code: "CSC 495", name: "Internship", credits: 1 },
 
-  // ETAD Courses
-  "ETAD 130": { code: "ETAD 130", name: "Design and Documentation", credits: 1 },
-  "ETAD 140": {
-    code: "ETAD 140",
-    name: "Design Production in Woods",
-    credits: 1,
-  },
-  "ETAD 180": { code: "ETAD 180", name: "Graphic Com and Design", credits: 1 },
-  "ETAD 245": {
-    code: "ETAD 245",
-    name: "Materials/Processing/Testing",
-    credits: 1,
-  },
-  "ETAD 265": {
-    code: "ETAD 265",
-    name: "Electricity and Electronics",
-    credits: 1,
-  },
-  "ETAD 275": {
-    code: "ETAD 275",
-    name: "Power and Energy Technology",
-    credits: 1,
-  },
-  "ETAD 330": {
-    code: "ETAD 330",
-    name: "Advanced Design & Prototyping",
-    credits: 1,
-  },
-  "ETAD 382": {
-    code: "ETAD 382",
-    name: "Studio in Graphic Design",
-    credits: 1,
-  },
-  "ETAD 455": {
-    code: "ETAD 455",
-    name: "Computer Integrated Manufacturing",
-    credits: 1,
-  },
-  "ETAD 460": {
-    code: "ETAD 460",
-    name: "Electronic System Design",
-    credits: 1,
-  },
-  "ETAD 488": { code: "ETAD 488", name: "Research in Technology", credits: 1 },
-
   // Math Courses
   "MAT 105": { code: "MAT 105", name: "Intro to Discrete Math", credits: 1 },
   "MAT 115": {
@@ -706,11 +599,6 @@ export const COURSE_CATALOG: Record<
 // List of available majors for UI
 export const AVAILABLE_MAJORS = [
   { code: "CSC", name: "Computer and Information Science", degree: "B.A." },
-  {
-    code: "ETAD",
-    name: "Engineering Technologies and Applied Design",
-    degree: "B.S.",
-  },
   { code: "AFR", name: "African and African American Studies", degree: "B.A." },
   { code: "BIO", name: "Biology", degree: "B.A." },
   { code: "PSY", name: "Psychology", degree: "B.A." },

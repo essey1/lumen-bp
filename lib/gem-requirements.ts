@@ -52,12 +52,17 @@ export const calculateMinGEMCredits = (): number => {
 };
 
 // GEM requirement labels for display
+// L&I (Learning & Inquiry) replaced old GSTRs
+// L&I 100 prereq for L&I 200, L&I 200 prereq for L&I 300
+// L&I 100, 200 = Freshman only
+// L&I 300 = Sophomore or Junior
+// L&I 400 = Senior only
 export const GEM_LABELS = {
   learningInquiryCore: {
-    explorations: "LIC 1: Explorations",
-    discoveries: "LIC 2: Discoveries",
-    intersectionalJustice: "LIC 3: Intersectional Justice in U.S.",
-    globalIssues: "LIC 4: Global Issues",
+    explorations: "L&I 100: Explorations",
+    discoveries: "L&I 200: Discoveries",
+    intersectionalJustice: "L&I 300: Intersectional Justice in U.S.",
+    globalIssues: "L&I 400: Global Issues",
   },
   waysOfKnowing: {
     appliedStudies: "WoK: Applied Studies",
