@@ -24,40 +24,46 @@ export default function LandingPage() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden">
+      <section className="relative overflow-hidden min-h-[90vh] flex items-center">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-[kenburns_20s_ease-in-out_infinite_alternate]"
           style={{ backgroundImage: "url('/images/campus.png')" }}
         />
-        <div className="absolute inset-0 bg-background/85 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/50 to-background/90" />
         <div className="container relative mx-auto px-4 py-24 md:py-32">
           <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/5 px-4 py-1.5 text-sm font-medium text-primary">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-card/80 backdrop-blur-sm px-4 py-1.5 text-sm font-medium text-primary animate-[fadeInDown_0.6s_ease-out]">
               <GraduationCap className="h-4 w-4" />
               For Berea College Students
             </div>
-            <h1 className="mb-6 text-balance text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
+            <h1 className="mb-6 text-balance text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl animate-[fadeInUp_0.6s_ease-out_0.2s_both]">
               Your 4-year journey,{" "}
               <span className="text-primary">planned from day one</span>
             </h1>
-            <p className="mb-8 text-pretty text-lg text-muted-foreground md:text-xl">
+            <p className="mb-8 text-pretty text-lg text-muted-foreground md:text-xl animate-[fadeInUp_0.6s_ease-out_0.4s_both]">
               Lumen helps you map out your entire academic path at Berea College. 
               Select your majors, explore your interests, and visualize your complete 
               course schedule — all in one place.
             </p>
-            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center animate-[fadeInUp_0.6s_ease-out_0.6s_both]">
               <Link href="/planner">
-                <Button size="lg" className="gap-2 text-base">
+                <Button size="lg" className="gap-2 text-base shadow-lg hover:shadow-xl transition-shadow">
                   <Compass className="h-5 w-5" />
                   Start Planning
                 </Button>
               </Link>
               <Link href="/plan">
-                <Button variant="outline" size="lg" className="gap-2 text-base">
+                <Button variant="outline" size="lg" className="gap-2 text-base bg-card/80 backdrop-blur-sm hover:bg-card">
                   View Sample Plan
                 </Button>
               </Link>
             </div>
+          </div>
+        </div>
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+          <div className="h-10 w-6 rounded-full border-2 border-primary/50 flex items-start justify-center p-1">
+            <div className="h-2 w-1 rounded-full bg-primary animate-[scrollDown_1.5s_ease-in-out_infinite]" />
           </div>
         </div>
       </section>
