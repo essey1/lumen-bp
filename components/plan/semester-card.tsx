@@ -24,7 +24,8 @@ export function SemesterCard({
   isOverloaded = false,
 }: SemesterCardProps) {
   const totalCredits = courses.reduce((sum, course) => sum + course.credits, 0)
-  const maxCredits = 16
+  // Berea uses 1 course = 1 credit, max ~5 courses per semester
+  const maxCredits = 5
 
   return (
     <Card
@@ -80,7 +81,7 @@ export function SemesterCard({
                 course.isPlaceholder && "border-dashed"
               )}
             >
-              {course.credits} cr
+              {course.credits === 1 ? "1 cr" : `${course.credits} cr`}
             </Badge>
           </div>
         ))}
@@ -101,10 +102,10 @@ export function SemesterCard({
               isOverloaded ? "text-warning" : "text-foreground"
             )}
           >
-            {totalCredits} credits
+            {totalCredits} {totalCredits === 1 ? "credit" : "credits"}
             {isOverloaded && (
               <span className="ml-1 text-xs font-normal">
-                ({totalCredits - maxCredits} over)
+                ({(totalCredits - maxCredits).toFixed(totalCredits % 1 === 0 ? 0 : 2)} over)
               </span>
             )}
           </span>

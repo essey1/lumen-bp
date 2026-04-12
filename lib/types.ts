@@ -129,9 +129,10 @@ export interface AcademicPlan {
   warnings: string[];
 }
 
-// Constants
-export const MINIMUM_TOTAL_CREDITS = 32; // 32 course credits minimum
-export const MINIMUM_CREDITS_OUTSIDE_MAJOR = 20; // 20 credits outside major
+// Constants - Berea College credit system: 1 course = 1 credit (not 3-4 like typical US colleges)
+// Quarter credit courses (0.25) also exist for things like ensembles
+export const MINIMUM_TOTAL_CREDITS = 32; // 32 course credits to graduate
+export const MINIMUM_CREDITS_OUTSIDE_MAJOR = 20; // 20 credits must be outside major
 
 // Credits per semester by year (in course credits, each course = 1 credit typically)
 // Freshman: 4 courses/semester
