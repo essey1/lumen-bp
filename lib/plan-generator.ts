@@ -416,8 +416,8 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
       }
     }
 
-    // Year 3-4: Add upper major courses (max 2 actual major courses per semester)
-    if (year >= 3) {
+    // Sophomore Spring (semIdx 3) and Year 3-4: Add upper major courses (max 2 actual major courses per semester)
+    if (semIdx >= 3) {
       for (let i = 0; i < upperMajorCourses.length && creditsAdded < neededCredits; ) {
         const course = upperMajorCourses[i];
         if (course.category === "Major" && currentMajorCount >= 2) {
