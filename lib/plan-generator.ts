@@ -191,11 +191,12 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
 
     for (const req of major.requirements) {
       const isCapstone = req.category.toLowerCase().includes("capstone");
+      // Distribution courses at 300+ level are upper level, but 200-level distribution can be taken earlier
       const isUpperLevel = req.category.toLowerCase().includes("upper") || 
-                          req.category.toLowerCase().includes("distribution") ||
                           req.category.toLowerCase().includes("advanced") ||
                           req.category.toLowerCase().includes("exploratory");
       const isCollateral = req.category.toLowerCase().includes("collateral");
+      const isDistribution = req.category.toLowerCase().includes("distribution");
 
       // Helper to determine if course is in the major's department
       const isMajorCourse = (courseCode: string): boolean => {
@@ -270,6 +271,9 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
                 capstoneCourses.push(course);
               } else if (level >= 300 || isUpperLevel) {
                 upperMajorCourses.push(course);
+              } else if (isDistribution && level >= 200) {
+                // Distribution courses 200+ level go to upper level
+                upperMajorCourses.push(course);
               } else {
                 coreMajorCourses.push(course);
               }
@@ -334,27 +338,8 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     gemCount++;
   }
 
-  // Fill remaining with free electives (max 3)
-  // For Biology majors, suggest Microbiology as one option
-  if (gemCount < remainingSlots && freeElectiveCount < MAX_FREE_ELECTIVES) {
-    if (profile.majors.includes("BIO")) {
-      electiveCourses.push({
-        code: "BIO 311",
-        name: "Microbiology",
-        credits: 1,
-        fulfills: ["Free Elective", "Biology Elective"],
-        category: "Elective",
-        isPlaceholder: false,
-      });
-    } else {
-      electiveCourses.push(createInterestPlaceholder(profile.interests[0] || "General Studies"));
-    }
-    gemCount++;
-    freeElectiveCount++;
-  }
-  
-  // Add interest-based electives for remaining slots (up to max 3 total)
-  for (const interest of profile.interests.slice(0, 2)) {
+  // Fill remaining with interest-based electives (max 3 total)
+  for (const interest of profile.interests) {
     if (gemCount >= remainingSlots || freeElectiveCount >= MAX_FREE_ELECTIVES) break;
     electiveCourses.push(createInterestPlaceholder(interest));
     gemCount++;
@@ -496,15 +481,38 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     }
   }
 
-  // STEP 6: Handle remaining courses that couldn't fit
-  const remainingCourses = [
+  // STEP 6: Try to place any remaining courses in any available semester
+  const allRemainingCourses = [
     ...coreMajorCourses,
     ...upperMajorCourses,
     ...capstoneCourses,
-    ...gemCourses,
   ];
 
-  for (const course of remainingCourses) {
+  // Try to place remaining courses in any semester that has room
+  for (const course of allRemainingCourses) {
+    let placed = false;
+    for (let semIdx = 0; semIdx < 8 && !placed; semIdx++) {
+      const currentMajorCount = semesters[semIdx].courses.filter(c => c.category === "Major").length;
+      const currentCredits = semesters[semIdx].totalCredits;
+      
+      // Check if we can place this course (respect major limit and credits)
+      const wouldExceedMajorLimit = course.category === "Major" && currentMajorCount >= 2;
+      const wouldExceedCredits = currentCredits >= 4;
+      
+      if (!wouldExceedMajorLimit && !wouldExceedCredits && canPlaceInSemester(semesters, course, semIdx)) {
+        semesters[semIdx].courses.push(course);
+        semesters[semIdx].totalCredits += course.credits;
+        placed = true;
+      }
+    }
+    
+    if (!placed) {
+      unfulfilledRequirements.push(`${course.name} (${course.fulfills.join(", ")})`);
+    }
+  }
+  
+  // Any remaining GEM courses that couldn't fit
+  for (const course of gemCourses) {
     unfulfilledRequirements.push(`${course.name} (${course.fulfills.join(", ")})`);
   }
 
