@@ -5,6 +5,7 @@
 // - Maximum 2 major courses per semester
 // - L&I 100, 200 freshman; L&I 300 soph/junior; L&I 400 senior
 // - Core major courses in freshman/sophomore, upper-level in junior/senior
+// - Sequential courses (e.g., CHM 221 -> CHM 222) must be in different semesters
 
 import type {
   AcademicPlan,
@@ -17,6 +18,25 @@ import {
   MINIMUM_CREDITS_OUTSIDE_MAJOR,
 } from "./types";
 import { MAJORS, COURSE_CATALOG } from "./majors-data";
+
+// Prerequisites mapping - course that requires another course first
+// Format: "COURSE" -> "PREREQUISITE" (prerequisite must be taken in earlier semester)
+const PREREQUISITES: Record<string, string> = {
+  "CHM 222": "CHM 221",
+  "BIO 222": "BIO 221",
+  "BIO 212": "BIO 211",
+  "PHY 222": "PHY 221",
+  "MAT 135": "MAT 115",
+  "MAT 225": "MAT 135",
+  "MAT 216": "MAT 135",
+  "CSC 236": "CSC 226",
+  "CSC 303": "CSC 226",
+  "CSC 324": "CSC 226",
+  "CSC 314": "CSC 226",
+  "L&I 200": "L&I 100",
+  "L&I 300": "L&I 200",
+  "L&I 400": "L&I 300",
+};
 
 // Ways of Knowing placeholder courses
 function createWoKPlaceholder(category: string, interest?: string): PlannedCourse {
@@ -87,6 +107,26 @@ function createElectivePlaceholder(): PlannedCourse {
     isPlaceholder: true,
     placeholderCategory: "Free Choice",
   };
+}
+
+// Helper to find which semester a course is placed in
+function findCourseSemester(semesters: SemesterPlan[], courseCode: string): number {
+  for (let i = 0; i < semesters.length; i++) {
+    if (semesters[i].courses.some(c => c.code === courseCode)) {
+      return i;
+    }
+  }
+  return -1;
+}
+
+// Check if a course can be placed in a semester (respects prerequisites)
+function canPlaceInSemester(semesters: SemesterPlan[], course: PlannedCourse, semIdx: number): boolean {
+  const prereq = PREREQUISITES[course.code];
+  if (!prereq) return true;
+  
+  const prereqSemester = findCourseSemester(semesters, prereq);
+  // Prerequisite must be in an earlier semester (lower index)
+  return prereqSemester !== -1 && prereqSemester < semIdx;
 }
 
 export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
@@ -271,11 +311,42 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     electiveCourses.push(createInterestPlaceholder(interest));
   }
 
-  // STEP 5: Distribute courses to semesters
+  // STEP 5: Sort courses to ensure prerequisites come before dependents
+  // Group sequential courses together and sort by course number
+  coreMajorCourses.sort((a, b) => {
+    const aNum = parseInt(a.code.match(/\d+/)?.[0] || "0");
+    const bNum = parseInt(b.code.match(/\d+/)?.[0] || "0");
+    return aNum - bNum;
+  });
+  upperMajorCourses.sort((a, b) => {
+    const aNum = parseInt(a.code.match(/\d+/)?.[0] || "0");
+    const bNum = parseInt(b.code.match(/\d+/)?.[0] || "0");
+    return aNum - bNum;
+  });
+
+  // STEP 6: Distribute courses to semesters
   // Rules: 
   // - Exactly 4 credits per semester
   // - Max 2 major courses per semester
   // - Core majors in Year 1-2, Upper majors in Year 3-4, Capstones in Year 4
+  // - Prerequisites must be in earlier semester than dependent course
+
+  // Helper to try placing a course, respecting prerequisites
+  const tryPlaceCourse = (course: PlannedCourse, courseList: PlannedCourse[], semIdx: number): boolean => {
+    // Check prerequisite constraint
+    if (!canPlaceInSemester(semesters, course, semIdx)) {
+      return false;
+    }
+    
+    semesters[semIdx].courses.push(course);
+    semesters[semIdx].totalCredits += course.credits;
+    
+    // Remove from list
+    const idx = courseList.indexOf(course);
+    if (idx !== -1) courseList.splice(idx, 1);
+    
+    return true;
+  };
 
   for (let semIdx = 0; semIdx < 8; semIdx++) {
     const year = Math.floor(semIdx / 2) + 1;
@@ -283,42 +354,55 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     const neededCredits = 4 - currentCredits;
     
     // Count current major courses in this semester
-    const currentMajorCount = semesters[semIdx].courses.filter(c => c.category === "Major").length;
-    const maxMajorsToAdd = 2 - currentMajorCount;
+    let currentMajorCount = semesters[semIdx].courses.filter(c => c.category === "Major").length;
 
     let creditsAdded = 0;
-    let majorsAdded = 0;
 
     // Year 1-2: Add core major courses (max 2 per semester)
-    if (year <= 2 && coreMajorCourses.length > 0 && majorsAdded < maxMajorsToAdd) {
-      while (creditsAdded < neededCredits && majorsAdded < maxMajorsToAdd && coreMajorCourses.length > 0) {
-        const course = coreMajorCourses.shift()!;
-        semesters[semIdx].courses.push(course);
-        semesters[semIdx].totalCredits += course.credits;
-        creditsAdded += course.credits;
-        majorsAdded++;
+    if (year <= 2) {
+      for (let i = 0; i < coreMajorCourses.length && creditsAdded < neededCredits && currentMajorCount < 2; ) {
+        const course = coreMajorCourses[i];
+        if (canPlaceInSemester(semesters, course, semIdx)) {
+          semesters[semIdx].courses.push(course);
+          semesters[semIdx].totalCredits += course.credits;
+          creditsAdded += course.credits;
+          currentMajorCount++;
+          coreMajorCourses.splice(i, 1);
+        } else {
+          i++;
+        }
       }
     }
 
     // Year 3-4: Add upper major courses (max 2 per semester)
-    if (year >= 3 && upperMajorCourses.length > 0 && majorsAdded < maxMajorsToAdd) {
-      while (creditsAdded < neededCredits && majorsAdded < maxMajorsToAdd && upperMajorCourses.length > 0) {
-        const course = upperMajorCourses.shift()!;
-        semesters[semIdx].courses.push(course);
-        semesters[semIdx].totalCredits += course.credits;
-        creditsAdded += course.credits;
-        majorsAdded++;
+    if (year >= 3) {
+      for (let i = 0; i < upperMajorCourses.length && creditsAdded < neededCredits && currentMajorCount < 2; ) {
+        const course = upperMajorCourses[i];
+        if (canPlaceInSemester(semesters, course, semIdx)) {
+          semesters[semIdx].courses.push(course);
+          semesters[semIdx].totalCredits += course.credits;
+          creditsAdded += course.credits;
+          currentMajorCount++;
+          upperMajorCourses.splice(i, 1);
+        } else {
+          i++;
+        }
       }
     }
 
     // Year 4: Add capstones
-    if (year === 4 && capstoneCourses.length > 0 && majorsAdded < maxMajorsToAdd) {
-      while (creditsAdded < neededCredits && majorsAdded < maxMajorsToAdd && capstoneCourses.length > 0) {
-        const course = capstoneCourses.shift()!;
-        semesters[semIdx].courses.push(course);
-        semesters[semIdx].totalCredits += course.credits;
-        creditsAdded += course.credits;
-        majorsAdded++;
+    if (year === 4) {
+      for (let i = 0; i < capstoneCourses.length && creditsAdded < neededCredits && currentMajorCount < 2; ) {
+        const course = capstoneCourses[i];
+        if (canPlaceInSemester(semesters, course, semIdx)) {
+          semesters[semIdx].courses.push(course);
+          semesters[semIdx].totalCredits += course.credits;
+          creditsAdded += course.credits;
+          currentMajorCount++;
+          capstoneCourses.splice(i, 1);
+        } else {
+          i++;
+        }
       }
     }
 
