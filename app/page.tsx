@@ -30,10 +30,10 @@ export default function LandingPage() {
           className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-[kenburns_30s_ease-in-out_infinite]"
           style={{ backgroundImage: "url('/images/campus.png')" }}
         />
-        {/* Breathing overlay that fades in and out */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-background animate-[breatheOverlay_8s_ease-in-out_infinite]" />
-        {/* Static gradient for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/70 via-transparent to-background/40" />
+        {/* Breathing overlay that pulses between more and less transparent */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/40 to-background/60 animate-[breatheOverlay_6s_ease-in-out_infinite]" />
+        {/* Static gradient for text readability at bottom */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent" />
         
         {/* Floating decorative orbs with dramatic movement */}
         <div className="absolute top-20 left-[10%] h-32 w-32 rounded-full bg-primary/30 blur-3xl animate-[orbFloat1_10s_ease-in-out_infinite]" />
