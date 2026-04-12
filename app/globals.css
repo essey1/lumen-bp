@@ -133,38 +133,50 @@
 /* Custom animations */
 @keyframes kenburns {
   0% {
-    transform: scale(1.05) translate(0, 0);
+    transform: scale(1.0) translate(0, 0);
   }
-  33% {
-    transform: scale(1.15) translate(-2%, -1%);
+  25% {
+    transform: scale(1.2) translate(-3%, -2%);
   }
-  66% {
-    transform: scale(1.1) translate(1%, -2%);
+  50% {
+    transform: scale(1.15) translate(2%, -3%);
+  }
+  75% {
+    transform: scale(1.25) translate(-2%, 2%);
   }
   100% {
-    transform: scale(1.18) translate(-1%, 1%);
+    transform: scale(1.1) translate(1%, -1%);
+  }
+}
+
+@keyframes breatheOverlay {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.3;
   }
 }
 
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(60px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
 @keyframes fadeInDown {
   from {
     opacity: 0;
-    transform: translateY(-30px);
+    transform: translateY(-40px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
@@ -175,7 +187,7 @@
   }
   50% {
     opacity: 1;
-    transform: translateY(12px);
+    transform: translateY(16px);
   }
 }
 
@@ -190,18 +202,94 @@
 
 @keyframes float {
   0%, 100% {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
   50% {
-    transform: translateY(-10px);
+    transform: translateY(-20px) scale(1.1);
+  }
+}
+
+@keyframes floatRotate {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-15px) rotate(5deg);
+  }
+  50% {
+    transform: translateY(-25px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-10px) rotate(-5deg);
   }
 }
 
 @keyframes pulse-glow {
   0%, 100% {
-    box-shadow: 0 0 20px 0 oklch(0.5 0.18 250 / 0.3);
+    box-shadow: 0 0 30px 5px oklch(0.5 0.18 250 / 0.4);
   }
   50% {
-    box-shadow: 0 0 40px 10px oklch(0.5 0.18 250 / 0.5);
+    box-shadow: 0 0 60px 20px oklch(0.5 0.18 250 / 0.7);
+  }
+}
+
+@keyframes textGlow {
+  0%, 100% {
+    text-shadow: 0 0 20px oklch(0.5 0.18 250 / 0.5);
+  }
+  50% {
+    text-shadow: 0 0 40px oklch(0.5 0.18 250 / 0.9), 0 0 80px oklch(0.5 0.18 250 / 0.5);
+  }
+}
+
+@keyframes orbFloat1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  33% {
+    transform: translate(30px, -40px) scale(1.3);
+    opacity: 0.5;
+  }
+  66% {
+    transform: translate(-20px, -20px) scale(0.9);
+    opacity: 0.4;
+  }
+}
+
+@keyframes orbFloat2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translate(-40px, 30px) scale(1.4);
+    opacity: 0.5;
+  }
+}
+
+@keyframes orbFloat3 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.2;
+  }
+  25% {
+    transform: translate(20px, 30px) scale(1.2);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translate(-30px, -10px) scale(1.5);
+    opacity: 0.5;
+  }
+}
+
+@keyframes borderGlow {
+  0%, 100% {
+    border-color: oklch(0.5 0.18 250 / 0.3);
+    box-shadow: 0 0 10px oklch(0.5 0.18 250 / 0.2), inset 0 0 10px oklch(0.5 0.18 250 / 0.1);
+  }
+  50% {
+    border-color: oklch(0.5 0.18 250 / 0.6);
+    box-shadow: 0 0 25px oklch(0.5 0.18 250 / 0.4), inset 0 0 20px oklch(0.5 0.18 250 / 0.2);
   }
 }
