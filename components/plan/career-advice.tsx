@@ -100,11 +100,86 @@ export function CareerAdvice({
         {advice && !loading && (
           <div className="space-y-4">
             <div className="prose prose-sm max-w-none text-foreground">
-              {advice.split("\n\n").map((paragraph, idx) => (
-                <p key={idx} className="text-sm leading-relaxed">
-                  {paragraph}
-                </p>
-              ))}
+              {advice.split("\n\n").map((block, idx) => {
+                // Check if it's a header (starts with **)
+                if (block.startsWith("**") && block.includes("**\n")) {
+                  const [header, ...rest] = block.split("\n");
+                  const headerText = header.replace(/\*\*/g, "");
+                  return (
+                    <div key={idx} className="mb-4">
+                      <h3 className="text-base font-semibold text-primary mb-2 mt-4 first:mt-0">
+                        {headerText}
+                      </h3>
+                      {rest.length > 0 && (
+                        <div className="text-sm leading-relaxed text-muted-foreground">
+                          {rest.join("\n")}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }
+                
+                // Check for numbered lists (1. 2. etc)
+                if (/^\d+\./.test(block.trim())) {
+                  const items = block.split(/\n(?=\d+\.)/).filter(Boolean);
+                  return (
+                    <ol key={idx} className="list-decimal list-inside space-y-2 mb-4 text-sm">
+                      {items.map((item, i) => {
+                        const content = item.replace(/^\d+\.\s*/, "");
+                        // Handle bold text within items
+                        const parts = content.split(/(\*\*[^*]+\*\*)/);
+                        return (
+                          <li key={i} className="leading-relaxed">
+                            {parts.map((part, j) => {
+                              if (part.startsWith("**") && part.endsWith("**")) {
+                                return <strong key={j} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
+                              }
+                              return <span key={j} className="text-muted-foreground">{part}</span>;
+                            })}
+                          </li>
+                        );
+                      })}
+                    </ol>
+                  );
+                }
+                
+                // Check for bullet lists (- or *)
+                if (block.trim().startsWith("-") || block.trim().startsWith("*")) {
+                  const items = block.split(/\n(?=[-*]\s)/).filter(Boolean);
+                  return (
+                    <ul key={idx} className="list-disc list-inside space-y-2 mb-4 text-sm">
+                      {items.map((item, i) => {
+                        const content = item.replace(/^[-*]\s*/, "");
+                        // Handle bold text within items
+                        const parts = content.split(/(\*\*[^*]+\*\*)/);
+                        return (
+                          <li key={i} className="leading-relaxed">
+                            {parts.map((part, j) => {
+                              if (part.startsWith("**") && part.endsWith("**")) {
+                                return <strong key={j} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
+                              }
+                              return <span key={j} className="text-muted-foreground">{part}</span>;
+                            })}
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  );
+                }
+                
+                // Regular paragraph with potential bold text
+                const parts = block.split(/(\*\*[^*]+\*\*)/);
+                return (
+                  <p key={idx} className="text-sm leading-relaxed mb-3 text-muted-foreground">
+                    {parts.map((part, j) => {
+                      if (part.startsWith("**") && part.endsWith("**")) {
+                        return <strong key={j} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
+                      }
+                      return <span key={j}>{part}</span>;
+                    })}
+                  </p>
+                );
+              })}
             </div>
             <div className="pt-2 border-t border-border">
               <Button
