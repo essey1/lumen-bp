@@ -120,6 +120,9 @@ function PlanContent() {
                   code: c.code,
                   name: c.name,
                   credits: c.credits,
+                  isPlaceholder: c.isPlaceholder,
+                  placeholderCategory: c.placeholderCategory,
+                  category: c.category,
                 }))}
                 isOverloaded={fall.isOverloaded}
               />
@@ -129,6 +132,9 @@ function PlanContent() {
                   code: c.code,
                   name: c.name,
                   credits: c.credits,
+                  isPlaceholder: c.isPlaceholder,
+                  placeholderCategory: c.placeholderCategory,
+                  category: c.category,
                 }))}
                 isOverloaded={spring.isOverloaded}
               />
@@ -147,29 +153,33 @@ function PlanContent() {
         {/* Summary Stats */}
         <Card className="mt-8 border-border bg-card">
           <CardContent className="py-6">
-            <div className="grid gap-6 text-center md:grid-cols-5">
+            <div className="grid gap-6 text-center md:grid-cols-3 lg:grid-cols-6">
               <div>
                 <p className="text-3xl font-bold text-primary">{stats.totalCredits}</p>
                 <p className="text-sm text-muted-foreground">Total Credits</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-primary">8</p>
-                <p className="text-sm text-muted-foreground">Semesters</p>
               </div>
               <div>
                 <p className="text-3xl font-bold text-primary">{stats.totalCourses}</p>
                 <p className="text-sm text-muted-foreground">Courses</p>
               </div>
               <div>
+                <p className="text-3xl font-bold text-primary">{stats.majorCourses}</p>
+                <p className="text-sm text-muted-foreground">Major Courses</p>
+              </div>
+              <div>
                 <p className="text-3xl font-bold text-primary">{stats.creditsOutsideMajor}</p>
-                <p className="text-sm text-muted-foreground">Credits Outside Major</p>
+                <p className="text-sm text-muted-foreground">Outside Major</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-muted-foreground">{stats.placeholderCourses}</p>
+                <p className="text-sm text-muted-foreground">TBD Courses</p>
               </div>
               <div>
                 <p className={`text-3xl font-bold ${stats.overloadedSemesters > 0 ? "text-warning" : "text-primary"}`}>
                   {stats.overloadedSemesters}
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Overloaded Semesters
+                  Overloaded
                 </p>
               </div>
             </div>

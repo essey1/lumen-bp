@@ -116,6 +116,8 @@ export interface PlannedCourse {
   credits: number;
   fulfills: string[]; // What requirements this fulfills
   category: "Major" | "Minor" | "GEM" | "Elective";
+  isPlaceholder?: boolean; // True if this is a placeholder course
+  placeholderCategory?: string; // Category for placeholder (e.g., "Design", "Systems")
 }
 
 export interface AcademicPlan {
@@ -128,7 +130,23 @@ export interface AcademicPlan {
 }
 
 // Constants
-export const MINIMUM_TOTAL_CREDITS = 32;
-export const MINIMUM_CREDITS_OUTSIDE_MAJOR = 20;
-export const MAX_CREDITS_PER_SEMESTER = 4.5;
+export const MINIMUM_TOTAL_CREDITS = 32; // 32 course credits minimum
+export const MINIMUM_CREDITS_OUTSIDE_MAJOR = 20; // 20 credits outside major
+
+// Credits per semester by year (in course credits, each course = 1 credit typically)
+// Freshman: 4 courses/semester
+// Sophomore/Junior/Senior Fall: 4.25 courses/semester (alternating 4 and 5)
+// Senior Spring: 3 courses/semester
+export const SEMESTER_CREDITS = {
+  "1-Fall": 4,
+  "1-Spring": 4,
+  "2-Fall": 4,
+  "2-Spring": 5, // 4.25 average means some semesters have 5
+  "3-Fall": 4,
+  "3-Spring": 5,
+  "4-Fall": 4,
+  "4-Spring": 3, // Final semester is lighter
+} as const;
+
+export const MAX_CREDITS_PER_SEMESTER = 5;
 export const NORMAL_CREDITS_PER_SEMESTER = 4;

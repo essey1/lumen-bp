@@ -10,133 +10,155 @@ import type {
 import {
   MINIMUM_TOTAL_CREDITS,
   MINIMUM_CREDITS_OUTSIDE_MAJOR,
-  MAX_CREDITS_PER_SEMESTER,
-  NORMAL_CREDITS_PER_SEMESTER,
+  SEMESTER_CREDITS,
 } from "./types";
-import { GEM_REQUIREMENTS, GEM_LABELS } from "./gem-requirements";
 import { MAJORS, COURSE_CATALOG } from "./majors-data";
 
-// Sample GEM courses that fulfill various requirements
-const GEM_COURSES: Record<string, PlannedCourse> = {
-  // Learning & Inquiry Core
-  "GSTR 110": {
+// Interest-based placeholder suggestions
+const INTEREST_SUGGESTIONS: Record<string, string> = {
+  "Artificial Intelligence": "AI/Machine Learning",
+  "Web Development": "Web Technologies",
+  "Cybersecurity": "Security",
+  "Game Design": "Game Development",
+  "Data Science": "Data Analytics",
+  "Robotics": "Robotics/Embedded Systems",
+  "Environmental Science": "Environmental Studies",
+  "Social Justice": "Social Justice",
+  "Music": "Music/Performance",
+  "Health Sciences": "Health/Pre-Med",
+  "Research": "Research Methods",
+  "Design": "Design/Prototyping",
+  "Mental Health": "Psychology/Counseling",
+};
+
+// GEM courses for the new curriculum
+const GEM_COURSES: PlannedCourse[] = [
+  // Learning & Inquiry Core (4 courses)
+  {
     code: "GSTR 110",
     name: "Explorations",
     credits: 1,
     fulfills: ["LIC 1: Explorations"],
     category: "GEM",
   },
-  "GSTR 210": {
+  {
     code: "GSTR 210",
     name: "Discoveries",
     credits: 1,
     fulfills: ["LIC 2: Discoveries"],
     category: "GEM",
   },
-  "GSTR 310": {
+  {
     code: "GSTR 310",
     name: "Intersectional Justice in U.S.",
     credits: 1,
     fulfills: ["LIC 3: Intersectional Justice"],
     category: "GEM",
   },
-  "GSTR 410": {
+  {
     code: "GSTR 410",
     name: "Global Issues",
     credits: 1,
     fulfills: ["LIC 4: Global Issues"],
     category: "GEM",
   },
-  // Physical Activity
-  "PED 100A": {
+  // Physical Activity (2 required, 0 credit each)
+  {
     code: "PED 100A",
     name: "Physical Activity I",
-    credits: 0.5,
+    credits: 0,
     fulfills: ["Physical Activity"],
     category: "GEM",
   },
-  "PED 100B": {
+  {
     code: "PED 100B",
     name: "Physical Activity II",
-    credits: 0.5,
-    fulfills: ["Physical Activity"],
-    category: "GEM",
-  },
-  "PED 100C": {
-    code: "PED 100C",
-    name: "Physical Activity III",
-    credits: 0.5,
-    fulfills: ["Physical Activity"],
-    category: "GEM",
-  },
-  "PED 100D": {
-    code: "PED 100D",
-    name: "Physical Activity IV",
-    credits: 0.5,
+    credits: 0,
     fulfills: ["Physical Activity"],
     category: "GEM",
   },
   // ALE
-  "ALE 100": {
+  {
     code: "ALE 100",
-    name: "Academic Life Experience",
+    name: "Applied Learning Experience",
     credits: 1,
     fulfills: ["ALE"],
     category: "GEM",
   },
-  // Ways of Knowing samples
-  "ENG 101": {
-    code: "ENG 101",
-    name: "Writing I",
+];
+
+// Ways of Knowing placeholder courses (to be filled based on major overlap)
+function createWoKPlaceholder(category: string, interest?: string): PlannedCourse {
+  const interestNote = interest ? ` (related to ${interest})` : "";
+  return {
+    code: `WoK-${category.toUpperCase().slice(0, 3)}`,
+    name: `${category} Course${interestNote}`,
     credits: 1,
-    fulfills: ["WoK: Humanities", "Richness: Writing"],
+    fulfills: [`WoK: ${category}`],
     category: "GEM",
-  },
-  "ENG 102": {
-    code: "ENG 102",
-    name: "Writing II",
+    isPlaceholder: true,
+    placeholderCategory: category,
+  };
+}
+
+// Richness placeholder courses
+function createRichnessPlaceholder(richness: string): PlannedCourse {
+  return {
+    code: `RICH-${richness.toUpperCase().slice(0, 3)}`,
+    name: `Course with ${richness} Richness`,
     credits: 1,
-    fulfills: ["WoK: Humanities", "Richness: Writing"],
+    fulfills: [`Richness: ${richness}`],
     category: "GEM",
-  },
-  "ART 100": {
-    code: "ART 100",
-    name: "Intro to Visual Arts",
+    isPlaceholder: true,
+    placeholderCategory: richness,
+  };
+}
+
+// Create placeholder for major category
+function createMajorPlaceholder(
+  majorCode: string,
+  category: string,
+  level?: string
+): PlannedCourse {
+  const levelText = level ? `${level} ` : "";
+  return {
+    code: `${majorCode}-${category.toUpperCase().slice(0, 3)}`,
+    name: `${levelText}${majorCode} course in ${category}`,
     credits: 1,
-    fulfills: ["WoK: Creative Arts"],
-    category: "GEM",
-  },
-  "SOC 100": {
-    code: "SOC 100",
-    name: "Intro to Sociology",
+    fulfills: [`${majorCode}: ${category}`],
+    category: "Major",
+    isPlaceholder: true,
+    placeholderCategory: category,
+  };
+}
+
+// Create interest-based elective placeholder
+function createInterestPlaceholder(interest: string): PlannedCourse {
+  const suggestion = INTEREST_SUGGESTIONS[interest] || interest;
+  return {
+    code: `ELEC-INT`,
+    name: `Elective related to ${suggestion}`,
     credits: 1,
-    fulfills: ["WoK: Social Science"],
-    category: "GEM",
-  },
-  "ANT 100": {
-    code: "ANT 100",
-    name: "Cultural Anthropology",
-    credits: 1,
-    fulfills: ["WoK: Cultural & Ethnic Studies", "Value: Beyond the Borders"],
-    category: "GEM",
-  },
-  "BUS 100": {
-    code: "BUS 100",
-    name: "Intro to Business",
-    credits: 1,
-    fulfills: ["WoK: Applied Studies"],
-    category: "GEM",
-  },
-};
+    fulfills: ["Interest-based Elective"],
+    category: "Elective",
+    isPlaceholder: true,
+    placeholderCategory: interest,
+  };
+}
+
+function getSemesterCredits(year: number, semester: "Fall" | "Spring"): number {
+  const key = `${year}-${semester}` as keyof typeof SEMESTER_CREDITS;
+  return SEMESTER_CREDITS[key] || 4;
+}
 
 export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
   const semesters: SemesterPlan[] = [];
   const warnings: string[] = [];
   const unfulfilledRequirements: string[] = [];
 
-  // Track what requirements have been fulfilled
-  const fulfilledRequirements = new Set<string>();
+  // Track planned courses
   const plannedCourses = new Set<string>();
+  const allCourses: PlannedCourse[] = [];
 
   // Initialize 8 semesters (4 years)
   for (let year = 1; year <= 4; year++) {
@@ -151,23 +173,39 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     }
   }
 
-  // Get major requirements
-  const majorCourses: PlannedCourse[] = [];
-  let totalMajorCredits = 0;
+  // Calculate total major credits needed
+  let totalMajorCreditsNeeded = 0;
+  for (const majorCode of profile.majors) {
+    const major = MAJORS[majorCode];
+    if (major) {
+      totalMajorCreditsNeeded += major.totalMajorCredits;
+    }
+  }
 
+  // Check if multiple majors might exceed what's possible
+  if (profile.majors.length > 2) {
+    warnings.push(
+      "With more than 2 majors, you may not be able to complete all requirements within 8 semesters"
+    );
+  }
+
+  // Process each major's requirements
   for (const majorCode of profile.majors) {
     const major = MAJORS[majorCode];
     if (!major) continue;
 
     for (const req of major.requirements) {
-      // Add must-include courses first
+      let coursesAdded = 0;
+      const neededCourses = req.coursesRequired;
+
+      // Add must-include courses first (these are specific required courses)
       if (req.mustInclude) {
         for (const courseCode of req.mustInclude) {
           if (plannedCourses.has(courseCode)) continue;
 
           const courseData = COURSE_CATALOG[courseCode];
           if (courseData) {
-            majorCourses.push({
+            allCourses.push({
               code: courseData.code,
               name: courseData.name,
               credits: courseData.credits,
@@ -175,25 +213,46 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
               category: "Major",
             });
             plannedCourses.add(courseCode);
-            totalMajorCredits += courseData.credits;
+            coursesAdded++;
           }
         }
       }
 
-      // Fill remaining required courses
-      const mustIncludeCount = req.mustInclude?.length || 0;
-      const remainingNeeded = req.coursesRequired - mustIncludeCount;
+      // For categories with selectFromCategories (like CSC upper-level)
+      if (req.selectFromCategories) {
+        for (const subCat of req.selectFromCategories) {
+          // Add placeholder for each subcategory requirement
+          const placeholder = createMajorPlaceholder(
+            majorCode,
+            subCat.category,
+            "Upper-level"
+          );
+          allCourses.push(placeholder);
+          coursesAdded++;
+        }
 
-      if (remainingNeeded > 0) {
-        let added = 0;
+        // If we need a 400-level, add that placeholder
+        if (req.minUpperLevel && req.minUpperLevel > 0) {
+          const placeholder = createMajorPlaceholder(
+            majorCode,
+            "400-Level Elective",
+            "400-level"
+          );
+          // Don't add extra if already covered
+        }
+      } else {
+        // Fill remaining with actual courses or placeholders
+        const remainingNeeded = neededCourses - coursesAdded;
+        let addedFromList = 0;
+
         for (const courseCode of req.courses) {
-          if (added >= remainingNeeded) break;
+          if (addedFromList >= remainingNeeded) break;
           if (plannedCourses.has(courseCode)) continue;
           if (req.mustInclude?.includes(courseCode)) continue;
 
           const courseData = COURSE_CATALOG[courseCode];
           if (courseData) {
-            majorCourses.push({
+            allCourses.push({
               code: courseData.code,
               name: courseData.name,
               credits: courseData.credits,
@@ -201,135 +260,207 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
               category: "Major",
             });
             plannedCourses.add(courseCode);
-            totalMajorCredits += courseData.credits;
-            added++;
+            addedFromList++;
           }
+        }
+
+        // If we still need more, add placeholders
+        const stillNeeded = remainingNeeded - addedFromList;
+        for (let i = 0; i < stillNeeded; i++) {
+          const placeholder = createMajorPlaceholder(majorCode, req.category);
+          allCourses.push(placeholder);
         }
       }
     }
   }
 
   // Add GEM courses
-  const gemCourses: PlannedCourse[] = [
-    GEM_COURSES["GSTR 110"],
-    GEM_COURSES["GSTR 210"],
-    GEM_COURSES["GSTR 310"],
-    GEM_COURSES["GSTR 410"],
-    GEM_COURSES["ENG 101"],
-    GEM_COURSES["ENG 102"],
-    GEM_COURSES["ART 100"],
-    GEM_COURSES["SOC 100"],
-    GEM_COURSES["ANT 100"],
-    GEM_COURSES["BUS 100"],
-    GEM_COURSES["PED 100A"],
-    GEM_COURSES["PED 100B"],
-    GEM_COURSES["PED 100C"],
-    GEM_COURSES["PED 100D"],
-    GEM_COURSES["ALE 100"],
+  for (const gemCourse of GEM_COURSES) {
+    allCourses.push({ ...gemCourse });
+  }
+
+  // Add Ways of Knowing placeholders (these may overlap with major courses)
+  const wokCategories = [
+    "Applied Studies",
+    "Creative Arts",
+    "Cultural & Ethnic Studies",
+    "Humanities",
+    "Quantitative Focus",
+    "Natural Science",
+    "Natural Science", // Need 2
+    "Social Science",
   ];
 
-  // Calculate credits outside major
-  let creditsOutsideMajor = gemCourses.reduce((sum, c) => sum + c.credits, 0);
+  // Find an interest to suggest for each WoK
+  const interestForWoK = profile.interests[0] || undefined;
+  for (const wok of wokCategories) {
+    allCourses.push(createWoKPlaceholder(wok, interestForWoK));
+  }
 
-  // Distribute courses across semesters
-  let courseIndex = 0;
-  const allCourses = [...majorCourses, ...gemCourses];
+  // Add Richness requirements
+  allCourses.push(createRichnessPlaceholder("International"));
+  allCourses.push(createRichnessPlaceholder("Quantitative"));
+  allCourses.push(createRichnessPlaceholder("Writing"));
+  allCourses.push(createRichnessPlaceholder("Writing")); // Need 2
 
-  // Sort courses: core/intro courses first, capstones last
+  // Add interest-based electives
+  for (const interest of profile.interests.slice(0, 2)) {
+    allCourses.push(createInterestPlaceholder(interest));
+  }
+
+  // Sort courses by level for proper sequencing
   allCourses.sort((a, b) => {
-    const aLevel = parseInt(a.code.match(/\d+/)?.[0] || "0");
-    const bLevel = parseInt(b.code.match(/\d+/)?.[0] || "0");
+    // GEM LIC courses in specific order
+    if (a.code === "GSTR 110") return -1;
+    if (b.code === "GSTR 110") return 1;
+    if (a.code === "GSTR 210") return -1;
+    if (b.code === "GSTR 210") return 1;
 
-    // Capstones go to year 4
+    // Capstones go last
     if (a.fulfills.some((f) => f.includes("Capstone"))) return 1;
     if (b.fulfills.some((f) => f.includes("Capstone"))) return -1;
 
-    // LIC courses in order
-    if (a.code.startsWith("GSTR") && b.code.startsWith("GSTR")) {
-      return aLevel - bLevel;
-    }
+    // Physical activity can go anywhere
+    if (a.code.startsWith("PED")) return 0;
+    if (b.code.startsWith("PED")) return 0;
 
+    // Sort by course number
+    const aLevel = parseInt(a.code.match(/\d+/)?.[0] || "100");
+    const bLevel = parseInt(b.code.match(/\d+/)?.[0] || "100");
     return aLevel - bLevel;
   });
 
-  // Distribute to semesters
-  for (const course of allCourses) {
-    // Find best semester for this course
-    let targetSemester = 0;
+  // Distribute courses to semesters based on credit loading rules
+  const coursesToPlace = [...allCourses];
 
-    // LIC courses go in specific years
-    if (course.code === "GSTR 110") targetSemester = 0; // Year 1 Fall
-    else if (course.code === "GSTR 210") targetSemester = 1; // Year 1 Spring
-    else if (course.code === "GSTR 310") targetSemester = 4; // Year 3 Fall
-    else if (course.code === "GSTR 410") targetSemester = 6; // Year 4 Fall
-    // Capstones go to Year 4
-    else if (course.fulfills.some((f) => f.includes("Capstone"))) {
-      targetSemester = 7; // Year 4 Spring
-    }
-    // 400-level courses go to Year 3-4
-    else if (parseInt(course.code.match(/\d+/)?.[0] || "0") >= 400) {
-      targetSemester = Math.floor(Math.random() * 2) + 5; // Year 3 Spring or Year 4
-    }
-    // 300-level courses go to Year 2-3
-    else if (parseInt(course.code.match(/\d+/)?.[0] || "0") >= 300) {
-      targetSemester = Math.floor(Math.random() * 2) + 3; // Year 2 Spring or Year 3
-    }
-    // 200-level courses go to Year 1-2
-    else if (parseInt(course.code.match(/\d+/)?.[0] || "0") >= 200) {
-      targetSemester = Math.floor(Math.random() * 2) + 1; // Year 1 Spring or Year 2
-    }
-    // 100-level courses go to Year 1
-    else {
-      targetSemester = Math.floor(Math.random() * 2); // Year 1
-    }
+  for (let semIdx = 0; semIdx < 8; semIdx++) {
+    const year = Math.floor(semIdx / 2) + 1;
+    const semester = semIdx % 2 === 0 ? "Fall" : "Spring";
+    const targetCredits = getSemesterCredits(year, semester as "Fall" | "Spring");
 
-    // Find a semester with room
+    while (
+      semesters[semIdx].totalCredits < targetCredits &&
+      coursesToPlace.length > 0
+    ) {
+      // Find appropriate course for this semester level
+      let courseIdx = -1;
+
+      // First, try to find LIC courses for the right year
+      if (semIdx === 0) {
+        courseIdx = coursesToPlace.findIndex((c) => c.code === "GSTR 110");
+      } else if (semIdx === 1) {
+        courseIdx = coursesToPlace.findIndex((c) => c.code === "GSTR 210");
+      } else if (semIdx === 4) {
+        courseIdx = coursesToPlace.findIndex((c) => c.code === "GSTR 310");
+      } else if (semIdx === 6) {
+        courseIdx = coursesToPlace.findIndex((c) => c.code === "GSTR 410");
+      }
+
+      // Capstones go in year 4
+      if (courseIdx === -1 && semIdx >= 6) {
+        courseIdx = coursesToPlace.findIndex((c) =>
+          c.fulfills.some((f) => f.includes("Capstone"))
+        );
+      }
+
+      // 400-level courses go in year 3-4
+      if (courseIdx === -1 && semIdx >= 4) {
+        courseIdx = coursesToPlace.findIndex((c) => {
+          const level = parseInt(c.code.match(/\d+/)?.[0] || "0");
+          return level >= 400 && !c.fulfills.some((f) => f.includes("Capstone"));
+        });
+      }
+
+      // 300-level courses go in year 2-4
+      if (courseIdx === -1 && semIdx >= 2) {
+        courseIdx = coursesToPlace.findIndex((c) => {
+          const level = parseInt(c.code.match(/\d+/)?.[0] || "0");
+          return level >= 300 && level < 400;
+        });
+      }
+
+      // Take any remaining course
+      if (courseIdx === -1 && coursesToPlace.length > 0) {
+        courseIdx = 0;
+      }
+
+      if (courseIdx !== -1) {
+        const course = coursesToPlace.splice(courseIdx, 1)[0];
+        semesters[semIdx].courses.push(course);
+        semesters[semIdx].totalCredits += course.credits;
+      } else {
+        break;
+      }
+    }
+  }
+
+  // Add any remaining courses to available semesters
+  for (const course of coursesToPlace) {
     let placed = false;
-    for (let offset = 0; offset < 8 && !placed; offset++) {
-      const semIdx = (targetSemester + offset) % 8;
-      if (semesters[semIdx].totalCredits + course.credits <= MAX_CREDITS_PER_SEMESTER) {
+
+    // Try to find a semester with room
+    for (let semIdx = 0; semIdx < 8 && !placed; semIdx++) {
+      const year = Math.floor(semIdx / 2) + 1;
+      const semester = semIdx % 2 === 0 ? "Fall" : "Spring";
+      const targetCredits = getSemesterCredits(year, semester as "Fall" | "Spring");
+
+      if (semesters[semIdx].totalCredits + course.credits <= targetCredits + 1) {
         semesters[semIdx].courses.push(course);
         semesters[semIdx].totalCredits += course.credits;
         placed = true;
       }
     }
 
-    // Force place if needed
     if (!placed) {
-      semesters[targetSemester].courses.push(course);
-      semesters[targetSemester].totalCredits += course.credits;
-      semesters[targetSemester].isOverloaded = true;
+      // Course couldn't be placed
+      unfulfilledRequirements.push(
+        `${course.name} (${course.fulfills.join(", ")})`
+      );
     }
   }
 
   // Mark overloaded semesters
-  for (const semester of semesters) {
-    if (semester.totalCredits > NORMAL_CREDITS_PER_SEMESTER) {
-      semester.isOverloaded = true;
+  for (let semIdx = 0; semIdx < 8; semIdx++) {
+    const year = Math.floor(semIdx / 2) + 1;
+    const semester = semIdx % 2 === 0 ? "Fall" : "Spring";
+    const targetCredits = getSemesterCredits(year, semester as "Fall" | "Spring");
+
+    if (semesters[semIdx].totalCredits > targetCredits) {
+      semesters[semIdx].isOverloaded = true;
     }
   }
 
   // Calculate totals
   const totalCredits = semesters.reduce((sum, s) => sum + s.totalCredits, 0);
+  const majorCredits = semesters.reduce(
+    (sum, s) =>
+      sum +
+      s.courses
+        .filter((c) => c.category === "Major")
+        .reduce((cs, c) => cs + c.credits, 0),
+    0
+  );
+  const creditsOutsideMajor = totalCredits - majorCredits;
 
   // Check minimum requirements
   if (totalCredits < MINIMUM_TOTAL_CREDITS) {
     warnings.push(
-      `Total credits (${totalCredits}) below minimum requirement (${MINIMUM_TOTAL_CREDITS})`
+      `Total credits (${totalCredits}) is below the minimum requirement of ${MINIMUM_TOTAL_CREDITS} credits`
     );
   }
 
   if (creditsOutsideMajor < MINIMUM_CREDITS_OUTSIDE_MAJOR) {
     warnings.push(
-      `Credits outside major (${creditsOutsideMajor}) below minimum requirement (${MINIMUM_CREDITS_OUTSIDE_MAJOR})`
+      `Credits outside major (${creditsOutsideMajor}) is below the minimum requirement of ${MINIMUM_CREDITS_OUTSIDE_MAJOR} credits`
     );
   }
 
-  // Check GEM requirements
-  const checkGEMRequirements = () => {
-    // This would check against actual fulfilled requirements
-    // For now, we assume the plan is complete
-  };
+  // Add warning if requirements couldn't be fulfilled
+  if (unfulfilledRequirements.length > 0) {
+    warnings.push(
+      `The plan could not fulfill all requirements within 8 semesters. ${unfulfilledRequirements.length} requirement(s) remain unfulfilled.`
+    );
+  }
 
   return {
     student: profile,
@@ -355,6 +486,10 @@ export function getPlanStats(plan: AcademicPlan) {
     (sum, s) => sum + s.courses.filter((c) => c.category === "GEM").length,
     0
   );
+  const placeholderCourses = plan.semesters.reduce(
+    (sum, s) => sum + s.courses.filter((c) => c.isPlaceholder).length,
+    0
+  );
   const overloadedSemesters = plan.semesters.filter((s) => s.isOverloaded).length;
 
   return {
@@ -362,8 +497,10 @@ export function getPlanStats(plan: AcademicPlan) {
     totalCourses,
     majorCourses,
     gemCourses,
+    placeholderCourses,
     creditsOutsideMajor: plan.creditsOutsideMajor,
     overloadedSemesters,
     hasWarnings: plan.warnings.length > 0,
+    unfulfilledCount: plan.unfulfilledRequirements.length,
   };
 }

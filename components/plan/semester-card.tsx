@@ -7,6 +7,9 @@ interface Course {
   code: string
   name: string
   credits: number
+  isPlaceholder?: boolean
+  placeholderCategory?: string
+  category?: string
 }
 
 interface SemesterCardProps {
@@ -41,20 +44,42 @@ export function SemesterCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        {courses.map((course) => (
+        {courses.map((course, idx) => (
           <div
-            key={course.code}
-            className="flex items-start justify-between gap-2 border-b border-border pb-2 last:border-0 last:pb-0"
+            key={`${course.code}-${idx}`}
+            className={cn(
+              "flex items-start justify-between gap-2 border-b border-border pb-2 last:border-0 last:pb-0",
+              course.isPlaceholder && "bg-muted/50 rounded-md px-2 py-1 -mx-2 border-dashed"
+            )}
           >
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-semibold text-primary">
-                {course.code}
+              <p className={cn(
+                "text-xs font-semibold",
+                course.isPlaceholder ? "text-muted-foreground italic" : "text-primary"
+              )}>
+                {course.isPlaceholder ? (
+                  <span className="flex items-center gap-1">
+                    <span className="text-[10px] bg-muted px-1 rounded">TBD</span>
+                    {course.placeholderCategory || "Elective"}
+                  </span>
+                ) : (
+                  course.code
+                )}
               </p>
-              <p className="truncate text-xs text-muted-foreground">
+              <p className={cn(
+                "truncate text-xs",
+                course.isPlaceholder ? "text-muted-foreground/70 italic" : "text-muted-foreground"
+              )}>
                 {course.name}
               </p>
             </div>
-            <Badge variant="secondary" className="shrink-0 text-xs">
+            <Badge 
+              variant={course.isPlaceholder ? "outline" : "secondary"} 
+              className={cn(
+                "shrink-0 text-xs",
+                course.isPlaceholder && "border-dashed"
+              )}
+            >
               {course.credits} cr
             </Badge>
           </div>
