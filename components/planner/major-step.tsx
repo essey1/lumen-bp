@@ -18,20 +18,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
+import { AVAILABLE_MAJORS } from "@/lib/majors-data"
 
-const MAJORS = [
-  "Computer Science",
-  "Biology",
-  "Economics",
-  "Mathematics",
-  "Psychology",
-  "History",
-  "English",
-  "Sociology",
-  "Physics",
-  "Chemistry",
-  "Business",
-]
+// Format majors for display - using code for data, name for display
+const MAJORS = AVAILABLE_MAJORS.map(m => ({
+  code: m.code,
+  label: `${m.name} (${m.degree})`,
+}))
 
 const MAX_SELECTIONS = 3
 const MIN_SELECTIONS = 1
@@ -44,16 +37,20 @@ interface MajorStepProps {
 export function MajorStep({ selected, onChange }: MajorStepProps) {
   const [open, setOpen] = useState(false)
 
-  const toggleMajor = (major: string) => {
-    if (selected.includes(major)) {
-      onChange(selected.filter((m) => m !== major))
+  const toggleMajor = (code: string) => {
+    if (selected.includes(code)) {
+      onChange(selected.filter((m) => m !== code))
     } else if (selected.length < MAX_SELECTIONS) {
-      onChange([...selected, major])
+      onChange([...selected, code])
     }
   }
 
-  const removeMajor = (major: string) => {
-    onChange(selected.filter((m) => m !== major))
+  const removeMajor = (code: string) => {
+    onChange(selected.filter((m) => m !== code))
+  }
+
+  const getMajorLabel = (code: string) => {
+    return MAJORS.find(m => m.code === code)?.label || code
   }
 
   return (
@@ -77,19 +74,19 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
       {/* Selected Majors */}
       {selected.length > 0 && (
         <div className="flex flex-wrap justify-center gap-2">
-          {selected.map((major) => (
+          {selected.map((code) => (
             <Badge
-              key={major}
+              key={code}
               variant="secondary"
               className="gap-1 px-3 py-1.5 text-sm"
             >
-              {major}
+              {getMajorLabel(code)}
               <button
-                onClick={() => removeMajor(major)}
+                onClick={() => removeMajor(code)}
                 className="ml-1 rounded-full hover:bg-muted"
               >
                 <X className="h-3 w-3" />
-                <span className="sr-only">Remove {major}</span>
+                <span className="sr-only">Remove {getMajorLabel(code)}</span>
               </button>
             </Badge>
           ))}
@@ -120,11 +117,11 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
               <CommandGroup>
                 {MAJORS.map((major) => (
                   <CommandItem
-                    key={major}
-                    value={major}
+                    key={major.code}
+                    value={major.label}
                     onSelect={() => {
-                      toggleMajor(major)
-                      if (!selected.includes(major)) {
+                      toggleMajor(major.code)
+                      if (!selected.includes(major.code)) {
                         setOpen(false)
                       }
                     }}
@@ -132,10 +129,10 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        selected.includes(major) ? "opacity-100" : "opacity-0"
+                        selected.includes(major.code) ? "opacity-100" : "opacity-0"
                       )}
                     />
-                    {major}
+                    {major.label}
                   </CommandItem>
                 ))}
               </CommandGroup>
@@ -147,27 +144,27 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
       {/* Quick Select Grid */}
       <div>
         <p className="mb-3 text-center text-sm text-muted-foreground">
-          Or choose from popular options:
+          Or choose from available options:
         </p>
         <div className="flex flex-wrap justify-center gap-2">
           {MAJORS.map((major) => (
             <button
-              key={major}
-              onClick={() => toggleMajor(major)}
+              key={major.code}
+              onClick={() => toggleMajor(major.code)}
               disabled={
-                !selected.includes(major) && selected.length >= MAX_SELECTIONS
+                !selected.includes(major.code) && selected.length >= MAX_SELECTIONS
               }
               className={cn(
                 "rounded-full border px-4 py-2 text-sm font-medium transition-all",
-                selected.includes(major)
+                selected.includes(major.code)
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-background text-foreground hover:border-primary hover:bg-primary/5",
-                !selected.includes(major) &&
+                !selected.includes(major.code) &&
                   selected.length >= MAX_SELECTIONS &&
                   "cursor-not-allowed opacity-50"
               )}
             >
-              {major}
+              {major.label}
             </button>
           ))}
         </div>

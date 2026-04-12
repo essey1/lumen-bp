@@ -37,8 +37,14 @@ export default function PlannerPage() {
     if (currentStep < STEPS.length) {
       setCurrentStep(currentStep + 1)
     } else {
-      // Navigate to plan page
-      router.push("/plan")
+      // Navigate to plan page with form data as query params
+      const params = new URLSearchParams()
+      if (formData.majors.length > 0) params.set("majors", formData.majors.join(","))
+      if (formData.minors.length > 0) params.set("minors", formData.minors.join(","))
+      if (formData.interests.length > 0) params.set("interests", formData.interests.join(","))
+      if (formData.hobbies.length > 0) params.set("hobbies", formData.hobbies.join(","))
+      if (formData.careerGoals.length > 0) params.set("careerGoals", formData.careerGoals.join(","))
+      router.push(`/plan?${params.toString()}`)
     }
   }
 

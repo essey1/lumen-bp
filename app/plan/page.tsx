@@ -1,116 +1,61 @@
+"use client"
+
+import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Card, CardContent } from "@/components/ui/card"
 import {
-  AlertTriangle,
   ArrowLeft,
-  BookOpen,
   Download,
   GraduationCap,
   Sparkles,
-  Target,
 } from "lucide-react"
 import { StudentProfile } from "@/components/plan/student-profile"
 import { SemesterCard } from "@/components/plan/semester-card"
 import { OverflowWarning } from "@/components/plan/overflow-warning"
+import { generateAcademicPlan, getPlanStats } from "@/lib/plan-generator"
+import type { StudentProfile as StudentProfileType, AcademicPlan } from "@/lib/types"
+import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types"
+import { Suspense
+ } from "react"
 
-// Mock student profile data
-const MOCK_PROFILE = {
-  majors: ["Computer Science", "Mathematics"],
-  minors: ["Philosophy"],
-  interests: ["Technology", "Research", "Writing"],
-  careerGoals: ["Software Engineer", "Graduate School"],
-}
+function PlanContent() {
+  const searchParams = useSearchParams()
+  
+  // Parse profile from URL params or use defaults
+  const majorsParam = searchParams.get("majors")
+  const minorsParam = searchParams.get("minors")
+  const interestsParam = searchParams.get("interests")
+  const hobbiesParam = searchParams.get("hobbies")
+  const careerGoalsParam = searchParams.get("careerGoals")
 
-// Mock course data for 4 years
-const MOCK_PLAN = {
-  year1: {
-    fall: {
-      courses: [
-        { code: "CSC 120", name: "Introduction to Programming", credits: 4 },
-        { code: "MAT 135", name: "Calculus I", credits: 4 },
-        { code: "ENG 101", name: "College Writing I", credits: 3 },
-        { code: "GST 101", name: "First Year Seminar", credits: 3 },
-      ],
-    },
-    spring: {
-      courses: [
-        { code: "CSC 226", name: "Data Structures", credits: 4 },
-        { code: "MAT 136", name: "Calculus II", credits: 4 },
-        { code: "ENG 102", name: "College Writing II", credits: 3 },
-        { code: "PHI 101", name: "Introduction to Philosophy", credits: 3 },
-      ],
-    },
-  },
-  year2: {
-    fall: {
-      courses: [
-        { code: "CSC 303", name: "Algorithms", credits: 4 },
-        { code: "MAT 225", name: "Linear Algebra", credits: 3 },
-        { code: "CSC 236", name: "Computer Organization", credits: 4 },
-        { code: "PHI 210", name: "Logic and Reasoning", credits: 3 },
-      ],
-    },
-    spring: {
-      courses: [
-        { code: "CSC 310", name: "Database Systems", credits: 3 },
-        { code: "MAT 301", name: "Real Analysis", credits: 3 },
-        { code: "CSC 345", name: "Operating Systems", credits: 4 },
-        { code: "SCI 101", name: "Natural Science Lab", credits: 4 },
-      ],
-    },
-  },
-  year3: {
-    fall: {
-      courses: [
-        { code: "CSC 405", name: "Software Engineering", credits: 4 },
-        { code: "MAT 320", name: "Probability & Statistics", credits: 3 },
-        { code: "CSC 380", name: "Computer Networks", credits: 3 },
-        { code: "PHI 305", name: "Ethics in Technology", credits: 3 },
-      ],
-    },
-    spring: {
-      // This semester is over capacity to demo the warning
-      courses: [
-        { code: "CSC 420", name: "Artificial Intelligence", credits: 4 },
-        { code: "CSC 450", name: "Machine Learning", credits: 4 },
-        { code: "MAT 410", name: "Abstract Algebra", credits: 3 },
-        { code: "CSC 399", name: "Research Methods", credits: 3 },
-        { code: "HUM 201", name: "Humanities Requirement", credits: 3 },
-      ],
-      isOverloaded: true,
-    },
-  },
-  year4: {
-    fall: {
-      courses: [
-        { code: "CSC 490", name: "Senior Capstone I", credits: 4 },
-        { code: "CSC 460", name: "Computer Security", credits: 3 },
-        { code: "MAT 450", name: "Mathematical Modeling", credits: 3 },
-        { code: "GEN 401", name: "General Elective", credits: 3 },
-      ],
-    },
-    spring: {
-      courses: [
-        { code: "CSC 491", name: "Senior Capstone II", credits: 4 },
-        { code: "CSC 470", name: "Advanced Topics in CS", credits: 3 },
-        { code: "PHI 401", name: "Senior Philosophy Seminar", credits: 3 },
-        { code: "GEN 402", name: "General Elective", credits: 3 },
-      ],
-    },
-  },
-}
+  const profile: StudentProfileType = {
+    majors: majorsParam ? majorsParam.split(",") : ["CSC"],
+    minors: minorsParam ? minorsParam.split(",") : [],
+    interests: interestsParam ? interestsParam.split(",") : ["Technology"],
+    hobbies: hobbiesParam ? hobbiesParam.split(",") : [],
+    careerGoals: careerGoalsParam ? careerGoalsParam.split(",") : ["Software Engineer"],
+  }
 
-// Unfulfilled courses for overflow warning
-const UNFULFILLED_COURSES = [
-  { code: "PE 101", name: "Physical Education Requirement", credits: 1 },
-  { code: "ART 150", name: "Fine Arts Requirement", credits: 3 },
-  { code: "SOC 201", name: "Social Science Elective", credits: 3 },
-]
+  // Generate the academic plan
+  const plan = generateAcademicPlan(profile)
+  const stats = getPlanStats(plan)
 
-export default function PlanPage() {
+  // Group semesters by year
+  const years = [
+    { year: 1, fall: plan.semesters[0], spring: plan.semesters[1] },
+    { year: 2, fall: plan.semesters[2], spring: plan.semesters[3] },
+    { year: 3, fall: plan.semesters[4], spring: plan.semesters[5] },
+    { year: 4, fall: plan.semesters[6], spring: plan.semesters[7] },
+  ]
+
+  // Get unfulfilled requirements for warning
+  const unfulfilledCourses = plan.unfulfilledRequirements.map((req, i) => ({
+    code: `REQ ${i + 1}`,
+    name: req,
+    credits: 1,
+  }))
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -146,88 +91,65 @@ export default function PlanPage() {
           <p className="text-muted-foreground">
             A personalized 4-year course roadmap based on your goals
           </p>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-sm">
+            <span className="text-muted-foreground">Minimum {MINIMUM_TOTAL_CREDITS} credits required</span>
+            <span className="text-muted-foreground">|</span>
+            <span className="text-muted-foreground">{MINIMUM_CREDITS_OUTSIDE_MAJOR} credits outside major</span>
+          </div>
         </div>
 
         {/* Student Profile Summary */}
-        <StudentProfile profile={MOCK_PROFILE} />
+        <StudentProfile profile={{
+          majors: profile.majors,
+          minors: profile.minors,
+          interests: profile.interests,
+          careerGoals: profile.careerGoals,
+        }} />
 
         {/* 4-Year Grid */}
         <div className="mb-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {/* Year 1 */}
-          <div className="space-y-4">
-            <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
-              <GraduationCap className="h-5 w-5 text-primary" />
-              Year 1
-            </h2>
-            <SemesterCard
-              title="Fall Semester"
-              courses={MOCK_PLAN.year1.fall.courses}
-            />
-            <SemesterCard
-              title="Spring Semester"
-              courses={MOCK_PLAN.year1.spring.courses}
-            />
-          </div>
-
-          {/* Year 2 */}
-          <div className="space-y-4">
-            <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
-              <GraduationCap className="h-5 w-5 text-primary" />
-              Year 2
-            </h2>
-            <SemesterCard
-              title="Fall Semester"
-              courses={MOCK_PLAN.year2.fall.courses}
-            />
-            <SemesterCard
-              title="Spring Semester"
-              courses={MOCK_PLAN.year2.spring.courses}
-            />
-          </div>
-
-          {/* Year 3 */}
-          <div className="space-y-4">
-            <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
-              <GraduationCap className="h-5 w-5 text-primary" />
-              Year 3
-            </h2>
-            <SemesterCard
-              title="Fall Semester"
-              courses={MOCK_PLAN.year3.fall.courses}
-            />
-            <SemesterCard
-              title="Spring Semester"
-              courses={MOCK_PLAN.year3.spring.courses}
-              isOverloaded
-            />
-          </div>
-
-          {/* Year 4 */}
-          <div className="space-y-4">
-            <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
-              <GraduationCap className="h-5 w-5 text-primary" />
-              Year 4
-            </h2>
-            <SemesterCard
-              title="Fall Semester"
-              courses={MOCK_PLAN.year4.fall.courses}
-            />
-            <SemesterCard
-              title="Spring Semester"
-              courses={MOCK_PLAN.year4.spring.courses}
-            />
-          </div>
+          {years.map(({ year, fall, spring }) => (
+            <div key={year} className="space-y-4">
+              <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                <GraduationCap className="h-5 w-5 text-primary" />
+                Year {year}
+              </h2>
+              <SemesterCard
+                title="Fall Semester"
+                courses={fall.courses.map(c => ({
+                  code: c.code,
+                  name: c.name,
+                  credits: c.credits,
+                }))}
+                isOverloaded={fall.isOverloaded}
+              />
+              <SemesterCard
+                title="Spring Semester"
+                courses={spring.courses.map(c => ({
+                  code: c.code,
+                  name: c.name,
+                  credits: c.credits,
+                }))}
+                isOverloaded={spring.isOverloaded}
+              />
+            </div>
+          ))}
         </div>
 
         {/* Overflow Warning */}
-        <OverflowWarning courses={UNFULFILLED_COURSES} />
+        {(plan.warnings.length > 0 || unfulfilledCourses.length > 0) && (
+          <OverflowWarning 
+            courses={unfulfilledCourses} 
+            warnings={plan.warnings}
+          />
+        )}
 
         {/* Summary Stats */}
         <Card className="mt-8 border-border bg-card">
           <CardContent className="py-6">
-            <div className="grid gap-6 text-center md:grid-cols-4">
+            <div className="grid gap-6 text-center md:grid-cols-5">
               <div>
-                <p className="text-3xl font-bold text-primary">128</p>
+                <p className="text-3xl font-bold text-primary">{stats.totalCredits}</p>
                 <p className="text-sm text-muted-foreground">Total Credits</p>
               </div>
               <div>
@@ -235,13 +157,19 @@ export default function PlanPage() {
                 <p className="text-sm text-muted-foreground">Semesters</p>
               </div>
               <div>
-                <p className="text-3xl font-bold text-primary">32</p>
+                <p className="text-3xl font-bold text-primary">{stats.totalCourses}</p>
                 <p className="text-sm text-muted-foreground">Courses</p>
               </div>
               <div>
-                <p className="text-3xl font-bold text-warning">3</p>
+                <p className="text-3xl font-bold text-primary">{stats.creditsOutsideMajor}</p>
+                <p className="text-sm text-muted-foreground">Credits Outside Major</p>
+              </div>
+              <div>
+                <p className={`text-3xl font-bold ${stats.overloadedSemesters > 0 ? "text-warning" : "text-primary"}`}>
+                  {stats.overloadedSemesters}
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  Additional Courses Needed
+                  Overloaded Semesters
                 </p>
               </div>
             </div>
@@ -259,5 +187,20 @@ export default function PlanPage() {
         </div>
       </footer>
     </div>
+  )
+}
+
+export default function PlanPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-4" />
+          <p className="text-muted-foreground">Generating your plan...</p>
+        </div>
+      </div>
+    }>
+      <PlanContent />
+    </Suspense>
   )
 }
