@@ -55,12 +55,7 @@ export default function LandingPage() {
                 <span className="absolute -inset-2 bg-primary/15 blur-xl rounded-lg animate-[pulse-glow_3s_ease-in-out_infinite]" />
               </span>
             </h1>
-            <p className="mb-10 text-pretty text-lg text-foreground/90 md:text-xl animate-[fadeInUp_1s_cubic-bezier(0.16,1,0.3,1)_0.5s_both]">
-              Lumen helps you map out your entire academic path at Berea College. 
-              Select your majors, explore your interests, and visualize your complete 
-              course schedule — all in one place.
-            </p>
-            <div className="flex flex-col items-center gap-5 sm:flex-row sm:justify-center animate-[fadeInUp_1s_cubic-bezier(0.16,1,0.3,1)_0.7s_both]">
+            <div className="flex flex-col items-center gap-5 sm:flex-row sm:justify-center animate-[fadeInUp_1s_cubic-bezier(0.16,1,0.3,1)_0.5s_both] mt-10">
               <Link href="/planner">
                 <Button size="lg" className="gap-2 text-base px-8 py-6 text-lg shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-500 animate-[pulse-glow_3s_ease-in-out_infinite]">
                   <Compass className="h-6 w-6 animate-[spin_6s_linear_infinite]" />
