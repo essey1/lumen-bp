@@ -1,4 +1,3 @@
-```markdown
 # Lumen
 > An AI-powered 4-year academic planner built for Berea College students.
 
@@ -64,4 +63,4 @@ No installation needed. Open the link and get started.
 |------|------|
 | [Name] | [Role] |
 | [Name] | [Role] |
-```
+
