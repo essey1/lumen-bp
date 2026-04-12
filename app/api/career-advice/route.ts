@@ -48,7 +48,7 @@ One concrete suggestion for gaining relevant experience (internships, projects, 
 Keep the tone encouraging and practical. Be specific to Berea College's unique work-study culture and their career goals.`;
 
     const result = await generateText({
-      model: google("gemini-1.5-flash"),
+      model: google("gemini-2.0-flash"),
       prompt,
     });
 
