@@ -24,8 +24,8 @@ export function SemesterCard({
   isOverloaded = false,
 }: SemesterCardProps) {
   const totalCredits = courses.reduce((sum, course) => sum + course.credits, 0)
-  // Berea uses 1 course = 1 credit, max ~5 courses per semester
-  const maxCredits = 5
+  // Berea uses 1 course = 1 credit, exactly 4 courses per semester
+  const maxCredits = 4
 
   return (
     <Card

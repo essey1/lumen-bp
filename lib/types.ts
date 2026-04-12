@@ -134,20 +134,18 @@ export interface AcademicPlan {
 export const MINIMUM_TOTAL_CREDITS = 32; // 32 course credits to graduate
 export const MINIMUM_CREDITS_OUTSIDE_MAJOR = 20; // 20 credits must be outside major
 
-// Credits per semester by year (in course credits, each course = 1 credit typically)
-// Freshman: 4 courses/semester
-// Sophomore/Junior/Senior Fall: 4.25 courses/semester (alternating 4 and 5)
-// Senior Spring: 3 courses/semester
+// Credits per semester - exactly 4 courses per semester
+// 8 semesters x 4 credits = 32 credits total to graduate
 export const SEMESTER_CREDITS = {
   "1-Fall": 4,
   "1-Spring": 4,
   "2-Fall": 4,
-  "2-Spring": 5, // 4.25 average means some semesters have 5
+  "2-Spring": 4,
   "3-Fall": 4,
-  "3-Spring": 5,
+  "3-Spring": 4,
   "4-Fall": 4,
-  "4-Spring": 3, // Final semester is lighter
+  "4-Spring": 4,
 } as const;
 
-export const MAX_CREDITS_PER_SEMESTER = 5;
+export const MAX_CREDITS_PER_SEMESTER = 4;
 export const NORMAL_CREDITS_PER_SEMESTER = 4;
