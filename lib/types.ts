@@ -4,6 +4,7 @@ export interface Course {
   code: string;
   name: string;
   credits: number;
+  prerequisites?: string[];
   // GEM attributes - a course can fulfill multiple requirements
   waysOfKnowing?: WayOfKnowing[];
   values?: Value[];
