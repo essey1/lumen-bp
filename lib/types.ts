@@ -18,7 +18,7 @@ export type WayOfKnowing =
   | "Creative Arts"
   | "Cultural & Ethnic Studies"
   | "Humanities"
-  | "Quantitative Focus"
+  | "Quantitative Reasoning"
   | "Natural Science"
   | "Social Science";
 
@@ -29,7 +29,7 @@ export type Value =
   | "Seeking Meaning"
   | "Sustainability";
 
-export type Richness = "International" | "Quantitative" | "Writing";
+export type Richness = "Internationally Rich" | "Quantitatively Rich" | "Writing";
 
 export type LearningInquiryCore =
   | "Explorations"
@@ -51,14 +51,21 @@ export interface GEMRequirements {
     creativeArts: number; // 1
     culturalEthnicStudies: number; // 1
     humanities: number; // 1
-    quantitativeFocus: number; // 1
+    quantitativeReasoning: number; // 1
     naturalScience: number; // 2
     socialScience: number; // 1
   };
   richnesses: {
-    international: number; // 1
-    quantitative: number; // 1
-    writing: number; // 2
+    internationallyRich: number; // 1
+    quantitativelyRich: number; // 1
+    writingRich: number; // 2
+  };
+  values: {
+    beyondTheBorders: number; // 1
+    holisticWellness: number; // 1
+    powerAndEquity: number; // 1
+    seekingMeaning: number; // 1
+    sustainability: number; // 1
   };
   additional: {
     ale: number; // 1
