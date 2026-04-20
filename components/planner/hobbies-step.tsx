@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { cn } from "@/lib/utils"
 import {
   BookOpen,
@@ -51,7 +52,6 @@ import {
   Medal,
   Shirt,
   Scissors,
-  Needle,
   Wind,
   Beaker,
   Atom,
@@ -109,6 +109,7 @@ import {
   Bell,
   Settings,
   Cloud,
+  Sprout,
 } from "lucide-react"
 
 const HOBBIES = [
@@ -159,7 +160,7 @@ const HOBBIES = [
   { id: "Competitive Sports", label: "Competitive Sports", icon: Medal },
   { id: "Fashion", label: "Fashion Design", icon: Shirt },
   { id: "Tailoring", label: "Tailoring/Sewing", icon: Scissors },
-  { id: "Embroidery", label: "Embroidery", icon: Needle },
+  { id: "Embroidery", label: "Embroidery", icon: Pencil },
   { id: "Kiting", label: "Kite Flying/Watersports", icon: Wind },
   { id: "Chemistry", label: "Chemistry Experiments", icon: Beaker },
   { id: "Physics", label: "Physics", icon: Atom },

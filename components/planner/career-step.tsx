@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { cn } from "@/lib/utils"
 import {
   Briefcase,
@@ -65,7 +66,6 @@ import {
   FileText,
   Layers,
   Pen,
-  GoogleChrome,
   Gamepad2,
   Headphones,
   Share2,
@@ -81,7 +81,6 @@ import {
   Languages,
   Shirt,
   Ticket,
-  Lightbulb,
   Wallet,
   Binoculars,
   Crown,
@@ -93,6 +92,7 @@ import {
   ShieldAlert,
   Siren,
   Sun,
+  AlertCircle,
 } from "lucide-react"
 
 const CAREER_GOALS = [
@@ -224,7 +224,7 @@ const CAREER_GOALS = [
   { id: "Firefighter", label: "Firefighter", icon: AlertCircle },
   { id: "Military Officer", label: "Military Officer", icon: Siren },
   { id: "Veteran Services", label: "Veteran Services", icon: Landmark },
-  { id: \"Administrative Assistant\", label: \"Administrative Assistant\", icon: FileText },
+  { id: "Administrative Assistant", label: "Administrative Assistant", icon: FileText },
   { id: "Office Manager", label: "Office Manager", icon: Briefcase },
   { id: "Executive Assistant", label: "Executive Assistant", icon: CheckSquare },
   { id: "Facilities Manager", label: "Facilities Manager", icon: Building2 },

@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { cn } from "@/lib/utils"
 import {
   Beaker,
@@ -49,7 +50,6 @@ import {
   Smile,
   Eye,
   Ear,
-  Mouth,
   Dumbbell,
   Apple,
   Coffee,
@@ -157,7 +157,7 @@ const INTERESTS = [
   { id: "Goal Setting", label: "Goal Setting", icon: Target },
   { id: "Social Impact", label: "Social Impact", icon: Smile },
   { id: "Vision & Purpose", label: "Vision & Purpose", icon: Eye },
-  { id: "Communication", label: "Communication", icon: Mouth },
+  { id: "Communication", label: "Communication", icon: MessageSquare },
   { id: "Fitness", label: "Fitness", icon: Dumbbell },
   { id: "Nutrition", label: "Nutrition", icon: Apple },
   { id: "Wellness", label: "Wellness", icon: HeartIcon },
@@ -289,7 +289,6 @@ const INTERESTS = [
   { id: "Retail", label: "Retail Management", icon: Store },
   { id: "Supply Chain", label: "Supply Chain Management", icon: Truck },
   { id: "Operations", label: "Operations Management", icon: Settings },
-]
 ]
 
 const MAX_SELECTIONS = 5
