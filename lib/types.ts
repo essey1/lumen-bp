@@ -37,7 +37,34 @@ export type LearningInquiryCore =
   | "Intersectional Justice in U.S."
   | "Global Issues";
 
-export type Additional = "ALE" | "Physical Activity";
+export type Additional =
+  | "ALE"
+  | "ALES"
+  | "Physical Activity"
+  | "NSL"
+  | "AAWP"
+  | "ARTP"
+  | "INTN"
+  | "INTP"
+  | "RELP"
+  | "PED2"
+  | "WHP"
+  | "PR"
+  | "PRQ"
+  | "SKI"
+  | "CGI"
+  | "CHUN"
+  | "IART"
+  | "APPA"
+  | "BLAC"
+  | "WISS"
+  | "SHRT"
+  | "LABR"
+  | "DANC"
+  | "PSLB"
+  | "EAUT"
+  | "ECUL"
+  | "EGEN";
 
 export interface GEMRequirements {
   learningInquiryCore: {
