@@ -18,19 +18,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
+import { AVAILABLE_MINORS } from "@/lib/minors-data"
 
-const MINORS = [
-  "Mathematics",
-  "Philosophy",
-  "Art",
-  "Music",
-  "Environmental Studies",
-  "Political Science",
-  "Spanish",
-  "French",
-]
-
-const MAX_SELECTIONS = 3
+const MINORS = AVAILABLE_MINORS.map(m => ({ code: m.code, label: m.name }))
+const MAX_SELECTIONS = 2
 
 interface MinorStepProps {
   selected: string[]
@@ -40,52 +31,45 @@ interface MinorStepProps {
 export function MinorStep({ selected, onChange }: MinorStepProps) {
   const [open, setOpen] = useState(false)
 
-  const toggleMinor = (minor: string) => {
-    if (selected.includes(minor)) {
-      onChange(selected.filter((m) => m !== minor))
+  const toggle = (code: string) => {
+    if (selected.includes(code)) {
+      onChange(selected.filter(m => m !== code))
     } else if (selected.length < MAX_SELECTIONS) {
-      onChange([...selected, minor])
+      onChange([...selected, code])
+      setOpen(false)
     }
   }
 
-  const removeMinor = (minor: string) => {
-    onChange(selected.filter((m) => m !== minor))
-  }
+  const remove = (code: string) => onChange(selected.filter(m => m !== code))
+  const getLabel = (code: string) => MINORS.find(m => m.code === code)?.label ?? code
 
   return (
     <div className="space-y-6">
       <div className="text-center">
         <p className="text-sm text-muted-foreground">
           Select up to {MAX_SELECTIONS} minors (optional) •{" "}
-          <span className="font-medium text-primary">
+          <span className={cn("font-medium", selected.length > 0 ? "text-primary" : "text-muted-foreground")}>
             {selected.length} selected
           </span>
         </p>
       </div>
 
-      {/* Selected Minors */}
+      {/* Selected badges */}
       {selected.length > 0 && (
         <div className="flex flex-wrap justify-center gap-2">
-          {selected.map((minor) => (
-            <Badge
-              key={minor}
-              variant="secondary"
-              className="gap-1 px-3 py-1.5 text-sm"
-            >
-              {minor}
-              <button
-                onClick={() => removeMinor(minor)}
-                className="ml-1 rounded-full hover:bg-muted"
-              >
+          {selected.map(code => (
+            <Badge key={code} variant="secondary" className="gap-1 px-3 py-1.5 text-sm">
+              {getLabel(code)}
+              <button onClick={() => remove(code)} className="ml-1 rounded-full hover:bg-muted">
                 <X className="h-3 w-3" />
-                <span className="sr-only">Remove {minor}</span>
+                <span className="sr-only">Remove {getLabel(code)}</span>
               </button>
             </Badge>
           ))}
         </div>
       )}
 
-      {/* Searchable Dropdown */}
+      {/* Searchable dropdown */}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -95,9 +79,7 @@ export function MinorStep({ selected, onChange }: MinorStepProps) {
             className="w-full justify-between"
             disabled={selected.length >= MAX_SELECTIONS}
           >
-            {selected.length >= MAX_SELECTIONS
-              ? "Maximum selections reached"
-              : "Search and select a minor..."}
+            {selected.length >= MAX_SELECTIONS ? "Maximum selections reached" : "Search and select a minor..."}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -107,24 +89,14 @@ export function MinorStep({ selected, onChange }: MinorStepProps) {
             <CommandList>
               <CommandEmpty>No minor found.</CommandEmpty>
               <CommandGroup>
-                {MINORS.map((minor) => (
+                {MINORS.map(m => (
                   <CommandItem
-                    key={minor}
-                    value={minor}
-                    onSelect={() => {
-                      toggleMinor(minor)
-                      if (!selected.includes(minor)) {
-                        setOpen(false)
-                      }
-                    }}
+                    key={m.code}
+                    value={m.label}
+                    onSelect={() => toggle(m.code)}
                   >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        selected.includes(minor) ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                    {minor}
+                    <Check className={cn("mr-2 h-4 w-4", selected.includes(m.code) ? "opacity-100" : "opacity-0")} />
+                    {m.label}
                   </CommandItem>
                 ))}
               </CommandGroup>
@@ -133,38 +105,31 @@ export function MinorStep({ selected, onChange }: MinorStepProps) {
         </PopoverContent>
       </Popover>
 
-      {/* Quick Select Grid */}
+      {/* Quick select grid */}
       <div>
-        <p className="mb-3 text-center text-sm text-muted-foreground">
-          Or choose from available options:
-        </p>
+        <p className="mb-3 text-center text-sm text-muted-foreground">Or choose from available minors:</p>
         <div className="flex flex-wrap justify-center gap-2">
-          {MINORS.map((minor) => (
+          {MINORS.map(m => (
             <button
-              key={minor}
-              onClick={() => toggleMinor(minor)}
-              disabled={
-                !selected.includes(minor) && selected.length >= MAX_SELECTIONS
-              }
+              key={m.code}
+              onClick={() => toggle(m.code)}
+              disabled={!selected.includes(m.code) && selected.length >= MAX_SELECTIONS}
               className={cn(
-                "rounded-full border px-4 py-2 text-sm font-medium transition-all",
-                selected.includes(minor)
+                "rounded-full border px-3 py-1.5 text-sm font-medium transition-all",
+                selected.includes(m.code)
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-background text-foreground hover:border-primary hover:bg-primary/5",
-                !selected.includes(minor) &&
-                  selected.length >= MAX_SELECTIONS &&
-                  "cursor-not-allowed opacity-50"
+                !selected.includes(m.code) && selected.length >= MAX_SELECTIONS && "cursor-not-allowed opacity-50"
               )}
             >
-              {minor}
+              {m.label}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Skip hint */}
       <p className="text-center text-sm text-muted-foreground">
-        {"Don't"} have a minor in mind? No worries — you can skip this step.
+        No minor in mind? Skip this step — you can always add one later with your advisor.
       </p>
     </div>
   )

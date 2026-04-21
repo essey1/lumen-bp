@@ -7,15 +7,17 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react"
 import { MajorStep } from "@/components/planner/major-step"
+import { MinorStep } from "@/components/planner/minor-step"
 import { InterestsStep } from "@/components/planner/interests-step"
 import { HobbiesStep } from "@/components/planner/hobbies-step"
 import { CareerStep } from "@/components/planner/career-step"
 
 const STEPS = [
   { id: 1, title: "Major", description: "Choose your field of study" },
-  { id: 2, title: "Interests", description: "What excites you?" },
-  { id: 3, title: "Hobbies", description: "Your personal passions" },
-  { id: 4, title: "Career Goals", description: "Where are you headed?" },
+  { id: 2, title: "Minor", description: "Add a minor (optional)" },
+  { id: 3, title: "Interests", description: "What excites you academically?" },
+  { id: 4, title: "Hobbies", description: "Your personal passions" },
+  { id: 5, title: "Career Goals", description: "Where are you headed?" },
 ]
 
 export default function PlannerPage() {
@@ -23,6 +25,7 @@ export default function PlannerPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState({
     majors: [] as string[],
+    minors: [] as string[],
     interests: [] as string[],
     hobbies: [] as string[],
     careerGoals: [] as string[],
@@ -34,9 +37,9 @@ export default function PlannerPage() {
     if (currentStep < STEPS.length) {
       setCurrentStep(currentStep + 1)
     } else {
-      // Navigate to plan page with form data as query params
       const params = new URLSearchParams()
       if (formData.majors.length > 0) params.set("majors", formData.majors.join(","))
+      if (formData.minors.length > 0) params.set("minors", formData.minors.join(","))
       if (formData.interests.length > 0) params.set("interests", formData.interests.join(","))
       if (formData.hobbies.length > 0) params.set("hobbies", formData.hobbies.join(","))
       if (formData.careerGoals.length > 0) params.set("careerGoals", formData.careerGoals.join(","))
@@ -45,27 +48,21 @@ export default function PlannerPage() {
   }
 
   const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1)
-    }
+    if (currentStep > 1) setCurrentStep(currentStep - 1)
   }
 
   const updateFormData = (key: keyof typeof formData, value: string[]) => {
-    setFormData((prev) => ({ ...prev, [key]: value }))
+    setFormData(prev => ({ ...prev, [key]: value }))
   }
 
   const canProceed = () => {
     switch (currentStep) {
-      case 1:
-        return formData.majors.length >= 1
-      case 2:
-        return formData.interests.length >= 1
-      case 3:
-        return formData.hobbies.length >= 1
-      case 4:
-        return formData.careerGoals.length >= 1
-      default:
-        return true
+      case 1: return formData.majors.length >= 1
+      case 2: return true // minor is optional
+      case 3: return formData.interests.length >= 1
+      case 4: return formData.hobbies.length >= 1
+      case 5: return formData.careerGoals.length >= 1
+      default: return true
     }
   }
 
@@ -86,12 +83,12 @@ export default function PlannerPage() {
         </div>
       </header>
 
-      {/* Progress Section */}
+      {/* Progress */}
       <div className="border-b border-border bg-card">
         <div className="container mx-auto px-4 py-6">
           <Progress value={progress} className="mb-4 h-2" />
           <div className="flex justify-between">
-            {STEPS.map((step) => (
+            {STEPS.map(step => (
               <div
                 key={step.id}
                 className={`hidden flex-col items-center md:flex ${
@@ -111,24 +108,16 @@ export default function PlannerPage() {
                         : "border border-border bg-background text-muted-foreground"
                   }`}
                 >
-                  {step.id < currentStep ? (
-                    <Check className="h-4 w-4" />
-                  ) : (
-                    step.id
-                  )}
+                  {step.id < currentStep ? <Check className="h-4 w-4" /> : step.id}
                 </div>
                 <span className="text-xs font-medium">{step.title}</span>
               </div>
             ))}
           </div>
-          {/* Mobile step indicator */}
+          {/* Mobile indicator */}
           <div className="flex items-center justify-center gap-2 md:hidden">
-            <span className="text-lg font-semibold text-primary">
-              {STEPS[currentStep - 1].title}
-            </span>
-            <span className="text-muted-foreground">
-              ({currentStep}/{STEPS.length})
-            </span>
+            <span className="text-lg font-semibold text-primary">{STEPS[currentStep - 1].title}</span>
+            <span className="text-muted-foreground">({currentStep}/{STEPS.length})</span>
           </div>
         </div>
       </div>
@@ -136,68 +125,43 @@ export default function PlannerPage() {
       {/* Form Content */}
       <main className="container mx-auto px-4 py-8 md:py-12">
         <div className="mx-auto max-w-2xl">
-          {/* Step Header */}
           <div className="mb-8 text-center">
             <h1 className="mb-2 text-2xl font-bold text-foreground md:text-3xl">
               {STEPS[currentStep - 1].title}
             </h1>
-            <p className="text-muted-foreground">
-              {STEPS[currentStep - 1].description}
-            </p>
+            <p className="text-muted-foreground">{STEPS[currentStep - 1].description}</p>
           </div>
 
-          {/* Step Content */}
           <div className="mb-8">
             {currentStep === 1 && (
-              <MajorStep
-                selected={formData.majors}
-                onChange={(value) => updateFormData("majors", value)}
-              />
+              <MajorStep selected={formData.majors} onChange={v => updateFormData("majors", v)} />
             )}
             {currentStep === 2 && (
-              <InterestsStep
-                selected={formData.interests}
-                onChange={(value) => updateFormData("interests", value)}
-              />
+              <MinorStep selected={formData.minors} onChange={v => updateFormData("minors", v)} />
             )}
             {currentStep === 3 && (
-              <HobbiesStep
-                selected={formData.hobbies}
-                onChange={(value) => updateFormData("hobbies", value)}
-              />
+              <InterestsStep selected={formData.interests} onChange={v => updateFormData("interests", v)} />
             )}
             {currentStep === 4 && (
-              <CareerStep
-                selected={formData.careerGoals}
-                onChange={(value) => updateFormData("careerGoals", value)}
-              />
+              <HobbiesStep selected={formData.hobbies} onChange={v => updateFormData("hobbies", v)} />
+            )}
+            {currentStep === 5 && (
+              <CareerStep selected={formData.careerGoals} onChange={v => updateFormData("careerGoals", v)} />
             )}
           </div>
 
-          {/* Navigation Buttons */}
+          {/* Navigation */}
           <div className="flex items-center justify-between">
-            <Button
-              variant="outline"
-              onClick={handleBack}
-              disabled={currentStep === 1}
-              className="gap-2"
-            >
+            <Button variant="outline" onClick={handleBack} disabled={currentStep === 1} className="gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back
             </Button>
-            <Button
-              onClick={handleNext}
-              disabled={!canProceed()}
-              className="gap-2"
-            >
+            <Button onClick={handleNext} disabled={!canProceed()} className="gap-2">
               {currentStep === STEPS.length ? (
-                <>
-                  Generate Plan
-                  <Sparkles className="h-4 w-4" />
-                </>
+                <>Generate Plan<Sparkles className="h-4 w-4" /></>
               ) : (
                 <>
-                  Next
+                  {currentStep === 2 && formData.minors.length === 0 ? "Skip" : "Next"}
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}

@@ -150,7 +150,7 @@ export interface PlannedCourse {
   name: string;
   credits: number;
   fulfills: string[]; // What requirements this fulfills
-  category: "Major" | "GEM" | "Elective"; // Minor removed
+  category: "Major" | "Minor" | "GEM" | "Elective";
   isPlaceholder?: boolean; // True if this is a placeholder course
   placeholderCategory?: string; // Category for placeholder (e.g., "Design", "Systems")
 }
