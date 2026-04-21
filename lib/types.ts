@@ -4,6 +4,7 @@ export interface Course {
   code: string;
   name: string;
   credits: number;
+  prerequisites?: string[];
   // GEM attributes - a course can fulfill multiple requirements
   waysOfKnowing?: WayOfKnowing[];
   values?: Value[];
@@ -17,7 +18,7 @@ export type WayOfKnowing =
   | "Creative Arts"
   | "Cultural & Ethnic Studies"
   | "Humanities"
-  | "Quantitative Focus"
+  | "Quantitative Reasoning"
   | "Natural Science"
   | "Social Science";
 
@@ -28,7 +29,7 @@ export type Value =
   | "Seeking Meaning"
   | "Sustainability";
 
-export type Richness = "International" | "Quantitative" | "Writing";
+export type Richness = "Internationally Rich" | "Quantitatively Rich" | "Writing";
 
 export type LearningInquiryCore =
   | "Explorations"
@@ -36,7 +37,34 @@ export type LearningInquiryCore =
   | "Intersectional Justice in U.S."
   | "Global Issues";
 
-export type Additional = "ALE" | "Physical Activity";
+export type Additional =
+  | "ALE"
+  | "ALES"
+  | "Physical Activity"
+  | "NSL"
+  | "AAWP"
+  | "ARTP"
+  | "INTN"
+  | "INTP"
+  | "RELP"
+  | "PED2"
+  | "WHP"
+  | "PR"
+  | "PRQ"
+  | "SKI"
+  | "CGI"
+  | "CHUN"
+  | "IART"
+  | "APPA"
+  | "BLAC"
+  | "WISS"
+  | "SHRT"
+  | "LABR"
+  | "DANC"
+  | "PSLB"
+  | "EAUT"
+  | "ECUL"
+  | "EGEN";
 
 export interface GEMRequirements {
   learningInquiryCore: {
@@ -50,14 +78,21 @@ export interface GEMRequirements {
     creativeArts: number; // 1
     culturalEthnicStudies: number; // 1
     humanities: number; // 1
-    quantitativeFocus: number; // 1
+    quantitativeReasoning: number; // 1
     naturalScience: number; // 2
     socialScience: number; // 1
   };
   richnesses: {
-    international: number; // 1
-    quantitative: number; // 1
-    writing: number; // 2
+    internationallyRich: number; // 1
+    quantitativelyRich: number; // 1
+    writingRich: number; // 2
+  };
+  values: {
+    beyondTheBorders: number; // 1
+    holisticWellness: number; // 1
+    powerAndEquity: number; // 1
+    seekingMeaning: number; // 1
+    sustainability: number; // 1
   };
   additional: {
     ale: number; // 1

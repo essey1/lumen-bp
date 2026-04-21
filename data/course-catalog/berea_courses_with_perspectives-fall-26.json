@@ -1,0 +1,6722 @@
+[
+  {
+    "subject": "AFR",
+    "courseNumber": "100",
+    "courseTitle": "Models &amp; Mentors for Success",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "AFR",
+    "courseNumber": "165",
+    "courseTitle": "Intro to Afr-Amer History(HIS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "BLAC",
+        "description": "Black Cultural Area Req"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "WHP",
+        "description": "Western History Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "AFR",
+    "courseNumber": "167",
+    "courseTitle": "Survey Africana Womanism",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      }
+    ]
+  },
+  {
+    "subject": "AFR",
+    "courseNumber": "200",
+    "courseTitle": "Readings in Black Psy (PSY)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "AFR",
+    "courseNumber": "215",
+    "courseTitle": "Black Popular Culture &amp; Media",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "AFR",
+    "courseNumber": "222",
+    "courseTitle": "Intro to African-Amer Studies",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "AFR",
+    "courseNumber": "242",
+    "courseTitle": "African American Cinema (HIS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "AFR",
+    "courseNumber": "255",
+    "courseTitle": "Afr. Muslims in Europe Med Era",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTP",
+        "description": "International Perspective"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "AFR",
+    "courseNumber": "286",
+    "courseTitle": "Black Girlhood Studies",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "ANR",
+    "courseNumber": "110",
+    "courseTitle": "Animal Science",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSL",
+        "description": "Natural Science Lab"
+      }
+    ]
+  },
+  {
+    "subject": "ANR",
+    "courseNumber": "240",
+    "courseTitle": "Soil Science",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSL",
+        "description": "Natural Science Lab"
+      },
+      {
+        "code": "SUS",
+        "description": "Sustainability Value"
+      }
+    ]
+  },
+  {
+    "subject": "ANR",
+    "courseNumber": "312",
+    "courseTitle": "Advanced Livestock Systems",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      },
+      {
+        "code": "SUS",
+        "description": "Sustainability Value"
+      }
+    ]
+  },
+  {
+    "subject": "ANR",
+    "courseNumber": "328",
+    "courseTitle": "Ecological Weed Manage. (SENS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ANR",
+    "courseNumber": "360",
+    "courseTitle": "Forest &amp; Wildlife Management",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "APS",
+    "courseNumber": "100",
+    "courseTitle": "Cultures, Values, Perspectives",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "APS",
+    "courseNumber": "140",
+    "courseTitle": "Appalachian Literature (ENG)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "APS",
+    "courseNumber": "210",
+    "courseTitle": "Health in Appalachia (HLT)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "APS",
+    "courseNumber": "224",
+    "courseTitle": "Appalachian Music (MUS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "105A",
+    "courseTitle": "Banjo",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "105CO",
+    "courseTitle": "Applied Music-Composition",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "105G",
+    "courseTitle": "Bass",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "105GN",
+    "courseTitle": "Guitarron",
+    "credits": 0.25,
+    "perspectives": []
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "105P",
+    "courseTitle": "Piano",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "105S",
+    "courseTitle": "Saxophone",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "105T",
+    "courseTitle": "Trombone",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "105VI",
+    "courseTitle": "Violin",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "105X",
+    "courseTitle": "Trumpet",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "105Y",
+    "courseTitle": "Percussion",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "106A",
+    "courseTitle": "Fiddle",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "106P",
+    "courseTitle": "Piano",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "106VI",
+    "courseTitle": "Violin",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "106Y",
+    "courseTitle": "Percussion",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "107A",
+    "courseTitle": "Banjo",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "107C",
+    "courseTitle": "Clarinet",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "107CO",
+    "courseTitle": "Electronic Composition",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "107G",
+    "courseTitle": "Guitar",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "107P",
+    "courseTitle": "Piano",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "107VI",
+    "courseTitle": "Violin",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "107Y",
+    "courseTitle": "Percussion",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "108GN",
+    "courseTitle": "Guitarron",
+    "credits": 0.5,
+    "perspectives": []
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "108P",
+    "courseTitle": "Piano",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "108VH",
+    "courseTitle": "Vihuela",
+    "credits": 0.5,
+    "perspectives": []
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "108VI",
+    "courseTitle": "Violin",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "325A",
+    "courseTitle": "Banjo",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "325CO",
+    "courseTitle": "Electronic Composition",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "325G",
+    "courseTitle": "Guitar",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "325P",
+    "courseTitle": "Piano",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "325S",
+    "courseTitle": "Saxophone",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "325VI",
+    "courseTitle": "Violin",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "325Y",
+    "courseTitle": "Percussion",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "326A",
+    "courseTitle": "Banjo",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "326C",
+    "courseTitle": "Clarinet",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "326CO",
+    "courseTitle": "Electronic Composition",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "326G",
+    "courseTitle": "Guitar",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "326P",
+    "courseTitle": "Piano",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "326VI",
+    "courseTitle": "Violin",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "326X",
+    "courseTitle": "Trumpet",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "327CO",
+    "courseTitle": "Electronic Composition",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "327VI",
+    "courseTitle": "Violin",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "328CO",
+    "courseTitle": "Electronic Composition",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "328G",
+    "courseTitle": "Guitar",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "335B",
+    "courseTitle": "Euphonium",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "335P",
+    "courseTitle": "Piano",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "336A",
+    "courseTitle": "Fiddle",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "336P",
+    "courseTitle": "Piano",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "336Y",
+    "courseTitle": "Percussion",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "338X",
+    "courseTitle": "Trumpet",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "338Y",
+    "courseTitle": "Percussion",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "345G",
+    "courseTitle": "Guitar",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "346CO",
+    "courseTitle": "Electronic Composition",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUA",
+    "courseNumber": "348P",
+    "courseTitle": "Piano",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "134",
+    "courseTitle": "Fibers &amp; Color Theory",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "135",
+    "courseTitle": "Illusionistic Drawing/Painting",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "136",
+    "courseTitle": "Printmaking &amp; 2D Composition",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "137",
+    "courseTitle": "Sculpture and Intermedia",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "200C",
+    "courseTitle": "Topics in Ceramics",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "200D",
+    "courseTitle": "Topics in Drawing",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "200F",
+    "courseTitle": "Topics in Fibers",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "211",
+    "courseTitle": "Printmaking II",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "216",
+    "courseTitle": "Drawing and Painting II",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "225",
+    "courseTitle": "Fibers II",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "230",
+    "courseTitle": "Sculpture and Intermedia II",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "398",
+    "courseTitle": "Printmaking Directed Study",
+    "credits": 0.5,
+    "perspectives": []
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "411",
+    "courseTitle": "Printmaking IV",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "416",
+    "courseTitle": "Drawing and Painting IV",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "425",
+    "courseTitle": "Fibers IV",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ART",
+    "courseNumber": "430",
+    "courseTitle": "Sculpture and Intermedia IV",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ARH",
+    "courseNumber": "121",
+    "courseTitle": "Survey of Western Art I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ARH",
+    "courseNumber": "130",
+    "courseTitle": "Studies in World Art",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "ARH",
+    "courseNumber": "232",
+    "courseTitle": "Art of Ancient Greece &amp; Rome",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "WHP",
+        "description": "Western History Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "ARH",
+    "courseNumber": "239",
+    "courseTitle": "Native Nrth Amer Art&amp;Archaelog",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "ARH",
+    "courseNumber": "242",
+    "courseTitle": "Medieval Art",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      }
+    ]
+  },
+  {
+    "subject": "ARH",
+    "courseNumber": "263",
+    "courseTitle": "Introduction to Museum Work",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "AST",
+    "courseNumber": "122",
+    "courseTitle": "History of China (HIS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "AST",
+    "courseNumber": "132",
+    "courseTitle": "Religions of China",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      }
+    ]
+  },
+  {
+    "subject": "AST",
+    "courseNumber": "203",
+    "courseTitle": "Taiko Drum Ensemble",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "AST",
+    "courseNumber": "204",
+    "courseTitle": "Yoga (WELL)",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "AST",
+    "courseNumber": "240",
+    "courseTitle": "Kinshp/Gen SE Asia (WGS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "AST",
+    "courseNumber": "243",
+    "courseTitle": "The Silk Road (HIS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "AST",
+    "courseNumber": "260",
+    "courseTitle": "Buddhism (REL)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      }
+    ]
+  },
+  {
+    "subject": "AST",
+    "courseNumber": "286",
+    "courseTitle": "Politics of East Asia",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "AST",
+    "courseNumber": "324J",
+    "courseTitle": "Seminar in Asian History (HIS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "AST",
+    "courseNumber": "401",
+    "courseTitle": "Senior Sem-Asian Studies",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "BIO",
+    "courseNumber": "100",
+    "courseTitle": "Introduction to Biology",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSL",
+        "description": "Natural Science Lab"
+      }
+    ]
+  },
+  {
+    "subject": "BIO",
+    "courseNumber": "186",
+    "courseTitle": "Diversity of Life",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "BIO",
+    "courseNumber": "202",
+    "courseTitle": "Human Anatomy &amp; Physiology II",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "BIO",
+    "courseNumber": "202P",
+    "courseTitle": "A&amp;P II Peer-Assisted Learning",
+    "credits": 0,
+    "perspectives": []
+  },
+  {
+    "subject": "BIO",
+    "courseNumber": "222",
+    "courseTitle": "Microbiology",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "BIO",
+    "courseNumber": "286",
+    "courseTitle": "Cave Biology",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "BIO",
+    "courseNumber": "310",
+    "courseTitle": "Ecology (SENS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "BIO",
+    "courseNumber": "323",
+    "courseTitle": "Principles of Physiology",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "BIO",
+    "courseNumber": "330",
+    "courseTitle": "Genetics",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "BIO",
+    "courseNumber": "332",
+    "courseTitle": "Mammalogy",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "BIO",
+    "courseNumber": "346",
+    "courseTitle": "Conservation Biology",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      },
+      {
+        "code": "SUS",
+        "description": "Sustainability Value"
+      }
+    ]
+  },
+  {
+    "subject": "BIO",
+    "courseNumber": "494",
+    "courseTitle": "Evolution",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "BON",
+    "courseNumber": "010",
+    "courseTitle": "Bonners Placeholder",
+    "credits": 0,
+    "perspectives": []
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "114",
+    "courseTitle": "Business App &amp; Prog (CSC)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PR",
+        "description": "Practical Reasoning"
+      }
+    ]
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "120",
+    "courseTitle": "Accounting I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PR",
+        "description": "Practical Reasoning"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "130",
+    "courseTitle": "Accounting II",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "240",
+    "courseTitle": "Business Law",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "257",
+    "courseTitle": "Consumer Behavior",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "315",
+    "courseTitle": "Management",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "323",
+    "courseTitle": "Income Tax",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "326",
+    "courseTitle": "Intermediate Accounting I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "328",
+    "courseTitle": "Data Analytics (CSC)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "330",
+    "courseTitle": "Leading Through Change",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "357",
+    "courseTitle": "International Finance (ECO)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "363",
+    "courseTitle": "Marketing",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "366",
+    "courseTitle": "Financial Management",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "BUS",
+    "courseNumber": "475",
+    "courseTitle": "Strategic Management",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CHM",
+    "courseNumber": "101",
+    "courseTitle": "Foundations of Chemistry",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NS",
+        "description": "Natural Science"
+      },
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "CHM",
+    "courseNumber": "131",
+    "courseTitle": "Accelerated General Chemistry",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSL",
+        "description": "Natural Science Lab"
+      },
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "CHM",
+    "courseNumber": "221",
+    "courseTitle": "Organic Chemistry I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NS",
+        "description": "Natural Science"
+      },
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "CHM",
+    "courseNumber": "222",
+    "courseTitle": "Organic Chemistry II",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "CHM",
+    "courseNumber": "311",
+    "courseTitle": "Analytical Chemistry",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "CHM",
+    "courseNumber": "340",
+    "courseTitle": "Biochemistry I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "CHM",
+    "courseNumber": "362",
+    "courseTitle": "Quantum Chemistry",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "CHM",
+    "courseNumber": "370",
+    "courseTitle": "Advanced Lab - Chromatography",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "CHM",
+    "courseNumber": "470",
+    "courseTitle": " Adv Lab&ndash;Thermochemical Method",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "CFS",
+    "courseNumber": "103",
+    "courseTitle": "Introduction to Food Studies",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "SUS",
+        "description": "Sustainability Value"
+      }
+    ]
+  },
+  {
+    "subject": "CFS",
+    "courseNumber": "130",
+    "courseTitle": "Lifespan Human Development",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HOW",
+        "description": "Holistic Wellness-Value"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "CFS",
+    "courseNumber": "145",
+    "courseTitle": "Consumer Decision Making",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PR",
+        "description": "Practical Reasoning"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "CFS",
+    "courseNumber": "207",
+    "courseTitle": "Family Relations (WGS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "CFS",
+    "courseNumber": "210",
+    "courseTitle": "Found of Early Childhood Edu",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CFS",
+    "courseNumber": "221",
+    "courseTitle": "Fundamentals of Nutrition",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CFS",
+    "courseNumber": "286",
+    "courseTitle": "Life Cycle Nutrition",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "CFS",
+    "courseNumber": "317",
+    "courseTitle": "Family-Child-Profsnl Interactn",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CFS",
+    "courseNumber": "350",
+    "courseTitle": "Family Law and Policy",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "CFS",
+    "courseNumber": "356",
+    "courseTitle": "Variatns Young Children&#39;s Devl",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "CFS",
+    "courseNumber": "441",
+    "courseTitle": "Family Resource Management",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ALE",
+        "description": "Active Learning Experience"
+      },
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CFS",
+    "courseNumber": "480",
+    "courseTitle": "Senior Research Seminar",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "CHI",
+    "courseNumber": "101",
+    "courseTitle": "Introduction to Chinese I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "CLS",
+    "courseNumber": "110",
+    "courseTitle": "Sport/Spect Greece/Rome (HHP)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "WHP",
+        "description": "Western History Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "CLS",
+    "courseNumber": "222",
+    "courseTitle": "Classical Mythology (REL)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "ARTS",
+        "description": "Arts in Context"
+      },
+      {
+        "code": "IART",
+        "description": "Intro to the Arts"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      }
+    ]
+  },
+  {
+    "subject": "COM",
+    "courseNumber": "100",
+    "courseTitle": "Intro to Communication",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "COM",
+    "courseNumber": "104",
+    "courseTitle": "Radio Broadcasting",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "COM",
+    "courseNumber": "113",
+    "courseTitle": "Conflict and Mediation (PSJ)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HOW",
+        "description": "Holistic Wellness-Value"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "COM",
+    "courseNumber": "211",
+    "courseTitle": "Broadcast Journalism I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "COM",
+    "courseNumber": "220",
+    "courseTitle": "Theories of Communication",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "COM",
+    "courseNumber": "286",
+    "courseTitle": "Environmental Communication",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "COM",
+    "courseNumber": "305",
+    "courseTitle": "Interracial Communication",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "COM",
+    "courseNumber": "310",
+    "courseTitle": "Communication and Gender (WGS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "COM",
+    "courseNumber": "410",
+    "courseTitle": "Senior Seminar-Communication",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "CSC",
+    "courseNumber": "114",
+    "courseTitle": "Business App &amp; Prog (BUS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PR",
+        "description": "Practical Reasoning"
+      }
+    ]
+  },
+  {
+    "subject": "CSC",
+    "courseNumber": "186",
+    "courseTitle": "Introduction to AI",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CSC",
+    "courseNumber": "226",
+    "courseTitle": "Software Design &amp; Implement",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CSC",
+    "courseNumber": "236",
+    "courseTitle": "Data Structures",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CSC",
+    "courseNumber": "246",
+    "courseTitle": "Scalable Algorithms &amp; Objects",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CSC",
+    "courseNumber": "300",
+    "courseTitle": "Embedded Systems",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CSC",
+    "courseNumber": "328",
+    "courseTitle": "Data Analytics (BUS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "CSC",
+    "courseNumber": "330",
+    "courseTitle": "Database Systems",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CSC",
+    "courseNumber": "425",
+    "courseTitle": "Operating Systems &amp; VMs",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CSC",
+    "courseNumber": "440",
+    "courseTitle": "Design &amp; Analysis of Algorithm",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CSC",
+    "courseNumber": "486",
+    "courseTitle": "Machine Learning",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "CSC",
+    "courseNumber": "493",
+    "courseTitle": "Computing Design Practicum",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ECO",
+    "courseNumber": "101",
+    "courseTitle": "Principles of Macroeconomics",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "ECO",
+    "courseNumber": "102",
+    "courseTitle": "Principles of Microeconomics",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "ECO",
+    "courseNumber": "250",
+    "courseTitle": "Applied Statistics",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "ECO",
+    "courseNumber": "306",
+    "courseTitle": "Labor Economics",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "ECO",
+    "courseNumber": "332",
+    "courseTitle": "Money and Banking",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "ECO",
+    "courseNumber": "341",
+    "courseTitle": "Economic Dev:Theory &amp; Appl",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "INTP",
+        "description": "International Perspective"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ECO",
+    "courseNumber": "350",
+    "courseTitle": "Econometrics",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "ECO",
+    "courseNumber": "357",
+    "courseTitle": "International Finance (BUS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "150",
+    "courseTitle": "Int-Ed:Think About Lrng,Tchg",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "160",
+    "courseTitle": "Inquiry Into Social Studies",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "227",
+    "courseTitle": "Child Dev &amp; School Structure",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "228",
+    "courseTitle": "Adolescent Dev &amp; School Struct",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "324",
+    "courseTitle": "Methds I Teach. Middle Grades",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "325",
+    "courseTitle": "Methds I: Gen Methds H. School",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "335",
+    "courseTitle": "Integrated Curr I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "340",
+    "courseTitle": "Found. Special Ed: P&ndash;5/Mid",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "346",
+    "courseTitle": "Literacy in the Content Area",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "435",
+    "courseTitle": "Integrated Curriculum II",
+    "credits": 1.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "471",
+    "courseTitle": "Midl Grades Student Tchg Sem",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ALE",
+        "description": "Active Learning Experience"
+      },
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "472",
+    "courseTitle": "Midl Grades Student Teaching",
+    "credits": 3,
+    "perspectives": [
+      {
+        "code": "ALE",
+        "description": "Active Learning Experience"
+      },
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "479",
+    "courseTitle": "MethdsIII Learning &amp; Assessmnt",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "481",
+    "courseTitle": "Stdnt Tchg Sem:P-12,5-12,8-12",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "482",
+    "courseTitle": "St tchg:P-12,5-12,8-12 (MAT)",
+    "credits": 3,
+    "perspectives": [
+      {
+        "code": "ALE",
+        "description": "Active Learning Experience"
+      },
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "487",
+    "courseTitle": "Elementary Student Teaching",
+    "credits": 3,
+    "perspectives": [
+      {
+        "code": "ALE",
+        "description": "Active Learning Experience"
+      },
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "EDS",
+    "courseNumber": "488",
+    "courseTitle": "Elem Student Teaching Seminar",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ENG",
+    "courseNumber": "110",
+    "courseTitle": "Intro to Literature in English",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "ENG",
+    "courseNumber": "124",
+    "courseTitle": "Intro to Creative Writing",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "ENG",
+    "courseNumber": "140",
+    "courseTitle": "Appalachian Literature (APS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "APPA",
+        "description": "Appalachian Cultural Area Req"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "ENG",
+    "courseNumber": "200E",
+    "courseTitle": "Early American Lit to 1865",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "ENG",
+    "courseNumber": "205",
+    "courseTitle": "Decolonizing Literatures in En",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ECUL",
+        "description": "Cultures Course Eng Major"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ENG",
+    "courseNumber": "210",
+    "courseTitle": "Helen Keller and Her Cultural",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "EAUT",
+        "description": "Authors Course Eng Major"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ENG",
+    "courseNumber": "225",
+    "courseTitle": "Black Southern Gothic",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "EGEN",
+        "description": "Genre Course Eng Major"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "ENG",
+    "courseNumber": "240",
+    "courseTitle": "Medieval and Modern Others",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ENG",
+    "courseNumber": "270",
+    "courseTitle": "Intro to Methods in English",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "ENG",
+    "courseNumber": "340",
+    "courseTitle": "Women of Color Memoir as Theor",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "ENG",
+    "courseNumber": "382",
+    "courseTitle": "Advanced Creative Writing",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ENG",
+    "courseNumber": "470",
+    "courseTitle": "Advanced Methods in English",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "ETAD",
+    "courseNumber": "118",
+    "courseTitle": "History of Technology",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "WHP",
+        "description": "Western History Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "ETAD",
+    "courseNumber": "130",
+    "courseTitle": "Design and Documentation",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ETAD",
+    "courseNumber": "140",
+    "courseTitle": "Design Production in Woods",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ALE",
+        "description": "Active Learning Experience"
+      },
+      {
+        "code": "ALES",
+        "description": "ALE - Service Learning"
+      },
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ETAD",
+    "courseNumber": "180",
+    "courseTitle": "Graphic Com and Design",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ETAD",
+    "courseNumber": "245",
+    "courseTitle": "Materials/Processing/Testing",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "ETAD",
+    "courseNumber": "265",
+    "courseTitle": "Electricity and Electronics",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "ETAD",
+    "courseNumber": "275",
+    "courseTitle": "Power and Energy Technology",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      },
+      {
+        "code": "SUS",
+        "description": "Sustainability Value"
+      }
+    ]
+  },
+  {
+    "subject": "ETAD",
+    "courseNumber": "340",
+    "courseTitle": "Studio in Woods",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ETAD",
+    "courseNumber": "345",
+    "courseTitle": "Ecological Architecture (SENS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "SUS",
+        "description": "Sustainability Value"
+      }
+    ]
+  },
+  {
+    "subject": "ETAD",
+    "courseNumber": "455",
+    "courseTitle": "Comp Integrated Manufacturing",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      }
+    ]
+  },
+  {
+    "subject": "ETAD",
+    "courseNumber": "470",
+    "courseTitle": "Advanced Power and Energy",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "FRN",
+    "courseNumber": "101",
+    "courseTitle": "Introduction to French I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "FRN",
+    "courseNumber": "103",
+    "courseTitle": "Introduction to French III",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "FRN",
+    "courseNumber": "140",
+    "courseTitle": "French History &amp; Arts in Film",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTP",
+        "description": "International Perspective"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "WHP",
+        "description": "Western History Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "FRN",
+    "courseNumber": "160",
+    "courseTitle": "Art of Film in Frn Spkng World",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTP",
+        "description": "International Perspective"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "FRN",
+    "courseNumber": "240",
+    "courseTitle": "French History/Arts in Film II",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTP",
+        "description": "International Perspective"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "WHP",
+        "description": "Western History Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "FRN",
+    "courseNumber": "260",
+    "courseTitle": "Art of Film Frn Spkng World II",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTP",
+        "description": "International Perspective"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "GST",
+    "courseNumber": "110A",
+    "courseTitle": "Enhancing Career Readiness",
+    "credits": 0.25,
+    "perspectives": []
+  },
+  {
+    "subject": "GST",
+    "courseNumber": "167",
+    "courseTitle": "Latino Masculinities/Coll Life",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      }
+    ]
+  },
+  {
+    "subject": "GST",
+    "courseNumber": "168",
+    "courseTitle": "Transitioning to Grad School",
+    "credits": 0.25,
+    "perspectives": []
+  },
+  {
+    "subject": "GST",
+    "courseNumber": "280",
+    "courseTitle": "Tutoring/Writing Pedagogy",
+    "credits": 0.25,
+    "perspectives": []
+  },
+  {
+    "subject": "GSTR",
+    "courseNumber": "410",
+    "courseTitle": "Faith and Fanatics",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CGI",
+        "description": "Contemporary Global Issues"
+      },
+      {
+        "code": "WISS",
+        "description": "World Issues Since 1945"
+      }
+    ]
+  },
+  {
+    "subject": "GEO",
+    "courseNumber": "101",
+    "courseTitle": "Intro Geology: Way Earth Works",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSL",
+        "description": "Natural Science Lab"
+      },
+      {
+        "code": "SUS",
+        "description": "Sustainability Value"
+      }
+    ]
+  },
+  {
+    "subject": "GEO",
+    "courseNumber": "200",
+    "courseTitle": "Mineralogy",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSL",
+        "description": "Natural Science Lab"
+      }
+    ]
+  },
+  {
+    "subject": "HLT",
+    "courseNumber": "109",
+    "courseTitle": "Comprehensive First Aid",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "HLT",
+    "courseNumber": "200",
+    "courseTitle": "Foundations of Health Studies",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HOW",
+        "description": "Holistic Wellness-Value"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "HLT",
+    "courseNumber": "205",
+    "courseTitle": "Medical Terminology",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "HLT",
+    "courseNumber": "210",
+    "courseTitle": "Health in Appalachia (APS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "APPA",
+        "description": "Appalachian Cultural Area Req"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "HLT",
+    "courseNumber": "300",
+    "courseTitle": "HLT Program Planning &amp; Eval",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ALE",
+        "description": "Active Learning Experience"
+      },
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "HHP",
+    "courseNumber": "110",
+    "courseTitle": "Sport/Spect Greece/Rome (CLS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "WHP",
+        "description": "Western History Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "HHP",
+    "courseNumber": "125",
+    "courseTitle": "Foundations Human Performance",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HOW",
+        "description": "Holistic Wellness-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "HHP",
+    "courseNumber": "206P",
+    "courseTitle": "Middle Eastern Dance Ensemble",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "HHP",
+    "courseNumber": "246",
+    "courseTitle": "Individual &amp; Dual Sports",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "HHP",
+    "courseNumber": "248",
+    "courseTitle": "World Dance",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "ARTS",
+        "description": "Arts in Context"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "WORL",
+        "description": "World Cultural Area Req"
+      }
+    ]
+  },
+  {
+    "subject": "HHP",
+    "courseNumber": "249",
+    "courseTitle": "Dancing Through Space &amp; Time",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      },
+      {
+        "code": "DANC",
+        "description": "Dance Minor"
+      }
+    ]
+  },
+  {
+    "subject": "HHP",
+    "courseNumber": "263",
+    "courseTitle": "Personal Training Certificatn",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "HHP",
+    "courseNumber": "286",
+    "courseTitle": "Dance Techniques",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "HHP",
+    "courseNumber": "345",
+    "courseTitle": "Biomechanics &amp; F Mvmt Analysis",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "HHP",
+    "courseNumber": "360",
+    "courseTitle": "Advanced Athletic Training",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "HHP",
+    "courseNumber": "362",
+    "courseTitle": "Tchg &amp; Eval Hlth &amp; Phys Educ",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ALES",
+        "description": "ALE - Service Learning"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "PR",
+        "description": "Practical Reasoning"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "HHP",
+    "courseNumber": "492",
+    "courseTitle": "Sr Research Human Performance",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "HIS",
+    "courseNumber": "112",
+    "courseTitle": "The Worlds of the Middle Ages",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "WHP",
+        "description": "Western History Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "HIS",
+    "courseNumber": "122",
+    "courseTitle": "History of China (AST)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "WORL",
+        "description": "World Cultural Area Req"
+      }
+    ]
+  },
+  {
+    "subject": "HIS",
+    "courseNumber": "126",
+    "courseTitle": "Traces of the Global Past I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTP",
+        "description": "International Perspective"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "HIS",
+    "courseNumber": "161",
+    "courseTitle": "American History to 1865",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "WHP",
+        "description": "Western History Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "HIS",
+    "courseNumber": "165",
+    "courseTitle": "Intro to Afr Amer His(AFR)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "BLAC",
+        "description": "Black Cultural Area Req"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "WHP",
+        "description": "Western History Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "HIS",
+    "courseNumber": "175",
+    "courseTitle": "His &amp; Pol of Arab-Isr (PSC)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "HIS",
+    "courseNumber": "242",
+    "courseTitle": "African American Cinema (AFR)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "HIS",
+    "courseNumber": "243",
+    "courseTitle": "The Silk Road (AST)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "HIS",
+    "courseNumber": "320",
+    "courseTitle": "Topical Seminar in Global Hist",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "HIS",
+    "courseNumber": "324J",
+    "courseTitle": "Seminar in Asian History (AST)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "HIS",
+    "courseNumber": "406",
+    "courseTitle": "Senior Research Seminar",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "JPN",
+    "courseNumber": "101",
+    "courseTitle": "Introduction to Japanese I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "JPN",
+    "courseNumber": "103",
+    "courseTitle": "Introduction to Japanese III",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "LAT",
+    "courseNumber": "101",
+    "courseTitle": "Introduction to Latin I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "L&I",
+    "courseNumber": "100",
+    "courseTitle": "Why College? Issues in Higher",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "L&I",
+    "courseNumber": "200",
+    "courseTitle": "L&amp;I: Discoveries",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "L&I",
+    "courseNumber": "300",
+    "courseTitle": "Intersectional Justice in the",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "L&I",
+    "courseNumber": "400",
+    "courseTitle": "L&amp;I: Global Issues",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "010",
+    "courseTitle": "Pre-Algebra",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "011",
+    "courseTitle": "Elementary Algebra I",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "012",
+    "courseTitle": "Elementary Algebra II",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "104",
+    "courseTitle": "Introduction to Statistics",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "115",
+    "courseTitle": "College Algebra with Modeling",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "125",
+    "courseTitle": "Trigonometry with Applications",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "135",
+    "courseTitle": "Calculus I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "186",
+    "courseTitle": "Enhanced College Algebra",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "214",
+    "courseTitle": "Linear Algebra",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "216",
+    "courseTitle": "Discrete Mathematics",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "225",
+    "courseTitle": "Calculus II",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "311",
+    "courseTitle": "Probability",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "337",
+    "courseTitle": "Differential Equations",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "426",
+    "courseTitle": "Math Lit: Rdg &amp; Communication",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "MAT",
+    "courseNumber": "432",
+    "courseTitle": "Abstract Algebra",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "100",
+    "courseTitle": "Class Piano",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "103",
+    "courseTitle": "Class Voice",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "118",
+    "courseTitle": "Fundamentals of Music",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "130A",
+    "courseTitle": "Chamber Singers",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "130B",
+    "courseTitle": "Jazz Ensemble",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "130C",
+    "courseTitle": "Bel Canto Treble Singers",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "130F",
+    "courseTitle": "Bluegrass Music Ensemble",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "130H",
+    "courseTitle": "African-Latin Percussion Ensmb",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "130I",
+    "courseTitle": "Contemp Percussion Ensemble",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "130K",
+    "courseTitle": "Folk Roots Ensemble",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "130M",
+    "courseTitle": "Mariachi Ensemble",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "131",
+    "courseTitle": "Concert Choir",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "132",
+    "courseTitle": "Wind Ensemble",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "135",
+    "courseTitle": "Black Music Ensemble",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "220",
+    "courseTitle": "Materials of Music I",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "221",
+    "courseTitle": "Aural Harmony I",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "224",
+    "courseTitle": "Appalachian Music (APS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "320",
+    "courseTitle": "Materials of Music III",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "321",
+    "courseTitle": "Aural &amp; Keyboard Harmony III",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "324",
+    "courseTitle": "Music Composition",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "326",
+    "courseTitle": "Vocal Methods",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "329",
+    "courseTitle": "Teaching Woodwind Instruments",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "330",
+    "courseTitle": "Music History I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "400A",
+    "courseTitle": "Senior Seminar I",
+    "credits": 0.5,
+    "perspectives": []
+  },
+  {
+    "subject": "MUS",
+    "courseNumber": "400B",
+    "courseTitle": "Senior Seminar II",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "NUR",
+    "courseNumber": "110",
+    "courseTitle": "Foundations Nursing Practice",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "NUR",
+    "courseNumber": "201",
+    "courseTitle": "Intro to Nursing Profession",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "NUR",
+    "courseNumber": "225",
+    "courseTitle": "Essentials Nursing Practice I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "NUR",
+    "courseNumber": "301",
+    "courseTitle": "Women&#39;s Hlth &amp; Maternity Nurs",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "NUR",
+    "courseNumber": "351",
+    "courseTitle": "Mental Health Nursing",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "NUR",
+    "courseNumber": "352",
+    "courseTitle": "Research in Nursing",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "NUR",
+    "courseNumber": "400",
+    "courseTitle": "Adult Health Nursing II",
+    "credits": 1.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "NUR",
+    "courseNumber": "448",
+    "courseTitle": "Community Health Nursing",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "HOW",
+        "description": "Holistic Wellness-Value"
+      }
+    ]
+  },
+  {
+    "subject": "PSJ",
+    "courseNumber": "100",
+    "courseTitle": "Fnd of Peace &amp; Social Justice",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSJ",
+    "courseNumber": "103",
+    "courseTitle": "Intro Latina/o/x Studies (WGS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "PSJ",
+    "courseNumber": "113",
+    "courseTitle": "Conflict and Mediation (COM)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HOW",
+        "description": "Holistic Wellness-Value"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSJ",
+    "courseNumber": "201",
+    "courseTitle": "Restorative Justice",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "PSJ",
+    "courseNumber": "286",
+    "courseTitle": "Political Ecologies of the Glo",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SUS",
+        "description": "Sustainability Value"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "PSJ",
+    "courseNumber": "305",
+    "courseTitle": "Peacebuilding",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "PSJ",
+    "courseNumber": "450",
+    "courseTitle": "Sem. in Peace &amp; Social Justice",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "PHI",
+    "courseNumber": "106",
+    "courseTitle": "Introductory Reasoning",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "PR",
+        "description": "Practical Reasoning"
+      }
+    ]
+  },
+  {
+    "subject": "PHI",
+    "courseNumber": "115",
+    "courseTitle": "Mind, Language, and World",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "PR",
+        "description": "Practical Reasoning"
+      }
+    ]
+  },
+  {
+    "subject": "PHI",
+    "courseNumber": "261",
+    "courseTitle": "Bodies and Sexuality (WGS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "PHI",
+    "courseNumber": "281",
+    "courseTitle": "Islamic Philosophy (REL)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      }
+    ]
+  },
+  {
+    "subject": "PHI",
+    "courseNumber": "305",
+    "courseTitle": "Classical Philosophy",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "WHP",
+        "description": "Western History Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "PHI",
+    "courseNumber": "386",
+    "courseTitle": "Philosophy of Logic",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "PHY",
+    "courseNumber": "111",
+    "courseTitle": "Modern Astronomy",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSL",
+        "description": "Natural Science Lab"
+      },
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      },
+      {
+        "code": "PR",
+        "description": "Practical Reasoning"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "PHY",
+    "courseNumber": "120",
+    "courseTitle": "Energy, Environment, &amp; Climate",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSL",
+        "description": "Natural Science Lab"
+      },
+      {
+        "code": "SUS",
+        "description": "Sustainability Value"
+      }
+    ]
+  },
+  {
+    "subject": "PHY",
+    "courseNumber": "127",
+    "courseTitle": "General Physics I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSL",
+        "description": "Natural Science Lab"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "PHY",
+    "courseNumber": "130",
+    "courseTitle": "Introduction to Engineering",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      },
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "PHY",
+    "courseNumber": "142",
+    "courseTitle": "Life in the Universe",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSL",
+        "description": "Natural Science Lab"
+      }
+    ]
+  },
+  {
+    "subject": "PHY",
+    "courseNumber": "222",
+    "courseTitle": "Intro Physics II with Calculus",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "PHY",
+    "courseNumber": "341",
+    "courseTitle": "Advanced General Laboratory",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "PHY",
+    "courseNumber": "460",
+    "courseTitle": "Electromagnetic Theory",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "PSC",
+    "courseNumber": "100",
+    "courseTitle": "Intro to Study of Politics",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSC",
+    "courseNumber": "110",
+    "courseTitle": "American Government",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSC",
+    "courseNumber": "175",
+    "courseTitle": "His &amp; Pol of Arab-Isr (HIS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "PSC",
+    "courseNumber": "250",
+    "courseTitle": "International Relations",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSC",
+    "courseNumber": "286",
+    "courseTitle": "Politics of East Asia",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "PSC",
+    "courseNumber": "322",
+    "courseTitle": "Congress and the Presidency",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSC",
+    "courseNumber": "351",
+    "courseTitle": "International Organizations",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSC",
+    "courseNumber": "480",
+    "courseTitle": "Senior Research Seminar",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "PSY",
+    "courseNumber": "100",
+    "courseTitle": "General Psychology",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PR",
+        "description": "Practical Reasoning"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSY",
+    "courseNumber": "200",
+    "courseTitle": "Readings in Black Psy (AFR)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSY",
+    "courseNumber": "208",
+    "courseTitle": "Cognitive Psychology with Lab",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSY",
+    "courseNumber": "209",
+    "courseTitle": "Social Psychology w/ Lab",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSY",
+    "courseNumber": "210",
+    "courseTitle": "Ind/Org Psy with Lab",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PSLB",
+        "description": "Psychology Science Collateral"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSY",
+    "courseNumber": "217",
+    "courseTitle": "Cross-Cultural Psychology",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSY",
+    "courseNumber": "218",
+    "courseTitle": "Sensation &amp; Perception",
+    "credits": 1,
+    "perspectives": []
+  },
+  {
+    "subject": "PSY",
+    "courseNumber": "225",
+    "courseTitle": "Stats &amp; Rsrch Meth-Behav Sci",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      }
+    ]
+  },
+  {
+    "subject": "PSY",
+    "courseNumber": "323",
+    "courseTitle": "Clinical/Counseling Methods",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "PSY",
+    "courseNumber": "325",
+    "courseTitle": "Stats &amp; Rsrch Meth-Behav Sc II",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "PSY",
+    "courseNumber": "424",
+    "courseTitle": "Senior Research",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "REL",
+    "courseNumber": "100",
+    "courseTitle": "Study of Religions",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      }
+    ]
+  },
+  {
+    "subject": "REL",
+    "courseNumber": "105",
+    "courseTitle": "Intro to Old Testament",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SHRT",
+        "description": "Short Term Requirement"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      }
+    ]
+  },
+  {
+    "subject": "REL",
+    "courseNumber": "136",
+    "courseTitle": "African Trad Religion",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      }
+    ]
+  },
+  {
+    "subject": "REL",
+    "courseNumber": "201",
+    "courseTitle": "The Study of Ritual",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      }
+    ]
+  },
+  {
+    "subject": "REL",
+    "courseNumber": "222",
+    "courseTitle": "Classical Mythology (CLS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "ARTS",
+        "description": "Arts in Context"
+      },
+      {
+        "code": "IART",
+        "description": "Intro to the Arts"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      }
+    ]
+  },
+  {
+    "subject": "REL",
+    "courseNumber": "225",
+    "courseTitle": "Images of Jesus",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      }
+    ]
+  },
+  {
+    "subject": "REL",
+    "courseNumber": "228",
+    "courseTitle": "Archaeology &amp; Christian Script",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      }
+    ]
+  },
+  {
+    "subject": "REL",
+    "courseNumber": "260",
+    "courseTitle": "Buddhism (AST)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      },
+      {
+        "code": "WORL",
+        "description": "World Cultural Area Req"
+      }
+    ]
+  },
+  {
+    "subject": "REL",
+    "courseNumber": "281",
+    "courseTitle": "Islamic Philosophy (PHI)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "RELP",
+        "description": "Religion Perspective"
+      },
+      {
+        "code": "SKM",
+        "description": "Seeking Meaning-Value"
+      }
+    ]
+  },
+  {
+    "subject": "REL",
+    "courseNumber": "480",
+    "courseTitle": "Sem Religions &amp; Spiritualities",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "SOC",
+    "courseNumber": "100",
+    "courseTitle": "Sociology of Everyday Life",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "SOC",
+    "courseNumber": "132",
+    "courseTitle": "Intro to Race in America",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "SOC",
+    "courseNumber": "220",
+    "courseTitle": "Cultural Anthropology",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      }
+    ]
+  },
+  {
+    "subject": "SOC",
+    "courseNumber": "223",
+    "courseTitle": "Soci Stratification &amp; Inequal",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      },
+      {
+        "code": "PR",
+        "description": "Practical Reasoning"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "SOC",
+    "courseNumber": "335",
+    "courseTitle": "Methods of Social Research",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PR",
+        "description": "Practical Reasoning"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "SOC",
+    "courseNumber": "340",
+    "courseTitle": "Social Statistics-Diverse Soc",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "PRQ",
+        "description": "Pract Reasoning-Quantitative"
+      },
+      {
+        "code": "QUAN",
+        "description": "Quantitative Reasoning WoK"
+      },
+      {
+        "code": "QUAR",
+        "description": "Quantitatively Rich"
+      }
+    ]
+  },
+  {
+    "subject": "SPN",
+    "courseNumber": "101",
+    "courseTitle": "Introduction to Spanish I",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "SPN",
+    "courseNumber": "102",
+    "courseTitle": "Introduction to Spanish II",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "SPN",
+    "courseNumber": "103",
+    "courseTitle": "Introduction to Spanish III",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "SPN",
+    "courseNumber": "310",
+    "courseTitle": "Advanced Grammar &amp; Composition",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ALE",
+        "description": "Active Learning Experience"
+      },
+      {
+        "code": "ALES",
+        "description": "ALE - Service Learning"
+      },
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "SPN",
+    "courseNumber": "312",
+    "courseTitle": "Conversation",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "SPN",
+    "courseNumber": "331",
+    "courseTitle": "Spanish American Literature II",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "ARTS",
+        "description": "Arts in Context"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "IART",
+        "description": "Intro to the Arts"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "SPN",
+    "courseNumber": "340",
+    "courseTitle": "The Novel",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "ARTP",
+        "description": "Arts Perspective"
+      },
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      }
+    ]
+  },
+  {
+    "subject": "SENS",
+    "courseNumber": "100",
+    "courseTitle": "Intro-Sustainability &amp; Environ",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NS",
+        "description": "Natural Science"
+      },
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      },
+      {
+        "code": "PR",
+        "description": "Practical Reasoning"
+      },
+      {
+        "code": "SUS",
+        "description": "Sustainability Value"
+      }
+    ]
+  },
+  {
+    "subject": "SENS",
+    "courseNumber": "286",
+    "courseTitle": "Political Ecologies of the Glo",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SUS",
+        "description": "Sustainability Value"
+      },
+      {
+        "code": "WTR",
+        "description": "Writing Rich"
+      }
+    ]
+  },
+  {
+    "subject": "SENS",
+    "courseNumber": "310",
+    "courseTitle": "Ecology (BIO)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "SENS",
+    "courseNumber": "328",
+    "courseTitle": "Ecological Weed Manage. (ANR)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "SENS",
+    "courseNumber": "345",
+    "courseTitle": "Ecological Architecture (ETAD)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "SUS",
+        "description": "Sustainability Value"
+      }
+    ]
+  },
+  {
+    "subject": "SENS",
+    "courseNumber": "460",
+    "courseTitle": "Sustainability Capstone",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "NSR",
+        "description": "Natural Science Way of Knowing"
+      }
+    ]
+  },
+  {
+    "subject": "THR",
+    "courseNumber": "105",
+    "courseTitle": "Script Analysis",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "THR",
+    "courseNumber": "115",
+    "courseTitle": "Principles of Acting",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "THR",
+    "courseNumber": "135",
+    "courseTitle": "Film Production",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "THR",
+    "courseNumber": "186",
+    "courseTitle": "Stagecraft",
+    "credits": 0.5,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "THR",
+    "courseNumber": "213",
+    "courseTitle": "First Theatre in Human Culture",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HUM",
+        "description": "Humanities-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "THR",
+    "courseNumber": "227",
+    "courseTitle": "Voice and Diction",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "THR",
+    "courseNumber": "321",
+    "courseTitle": "Seminar in Theatre Management",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "150",
+    "courseTitle": "Principles of Wellness",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "HOW",
+        "description": "Holistic Wellness-Value"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "200",
+    "courseTitle": "Survival Swimming",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "204",
+    "courseTitle": "Yoga (AST)",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "206Y",
+    "courseTitle": "Artists in Modern Motion",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "206Z",
+    "courseTitle": "Country Dancers",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "209",
+    "courseTitle": "Adv Begin &amp; Intermediate Swim",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "213",
+    "courseTitle": "Golf",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "217",
+    "courseTitle": "Walking for Fitness",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "218",
+    "courseTitle": "Weight Training",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "221",
+    "courseTitle": "Weight Management",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "222",
+    "courseTitle": "Water Fitness",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "224",
+    "courseTitle": "Modern Dance I",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "226",
+    "courseTitle": "Racquetball",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "228",
+    "courseTitle": "Social and Folk Dance",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "CRTA",
+        "description": "Creative Arts-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "236",
+    "courseTitle": "Volleyball &amp; Recreation Games",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "238",
+    "courseTitle": "Fencing",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WELL",
+    "courseNumber": "242",
+    "courseTitle": "Scuba",
+    "credits": 0.25,
+    "perspectives": [
+      {
+        "code": "APPD",
+        "description": "Applied Disciplines-WoK"
+      },
+      {
+        "code": "PED2",
+        "description": "200 Level Activity Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WGS",
+    "courseNumber": "103",
+    "courseTitle": "Intro Latina/o/x Studies (PSJ)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "WGS",
+    "courseNumber": "124",
+    "courseTitle": "Intro: Decolonizing Feminism",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "ALE",
+        "description": "Active Learning Experience"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "WGS",
+    "courseNumber": "200",
+    "courseTitle": "Inst Queer/Transgender Studies",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "WGS",
+    "courseNumber": "207",
+    "courseTitle": "Family Relations (CFS)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCP",
+        "description": "Social Science Perspective"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WGS",
+    "courseNumber": "240",
+    "courseTitle": "Kinshp/Gen SE Asia (AST)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "BEYB",
+        "description": "Beyond the Borders-Value"
+      },
+      {
+        "code": "INTN",
+        "description": "International-Non-Western Pers"
+      },
+      {
+        "code": "INTR",
+        "description": "Internationally Rich"
+      },
+      {
+        "code": "SOC",
+        "description": "Social Science Way of Knowing"
+      },
+      {
+        "code": "SOCS",
+        "description": "Social Science Requirement"
+      }
+    ]
+  },
+  {
+    "subject": "WGS",
+    "courseNumber": "261",
+    "courseTitle": "Bodies and Sexuality (PHI)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "WGS",
+    "courseNumber": "310",
+    "courseTitle": "Communication and Gender (COM)",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "AAWP",
+        "description": "Afr Amer,Appal,Women Perspect"
+      },
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      },
+      {
+        "code": "PEQ",
+        "description": "Power &amp; Equity-Value"
+      }
+    ]
+  },
+  {
+    "subject": "WGS",
+    "courseNumber": "450",
+    "courseTitle": "Capstone:  Intersectionality",
+    "credits": 1,
+    "perspectives": [
+      {
+        "code": "CES",
+        "description": "Cultural &amp; Ethnic Studies-WoK"
+      }
+    ]
+  }
+]

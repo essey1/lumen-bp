@@ -17,7 +17,8 @@ import {
   MINIMUM_TOTAL_CREDITS,
   MINIMUM_CREDITS_OUTSIDE_MAJOR,
 } from "./types";
-import { MAJORS, COURSE_CATALOG } from "./majors-data";
+import { MAJORS } from "./majors-data";
+import { COURSE_CATALOG } from "./course-catalog";
 
 // Prerequisites mapping - course that requires another course first
 // Format: "COURSE" -> "PREREQUISITE" (prerequisite must be taken in earlier semester)
