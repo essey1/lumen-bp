@@ -11,25 +11,31 @@ import { MINORS } from "./minors-data";
 import { COURSE_CATALOG } from "./course-catalog";
 import { isCourseAvailable } from "./course-schedule-data";
 
-// Prerequisites: course -> courses that must appear in an EARLIER semester
-const PREREQUISITES: Record<string, string[]> = {
-  "CHM 221": ["CHM 131"],
-  "CHM 222": ["CHM 221"],
-  "BIO 114": ["BIO 113"],
-  "BIO 222": ["BIO 221"],
-  "BIO 212": ["BIO 211"],
-  "PHY 222": ["PHY 221"],
-  "MAT 135": ["MAT 115"],
-  "MAT 225": ["MAT 135"],
-  "MAT 216": ["MAT 135"],
-  "CSC 236": ["CSC 226"],
-  "CSC 246": ["CSC 236"],
-  "CSC 303": ["CSC 236"],
-  "CSC 324": ["CSC 236"],
-  "CSC 314": ["CSC 236"],
-  "L&I 200": ["L&I 100"],
-  "L&I 300": ["L&I 200"],
-  "L&I 400": ["L&I 300"],
+// Prerequisites: built from course catalog + L&I sequence.
+// Sub-100-level courses (developmental, e.g. MAT 010) are excluded as placement constraints.
+function buildPrereqMap(): Record<string, string[]> {
+  const map: Record<string, string[]> = {
+    "L&I 200": ["L&I 100"],
+    "L&I 300": ["L&I 200"],
+    "L&I 400": ["L&I 300"],
+  };
+  for (const [code, course] of Object.entries(COURSE_CATALOG)) {
+    if (!course.prerequisites?.length) continue;
+    const valid = course.prerequisites.filter(p => {
+      const num = parseInt(p.match(/\d+/)?.[0] ?? "0");
+      return num >= 100;
+    });
+    if (valid.length > 0) map[code] = valid;
+  }
+  return map;
+}
+const PREREQUISITES = buildPrereqMap();
+
+// Courses that become redundant when a higher-level equivalent is already collected.
+// Key = intro course to skip; value = any one of these triggers the skip.
+const SUPERSEDED_BY: Record<string, string[]> = {
+  "PHY 127": ["PHY 221", "PHY 222"],
+  "PHY 128": ["PHY 221", "PHY 222"],
 };
 
 // Maps student interests/career goals to preferred department prefixes for elective selection
@@ -112,21 +118,59 @@ function freshGEMTracker(): GEMTracker {
 function applyGEM(tracker: GEMTracker, courseCode: string): void {
   const c = COURSE_CATALOG[courseCode];
   if (!c) return;
+
+  // WoK: every course has exactly 1; only tick the first unfulfilled one found
+  let wokApplied = false;
   for (const wok of c.waysOfKnowing ?? []) {
-    if ((tracker.waysOfKnowing[wok] ?? 0) > 0) tracker.waysOfKnowing[wok]!--;
+    if (!wokApplied && (tracker.waysOfKnowing[wok] ?? 0) > 0) {
+      tracker.waysOfKnowing[wok]!--;
+      wokApplied = true;
+    }
   }
+
+  // Richnesses: a course may have 0-many, but IR and Beyond the Borders
+  // cannot both be satisfied by the same course (Berea GEM restriction).
+  const hasIR = (c.richnesses ?? []).includes("Internationally Rich");
+  const hasBTB = (c.values ?? []).includes("Beyond the Borders");
+  // When the course carries both, decide which single one to apply:
+  // prefer whichever has higher remaining need; if tied, prefer BTB (Value).
+  let irApplied = false;
   for (const r of c.richnesses ?? []) {
     if (r === "Writing" && tracker.writingRich > 0) tracker.writingRich--;
-    if (r === "Internationally Rich" && tracker.internationallyRich > 0) tracker.internationallyRich--;
+    if (r === "Internationally Rich" && tracker.internationallyRich > 0) {
+      // Only apply IR if this course won't also be used for BTB, or IR is more urgent
+      if (!hasBTB || tracker.internationallyRich >= tracker.beyondBorders) {
+        tracker.internationallyRich--;
+        irApplied = true;
+      }
+    }
     if (r === "Quantitatively Rich" && tracker.quantitativelyRich > 0) tracker.quantitativelyRich--;
   }
+
+  // Values: only one value applies per course (Berea GEM restriction).
+  // Also skip Beyond the Borders if IR was already applied from this same course.
+  let valueApplied = false;
   for (const v of c.values ?? []) {
-    if (v === "Beyond the Borders" && tracker.beyondBorders > 0) tracker.beyondBorders--;
-    if (v === "Holistic Wellness" && tracker.holisticWellness > 0) tracker.holisticWellness--;
-    if (v === "Power & Equity" && tracker.powerEquity > 0) tracker.powerEquity--;
-    if (v === "Seeking Meaning" && tracker.seekingMeaning > 0) tracker.seekingMeaning--;
-    if (v === "Sustainability" && tracker.sustainability > 0) tracker.sustainability--;
+    if (valueApplied) break; // only one value per course
+    if (v === "Beyond the Borders" && tracker.beyondBorders > 0) {
+      if (hasIR && irApplied) break; // IR/BTB conflict — this course already counted for IR
+      tracker.beyondBorders--;
+      valueApplied = true;
+    } else if (v === "Holistic Wellness" && tracker.holisticWellness > 0) {
+      tracker.holisticWellness--;
+      valueApplied = true;
+    } else if (v === "Power & Equity" && tracker.powerEquity > 0) {
+      tracker.powerEquity--;
+      valueApplied = true;
+    } else if (v === "Seeking Meaning" && tracker.seekingMeaning > 0) {
+      tracker.seekingMeaning--;
+      valueApplied = true;
+    } else if (v === "Sustainability" && tracker.sustainability > 0) {
+      tracker.sustainability--;
+      valueApplied = true;
+    }
   }
+
   for (const a of c.additional ?? []) {
     if ((a === "ALE" || a === "ALES") && tracker.ale > 0) tracker.ale--;
     if (a === "Physical Activity" && tracker.physicalActivity > 0) tracker.physicalActivity--;
@@ -156,7 +200,8 @@ function findSemester(
       const majorMinorCount = semesters[s].courses.filter(
         c => c.category === "Major" || c.category === "Minor"
       ).length;
-      if (majorMinorCount >= 2) continue;
+      const maxMajorPerSem = s === 0 ? 1 : 2;
+      if (majorMinorCount >= maxMajorPerSem) continue;
     }
     if (!isCourseAvailable(course.code, s)) continue;
     return s;
@@ -169,7 +214,8 @@ function findSemester(
       const majorMinorCount = semesters[s].courses.filter(
         c => c.category === "Major" || c.category === "Minor"
       ).length;
-      if (majorMinorCount >= 2) continue;
+      const maxMajorPerSem = s === 0 ? 1 : 2;
+      if (majorMinorCount >= maxMajorPerSem) continue;
     }
     return s;
   }
@@ -200,10 +246,14 @@ function preferredDepts(profile: StudentProfile): string[] {
   // Always include the student's major departments
   for (const m of profile.majors) depts.add(m.split("_")[0]);
   for (const m of profile.minors ?? []) depts.add(m.split("_")[0]);
-  for (const tag of [...profile.interests, ...profile.careerGoals, ...profile.hobbies]) {
+  for (const tag of [...profile.interests, ...profile.careerGoals]) {
     for (const d of INTEREST_DEPT_MAP[tag] ?? []) depts.add(d);
   }
   return Array.from(depts);
+}
+
+function isSuperseded(code: string, placed: Set<string>): boolean {
+  return (SUPERSEDED_BY[code] ?? []).some(sup => placed.has(sup));
 }
 
 // Find a real catalog course matching a filter, preferring preferred departments
@@ -216,6 +266,7 @@ function findCatalogCourse(
   for (const dept of preferred) {
     for (const code of Object.keys(COURSE_CATALOG)) {
       if (placed.has(code)) continue;
+      if (isSuperseded(code, placed)) continue;
       if (!code.startsWith(dept + " ")) continue;
       if (!filter(code)) continue;
       return code;
@@ -224,6 +275,7 @@ function findCatalogCourse(
   // Fall back to any department
   for (const code of Object.keys(COURSE_CATALOG)) {
     if (placed.has(code)) continue;
+    if (isSuperseded(code, placed)) continue;
     if (!filter(code)) continue;
     return code;
   }
@@ -232,25 +284,47 @@ function findCatalogCourse(
 
 // Score a course by how many UNFULFILLED GEM requirements it covers.
 // Higher = better (one course knocking out multiple requirements).
+// Applies the same restrictions as applyGEM (IR/BTB exclusion, one value per course).
 function gemScore(tracker: GEMTracker, courseCode: string): number {
   const c = COURSE_CATALOG[courseCode];
   if (!c) return 0;
   let score = 0;
+
+  // WoK: exactly 1 per course — only count the first unfulfilled one
   for (const wok of c.waysOfKnowing ?? []) {
-    if ((tracker.waysOfKnowing[wok] ?? 0) > 0) score++;
+    if ((tracker.waysOfKnowing[wok] ?? 0) > 0) { score++; break; }
   }
+
+  const hasIR = (c.richnesses ?? []).includes("Internationally Rich");
+  const hasBTB = (c.values ?? []).includes("Beyond the Borders");
+
+  let irScore = 0;
   for (const r of c.richnesses ?? []) {
     if (r === "Writing" && tracker.writingRich > 0) score++;
-    if (r === "Internationally Rich" && tracker.internationallyRich > 0) score++;
+    if (r === "Internationally Rich" && tracker.internationallyRich > 0) irScore = 1;
     if (r === "Quantitatively Rich" && tracker.quantitativelyRich > 0) score++;
   }
+
+  // Values: only one value per course
+  let valueScore = 0;
+  let btbScore = 0;
   for (const v of c.values ?? []) {
-    if (v === "Beyond the Borders" && tracker.beyondBorders > 0) score++;
-    if (v === "Holistic Wellness" && tracker.holisticWellness > 0) score++;
-    if (v === "Power & Equity" && tracker.powerEquity > 0) score++;
-    if (v === "Seeking Meaning" && tracker.seekingMeaning > 0) score++;
-    if (v === "Sustainability" && tracker.sustainability > 0) score++;
+    if (v === "Beyond the Borders" && tracker.beyondBorders > 0) { btbScore = 1; break; }
+    if (v === "Holistic Wellness" && tracker.holisticWellness > 0) { valueScore = 1; break; }
+    if (v === "Power & Equity" && tracker.powerEquity > 0) { valueScore = 1; break; }
+    if (v === "Seeking Meaning" && tracker.seekingMeaning > 0) { valueScore = 1; break; }
+    if (v === "Sustainability" && tracker.sustainability > 0) { valueScore = 1; break; }
   }
+
+  // IR and BTB cannot both be credited to the same course
+  if (hasIR && hasBTB && irScore > 0 && btbScore > 0) {
+    // Count only the more urgent one
+    score += tracker.internationallyRich >= tracker.beyondBorders ? irScore : btbScore;
+  } else {
+    score += irScore + btbScore;
+  }
+  score += valueScore;
+
   for (const a of c.additional ?? []) {
     if ((a === "ALE" || a === "ALES") && tracker.ale > 0) score++;
     if (a === "Physical Activity" && tracker.physicalActivity > 0) score++;
@@ -292,6 +366,7 @@ function findGEMCourse(
 
   for (const code of Object.keys(COURSE_CATALOG)) {
     if (placed.has(code)) continue;
+    if (isSuperseded(code, placed)) continue;
     if (!isCourseAvailable(code, semIdx)) continue;
     const score = gemScore(tracker, code);
     if (score === 0) continue;

@@ -9,15 +9,13 @@ import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react"
 import { MajorStep } from "@/components/planner/major-step"
 import { MinorStep } from "@/components/planner/minor-step"
 import { InterestsStep } from "@/components/planner/interests-step"
-import { HobbiesStep } from "@/components/planner/hobbies-step"
 import { CareerStep } from "@/components/planner/career-step"
 
 const STEPS = [
   { id: 1, title: "Major", description: "Choose your field of study" },
   { id: 2, title: "Minor", description: "Add a minor (optional)" },
   { id: 3, title: "Interests", description: "What excites you academically?" },
-  { id: 4, title: "Hobbies", description: "Your personal passions" },
-  { id: 5, title: "Career Goals", description: "Where are you headed?" },
+  { id: 4, title: "Career Goals", description: "Where are you headed?" },
 ]
 
 export default function PlannerPage() {
@@ -27,7 +25,6 @@ export default function PlannerPage() {
     majors: [] as string[],
     minors: [] as string[],
     interests: [] as string[],
-    hobbies: [] as string[],
     careerGoals: [] as string[],
   })
 
@@ -41,7 +38,6 @@ export default function PlannerPage() {
       if (formData.majors.length > 0) params.set("majors", formData.majors.join(","))
       if (formData.minors.length > 0) params.set("minors", formData.minors.join(","))
       if (formData.interests.length > 0) params.set("interests", formData.interests.join(","))
-      if (formData.hobbies.length > 0) params.set("hobbies", formData.hobbies.join(","))
       if (formData.careerGoals.length > 0) params.set("careerGoals", formData.careerGoals.join(","))
       router.push(`/plan?${params.toString()}`)
     }
@@ -60,8 +56,7 @@ export default function PlannerPage() {
       case 1: return formData.majors.length >= 1
       case 2: return true // minor is optional
       case 3: return formData.interests.length >= 1
-      case 4: return formData.hobbies.length >= 1
-      case 5: return formData.careerGoals.length >= 1
+      case 4: return formData.careerGoals.length >= 1
       default: return true
     }
   }
@@ -143,9 +138,6 @@ export default function PlannerPage() {
               <InterestsStep selected={formData.interests} onChange={v => updateFormData("interests", v)} />
             )}
             {currentStep === 4 && (
-              <HobbiesStep selected={formData.hobbies} onChange={v => updateFormData("hobbies", v)} />
-            )}
-            {currentStep === 5 && (
               <CareerStep selected={formData.careerGoals} onChange={v => updateFormData("careerGoals", v)} />
             )}
           </div>
