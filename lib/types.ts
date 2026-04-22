@@ -153,6 +153,7 @@ export interface PlannedCourse {
   category: "Major" | "Minor" | "GEM" | "Elective";
   isPlaceholder?: boolean; // True if this is a placeholder course
   placeholderCategory?: string; // Category for placeholder (e.g., "Design", "Systems")
+  scheduleDisclaimer?: boolean; // True when exact semester offering is uncertain (e.g. rotating upper-level)
 }
 
 export interface AcademicPlan {

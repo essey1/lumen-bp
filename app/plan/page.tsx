@@ -125,6 +125,7 @@ function PlanContent() {
                   isPlaceholder: c.isPlaceholder,
                   placeholderCategory: c.placeholderCategory,
                   category: c.category,
+                  scheduleDisclaimer: c.scheduleDisclaimer,
                 }))}
                 isOverloaded={fall.isOverloaded}
               />
@@ -138,6 +139,7 @@ function PlanContent() {
                   isPlaceholder: c.isPlaceholder,
                   placeholderCategory: c.placeholderCategory,
                   category: c.category,
+                  scheduleDisclaimer: c.scheduleDisclaimer,
                 }))}
                 isOverloaded={spring.isOverloaded}
               />

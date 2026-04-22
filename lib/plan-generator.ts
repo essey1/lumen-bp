@@ -76,6 +76,35 @@ const INTEREST_DEPT_MAP: Record<string, string[]> = {
   "Fine Arts": ["ART", "MUS", "THR"],
 };
 
+// Keywords associated with each upper-level CSC course for interest/career matching
+const CSC_UPPER_KEYWORDS: Record<string, string[]> = {
+  "CSC 300": ["embedded", "hardware", "iot", "robotics", "systems", "electronics"],
+  "CSC 301": ["human", "ux", "design", "interface", "web", "frontend", "product", "hci"],
+  "CSC 303": ["theory", "computation", "algorithm", "math", "formal"],
+  "CSC 330": ["database", "sql", "data", "backend", "web", "full stack", "storage"],
+  "CSC 335": ["architecture", "hardware", "systems", "organization", "low-level"],
+  "CSC 410": ["ai", "intelligence", "machine learning", "data science", "neural", "artificial"],
+  "CSC 412": ["networking", "network", "security", "cloud", "infrastructure", "internet"],
+  "CSC 420": ["language", "compiler", "programming languages", "theory", "formal"],
+  "CSC 425": ["operating system", "systems", "cloud", "virtualization", "infrastructure"],
+  "CSC 426": ["open source", "software engineering", "devops", "agile", "collaborative"],
+  "CSC 433": ["numerical", "math", "scientific computing", "simulation", "analysis"],
+  "CSC 440": ["algorithm", "analysis", "optimization", "data science", "efficiency"],
+  "CSC 445": ["complexity", "theory", "computation", "modeling", "formal"],
+  "CSC 450": ["security", "cybersecurity", "hacking", "network", "cryptography"],
+};
+
+// Score a course against the student's career goals and interests (higher = better fit)
+function scoreUpperLevelCourse(code: string, profile: StudentProfile): number {
+  const keywords = CSC_UPPER_KEYWORDS[code] ?? [];
+  if (keywords.length === 0) return 0;
+  const targets = [...profile.careerGoals, ...profile.interests]
+    .map(s => s.toLowerCase());
+  return keywords.reduce((score, kw) => {
+    return score + targets.filter(t => t.includes(kw) || kw.includes(t)).length;
+  }, 0);
+}
+
 // GEM requirements tracker
 interface GEMTracker {
   waysOfKnowing: Partial<Record<WayOfKnowing, number>>;
@@ -458,14 +487,17 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>): C
         collected.add(code);
       }
 
-      // selectFromCategories: one course per sub-category
+      // selectFromCategories: one course per sub-category, ranked by career/interest fit
       if (req.selectFromCategories) {
         for (const sub of req.selectFromCategories) {
-          let found = false;
-          for (const code of sub.courses) {
-            if (collected.has(code)) continue;
+          // Rank available courses by how well they match the student's goals
+          const candidates = sub.courses
+            .filter(c => !collected.has(c) && COURSE_CATALOG[c])
+            .sort((a, b) => scoreUpperLevelCourse(b, profile) - scoreUpperLevelCourse(a, profile));
+
+          const code = candidates[0];
+          if (code) {
             const data = COURSE_CATALOG[code];
-            if (!data) continue;
             const isMaj = code.startsWith(majorCode.split("_")[0] + " ");
             result.push({
               course: {
@@ -474,15 +506,13 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>): C
                 credits: data.credits,
                 fulfills: [`${major.name}: ${req.category} (${sub.category})`],
                 category: isMaj ? "Major" : "Elective",
+                scheduleDisclaimer: true,
               },
               minSem: 3,
               maxSem: 7,
             });
             collected.add(code);
-            found = true;
-            break;
-          }
-          if (!found) {
+          } else {
             result.push({
               course: {
                 code: majorCode.split("_")[0],
