@@ -746,73 +746,78 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     applyGEM(gemTracker, li.code);
   }
 
-  // 2. Collect required courses (major + minor)
+  // 2. Collect required courses — major and minor kept separate for priority ordering
   const crossReqBonus = buildCrossReqBonus(profile);
   const majorCourses = collectMajorCourses(profile, usedCodes, crossReqBonus);
   const minorCourses = collectMinorCourses(profile, usedCodes, crossReqBonus);
 
-  // Sort by minSem then course number (lower numbers = prerequisites tend to come first)
-  const allRequired: CourseToPlace[] = [...majorCourses, ...minorCourses].sort((a, b) => {
-    if (a.minSem !== b.minSem) return a.minSem - b.minSem;
-    const aNum = parseInt(a.course.code.match(/\d+/)?.[0] ?? "0");
-    const bNum = parseInt(b.course.code.match(/\d+/)?.[0] ?? "0");
-    return aNum - bNum;
-  });
-
-  // 3. Place required courses — three passes to resolve prerequisite chains
-  let remaining = allRequired;
-  for (let pass = 0; pass < 3; pass++) {
-    const stillUnplaced: CourseToPlace[] = [];
-    for (const item of remaining) {
-      const semIdx = findSemester(semesters, item.course, item.minSem, item.maxSem, placedMap);
-      if (semIdx !== -1) {
-        placeCourse(semesters, item.course, semIdx, placedMap);
-        applyGEM(gemTracker, item.course.code);
-      } else {
-        stillUnplaced.push(item);
-      }
-    }
-    remaining = stillUnplaced;
-    if (remaining.length === 0) break;
+  function sortBySequence(list: CourseToPlace[]): CourseToPlace[] {
+    return [...list].sort((a, b) => {
+      if (a.minSem !== b.minSem) return a.minSem - b.minSem;
+      const aNum = parseInt(a.course.code.match(/\d+/)?.[0] ?? "0");
+      const bNum = parseInt(b.course.code.match(/\d+/)?.[0] ?? "0");
+      return aNum - bNum;
+    });
   }
-  for (const item of remaining) {
+
+  function runPlacementPasses(items: CourseToPlace[]): CourseToPlace[] {
+    let queue = sortBySequence(items);
+    for (let pass = 0; pass < 3; pass++) {
+      const retry: CourseToPlace[] = [];
+      for (const item of queue) {
+        const semIdx = findSemester(semesters, item.course, item.minSem, item.maxSem, placedMap);
+        if (semIdx !== -1) {
+          placeCourse(semesters, item.course, semIdx, placedMap);
+          applyGEM(gemTracker, item.course.code);
+        } else {
+          retry.push(item);
+        }
+      }
+      queue = retry;
+      if (queue.length === 0) break;
+    }
+    return queue; // whatever still couldn't be placed
+  }
+
+  // 3. Place in priority order: major → GEM → minor → free electives
+  // Major requirements first — they have first pick of all open slots
+  const unplacedMajor = runPlacementPasses(majorCourses);
+  for (const item of unplacedMajor) {
     unfulfilledRequirements.push(`${item.course.name} (${item.course.fulfills.join(", ")})`);
   }
 
-  // 4. Fill remaining slots.
-  // Priority: GEM requirements → Free Elective placeholder (max 2 across entire plan).
-  let freeElectivesPlaced = 0;
-  const MAX_FREE_ELECTIVES = 2;
-
+  // GEM courses fill remaining gaps after major (schedule-gated, spread across semesters)
   for (let semIdx = 0; semIdx < 8; semIdx++) {
-    while (semesters[semIdx].totalCredits < 4) {
-      // GEM courses (schedule-gated)
-      if (hasUnfulfilledGEM(gemTracker)) {
-        const gemCourse = findGEMCourse(gemTracker, semIdx, usedCodes, pref);
-        if (gemCourse) {
-          placeCourse(semesters, gemCourse, semIdx, placedMap);
-          usedCodes.add(gemCourse.code);
-          applyGEM(gemTracker, gemCourse.code);
-          continue;
-        }
-      }
+    while (semesters[semIdx].totalCredits < 4 && hasUnfulfilledGEM(gemTracker)) {
+      const gemCourse = findGEMCourse(gemTracker, semIdx, usedCodes, pref);
+      if (!gemCourse) break;
+      placeCourse(semesters, gemCourse, semIdx, placedMap);
+      usedCodes.add(gemCourse.code);
+      applyGEM(gemTracker, gemCourse.code);
+    }
+  }
 
-      // Free Elective placeholder — capped at 2 for the whole plan
-      if (freeElectivesPlaced < MAX_FREE_ELECTIVES) {
-        semesters[semIdx].courses.push({
-          code: "Elective",
-          name: "Free Elective",
-          credits: 1,
-          fulfills: ["Free Elective"],
-          category: "Elective",
-          isPlaceholder: true,
-          placeholderCategory: "Free Choice",
-        });
-        semesters[semIdx].totalCredits += 1;
-        freeElectivesPlaced++;
-      } else {
-        break; // no more filler — leave this slot open
-      }
+  // Minor requirements after GEM — 2 passes (major may have freed slots via prerequisite chains)
+  const unplacedMinor = runPlacementPasses(minorCourses);
+  for (const item of unplacedMinor) {
+    unfulfilledRequirements.push(`${item.course.name} (${item.course.fulfills.join(", ")})`);
+  }
+
+  // 4. Free Elective placeholders — max 2 for the entire plan
+  let freeElectivesPlaced = 0;
+  for (let semIdx = 0; semIdx < 8 && freeElectivesPlaced < 2; semIdx++) {
+    while (semesters[semIdx].totalCredits < 4 && freeElectivesPlaced < 2) {
+      semesters[semIdx].courses.push({
+        code: "Elective",
+        name: "Free Elective",
+        credits: 1,
+        fulfills: ["Free Elective"],
+        category: "Elective",
+        isPlaceholder: true,
+        placeholderCategory: "Free Choice",
+      });
+      semesters[semIdx].totalCredits += 1;
+      freeElectivesPlaced++;
     }
   }
 
