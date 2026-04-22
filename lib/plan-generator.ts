@@ -273,7 +273,10 @@ function applyGEM(tracker: GEMTracker, courseCode: string): void {
   }
 }
 
-// Returns the earliest semester >= minSem where the course can be placed
+// Returns the earliest semester >= minSem where the course can be placed.
+// scheduleDisclaimer courses (CSC rotating categories) skip the availability check.
+// For required courses (Major/Minor) that can't fit within schedule constraints,
+// returns a fallback slot and sets course.scheduleDisclaimer so the card shows a warning.
 function findSemester(
   semesters: SemesterPlan[],
   course: PlannedCourse,
@@ -289,40 +292,53 @@ function findSemester(
     prereqFloor = Math.max(prereqFloor, pSem + 1);
   }
 
-  // Try within range, respecting availability
+  const isMajorMinor = course.category === "Major" || course.category === "Minor";
+  // CSC rotating-category courses bypass schedule — exact semester is unknown
+  const skipSchedule = course.scheduleDisclaimer === true;
+
+  function majorMinorOk(s: number, relaxCap = false): boolean {
+    if (!isMajorMinor) return true;
+    const count = semesters[s].courses.filter(
+      c => c.category === "Major" || c.category === "Minor"
+    ).length;
+    const cap = s === 0 ? 1 : relaxCap ? 3 : 2;
+    return count < cap;
+  }
+
+  // Pass 1: strict — respect schedule and major/minor cap, within minSem..maxSem
   for (let s = prereqFloor; s <= Math.min(maxSem, 7); s++) {
     if (semesters[s].totalCredits >= 4) continue;
-    if (course.category === "Major" || course.category === "Minor") {
-      const majorMinorCount = semesters[s].courses.filter(
-        c => c.category === "Major" || c.category === "Minor"
-      ).length;
-      const maxMajorPerSem = s === 0 ? 1 : 2;
-      if (majorMinorCount >= maxMajorPerSem) continue;
-    }
-    if (!isCourseAvailable(course.code, s)) continue;
+    if (!majorMinorOk(s)) continue;
+    if (!skipSchedule && !isCourseAvailable(course.code, s)) continue;
     return s;
   }
 
-  // Retry ignoring availability (course has no CSV data)
+  // Pass 2: relax major/minor cap (up to 3 per sem) but keep schedule check
   for (let s = prereqFloor; s <= Math.min(maxSem, 7); s++) {
     if (semesters[s].totalCredits >= 4) continue;
-    if (course.category === "Major" || course.category === "Minor") {
-      const majorMinorCount = semesters[s].courses.filter(
-        c => c.category === "Major" || c.category === "Minor"
-      ).length;
-      const maxMajorPerSem = s === 0 ? 1 : 2;
-      if (majorMinorCount >= maxMajorPerSem) continue;
-    }
+    if (!majorMinorOk(s, true)) continue;
+    if (!skipSchedule && !isCourseAvailable(course.code, s)) continue;
     return s;
   }
 
-  // Last resort: any open slot beyond maxSem
-  for (let s = Math.min(maxSem, 7) + 1; s < 8; s++) {
+  // Pass 3: extend beyond maxSem (still in 8 semesters), respect schedule
+  for (let s = prereqFloor; s < 8; s++) {
     if (semesters[s].totalCredits >= 4) continue;
+    if (!skipSchedule && !isCourseAvailable(course.code, s)) continue;
     return s;
   }
 
-  return -1;
+  // Pass 4 (required courses only): schedule-blind fallback — place anywhere with space.
+  // Sets scheduleDisclaimer so the card warns the student to confirm offering.
+  if (isMajorMinor) {
+    for (let s = prereqFloor; s < 8; s++) {
+      if (semesters[s].totalCredits >= 4) continue;
+      course.scheduleDisclaimer = true;
+      return s;
+    }
+  }
+
+  return -1; // no space at all in 8 semesters
 }
 
 function placeCourse(
@@ -757,26 +773,24 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     return aNum - bNum;
   });
 
-  // 3. Place required courses — multiple passes to resolve prerequisites
-  const unplaced: CourseToPlace[] = [];
-  for (const item of allRequired) {
-    const semIdx = findSemester(semesters, item.course, item.minSem, item.maxSem, placedMap);
-    if (semIdx !== -1) {
-      placeCourse(semesters, item.course, semIdx, placedMap);
-      applyGEM(gemTracker, item.course.code);
-    } else {
-      unplaced.push(item);
+  // 3. Place required courses — three passes to resolve prerequisite chains
+  let remaining = allRequired;
+  for (let pass = 0; pass < 3; pass++) {
+    const stillUnplaced: CourseToPlace[] = [];
+    for (const item of remaining) {
+      const semIdx = findSemester(semesters, item.course, item.minSem, item.maxSem, placedMap);
+      if (semIdx !== -1) {
+        placeCourse(semesters, item.course, semIdx, placedMap);
+        applyGEM(gemTracker, item.course.code);
+      } else {
+        stillUnplaced.push(item);
+      }
     }
+    remaining = stillUnplaced;
+    if (remaining.length === 0) break;
   }
-  // Second pass for anything that failed (e.g. prereq placed after first attempt)
-  for (const item of unplaced) {
-    const semIdx = findSemester(semesters, item.course, item.minSem, item.maxSem, placedMap);
-    if (semIdx !== -1) {
-      placeCourse(semesters, item.course, semIdx, placedMap);
-      applyGEM(gemTracker, item.course.code);
-    } else {
-      unfulfilledRequirements.push(`${item.course.name} (${item.course.fulfills.join(", ")})`);
-    }
+  for (const item of remaining) {
+    unfulfilledRequirements.push(`${item.course.name} (${item.course.fulfills.join(", ")})`);
   }
 
   // 4. Fill remaining slots following the target footprint:
