@@ -328,17 +328,17 @@ function findSemester(
     return s;
   }
 
-  // Pass 4 (required courses only): schedule-blind fallback — place anywhere with space.
-  // Sets scheduleDisclaimer so the card warns the student to confirm offering.
-  if (isMajorMinor) {
+  // Pass 4 (CSC rotating-category courses only): schedule-blind final fallback.
+  // Only courses already marked scheduleDisclaimer bypass the schedule here —
+  // all other courses return -1 and go to unfulfilledRequirements.
+  if (skipSchedule) {
     for (let s = prereqFloor; s < 8; s++) {
       if (semesters[s].totalCredits >= 4) continue;
-      course.scheduleDisclaimer = true;
       return s;
     }
   }
 
-  return -1; // no space at all in 8 semesters
+  return -1; // cannot fit within schedule constraints → unfulfilled
 }
 
 function placeCourse(
