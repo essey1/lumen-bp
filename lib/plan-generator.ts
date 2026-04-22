@@ -780,11 +780,13 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
   }
 
   // 4. Fill remaining slots.
-  // Priority: GEM requirements → Free Elective placeholder.
-  // No random catalog scraping — only scheduled, requirement-fulfilling courses are placed.
+  // Priority: GEM requirements → Free Elective placeholder (max 2 across entire plan).
+  let freeElectivesPlaced = 0;
+  const MAX_FREE_ELECTIVES = 2;
+
   for (let semIdx = 0; semIdx < 8; semIdx++) {
     while (semesters[semIdx].totalCredits < 4) {
-      // GEM: aim for at least 1 non-L&I GEM per semester, then overflow as needed
+      // GEM courses (schedule-gated)
       if (hasUnfulfilledGEM(gemTracker)) {
         const gemCourse = findGEMCourse(gemTracker, semIdx, usedCodes, pref);
         if (gemCourse) {
@@ -795,17 +797,22 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
         }
       }
 
-      // Free Elective placeholder — student chooses based on their interests
-      semesters[semIdx].courses.push({
-        code: "Elective",
-        name: "Free Elective",
-        credits: 1,
-        fulfills: ["Free Elective"],
-        category: "Elective",
-        isPlaceholder: true,
-        placeholderCategory: "Free Choice",
-      });
-      semesters[semIdx].totalCredits += 1;
+      // Free Elective placeholder — capped at 2 for the whole plan
+      if (freeElectivesPlaced < MAX_FREE_ELECTIVES) {
+        semesters[semIdx].courses.push({
+          code: "Elective",
+          name: "Free Elective",
+          credits: 1,
+          fulfills: ["Free Elective"],
+          category: "Elective",
+          isPlaceholder: true,
+          placeholderCategory: "Free Choice",
+        });
+        semesters[semIdx].totalCredits += 1;
+        freeElectivesPlaced++;
+      } else {
+        break; // no more filler — leave this slot open
+      }
     }
   }
 
