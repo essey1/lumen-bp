@@ -289,7 +289,7 @@ export const MINORS: Record<string, Minor> = {
         category: "Upper Level",
         description: "Three upper-level math courses",
         coursesRequired: 3,
-        courses: ["MAT 216", "MAT 225", "MAT 312", "MAT 415"],
+        courses: ["MAT 216", "MAT 225", "MAT 312", "MAT 330", "MAT 337", "MAT 415", "MAT 433", "MAT 434"],
       },
     ],
   },

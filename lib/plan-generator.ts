@@ -76,33 +76,100 @@ const INTEREST_DEPT_MAP: Record<string, string[]> = {
   "Fine Arts": ["ART", "MUS", "THR"],
 };
 
-// Keywords associated with each upper-level CSC course for interest/career matching
-const CSC_UPPER_KEYWORDS: Record<string, string[]> = {
-  "CSC 300": ["embedded", "hardware", "iot", "robotics", "systems", "electronics"],
-  "CSC 301": ["human", "ux", "design", "interface", "web", "frontend", "product", "hci"],
-  "CSC 303": ["theory", "computation", "algorithm", "math", "formal"],
-  "CSC 330": ["database", "sql", "data", "backend", "web", "full stack", "storage"],
-  "CSC 335": ["architecture", "hardware", "systems", "organization", "low-level"],
-  "CSC 410": ["ai", "intelligence", "machine learning", "data science", "neural", "artificial"],
-  "CSC 412": ["networking", "network", "security", "cloud", "infrastructure", "internet"],
-  "CSC 420": ["language", "compiler", "programming languages", "theory", "formal"],
-  "CSC 425": ["operating system", "systems", "cloud", "virtualization", "infrastructure"],
-  "CSC 426": ["open source", "software engineering", "devops", "agile", "collaborative"],
-  "CSC 433": ["numerical", "math", "scientific computing", "simulation", "analysis"],
-  "CSC 440": ["algorithm", "analysis", "optimization", "data science", "efficiency"],
-  "CSC 445": ["complexity", "theory", "computation", "modeling", "formal"],
-  "CSC 450": ["security", "cybersecurity", "hacking", "network", "cryptography"],
+// Extra keyword hints per course code for career matching (supplements name-based scoring)
+const COURSE_CAREER_HINTS: Record<string, string[]> = {
+  // CSC upper-level
+  "CSC 300": ["embedded", "hardware", "iot", "robotics", "electronics"],
+  "CSC 301": ["ux", "interface", "frontend", "hci", "product"],
+  "CSC 303": ["theory", "formal", "computation"],
+  "CSC 330": ["sql", "backend", "storage"],
+  "CSC 335": ["architecture", "low-level"],
+  "CSC 410": ["ai", "artificial intelligence", "neural", "machine learning"],
+  "CSC 412": ["cloud", "infrastructure", "internet"],
+  "CSC 420": ["compiler", "formal"],
+  "CSC 425": ["virtualization", "cloud"],
+  "CSC 426": ["devops", "agile", "collaborative", "open source"],
+  "CSC 433": ["numerical", "scientific computing", "simulation"],
+  "CSC 440": ["optimization", "efficiency"],
+  "CSC 445": ["modeling", "formal"],
+  "CSC 450": ["cybersecurity", "cryptography"],
+  // PHY / MAT distribution — career-domain hints
+  "PHY 321": ["mechanical", "mechanics", "dynamics", "classical"],
+  "PHY 335": ["biophysics"],
+  "PHY 340": ["biophysics", "biology"],
+  "PHY 482": ["quantum", "modern"],
+  "PHY 485": ["materials", "solid state"],
+  "MAT 433": ["numerical", "simulation", "scientific", "computational", "engineering"],
+  "MAT 434": ["analysis", "real analysis", "pure math"],
+  "MAT 337": ["differential", "dynamics", "engineering", "mechanical"],
+  "MAT 330": ["multivariable", "calculus", "engineering"],
+  "MAT 312": ["optimization", "operations", "industrial", "management"],
+  "MAT 415": ["combinatorics", "discrete", "theory"],
+  "CHM 311": ["analytical", "chemistry"],
+  "SENS 310": ["ecology", "environment", "biology"],
 };
 
-// Score a course against the student's career goals and interests (higher = better fit)
+// Career-goal keyword expansions (maps goal → relevant technical words)
+const CAREER_KEYWORDS: Record<string, string[]> = {
+  "Mechanical Engineer": ["mechanical", "mechanics", "thermal", "dynamics", "materials", "numerical", "classical", "manufacturing", "engineering"],
+  "Industrial Designer": ["design", "manufacturing", "materials", "production", "prototype", "ergonomics", "industrial"],
+  "Software Engineer": ["software", "programming", "systems", "open source", "engineering"],
+  "Data Scientist": ["data", "algorithm", "analysis", "mining", "numerical", "statistics", "machine learning"],
+  "Cybersecurity": ["security", "network", "cryptography", "systems"],
+  "Research": ["analysis", "research", "laboratory", "numerical", "computational", "experimental", "simulation"],
+  "AI Engineer": ["ai", "artificial intelligence", "neural", "machine learning", "algorithm"],
+  "Environmental Engineer": ["environment", "ecology", "sustainability", "environmental"],
+};
+
+// General career fit scorer — works for any course
+function scoreCourseFit(code: string, profile: StudentProfile): number {
+  const data = COURSE_CATALOG[code];
+  if (!data) return 0;
+
+  const dept = code.split(" ")[0];
+  const nameLower = data.name.toLowerCase();
+  const allTargets = [...profile.careerGoals, ...profile.interests];
+  const targetWords = allTargets
+    .flatMap(t => [...(CAREER_KEYWORDS[t] ?? []), t.toLowerCase()])
+    .map(w => w.toLowerCase());
+
+  let score = 0;
+
+  // Department preference match
+  for (const tag of allTargets) {
+    if ((INTEREST_DEPT_MAP[tag] ?? []).includes(dept)) score += 3;
+  }
+
+  // Course name word overlap
+  for (const word of targetWords) {
+    if (word.length > 3 && nameLower.includes(word)) score += 2;
+  }
+
+  // Hint keyword overlap
+  for (const hint of COURSE_CAREER_HINTS[code] ?? []) {
+    if (targetWords.some(w => w.includes(hint) || hint.includes(w))) score += 2;
+  }
+
+  return score;
+}
+
+// Build cross-requirement bonus: courses appearing in more requirement pools score higher.
+// A course that satisfies both PHY Additional Distribution AND MAT minor gets a bonus.
+function buildCrossReqBonus(profile: StudentProfile): Record<string, number> {
+  const bonus: Record<string, number> = {};
+  const allReqs = [
+    ...profile.majors.flatMap(m => MAJORS[m]?.requirements ?? []),
+    ...(profile.minors ?? []).flatMap(m => MINORS[m]?.requirements ?? []),
+  ];
+  for (const req of allReqs) {
+    for (const c of req.courses) bonus[c] = (bonus[c] ?? 0) + 1;
+  }
+  return bonus;
+}
+
+// Backwards-compat alias for selectFromCategories (CSC upper-level)
 function scoreUpperLevelCourse(code: string, profile: StudentProfile): number {
-  const keywords = CSC_UPPER_KEYWORDS[code] ?? [];
-  if (keywords.length === 0) return 0;
-  const targets = [...profile.careerGoals, ...profile.interests]
-    .map(s => s.toLowerCase());
-  return keywords.reduce((score, kw) => {
-    return score + targets.filter(t => t.includes(kw) || kw.includes(t)).length;
-  }, 0);
+  return scoreCourseFit(code, profile);
 }
 
 // GEM requirements tracker
@@ -450,7 +517,7 @@ interface CourseToPlace {
   maxSem: number;
 }
 
-function collectMajorCourses(profile: StudentProfile, collected: Set<string>): CourseToPlace[] {
+function collectMajorCourses(profile: StudentProfile, collected: Set<string>, crossReqBonus: Record<string, number> = {}): CourseToPlace[] {
   const result: CourseToPlace[] = [];
 
   for (const majorCode of profile.majors) {
@@ -537,12 +604,19 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>): C
       const already = req.courses.filter(c => collected.has(c)).length;
       const needed = Math.max(0, req.coursesRequired - already);
       let count = 0;
-      for (const code of req.courses) {
+
+      // Sort candidates: prefer courses with high career fit + cross-req bonus
+      const candidates = req.courses
+        .filter(c => !collected.has(c) && !req.mustInclude?.includes(c) && COURSE_CATALOG[c])
+        .sort((a, b) => {
+          const sa = scoreCourseFit(a, profile) + (crossReqBonus[a] ?? 0) * 2;
+          const sb = scoreCourseFit(b, profile) + (crossReqBonus[b] ?? 0) * 2;
+          return sb - sa;
+        });
+
+      for (const code of candidates) {
         if (count >= needed) break;
-        if (collected.has(code)) continue;
-        if (req.mustInclude?.includes(code)) continue;
         const data = COURSE_CATALOG[code];
-        if (!data) continue;
         const isMaj = code.startsWith(majorCode.split("_")[0] + " ");
         const level = parseInt(code.match(/\d+/)?.[0] ?? "100");
         result.push({
@@ -582,7 +656,7 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>): C
   return result;
 }
 
-function collectMinorCourses(profile: StudentProfile, collected: Set<string>): CourseToPlace[] {
+function collectMinorCourses(profile: StudentProfile, collected: Set<string>, crossReqBonus: Record<string, number> = {}): CourseToPlace[] {
   const result: CourseToPlace[] = [];
 
   for (const minorCode of profile.minors ?? []) {
@@ -590,11 +664,26 @@ function collectMinorCourses(profile: StudentProfile, collected: Set<string>): C
     if (!minor) continue;
 
     for (const req of minor.requirements) {
-      const sources = req.mustInclude?.length ? req.mustInclude : req.courses;
+      // Count courses from this requirement's list that are already placed —
+      // they satisfy the requirement even though we won't place them again.
+      const allSources = [...(req.mustInclude ?? []), ...req.courses];
+      const alreadySatisfied = allSources.filter(c => collected.has(c)).length;
+      const needed = Math.max(0, req.coursesRequired - alreadySatisfied);
+      if (needed === 0) continue;
+
+      // mustInclude first, then fill remaining from full list sorted by fit
+      const mustPlace = (req.mustInclude ?? []).filter(c => !collected.has(c) && COURSE_CATALOG[c]);
+      const candidates = req.courses
+        .filter(c => !collected.has(c) && !(req.mustInclude ?? []).includes(c) && COURSE_CATALOG[c])
+        .sort((a, b) => {
+          const sa = scoreCourseFit(a, profile) + (crossReqBonus[a] ?? 0) * 2;
+          const sb = scoreCourseFit(b, profile) + (crossReqBonus[b] ?? 0) * 2;
+          return sb - sa;
+        });
+
       let count = 0;
-      for (const code of sources) {
-        if (count >= req.coursesRequired) break;
-        if (collected.has(code)) continue;
+      for (const code of [...mustPlace, ...candidates]) {
+        if (count >= needed) break;
         const data = COURSE_CATALOG[code];
         if (!data) continue;
         const level = parseInt(code.match(/\d+/)?.[0] ?? "100");
@@ -611,29 +700,6 @@ function collectMinorCourses(profile: StudentProfile, collected: Set<string>): C
         });
         collected.add(code);
         count++;
-      }
-      // Try remaining courses from the full list if mustInclude didn't fill the quota
-      if (count < req.coursesRequired) {
-        for (const code of req.courses) {
-          if (count >= req.coursesRequired) break;
-          if (collected.has(code)) continue;
-          const data = COURSE_CATALOG[code];
-          if (!data) continue;
-          const level = parseInt(code.match(/\d+/)?.[0] ?? "100");
-          result.push({
-            course: {
-              code: data.code,
-              name: data.name,
-              credits: data.credits,
-              fulfills: [`${minor.name}: ${req.category}`],
-              category: "Minor",
-            },
-            minSem: level >= 300 ? 3 : 0,
-            maxSem: 7,
-          });
-          collected.add(code);
-          count++;
-        }
       }
     }
   }
@@ -679,8 +745,9 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
   }
 
   // 2. Collect required courses (major + minor)
-  const majorCourses = collectMajorCourses(profile, usedCodes);
-  const minorCourses = collectMinorCourses(profile, usedCodes);
+  const crossReqBonus = buildCrossReqBonus(profile);
+  const majorCourses = collectMajorCourses(profile, usedCodes, crossReqBonus);
+  const minorCourses = collectMinorCourses(profile, usedCodes, crossReqBonus);
 
   // Sort by minSem then course number (lower numbers = prerequisites tend to come first)
   const allRequired: CourseToPlace[] = [...majorCourses, ...minorCourses].sort((a, b) => {
