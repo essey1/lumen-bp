@@ -7,6 +7,7 @@ interface Course {
   code: string
   name: string
   credits: number
+  fulfills?: string[]
   isPlaceholder?: boolean
   placeholderCategory?: string
   category?: string
@@ -73,6 +74,11 @@ export function SemesterCard({
               )}>
                 {course.name}
               </p>
+              {!course.isPlaceholder && course.fulfills && course.fulfills.length > 0 && (
+                <p className="mt-0.5 text-[10px] text-muted-foreground/60 leading-tight">
+                  {course.fulfills.join(" · ")}
+                </p>
+              )}
             </div>
             <Badge 
               variant={course.isPlaceholder ? "outline" : "secondary"} 

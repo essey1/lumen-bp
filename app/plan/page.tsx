@@ -42,12 +42,12 @@ function PlanContent() {
   const plan = generateAcademicPlan(profile)
   const stats = getPlanStats(plan)
 
-  // Group semesters by year
+  // Group semesters by actual academic year (starting Fall 2026)
   const years = [
-    { year: 1, fall: plan.semesters[0], spring: plan.semesters[1] },
-    { year: 2, fall: plan.semesters[2], spring: plan.semesters[3] },
-    { year: 3, fall: plan.semesters[4], spring: plan.semesters[5] },
-    { year: 4, fall: plan.semesters[6], spring: plan.semesters[7] },
+    { label: "2026 – 27", fallTitle: "Fall 2026", springTitle: "Spring 2027", fall: plan.semesters[0], spring: plan.semesters[1] },
+    { label: "2027 – 28", fallTitle: "Fall 2027", springTitle: "Spring 2028", fall: plan.semesters[2], spring: plan.semesters[3] },
+    { label: "2028 – 29", fallTitle: "Fall 2028", springTitle: "Spring 2029", fall: plan.semesters[4], spring: plan.semesters[5] },
+    { label: "2029 – 30", fallTitle: "Fall 2029", springTitle: "Spring 2030", fall: plan.semesters[6], spring: plan.semesters[7] },
   ]
 
   // Get unfulfilled requirements for warning
@@ -109,18 +109,19 @@ function PlanContent() {
 
         {/* 4-Year Grid */}
         <div className="mb-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {years.map(({ year, fall, spring }) => (
-            <div key={year} className="space-y-4">
+          {years.map(({ label, fallTitle, springTitle, fall, spring }) => (
+            <div key={label} className="space-y-4">
               <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
                 <GraduationCap className="h-5 w-5 text-primary" />
-                Year {year}
+                {label}
               </h2>
               <SemesterCard
-                title="Fall Semester"
+                title={fallTitle}
                 courses={fall.courses.map(c => ({
                   code: c.code,
                   name: c.name,
                   credits: c.credits,
+                  fulfills: c.fulfills,
                   isPlaceholder: c.isPlaceholder,
                   placeholderCategory: c.placeholderCategory,
                   category: c.category,
@@ -128,11 +129,12 @@ function PlanContent() {
                 isOverloaded={fall.isOverloaded}
               />
               <SemesterCard
-                title="Spring Semester"
+                title={springTitle}
                 courses={spring.courses.map(c => ({
                   code: c.code,
                   name: c.name,
                   credits: c.credits,
+                  fulfills: c.fulfills,
                   isPlaceholder: c.isPlaceholder,
                   placeholderCategory: c.placeholderCategory,
                   category: c.category,
