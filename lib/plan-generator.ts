@@ -512,20 +512,6 @@ function findGEMCourse(
 }
 
 // Find any elective course from preferred departments available in the semester
-function findElectiveCourse(
-  semIdx: number,
-  placed: Set<string>,
-  preferred: string[]
-): PlannedCourse | null {
-  const code = findCatalogCourse(
-    c => isCourseAvailable(c, semIdx),
-    placed,
-    preferred
-  );
-  if (!code) return null;
-  const cat = COURSE_CATALOG[code];
-  return { code, name: cat.name, credits: cat.credits, fulfills: ["Elective"], category: "Elective" };
-}
 
 interface CourseToPlace {
   course: PlannedCourse;
@@ -793,39 +779,12 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     unfulfilledRequirements.push(`${item.course.name} (${item.course.fulfills.join(", ")})`);
   }
 
-  // 4. Fill remaining slots following the target footprint:
-  //    ~2 major/minor (already placed) | ~1 GEM | ~1 career/interest elective
-  //
-  // Strategy per empty slot:
-  //   - If this semester has no non-L&I GEM yet AND GEM is still needed → GEM
-  //   - Else → interest/career elective (or GEM if no elective found)
-  //   - Final fallback → placeholder
+  // 4. Fill remaining slots.
+  // Priority: GEM requirements → Free Elective placeholder.
+  // No random catalog scraping — only scheduled, requirement-fulfilling courses are placed.
   for (let semIdx = 0; semIdx < 8; semIdx++) {
     while (semesters[semIdx].totalCredits < 4) {
-      const nonLiGemCount = semesters[semIdx].courses.filter(
-        c => c.category === "GEM" && !c.code.startsWith("L&I")
-      ).length;
-
-      // Prioritise placing exactly 1 non-L&I GEM per semester
-      if (nonLiGemCount === 0 && hasUnfulfilledGEM(gemTracker)) {
-        const gemCourse = findGEMCourse(gemTracker, semIdx, usedCodes, pref);
-        if (gemCourse) {
-          placeCourse(semesters, gemCourse, semIdx, placedMap);
-          usedCodes.add(gemCourse.code);
-          applyGEM(gemTracker, gemCourse.code);
-          continue;
-        }
-      }
-
-      // Use this slot for an interest/career elective
-      const elective = findElectiveCourse(semIdx, usedCodes, pref);
-      if (elective) {
-        placeCourse(semesters, elective, semIdx, placedMap);
-        usedCodes.add(elective.code);
-        continue;
-      }
-
-      // Overflow: still-unfulfilled GEM requirements get a second slot if needed
+      // GEM: aim for at least 1 non-L&I GEM per semester, then overflow as needed
       if (hasUnfulfilledGEM(gemTracker)) {
         const gemCourse = findGEMCourse(gemTracker, semIdx, usedCodes, pref);
         if (gemCourse) {
@@ -836,7 +795,7 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
         }
       }
 
-      // Last resort placeholder
+      // Free Elective placeholder — student chooses based on their interests
       semesters[semIdx].courses.push({
         code: "Elective",
         name: "Free Elective",
