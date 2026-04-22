@@ -1,14 +1,9 @@
 // Reads all CSV files in data/ and builds lib/course-schedule-data.ts.
-// Each CSV may cover a different date range with varying columns.
-// Strategy:
-//   1. For each semester that IS in the CSV, use the exact value.
-//   2. For semesters NOT in the CSV, detect the offering pattern from same-season
-//      historical data and extrapolate:
-//      - "always"  → offered every semester of that season
-//      - "never"   → never offered
-//      - "even"    → offered in even-year semesters only  (e.g. Fall 26, Fall 28)
-//      - "odd"     → offered in odd-year semesters only   (e.g. Fall 27, Fall 29)
-//      - "majority"→ majority of historical semesters (fallback)
+// Coverage priority:
+//   1. CSV files (exact per-semester data + pattern extrapolation for gaps)
+//   2. JSON semester files (S25, F25, S26, F26) for courses absent from CSVs
+//   3. Course catalog (adds remaining courses as all-available)
+// Pattern detection per season: always / never / even-years / odd-years / majority
 // Run: npx tsx scripts/csv-to-schedule.ts
 import * as fs from "fs";
 import * as path from "path";
@@ -154,7 +149,7 @@ for (const file of csvFiles) {
   console.log(`  ${file.padEnd(22)} → ${courseCount} courses, ${colInfo.filter(Boolean).length} semester cols`);
 }
 
-// Now build the final schedule
+// ── Phase 1: Build schedule from CSV data ────────────────────────────────────
 const schedule: Record<string, number[]> = {};
 
 for (const [code, data] of Object.entries(courseData)) {
@@ -162,39 +157,86 @@ for (const [code, data] of Object.entries(courseData)) {
   const springPattern = detectPattern(data.spring);
 
   const arr = TARGET.map(({ label, season, year }) => {
-    // If we have an exact value for this target semester, use it
     const exact = exactData[code]?.get(label);
     if (exact !== undefined) return exact;
-    // Otherwise extrapolate from pattern
     return applyPattern(season === "fall" ? fallPattern : springPattern, year);
   });
 
   schedule[code] = arr;
 }
+console.log(`\nFrom CSVs: ${Object.keys(schedule).length} courses`);
+
+// ── Phase 2: Fill missing courses from JSON semester files ───────────────────
+const JSON_FILES = {
+  s25: "data/course-catalog/berea_spring2025_courses.json",
+  f25: "data/course-catalog/berea_fall2025_courses.json",
+  s26: "data/course-catalog/berea_spring2026_courses.json",
+  f26: "data/course-catalog/berea_courses_with_perspectives-fall-26.json",
+};
+
+const jsonFall  = new Set<string>();
+const jsonSpring = new Set<string>();
+
+function loadJson(file: string, season: "fall" | "spring") {
+  const raw = JSON.parse(fs.readFileSync(path.resolve(file), "utf8"));
+  for (const c of raw) {
+    const code = `${c.subject} ${c.courseNumber}`;
+    if (season === "fall") jsonFall.add(code);
+    else jsonSpring.add(code);
+  }
+}
+loadJson(JSON_FILES.f25, "fall");
+loadJson(JSON_FILES.f26, "fall");
+loadJson(JSON_FILES.s25, "spring");
+loadJson(JSON_FILES.s26, "spring");
+
+let jsonFilled = 0;
+for (const code of [...jsonFall, ...jsonSpring]) {
+  if (schedule[code]) continue; // already covered by CSV
+  const f = jsonFall.has(code) ? 1 : 0;
+  const s = jsonSpring.has(code) ? 1 : 0;
+  schedule[code] = TARGET.map(({ season }) => season === "fall" ? f : s);
+  jsonFilled++;
+}
+console.log(`From JSON: ${jsonFilled} additional courses`);
+
+// ── Phase 3: Add any remaining catalog courses not yet scheduled ─────────────
+const catalogSrc = fs.readFileSync(path.resolve("lib/course-catalog.ts"), "utf8");
+const catalogCodes = [...catalogSrc.matchAll(/^\s+"([A-Z][A-Z& \d]+)":\s*\{/gm)].map(m => m[1].trim());
+
+let catalogFilled = 0;
+for (const code of catalogCodes) {
+  if (schedule[code]) continue;
+  // No CSV or JSON data — assume offered every semester (conservative: keeps plan viable)
+  schedule[code] = [1, 1, 1, 1, 1, 1, 1, 1];
+  catalogFilled++;
+}
+console.log(`From catalog (no data): ${catalogFilled} additional courses`);
 
 const sorted = Object.entries(schedule).sort(([a], [b]) => a.localeCompare(b));
-console.log(`\nTotal unique courses: ${sorted.length}`);
+console.log(`Total: ${sorted.length} courses`);
 
-// Count patterns for summary
-let summary = { always: 0, never: 0, even: 0, odd: 0, mixed: 0 };
+// Summary of patterns
+let summary = { always: 0, never: 0, fallOnly: 0, springOnly: 0, mixed: 0 };
 for (const [, arr] of sorted) {
   const s = arr.join("");
   if (s === "11111111") summary.always++;
   else if (s === "00000000") summary.never++;
-  else if (s === "10101010") summary.even++;
-  else if (s === "01010101") summary.odd++;
+  else if (s === "10101010") summary.fallOnly++;
+  else if (s === "01010101") summary.springOnly++;
   else summary.mixed++;
 }
-console.log(`  always=${summary.always} never=${summary.never} fall-only=${summary.even} spring-only=${summary.odd} mixed=${summary.mixed}`);
+console.log(`  always=${summary.always} never=${summary.never} fall-only=${summary.fallOnly} spring-only=${summary.springOnly} mixed=${summary.mixed}`);
 
 const lines = sorted.map(([code, arr]) => `  "${code}": [${arr.join(", ")}],`);
 
 const output = `// Auto-generated by scripts/csv-to-schedule.ts — do not edit manually
-// Source: data/*.csv (one file per department)
+// Sources: data/*.csv → data/course-catalog/*.json → lib/course-catalog.ts
 // Index: 0=Fall26, 1=Spr27, 2=Fall27, 3=Spr28, 4=Fall28, 5=Spr29, 6=Fall29, 7=Spr30
 // 1 = offered, 0 = not offered
-// Values are exact where the CSV covers that semester; otherwise inferred by pattern
-// (always / never / even-years / odd-years / majority).
+// CSV courses: exact values + pattern extrapolation (always/never/fall-only/spring-only/majority)
+// JSON-only courses: fall/spring availability from F25+F26 / S25+S26 data
+// Catalog-only courses: assumed always available (no offering data)
 
 export const COURSE_SCHEDULE: Record<string, number[]> = {
 ${lines.join("\n")}
