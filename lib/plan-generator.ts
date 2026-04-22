@@ -368,31 +368,78 @@ function isSuperseded(code: string, placed: Set<string>): boolean {
   return (SUPERSEDED_BY[code] ?? []).some(sup => placed.has(sup));
 }
 
-// Find a real catalog course matching a filter, preferring preferred departments
-function findCatalogCourse(
-  filter: (code: string) => boolean,
+const DEPT_DISPLAY_NAMES: Record<string, string> = {
+  CSC: "Computer Science", MAT: "Mathematics", PHY: "Physics",
+  BIO: "Biology", CHM: "Chemistry", PSY: "Psychology", ENG: "English",
+  HIS: "History", ECO: "Economics", PSC: "Political Science",
+  SOC: "Sociology", ART: "Art", MUS: "Music", THR: "Theatre",
+  COM: "Communication", EDS: "Education", REL: "Religion", PHI: "Philosophy",
+  BUS: "Business", ANR: "Agriculture", SENS: "Environmental Studies",
+  NUR: "Nursing", HLT: "Health", HHP: "Health & Human Performance",
+  AFR: "African American Studies", WGS: "Women & Gender Studies",
+  PSJ: "Peace & Social Justice", GEO: "Geology", ETAD: "Technology",
+  CFS: "Child & Family Studies",
+};
+
+// Pick a real catalog course that aligns with the student's career/interests.
+// Only returns a course if it has positive career-fit score.
+// Prefers level-appropriate courses (lower-level in years 1-2, upper in years 3-4).
+function findInterestElective(
+  semIdx: number,
   placed: Set<string>,
+  profile: StudentProfile,
   preferred: string[]
-): string | null {
-  // Try preferred departments first
-  for (const dept of preferred) {
-    for (const code of Object.keys(COURSE_CATALOG)) {
-      if (placed.has(code)) continue;
-      if (isSuperseded(code, placed)) continue;
-      if (!code.startsWith(dept + " ")) continue;
-      if (!filter(code)) continue;
-      return code;
-    }
-  }
-  // Fall back to any department
+): PlannedCourse | null {
+  const preferredSet = new Set(preferred);
+  const isUpperYears = semIdx >= 4;
+
+  let bestCode: string | null = null;
+  let bestScore = 0;
+
   for (const code of Object.keys(COURSE_CATALOG)) {
     if (placed.has(code)) continue;
     if (isSuperseded(code, placed)) continue;
-    if (!filter(code)) continue;
-    return code;
+    if (!isCourseAvailable(code, semIdx)) continue;
+    // Skip "Topics in X" courses — letter-suffixed codes (e.g. CSC 390B) have
+    // variable content each semester and must not be auto-selected.
+    if (/\d[A-Z]$/.test(code)) continue;
+
+    const dept = code.split(" ")[0];
+    const level = parseInt(code.match(/\d+/)?.[0] ?? "100");
+
+    let score = scoreCourseFit(code, profile);
+    if (score <= 0) continue;
+
+    if (isUpperYears && level >= 300) score += 1;
+    if (!isUpperYears && level < 300) score += 1;
+    if (preferredSet.has(dept)) score += 1;
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestCode = code;
+    }
   }
-  return null;
+
+  if (!bestCode) return null;
+  const cat = COURSE_CATALOG[bestCode];
+  const dept = bestCode.split(" ")[0];
+  return {
+    code: bestCode,
+    name: cat.name,
+    credits: cat.credits,
+    fulfills: [`Elective – ${DEPT_DISPLAY_NAMES[dept] ?? dept}`],
+    category: "Elective",
+  };
 }
+
+// Returns a descriptive placeholder label based on the student's profile.
+function electivePlaceholderLabel(profile: StudentProfile, preferred: string[]): string {
+  for (const dept of preferred) {
+    if (DEPT_DISPLAY_NAMES[dept]) return DEPT_DISPLAY_NAMES[dept];
+  }
+  return "Liberal Arts";
+}
+
 
 // Score a course by how many UNFULFILLED GEM requirements it covers.
 // Higher = better (one course knocking out multiple requirements).
@@ -480,6 +527,7 @@ function findGEMCourse(
     if (placed.has(code)) continue;
     if (isSuperseded(code, placed)) continue;
     if (!isCourseAvailable(code, semIdx)) continue;
+    if (/\d[A-Z]$/.test(code)) continue; // skip letter-suffixed Topics courses
     const score = gemScore(tracker, code);
     if (score === 0) continue;
 
@@ -776,17 +824,20 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
       queue = retry;
       if (queue.length === 0) break;
     }
-    return queue; // whatever still couldn't be placed
+
+    return queue;
   }
 
-  // 3. Place in priority order: major → GEM → minor → free electives
-  // Major requirements first — they have first pick of all open slots
-  const unplacedMajor = runPlacementPasses(majorCourses);
-  for (const item of unplacedMajor) {
+  // 3. Place required courses: major and minor combined, sorted by sequence.
+  // Major courses come first in the array so they get first pick when two courses
+  // compete for the same semester slot during the multi-pass sweep.
+  const allRequired = sortBySequence([...majorCourses, ...minorCourses]);
+  const unplacedRequired = runPlacementPasses(allRequired);
+  for (const item of unplacedRequired) {
     unfulfilledRequirements.push(`${item.course.name} (${item.course.fulfills.join(", ")})`);
   }
 
-  // GEM courses fill remaining gaps after major (schedule-gated, spread across semesters)
+  // 4. GEM courses fill remaining gaps (schedule-gated, spread across semesters).
   for (let semIdx = 0; semIdx < 8; semIdx++) {
     while (semesters[semIdx].totalCredits < 4 && hasUnfulfilledGEM(gemTracker)) {
       const gemCourse = findGEMCourse(gemTracker, semIdx, usedCodes, pref);
@@ -797,27 +848,28 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     }
   }
 
-  // Minor requirements after GEM — 2 passes (major may have freed slots via prerequisite chains)
-  const unplacedMinor = runPlacementPasses(minorCourses);
-  for (const item of unplacedMinor) {
-    unfulfilledRequirements.push(`${item.course.name} (${item.course.fulfills.join(", ")})`);
-  }
-
-  // 4. Free Elective placeholders — max 2 for the entire plan
-  let freeElectivesPlaced = 0;
-  for (let semIdx = 0; semIdx < 8 && freeElectivesPlaced < 2; semIdx++) {
-    while (semesters[semIdx].totalCredits < 4 && freeElectivesPlaced < 2) {
-      semesters[semIdx].courses.push({
-        code: "Elective",
-        name: "Free Elective",
-        credits: 1,
-        fulfills: ["Free Elective"],
-        category: "Elective",
-        isPlaceholder: true,
-        placeholderCategory: "Free Choice",
-      });
-      semesters[semIdx].totalCredits += 1;
-      freeElectivesPlaced++;
+  // 5. Fill every remaining open slot: try a real interest-aligned course first;
+  // only fall back to a named placeholder when no matching course is available.
+  // This ensures every semester always has exactly 4 courses (= 4 credits at Berea).
+  const placeholderLabel = electivePlaceholderLabel(profile, pref);
+  for (let semIdx = 0; semIdx < 8; semIdx++) {
+    while (semesters[semIdx].totalCredits < 4) {
+      const elective = findInterestElective(semIdx, usedCodes, profile, pref);
+      if (elective) {
+        placeCourse(semesters, elective, semIdx, placedMap);
+        usedCodes.add(elective.code);
+      } else {
+        semesters[semIdx].courses.push({
+          code: "Elective",
+          name: `${placeholderLabel} Elective`,
+          credits: 1,
+          fulfills: [`${placeholderLabel} Elective`],
+          category: "Elective",
+          isPlaceholder: true,
+          placeholderCategory: placeholderLabel,
+        });
+        semesters[semIdx].totalCredits += 1;
+      }
     }
   }
 
