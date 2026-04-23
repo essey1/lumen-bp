@@ -822,7 +822,8 @@ function findInterestElective(
   semIdx: number,
   placed: Set<string>,
   profile: StudentProfile,
-  preferred: string[]
+  preferred: string[],
+  placedMap: Map<string, number>
 ): PlannedCourse | null {
   const preferredSet = new Set(preferred);
   const isUpperYears = semIdx >= 4;
@@ -837,6 +838,9 @@ function findInterestElective(
     // Skip "Topics in X" courses — letter-suffixed codes (e.g. CSC 390B) have
     // variable content each semester and must not be auto-selected.
     if (/\d[A-Z]$/.test(code)) continue;
+
+    const prereqs = PREREQUISITES[code] ?? [];
+    if (!prereqs.every(p => (placedMap.get(p) ?? Infinity) < semIdx)) continue;
 
     const dept = code.split(" ")[0];
     const level = parseInt(code.match(/\d+/)?.[0] ?? "100");
@@ -947,7 +951,8 @@ function findGEMCourse(
   tracker: GEMTracker,
   semIdx: number,
   placed: Set<string>,
-  preferred: string[]
+  preferred: string[],
+  placedMap: Map<string, number>
 ): PlannedCourse | null {
   if (!hasUnfulfilledGEM(tracker)) return null;
 
@@ -962,6 +967,8 @@ function findGEMCourse(
     if (isSuperseded(code, placed)) continue;
     if (!isCourseAvailable(code, semIdx)) continue;
     if (/\d[A-Z]$/.test(code)) continue; // skip letter-suffixed Topics courses
+    const prereqs = PREREQUISITES[code] ?? [];
+if (!prereqs.every(p => (placedMap.get(p) ?? Infinity) < semIdx)) continue;
     const score = gemScore(tracker, code);
     if (score === 0) continue;
 
@@ -1191,6 +1198,39 @@ function collectMinorCourses(profile: StudentProfile, collected: Set<string>, cr
   return result;
 }
 
+function collectMissingPrereqs(
+  courses: CourseToPlace[],
+  collected: Set<string>
+): CourseToPlace[] {
+  const extra: CourseToPlace[] = [];
+  const toCheck = courses.map(c => c.course.code).filter(c => COURSE_CATALOG[c]);
+  const seen = new Set(collected);
+
+  while (toCheck.length > 0) {
+    const code = toCheck.pop()!;
+    for (const prereq of PREREQUISITES[code] ?? []) {
+      if (seen.has(prereq) || !COURSE_CATALOG[prereq]) continue;
+      seen.add(prereq);
+      collected.add(prereq);
+      const data = COURSE_CATALOG[prereq];
+      const level = parseInt(prereq.match(/\d+/)?.[0] ?? "100");
+      extra.push({
+        course: {
+          code: data.code,
+          name: data.name,
+          credits: data.credits,
+          fulfills: ["Prerequisite"],
+          category: "Major",
+        },
+        minSem: 0,
+        maxSem: level >= 300 ? 6 : 5,
+      });
+      toCheck.push(prereq);
+    }
+  }
+  return extra;
+}
+
 export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
   const semesters: SemesterPlan[] = [];
   const warnings: string[] = [];
@@ -1244,7 +1284,7 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
 
   function runPlacementPasses(items: CourseToPlace[]): CourseToPlace[] {
     let queue = sortBySequence(items);
-    for (let pass = 0; pass < 3; pass++) {
+    for (let pass = 0; pass < 8; pass++) {
       const retry: CourseToPlace[] = [];
       for (const item of queue) {
         const semIdx = findSemester(semesters, item.course, item.minSem, item.maxSem, placedMap);
@@ -1265,16 +1305,33 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
   // 3. Place required courses: major and minor combined, sorted by sequence.
   // Major courses come first in the array so they get first pick when two courses
   // compete for the same semester slot during the multi-pass sweep.
-  const allRequired = sortBySequence([...majorCourses, ...minorCourses]);
+  const missingPrereqs = collectMissingPrereqs([...majorCourses, ...minorCourses], usedCodes);
+const allRequired = sortBySequence([...majorCourses, ...minorCourses, ...missingPrereqs]);
   const unplacedRequired = runPlacementPasses(allRequired);
+
+  // Rescue pass: force-place still-unplaced required courses schedule-blind
+  // before GEM/electives can claim those slots.
+  const trulyUnplaced: CourseToPlace[] = [];
   for (const item of unplacedRequired) {
+    item.course.scheduleDisclaimer = true; // bypass isCourseAvailable
+    const semIdx = findSemester(semesters, item.course, item.minSem, item.maxSem, placedMap);
+    if (semIdx !== -1) {
+      placeCourse(semesters, item.course, semIdx, placedMap);
+      applyGEM(gemTracker, item.course.code);
+    } else {
+      trulyUnplaced.push(item);
+    }
+  }
+  for (const item of trulyUnplaced) {
     unfulfilledRequirements.push(`${item.course.name} (${item.course.fulfills.join(", ")})`);
   }
+
+// 4. GEM courses fill remaining gaps
 
   // 4. GEM courses fill remaining gaps (schedule-gated, spread across semesters).
   for (let semIdx = 0; semIdx < 8; semIdx++) {
     while (semesters[semIdx].totalCredits < 4 && hasUnfulfilledGEM(gemTracker)) {
-      const gemCourse = findGEMCourse(gemTracker, semIdx, usedCodes, pref);
+      const gemCourse = findGEMCourse(gemTracker, semIdx, usedCodes, pref, placedMap);
       if (!gemCourse) break;
       placeCourse(semesters, gemCourse, semIdx, placedMap);
       usedCodes.add(gemCourse.code);
@@ -1288,7 +1345,7 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
   const placeholderLabel = electivePlaceholderLabel(profile, pref);
   for (let semIdx = 0; semIdx < 8; semIdx++) {
     while (semesters[semIdx].totalCredits < 4) {
-      const elective = findInterestElective(semIdx, usedCodes, profile, pref);
+      const elective = findInterestElective(semIdx, usedCodes, profile, pref, placedMap);
       if (elective) {
         placeCourse(semesters, elective, semIdx, placedMap);
         usedCodes.add(elective.code);
