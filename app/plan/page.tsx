@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   ArrowLeft,
-  Download,
   GraduationCap,
   Sparkles,
 } from "lucide-react"
@@ -14,6 +13,7 @@ import { CareerAdvice } from "@/components/plan/career-advice"
 import { generateAcademicPlan, getPlanStats } from "@/lib/plan-generator"
 import type { StudentProfile as StudentProfileType } from "@/lib/types"
 import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types"
+import { ExportButton } from "@/components/plan/export-button"
 
 interface Props {
   searchParams: Promise<{
@@ -70,10 +70,7 @@ export default async function PlanPage({ searchParams }: Props) {
                 Edit Preferences
               </Button>
             </Link>
-            <Button size="sm" className="gap-2">
-              <Download className="h-4 w-4" />
-              Export
-            </Button>
+            <ExportButton />
           </div>
         </div>
       </header>
