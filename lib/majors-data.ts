@@ -13,18 +13,12 @@ export const MAJORS: Record<string, Major> = {
     requirements: [
       {
         category: "Exploratory Distribution",
-        description: "One course from upper level CSC or approved list",
+        description: "One course from upper level CSC or the approved exploratory list",
         coursesRequired: 1,
         courses: [
-          "CSC 110",
-          "CSC 111",
-          "CSC 114",
-          "CSC 121",
-          "CSC 124",
-          "CSC 126",
-          "CSC 127",
-          "PHY 221",
-          "SENS 320",
+          "CSC 110", "CSC 111", "CSC 114", "CSC 121", "CSC 124", 
+          "CSC 126", "CSC 127", "ETAD 130", "ETAD 180", "ETAD 330", 
+          "ETAD 382", "ETAD 455", "ETAD 460", "PHY 221", "SENS 320"
         ],
       },
       {
@@ -36,32 +30,16 @@ export const MAJORS: Record<string, Major> = {
       },
       {
         category: "Capstone",
-        description: "Capstone course (CSC 493 or CSC 495)",
+        description: "Computing Design Practicum or Internship",
         coursesRequired: 1,
         courses: ["CSC 493", "CSC 495"],
       },
       {
         category: "Upper Level Distribution",
-        description:
-          "Four upper-level courses with at least one from each category and one at 400 level",
+        description: "Four upper-level courses with at least one from each category and one at 400 level",
         coursesRequired: 4,
-        courses: [
-          "CSC 301",
-          "CSC 330",
-          "CSC 410",
-          "CSC 420",
-          "CSC 426",
-          "CSC 303",
-          "CSC 433",
-          "CSC 440",
-          "CSC 445",
-          "CSC 300",
-          "CSC 335",
-          "CSC 412",
-          "CSC 425",
-          "CSC 450",
-        ],
         minUpperLevel: 1,
+        courses: ["CSC 410", "CSC 420", "CSC 426", "CSC 433", "CSC 440", "CSC 445", "CSC 412", "CSC 425", "CSC 450"],
         selectFromCategories: [
           {
             category: "Design",
@@ -90,7 +68,7 @@ export const MAJORS: Record<string, Major> = {
         category: "Collateral - Electronics",
         description: "One electricity/electronics course",
         coursesRequired: 1,
-        courses: ["PHY 221", "PHY 127"],
+        courses: ["ETAD 265", "ETAD 460"],
       },
     ],
   },

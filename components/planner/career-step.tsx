@@ -20,36 +20,71 @@ import {
 import { Badge } from "@/components/ui/badge"
 
 const CAREER_GOALS = [
-  "Accountant", "Actor", "Administrative Assistant", "Agricultural Specialist", "AI/ML Engineer",
-  "Architect", "Astronomer", "Author", "Barista", "Biochemist",
-  "Biologist", "Business Analyst", "Business Consultant", "Carpenter", "Chef",
-  "Chemist", "Civil Engineer", "Clinical Psychologist", "Coach", "Communications Director",
-  "Community Organizer", "Construction Manager", "Content Creator", "Counselor/Therapist", "Cybersecurity Specialist",
-  "Data Scientist", "Database Administrator", "Dentist", "Economist", "Educator/Teacher",
-  "Electrical Engineer", "Entrepreneur", "Environmental Scientist", "Event Planner", "Fashion Designer",
-  "Film Director", "Financial Advisor", "Financial Analyst", "Fitness Trainer", "Florist",
-  "Forensic Scientist", "Game Developer", "Geologist", "Graphic Designer", "HR Manager",
-  "Healthcare Professional", "Hotel Manager", "Industrial Designer", "Interior Designer", "Investment Banker",
-  "Journalist", "Judge", "Landscape Architect", "Lawyer", "Librarian",
-  "Logistics Manager", "Marine Biologist", "Marketing Manager", "Mechanical Engineer", "Medical Doctor",
-  "Medical School", "Meteorologist", "Microbiologist", "Military Officer", "Mobile App Developer",
-  "Museum Curator", "Musician", "Network Administrator", "Nonprofit Director", "Nurse",
-  "Nutritionist", "Occupational Therapist", "Optometrist", "Paralegal", "Pharmacist",
-  "Physical Therapist", "Physician Assistant", "Physicist", "Pilot", "Policy Analyst",
-  "Political Scientist", "Product Manager", "Professor/Researcher", "Psychiatrist", "Psychologist",
-  "Public Defender", "Public Health Officer", "Radiologist", "Real Estate Agent", "Recruiter",
-  "Sales Manager", "School Counselor", "Security Professional", "Social Media Manager", "Social Worker",
-  "Software Engineer", "Speech Therapist", "Sports Coach", "Sports Manager", "Startup Founder",
-  "Supply Chain Manager", "Surgeon", "Sustainability Consultant", "Systems Analyst", "Tax Advisor",
-  "Translator/Interpreter", "UX/UI Designer", "Urban Planner", "Veterinarian", "Video Game Developer",
-  "Web Developer", "Welder", "Wildlife Biologist", "Graduate School", "Law School",
+  // Technology & Computing
+  "Software Engineer", "Full-Stack Developer", "Front-End Developer", "Back-End Developer", "Mobile Developer",
+  "Data Scientist", "Data Analyst", "Machine Learning Engineer", "AI Engineer", "Cybersecurity Analyst",
+  "Cloud Engineer", "DevOps Engineer", "Systems Analyst", "Database Administrator", "Network Administrator",
+  "UX Designer", "Product Manager", "Game Developer", "Video Game Developer", "Animator",
+  "Web Developer", "Robotics Engineer", "IT Specialist", "Technical Support Specialist",
+  // Engineering & Physical Sciences
+  "Mechanical Engineer", "Electrical Engineer", "Civil Engineer", "Chemical Engineer", "Biomedical Engineer",
+  "Environmental Engineer", "Industrial Designer", "Architect", "Aerospace Engineer", "Nuclear Engineer",
+  "Petroleum Engineer", "Materials Scientist", "Physicist", "Astronomer", "Meteorologist",
+  // Life Sciences & Health
+  "Biologist", "Ecologist", "Marine Biologist", "Wildlife Biologist", "Conservation Biologist",
+  "Geneticist", "Neuroscientist", "Microbiologist", "Biochemist", "Immunologist",
+  "Forensic Scientist", "Lab Technician", "Research Scientist", "Agricultural Scientist",
+  "Chemist", "Geologist", "Paleontologist",
+  // Healthcare & Medicine
+  "Medical Doctor", "Surgeon", "Psychiatrist", "Physician Assistant", "Registered Nurse",
+  "Nurse Practitioner", "Pharmacist", "Dentist", "Optometrist", "Radiologist",
+  "Physical Therapist", "Occupational Therapist", "Speech Therapist", "Dietitian", "Nutritionist",
+  "Athletic Trainer", "Health Administrator", "Public Health Worker", "Epidemiologist",
+  "Medical School", "Dental School", "Veterinary School",
+  // Mental Health & Social Services
+  "Psychologist", "Clinical Psychologist", "Child Psychologist", "Counselor", "Therapist",
+  "Psychotherapist", "Gerontologist", "Social Worker", "Community Organizer", "School Counselor",
+  "Substance Abuse Counselor", "Marriage & Family Therapist",
+  // Business, Finance & Management
+  "Entrepreneur", "Startup Founder", "Business Analyst", "Business Consultant", "Product Manager",
+  "Marketing Manager", "Brand Manager", "Digital Marketer", "Sales Manager", "Account Manager",
+  "Financial Analyst", "Investment Banker", "Actuary", "Accountant", "Auditor",
+  "Tax Advisor", "Real Estate Agent", "Supply Chain Manager", "Logistics Manager",
+  "Human Resources Manager", "Recruiter", "Operations Manager", "Project Manager",
+  "Hotel Manager", "Event Planner", "Sports Manager",
+  // Law, Policy & Government
+  "Lawyer", "Public Defender", "Judge", "Paralegal", "Policy Analyst",
+  "Politician", "Diplomat", "Urban Planner", "Nonprofit Manager", "Nonprofit Director",
+  "Law School", "International Development",
+  // Education
+  "Teacher", "College Professor", "Instructional Designer", "Curriculum Developer",
+  "School Administrator", "Librarian",
+  // Humanities, Media & Communication
+  "Journalist", "Technical Writer", "Author", "Editor", "Translator",
+  "Linguist", "Historian", "Archaeologist", "Philosopher", "Theologian",
+  "Religious Leader", "Museum Curator", "Archivist",
+  "Communications Director", "Social Media Manager", "Content Creator", "Public Relations Specialist",
+  // Arts & Creative
+  "Filmmaker", "Film Director", "Photographer", "Graphic Designer", "Visual Artist",
+  "Musician", "Actor", "Performing Artist", "Fashion Designer", "Interior Designer",
+  "Landscape Architect",
+  // Agriculture, Environment & Sustainability
+  "Park Ranger", "Food Policy Advocate", "Sustainability Consultant",
+  "Environmental Consultant",
+  // Graduate / Professional School
+  "Graduate School",
+  // Sports & Wellness
+  "Sports Coach", "Fitness Trainer", "Athletic Trainer",
+  // Other
+  "Pilot", "Military Officer", "Administrative Assistant", "Construction Manager",
 ]
 
 const QUICK_PICKS = [
-  "Software Engineer", "Healthcare Professional", "Educator/Teacher", "Business Analyst",
-  "Data Scientist", "Psychologist", "Social Worker", "Environmental Scientist",
-  "Lawyer", "Nurse", "Researcher/Professor", "Marketing Manager",
-  "Entrepreneur", "Graduate School", "Medical School", "UX/UI Designer",
+  "Software Engineer", "Registered Nurse", "Teacher", "Data Scientist",
+  "Psychologist", "Social Worker", "Lawyer", "Business Analyst",
+  "Environmental Scientist", "Journalist", "Marketing Manager", "AI Engineer",
+  "Medical School", "Graduate School", "Policy Analyst", "UX Designer",
+  "Nonprofit Manager", "College Professor", "Financial Analyst", "Filmmaker",
 ]
 
 const MAX_SELECTIONS = 3
