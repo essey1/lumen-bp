@@ -1,6 +1,3 @@
-"use client"
-
-import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -15,34 +12,33 @@ import { SemesterCard } from "@/components/plan/semester-card"
 import { OverflowWarning } from "@/components/plan/overflow-warning"
 import { CareerAdvice } from "@/components/plan/career-advice"
 import { generateAcademicPlan, getPlanStats } from "@/lib/plan-generator"
-import type { StudentProfile as StudentProfileType, AcademicPlan } from "@/lib/types"
+import type { StudentProfile as StudentProfileType } from "@/lib/types"
 import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types"
-import { Suspense
- } from "react"
 
-function PlanContent() {
-  const searchParams = useSearchParams()
-  
-  // Parse profile from URL params or use defaults
-  const majorsParam = searchParams.get("majors")
-  const minorsParam = searchParams.get("minors")
-  const interestsParam = searchParams.get("interests")
-  const hobbiesParam = searchParams.get("hobbies")
-  const careerGoalsParam = searchParams.get("careerGoals")
+interface Props {
+  searchParams: Promise<{
+    majors?: string
+    minors?: string
+    interests?: string
+    hobbies?: string
+    careerGoals?: string
+  }>
+}
+
+export default async function PlanPage({ searchParams }: Props) {
+  const params = await searchParams
 
   const profile: StudentProfileType = {
-    majors: majorsParam ? majorsParam.split(",") : ["CSC"],
-    minors: minorsParam ? minorsParam.split(",") : [],
-    interests: interestsParam ? interestsParam.split(",") : ["Technology"],
-    hobbies: hobbiesParam ? hobbiesParam.split(",") : [],
-    careerGoals: careerGoalsParam ? careerGoalsParam.split(",") : ["Software Engineer"],
+    majors: params.majors ? params.majors.split(",") : ["CSC"],
+    minors: params.minors ? params.minors.split(",") : [],
+    interests: params.interests ? params.interests.split(",") : ["Technology"],
+    hobbies: params.hobbies ? params.hobbies.split(",") : [],
+    careerGoals: params.careerGoals ? params.careerGoals.split(",") : ["Software Engineer"],
   }
 
-  // Generate the academic plan
   const plan = generateAcademicPlan(profile)
   const stats = getPlanStats(plan)
 
-  // Group semesters by actual academic year (starting Fall 2026)
   const years = [
     { label: "2026 – 27", fallTitle: "Fall 2026", springTitle: "Spring 2027", fall: plan.semesters[0], spring: plan.semesters[1] },
     { label: "2027 – 28", fallTitle: "Fall 2027", springTitle: "Spring 2028", fall: plan.semesters[2], spring: plan.semesters[3] },
@@ -50,7 +46,6 @@ function PlanContent() {
     { label: "2029 – 30", fallTitle: "Fall 2029", springTitle: "Spring 2030", fall: plan.semesters[6], spring: plan.semesters[7] },
   ]
 
-  // Get unfulfilled requirements for warning
   const unfulfilledCourses = plan.unfulfilledRequirements.map((req, i) => ({
     code: `REQ ${i + 1}`,
     name: req,
@@ -149,8 +144,8 @@ function PlanContent() {
 
         {/* Overflow Warning */}
         {(plan.warnings.length > 0 || unfulfilledCourses.length > 0) && (
-          <OverflowWarning 
-            courses={unfulfilledCourses} 
+          <OverflowWarning
+            courses={unfulfilledCourses}
             warnings={plan.warnings}
           />
         )}
@@ -191,9 +186,7 @@ function PlanContent() {
                 <p className={`text-3xl font-bold ${stats.overloadedSemesters > 0 ? "text-warning" : "text-primary"}`}>
                   {stats.overloadedSemesters}
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  Overloaded
-                </p>
+                <p className="text-sm text-muted-foreground">Overloaded</p>
               </div>
             </div>
           </CardContent>
@@ -210,20 +203,5 @@ function PlanContent() {
         </div>
       </footer>
     </div>
-  )
-}
-
-export default function PlanPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-4" />
-          <p className="text-muted-foreground">Generating your plan...</p>
-        </div>
-      </div>
-    }>
-      <PlanContent />
-    </Suspense>
   )
 }
