@@ -1916,10 +1916,32 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
 
   // 6. Calculate totals
   const totalCredits = semesters.reduce((s, sem) => s + sem.totalCredits, 0);
-  const majorCredits = semesters.reduce(
-    (s, sem) => s + sem.courses.filter(c => c.category === "Major").reduce((cs, c) => cs + c.credits, 0), 0
-  );
-  const creditsOutsideMajor = totalCredits - majorCredits;
+
+  // With multiple majors, courses from major A count as "outside major" for major B
+  // and vice versa.  For each major we only count courses whose dept prefix matches
+  // that major as "inside" — collateral courses (e.g. CHM for BIO) and courses from
+  // the other major both count toward the outside-major minimum.
+  // For a single major the calculation is: total − all-major-credits (existing behaviour).
+  let creditsOutsideMajor: number;
+  if (profile.majors.length <= 1) {
+    const majorCredits = semesters.reduce(
+      (s, sem) => s + sem.courses.filter(c => c.category === "Major").reduce((cs, c) => cs + c.credits, 0), 0
+    );
+    creditsOutsideMajor = totalCredits - majorCredits;
+  } else {
+    // Per-major: inside credits = only courses whose code prefix matches that major's dept.
+    const outsideEach = profile.majors.map(majorCode => {
+      const prefix = majorCode.split("_")[0]; // "CHM_BIO" → "CHM", "CSC" → "CSC"
+      const insideCredits = semesters.reduce(
+        (s, sem) => s + sem.courses
+          .filter(c => c.category === "Major" && c.code.startsWith(prefix + " "))
+          .reduce((cs, c) => cs + c.credits, 0), 0
+      );
+      return totalCredits - insideCredits;
+    });
+    // Report the most restrictive (minimum across all majors)
+    creditsOutsideMajor = Math.min(...outsideEach);
+  }
 
   if (totalCredits < MINIMUM_TOTAL_CREDITS) {
     warnings.push(`Total credits (${totalCredits}) is below the minimum of ${MINIMUM_TOTAL_CREDITS}.`);
