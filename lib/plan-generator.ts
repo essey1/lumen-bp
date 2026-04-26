@@ -819,10 +819,18 @@ function findInterestElective(
   placed: Set<string>,
   profile: StudentProfile,
   preferred: string[],
-  placedMap: Map<string, number>
+  placedMap: Map<string, number>,
+  takenInSem: PlannedCourse[] = []
 ): PlannedCourse | null {
   const preferredSet = new Set(preferred);
   const isUpperYears = semIdx >= 4;
+
+  const deptTaken: Record<string, number> = {};
+  for (const c of takenInSem) {
+    if (c.isPlaceholder) continue;
+    const d = c.code.split(" ")[0];
+    deptTaken[d] = (deptTaken[d] ?? 0) + c.credits;
+  }
 
   let bestCode: string | null = null;
   let bestScore = 0;
@@ -842,10 +850,13 @@ function findInterestElective(
     if (/\d[A-Z]$/.test(code)) continue; // skip letter-suffixed Topics
     // Capstone courses belong exclusively to their home major
     if (isOtherMajorCapstone(code, profile.majors)) continue;
+    // At most 2.5 credits from any one department per semester
+    const dept = code.split(" ")[0];
+    const credits = COURSE_CATALOG[code].credits ?? 1;
+    if ((deptTaken[dept] ?? 0) + credits > 2.5) continue;
 
     if (!prereqsMet(code, semIdx, placedMap)) continue;
 
-    const dept = code.split(" ")[0];
     const level = parseInt(code.match(/\d+/)?.[0] ?? "100");
 
     let score = scoreCourseFit(code, profile);
@@ -956,9 +967,18 @@ function findGEMCourse(
   placed: Set<string>,
   preferred: string[],
   placedMap: Map<string, number>,
-  userMajors: string[] = []
+  userMajors: string[] = [],
+  takenInSem: PlannedCourse[] = []
 ): PlannedCourse | null {
   if (!hasUnfulfilledGEM(tracker)) return null;
+
+  // Pre-compute credits already used per department this semester
+  const deptTaken: Record<string, number> = {};
+  for (const c of takenInSem) {
+    if (c.isPlaceholder) continue;
+    const d = c.code.split(" ")[0];
+    deptTaken[d] = (deptTaken[d] ?? 0) + c.credits;
+  }
 
   let bestCode: string | null = null;
   let bestScore = 0;
@@ -977,6 +997,10 @@ function findGEMCourse(
     if (semIdx === 0 && parseInt(code.match(/\d+/)?.[0] ?? "0") >= 300) continue;
     // Capstone courses belong exclusively to their home major
     if (isOtherMajorCapstone(code, userMajors)) continue;
+    // At most 2.5 credits from any one department per semester
+    const dept = code.split(" ")[0];
+    const credits = COURSE_CATALOG[code].credits ?? 1;
+    if ((deptTaken[dept] ?? 0) + credits > 2.5) continue;
     if (!prereqsMet(code, semIdx, placedMap)) continue;
     const score = gemScore(tracker, code);
     if (score === 0) continue;
@@ -1469,7 +1493,7 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
 
     // GEM fills remaining (priority over free electives)
     while (open() > 0 && hasUnfulfilledGEM(gemTracker)) {
-      const gem = findGEMCourse(gemTracker, sem, usedCodes, pref, placedMap, profile.majors);
+      const gem = findGEMCourse(gemTracker, sem, usedCodes, pref, placedMap, profile.majors, semesters[sem].courses);
       if (!gem) break;
       placeCourse(semesters, gem, sem, placedMap);
       usedCodes.add(gem.code);
@@ -1522,7 +1546,7 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
       for (let i = 0; i < semesters[sem].courses.length; i++) {
         const c = semesters[sem].courses[i];
         if (!c.isPlaceholder || c.category !== "Elective") continue;
-        const elective = findInterestElective(sem, usedCodes, profile, pref, placedMap);
+        const elective = findInterestElective(sem, usedCodes, profile, pref, placedMap, semesters[sem].courses);
         if (elective) {
           semesters[sem].courses[i] = elective;
           // totalCredits unchanged (both 1 credit); update tracking maps
