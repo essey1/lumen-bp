@@ -20,38 +20,120 @@ import {
 import { Badge } from "@/components/ui/badge"
 
 const INTERESTS = [
-  "Accounting", "Acoustics", "Agriculture", "Aerospace Engineering", "Anthropology",
-  "Architecture", "Artificial Intelligence", "Arts", "Astronomy", "Athletics",
-  "Behavioral Science", "Biology", "Blockchain", "Botany", "Business",
-  "Chemistry", "Climate Action", "Cloud Computing", "Coaching", "Cognitive Science",
-  "Communication", "Community Service", "Construction", "Content Strategy", "Criminology",
-  "Culinary Arts", "Cybersecurity", "Data Science", "Database Design", "Decision Theory",
-  "Design", "Digital Marketing", "E-Commerce", "Economics", "Ecology",
-  "Education", "Electrical Systems", "Energy Systems", "Engineering", "Entrepreneurship",
-  "Environment", "Environmental Engineering", "Epidemiology", "Ethics", "Fashion",
-  "Film Studies", "Finance", "Fine Arts", "Fitness", "Game Development",
-  "Game Theory", "Genetics", "Geography", "Geology", "Healthcare",
-  "History", "Human Resources", "Immunology", "Innovation", "Insurance",
-  "Interior Design", "International Relations", "Investment", "IoT", "Law",
-  "Leadership", "Linguistics", "Literature", "Logistics", "Manufacturing",
-  "Marine Biology", "Marine Science", "Marketing", "Mathematics", "Media",
-  "Mentoring", "Meteorology", "Microbiology", "Mobile Apps", "Music Theory",
-  "Nanotechnology", "Negotiation", "Neuroscience", "Nutrition", "Operations",
-  "Organizational Psychology", "Outdoor Sports", "Paleontology", "Pharmacology", "Philosophy",
-  "Photography", "Physics", "Political Science", "Project Management", "Psychology",
-  "Public Policy", "Public Speaking", "Renewable Energy", "Religious Studies", "Research",
-  "Risk Management", "Robotics", "Sales", "Social Impact", "Social Work",
-  "Sociology", "Software Development", "Startups", "Supply Chain", "Sustainability",
-  "Systems Thinking", "Teaching", "Technology", "Toxicology", "Urban Planning",
-  "UX/UI", "Virtual Reality", "Water Sports", "Web Development", "Wellness",
-  "Wildlife Biology", "Writing",
+  // A
+  "Abstract Algebra", "Accounting", "Acting", "Activism", "Acoustics",
+  "African American Culture", "African American History", "African Studies",
+  "Agricultural Policy", "Agriculture", "American Government", "American History",
+  "Animal Behavior", "Animal Science", "Animation", "Anthropology",
+  "Applied Ethics", "Applied Mathematics", "Appalachian Culture", "Appalachian Studies",
+  "Arabic", "Archaeology", "Architecture", "Art Criticism", "Art Education", "Art History",
+  "Artificial Intelligence", "Arts", "Asian Cinema", "Asian Culture", "Asian History",
+  "Astrophysics", "Astronomy", "Athletics", "Audio Engineering", "Auditing",
+  // B
+  "Band", "Behavioral Economics", "Behavioral Science", "Biblical Studies",
+  "Biochemistry", "Bioethics", "Bioinformatics", "Biology", "Biophysics",
+  "Black Literature", "Blockchain", "Botany", "Broadcasting", "Buddhism", "Business",
+  // C
+  "CAD Design", "Campaign Management", "Ceramics", "Chemistry", "Child Advocacy",
+  "Child Development", "Chinese Language", "Choir", "Civil Liberties",
+  "Civil Rights", "Climate Change", "Clinical Psychology", "Cloud Computing",
+  "Coaching", "Cognitive Science", "Communication", "Community Development",
+  "Community Health", "Community Service", "Comparative Literature", "Comparative Politics",
+  "Comparative Religion", "Composition", "Conflict Resolution", "Conservation",
+  "Constitutional Law", "Content Strategy", "Counseling", "Creative Writing",
+  "Criminal Justice", "Criminology", "Crop Science", "Cross-Cultural Communication",
+  "Cultural Anthropology", "Cultural Heritage", "Cultural Studies", "Culinary Arts",
+  "Curriculum Development", "Cybersecurity",
+  // D
+  "Data Science", "Data Visualization", "Database Design", "Decision Theory",
+  "Demographics", "Design", "Development Economics", "Diaspora Studies",
+  "Digital Marketing", "Digital Media", "Directing", "Diversity & Inclusion",
+  "Drama", "Drawing",
+  // E
+  "Early Childhood Education", "East Asian Studies", "Ecology", "Economics",
+  "Education", "Educational Technology", "Elections", "Electrical Systems",
+  "Elementary Education", "Energy Systems", "Engineering", "English Literature",
+  "Entrepreneurship", "Environmental Engineering", "Environmental Policy",
+  "Environmental Science", "Epidemiology", "Ethics", "Exercise Science",
+  // F
+  "Faith & Culture", "Family Counseling", "Farm Management", "Fashion",
+  "Feminist Theory", "Film Production", "Film Studies", "Finance",
+  "Fine Arts", "Fitness", "Food Policy", "Food Science", "Food Systems",
+  "Foreign Languages", "Foreign Policy", "Forensic Science", "French Language",
+  // G
+  "Game Development", "Game Theory", "Gender & Society", "Gender Equity",
+  "Genetics", "Geography", "Geology", "German Language", "GIS & Mapping",
+  "Global Health", "Global Markets", "Grammar", "Grant Writing",
+  "Graphic Design", "Group Dynamics",
+  // H
+  "Health Education", "Health Policy", "Healthcare", "Historical Research",
+  "History", "Horticulture", "Human Rights", "Human Resources", "Hydrology",
+  // I
+  "Immigration", "Immunology", "Inequality", "Innovation", "Insurance",
+  "Intercultural Communication", "Interfaith Dialogue", "Interior Design",
+  "International Law", "International Relations", "Investment", "IoT",
+  // J – K
+  "Japanese Language", "Journalism", "Kinesiology",
+  // L
+  "Labor Economics", "Landscape Architecture", "Language Learning", "Law",
+  "Leadership", "LGBTQ+ Studies", "Lighting Design", "Linguistics",
+  "Literary Analysis", "Literature", "Livestock Management", "Logic", "Logistics",
+  // M
+  "Mandarin", "Manufacturing", "Marine Biology", "Marine Science",
+  "Marketing", "Materials Science", "Mathematics", "Media", "Media Production",
+  "Mentoring", "Meteorology", "Microbiology", "Military History",
+  "Mixed Media", "Mobile Apps", "Modern History", "Music Education",
+  "Music History", "Music Performance", "Music Production", "Music Theory",
+  "Music Therapy", "Musical Theatre",
+  // N
+  "Nanotechnology", "Natural Resource Management", "Negotiation",
+  "Neuroscience", "Nonviolent Resistance", "Nuclear Physics",
+  "Number Theory", "Nursing", "Nutrition",
+  // O
+  "Operations", "Operations Research", "Oral History", "Organic Chemistry",
+  "Organizational Psychology", "Outdoor Sports",
+  // P
+  "Painting", "Paleontology", "Pan-Africanism", "Parenting", "Peace Studies",
+  "Peacebuilding", "Pediatrics", "Pharmacology", "Philosophy",
+  "Philosophy of Mind", "Photography", "Physics", "Physiology",
+  "Poetry", "Political Philosophy", "Political Science", "Printmaking",
+  "Probability", "Project Management", "Prose Fiction", "Public Administration",
+  "Public Health", "Public Policy", "Public Relations", "Public Speaking",
+  "Publishing",
+  // Q – R
+  "Quantum Mechanics", "Race & Ethnicity", "Racial Justice",
+  "Renewable Energy", "Religious Studies", "Research", "Restorative Justice",
+  "Rhetoric", "Risk Management", "Robotics", "Romance Languages",
+  // S
+  "Sales", "Screenwriting", "Sculpture", "Secondary Education",
+  "Social Activism", "Social Impact", "Social Justice", "Social Media",
+  "Social Movements", "Social Theory", "Social Work", "Sociology",
+  "Soil Science", "Software Development", "Songwriting", "Sound Design",
+  "Spanish Language", "Special Education", "Speech", "Spirituality",
+  "Sports Broadcasting", "Sports Performance", "Stage Management", "Startups",
+  "Statistics", "Strength & Conditioning", "Studio Art", "Supply Chain",
+  "Sustainability", "Sustainable Agriculture", "Sustainable Design",
+  "Systems Thinking",
+  // T
+  "Teaching", "Technical Writing", "Technology", "Textile Arts", "Theatre",
+  "Theology", "Thermodynamics", "Toxicology", "Translation",
+  // U – V
+  "Urban Planning", "Urban Studies", "UX/UI", "Video Production",
+  "Virtual Reality", "Voice & Movement",
+  // W – Z
+  "Water Conservation", "Water Sports", "Web Development",
+  "Wildlife Biology", "Wildlife Management", "Women's History",
+  "Women's Leadership", "Woodworking", "World History", "World Religions",
+  "Writing",
 ]
 
 const QUICK_PICKS = [
   "Technology", "Healthcare", "Business", "Arts", "Research",
-  "Environment", "Psychology", "Writing", "Social Impact", "Teaching",
-  "Engineering", "Mathematics", "Music Theory", "Film Studies", "Political Science",
-  "Economics", "Biology", "Data Science", "Philosophy", "Communication",
+  "Environment", "Psychology", "Writing", "Social Justice", "Teaching",
+  "Engineering", "Mathematics", "Music Performance", "Film Studies",
+  "Political Science", "Economics", "Biology", "Data Science",
+  "Philosophy", "Communication", "Nursing", "Child Development",
+  "Agriculture", "Theatre", "History",
 ]
 
 const MAX_SELECTIONS = 5
@@ -66,7 +148,7 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
 
   const toggle = (id: string) => {
     if (selected.includes(id)) {
-      onChange(selected.filter(i => i !== id))
+      onChange(selected.filter(c => c !== id))
     } else if (selected.length < MAX_SELECTIONS) {
       onChange([...selected, id])
       setOpen(false)
@@ -77,14 +159,13 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
     <div className="space-y-6">
       <div className="text-center">
         <p className="text-sm text-muted-foreground">
-          Select up to {MAX_SELECTIONS} interests •{" "}
+          Select up to {MAX_SELECTIONS} academic interests •{" "}
           <span className={cn("font-medium", selected.length >= 1 ? "text-primary" : "text-muted-foreground")}>
             {selected.length} selected
           </span>
         </p>
       </div>
 
-      {/* Selected badges */}
       {selected.length > 0 && (
         <div className="flex flex-wrap justify-center gap-2">
           {selected.map(id => (
@@ -99,7 +180,6 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
         </div>
       )}
 
-      {/* Searchable dropdown */}
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -131,7 +211,6 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
         </PopoverContent>
       </Popover>
 
-      {/* Quick picks */}
       <div>
         <p className="mb-3 text-center text-sm text-muted-foreground">Popular interests:</p>
         <div className="flex flex-wrap justify-center gap-2">
@@ -159,6 +238,10 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
           <div key={i} className={cn("h-2 w-8 rounded-full transition-colors", i < selected.length ? "bg-primary" : "bg-muted")} />
         ))}
       </div>
+
+      <p className="text-center text-sm text-muted-foreground">
+        {"We'll"} tailor your course plan around what you love.
+      </p>
     </div>
   )
 }
