@@ -10,12 +10,17 @@ import { MajorStep } from "@/components/planner/major-step"
 import { MinorStep } from "@/components/planner/minor-step"
 import { InterestsStep } from "@/components/planner/interests-step"
 import { CareerStep } from "@/components/planner/career-step"
+import { MathPlacementStep } from "@/components/planner/math-placement-step"
+import { WaivedCoursesStep } from "@/components/planner/waived-courses-step"
+import type { MathPlacement } from "@/lib/types"
 
 const STEPS = [
-  { id: 1, title: "Major", description: "Choose your field of study" },
-  { id: 2, title: "Minor", description: "Add a minor (optional)" },
-  { id: 3, title: "Interests", description: "What excites you academically?" },
-  { id: 4, title: "Career Goals", description: "Where are you headed?" },
+  { id: 1, title: "Major",       description: "Choose your field of study" },
+  { id: 2, title: "Minor",       description: "Add a minor (optional)" },
+  { id: 3, title: "Interests",   description: "What excites you academically?" },
+  { id: 4, title: "Career Goals",description: "Where are you headed?" },
+  { id: 5, title: "Math Waiver", description: "Up to what math level have you waived?" },
+  { id: 6, title: "Other Waivers", description: "Add any other courses already waived" },
 ]
 
 export default function PlannerPage() {
@@ -26,6 +31,8 @@ export default function PlannerPage() {
     minors: [] as string[],
     interests: [] as string[],
     careerGoals: [] as string[],
+    mathPlacement: "none" as MathPlacement,
+    waivedCourses: [] as string[],
   })
 
   const progress = (currentStep / STEPS.length) * 100
@@ -39,6 +46,8 @@ export default function PlannerPage() {
       if (formData.minors.length > 0) params.set("minors", formData.minors.join(","))
       if (formData.interests.length > 0) params.set("interests", formData.interests.join(","))
       if (formData.careerGoals.length > 0) params.set("careerGoals", formData.careerGoals.join(","))
+      if (formData.mathPlacement !== "none") params.set("mathPlacement", formData.mathPlacement)
+      if (formData.waivedCourses.length > 0) params.set("waivedCourses", formData.waivedCourses.join(","))
       router.push(`/plan?${params.toString()}`)
     }
   }
@@ -47,7 +56,7 @@ export default function PlannerPage() {
     if (currentStep > 1) setCurrentStep(currentStep - 1)
   }
 
-  const updateFormData = (key: keyof typeof formData, value: string[]) => {
+  const updateFormData = (key: keyof typeof formData, value: string[] | MathPlacement) => {
     setFormData(prev => ({ ...prev, [key]: value }))
   }
 
@@ -57,6 +66,8 @@ export default function PlannerPage() {
       case 2: return true // minor is optional
       case 3: return formData.interests.length >= 1
       case 4: return formData.careerGoals.length >= 1
+      case 5: return true // math placement always has a valid selection
+      case 6: return true // waived courses are optional
       default: return true
     }
   }
@@ -140,6 +151,18 @@ export default function PlannerPage() {
             {currentStep === 4 && (
               <CareerStep selected={formData.careerGoals} onChange={v => updateFormData("careerGoals", v)} />
             )}
+            {currentStep === 5 && (
+              <MathPlacementStep
+                selected={formData.mathPlacement}
+                onChange={v => updateFormData("mathPlacement", v)}
+              />
+            )}
+            {currentStep === 6 && (
+              <WaivedCoursesStep
+                selected={formData.waivedCourses}
+                onChange={v => updateFormData("waivedCourses", v)}
+              />
+            )}
           </div>
 
           {/* Navigation */}
@@ -153,7 +176,7 @@ export default function PlannerPage() {
                 <>Generate Plan<Sparkles className="h-4 w-4" /></>
               ) : (
                 <>
-                  {currentStep === 2 && formData.minors.length === 0 ? "Skip" : "Next"}
+                  {currentStep === 2 && formData.minors.length === 0 ? "Skip" : "Next" }
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}

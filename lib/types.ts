@@ -129,12 +129,22 @@ export interface Minor {
   totalMinorCredits: number;
 }
 
+// Ordered list of math levels a student may have completed/waived before enrollment.
+// Each value means "completed up to and including this course."
+export type MathPlacement =
+  | "none"
+  | "MAT 010" | "MAT 011" | "MAT 012"
+  | "MAT 115" | "MAT 125" | "MAT 135"
+  | "MAT 225" | "MAT 330";
+
 export interface StudentProfile {
   majors: string[];
   minors: string[]; // Kept for compatibility but not used in planner
   interests: string[];
   hobbies: string[];
   careerGoals: string[];
+  mathPlacement?: MathPlacement; // highest math level already completed/waived
+  waivedCourses?: string[]; // other specific courses already waived
 }
 
 export interface SemesterPlan {
