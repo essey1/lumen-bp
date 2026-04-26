@@ -23,7 +23,11 @@ function buildPrereqMap(): Record<string, string[]> {
     if (!course.prerequisites?.length) continue;
     const valid = course.prerequisites.filter(p => {
       const num = parseInt(p.match(/\d+/)?.[0] ?? "0");
-      return num >= 100;
+      // Only keep prerequisites that are ≥100-level AND actually offered in the catalog.
+      // Courses absent from the catalog (e.g. MAT 110, a placement-level course) can
+      // never be placed, so including them as a prereq would permanently block the
+      // dependent course.
+      return num >= 100 && !!COURSE_CATALOG[p];
     });
     if (valid.length > 0) map[code] = valid;
   }
@@ -31,12 +35,38 @@ function buildPrereqMap(): Record<string, string[]> {
 }
 const PREREQUISITES = buildPrereqMap();
 
+const MATH_PLACEMENT_ORDER = [
+  "MAT 010",
+  "MAT 011",
+  "MAT 012",
+  "MAT 115",
+  "MAT 125",
+  "MAT 135",
+  "MAT 225",
+  "MAT 330",
+] as const;
+
+function getWaivedCourses(profile: StudentProfile): Set<string> {
+  const waived = new Set<string>(profile.waivedCourses ?? []);
+  const placement = profile.mathPlacement ?? "none";
+  const idx = MATH_PLACEMENT_ORDER.indexOf(placement as typeof MATH_PLACEMENT_ORDER[number]);
+  if (idx >= 0) {
+    for (let i = 0; i <= idx; i++) waived.add(MATH_PLACEMENT_ORDER[i]);
+  }
+  return waived;
+}
+
 // Courses that become redundant when a higher-level equivalent is already collected.
 // Key = intro course to skip; value = any one of these triggers the skip.
 const SUPERSEDED_BY: Record<string, string[]> = {
   "PHY 127": ["PHY 221", "PHY 222"],
   "PHY 128": ["PHY 221", "PHY 222"],
 };
+
+// 286-level codes are summer internship/field experience courses — excluded from plan.
+function isInternshipCode(code: string): boolean {
+  return /\s286[A-Z]?$/.test(code);
+}
 
 // Maps student interests/career goals to preferred department prefixes for elective selection
 const INTEREST_DEPT_MAP: Record<string, string[]> = {
@@ -263,8 +293,8 @@ const COURSE_CAREER_HINTS: Record<string, string[]> = {
   "PHY 482": ["quantum", "modern", "atomic", "nuclear"],
   "PHY 485": ["materials", "solid state", "condensed matter", "nanoscience"],
   // MAT courses
-  "MAT 216": ["discrete", "logic", "proof", "computer science", "theory"],
-  "MAT 312": ["optimization", "operations research", "industrial", "management", "linear programming"],
+  "MAT 216": ["discrete", "logic", "proof", "computer science", "theory", "algorithm", "graph theory", "combinatorics", "data structures"],
+  "MAT 312": ["optimization", "operations research", "industrial", "management", "linear optimization", "supply chain"],
   "MAT 330": ["multivariable", "calculus", "vector", "engineering"],
   "MAT 337": ["differential equations", "dynamics", "engineering", "mechanical", "modeling"],
   "MAT 415": ["combinatorics", "discrete", "graph theory", "algorithm"],
@@ -707,73 +737,20 @@ function applyGEM(tracker: GEMTracker, courseCode: string): void {
   }
 }
 
-// Returns the earliest semester >= minSem where the course can be placed.
-// scheduleDisclaimer courses (CSC rotating categories) skip the availability check.
-// For required courses (Major/Minor) that can't fit within schedule constraints,
-// returns a fallback slot and sets course.scheduleDisclaimer so the card shows a warning.
-function findSemester(
-  semesters: SemesterPlan[],
-  course: PlannedCourse,
-  minSem: number,
-  maxSem: number,
-  placedMap: Map<string, number>
-): number {
-  const prereqs = PREREQUISITES[course.code] ?? [];
-  let prereqFloor = minSem;
-  for (const p of prereqs) {
-    const pSem = placedMap.get(p);
-    if (pSem === undefined) return -1; // prereq not placed yet
-    prereqFloor = Math.max(prereqFloor, pSem + 1);
-  }
-
-  const isMajorMinor = course.category === "Major" || course.category === "Minor";
-  // CSC rotating-category courses bypass schedule — exact semester is unknown
-  const skipSchedule = course.scheduleDisclaimer === true;
-
-  function majorMinorOk(s: number, relaxCap = false): boolean {
-    if (!isMajorMinor) return true;
-    const count = semesters[s].courses.filter(
-      c => c.category === "Major" || c.category === "Minor"
-    ).length;
-    const cap = s === 0 ? 1 : relaxCap ? 3 : 2;
-    return count < cap;
-  }
-
-  // Pass 1: strict — respect schedule and major/minor cap, within minSem..maxSem
-  for (let s = prereqFloor; s <= Math.min(maxSem, 7); s++) {
-    if (semesters[s].totalCredits >= 4) continue;
-    if (!majorMinorOk(s)) continue;
-    if (!skipSchedule && !isCourseAvailable(course.code, s)) continue;
-    return s;
-  }
-
-  // Pass 2: relax major/minor cap (up to 3 per sem) but keep schedule check
-  for (let s = prereqFloor; s <= Math.min(maxSem, 7); s++) {
-    if (semesters[s].totalCredits >= 4) continue;
-    if (!majorMinorOk(s, true)) continue;
-    if (!skipSchedule && !isCourseAvailable(course.code, s)) continue;
-    return s;
-  }
-
-  // Pass 3: extend beyond maxSem (still in 8 semesters), respect schedule
-  for (let s = prereqFloor; s < 8; s++) {
-    if (semesters[s].totalCredits >= 4) continue;
-    if (!skipSchedule && !isCourseAvailable(course.code, s)) continue;
-    return s;
-  }
-
-  // Pass 4 (CSC rotating-category courses only): schedule-blind final fallback.
-  // Only courses already marked scheduleDisclaimer bypass the schedule here —
-  // all other courses return -1 and go to unfulfilledRequirements.
-  if (skipSchedule) {
-    for (let s = prereqFloor; s < 8; s++) {
-      if (semesters[s].totalCredits >= 4) continue;
-      return s;
-    }
-  }
-
-  return -1; // cannot fit within schedule constraints → unfulfilled
+// Prereq semantics: when a course lists many alternatives (>3), any one is enough
+// (OR). Short lists (≤3) are true hard prerequisites that must ALL be satisfied.
+function prereqsMet(code: string, semIdx: number, placedMap: Map<string, number>): boolean {
+  const prereqs = PREREQUISITES[code] ?? [];
+  if (prereqs.length === 0) return true;
+  const placed = (p: string) => {
+    const s = placedMap.get(p);
+    return s !== undefined && s < semIdx;
+  };
+  return prereqs.length > 3
+    ? prereqs.some(placed)   // OR: any one alternative suffices
+    : prereqs.every(placed); // AND: all hard prerequisites required
 }
+
 
 function placeCourse(
   semesters: SemesterPlan[],
@@ -835,12 +812,15 @@ function findInterestElective(
     if (placed.has(code)) continue;
     if (isSuperseded(code, placed)) continue;
     if (!isCourseAvailable(code, semIdx)) continue;
-    // Skip "Topics in X" courses — letter-suffixed codes (e.g. CSC 390B) have
-    // variable content each semester and must not be auto-selected.
-    if (/\d[A-Z]$/.test(code)) continue;
+    if (isInternshipCode(code)) continue;
+    const levelNum = parseInt(code.match(/\d+/)?.[0] ?? "0");
+    if (levelNum < 100) continue; // skip developmental courses
+    // Y3 Fall through Y4 Fall: no intro-level electives; Y4 Spring is unconstrained
+    if (semIdx >= 4 && semIdx < 7 && levelNum < 200) continue;
+    if ((COURSE_CATALOG[code].credits ?? 1) < 1) continue; // skip fractional-credit
+    if (/\d[A-Z]$/.test(code)) continue; // skip letter-suffixed Topics
 
-    const prereqs = PREREQUISITES[code] ?? [];
-    if (!prereqs.every(p => (placedMap.get(p) ?? Infinity) < semIdx)) continue;
+    if (!prereqsMet(code, semIdx, placedMap)) continue;
 
     const dept = code.split(" ")[0];
     const level = parseInt(code.match(/\d+/)?.[0] ?? "100");
@@ -966,9 +946,10 @@ function findGEMCourse(
     if (placed.has(code)) continue;
     if (isSuperseded(code, placed)) continue;
     if (!isCourseAvailable(code, semIdx)) continue;
+    if (isInternshipCode(code)) continue;
+    if ((COURSE_CATALOG[code].credits ?? 1) < 1) continue;
     if (/\d[A-Z]$/.test(code)) continue; // skip letter-suffixed Topics courses
-    const prereqs = PREREQUISITES[code] ?? [];
-if (!prereqs.every(p => (placedMap.get(p) ?? Infinity) < semIdx)) continue;
+    if (!prereqsMet(code, semIdx, placedMap)) continue;
     const score = gemScore(tracker, code);
     if (score === 0) continue;
 
@@ -1022,14 +1003,15 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
       const isCollateral = cat.includes("collateral");
 
       const minSem = isCapstone ? 6 : isUpper ? 3 : 0;
-      const maxSem = isCapstone ? 7 : isUpper ? 7 : isCollateral ? 5 : 5;
+      // Required courses can be placed any semester — prerequisite chains sometimes
+      // push them into year 3-4 even for non-upper-level requirements.
+      const maxSem = 7;
 
-      // mustInclude courses
-      for (const code of req.mustInclude ?? []) {
+      // mustInclude courses — always "Major" since they are explicitly required
+      for (const code of (req.mustInclude ?? []).filter(c => !isInternshipCode(c))) {
         if (collected.has(code)) continue;
         const data = COURSE_CATALOG[code];
         if (!data) continue;
-        const isMaj = code.startsWith(majorCode.split("_")[0] + " ");
         const level = parseInt(code.match(/\d+/)?.[0] ?? "100");
         result.push({
           course: {
@@ -1037,7 +1019,7 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
             name: data.name,
             credits: data.credits,
             fulfills: [`${major.name}: ${req.category}`],
-            category: isMaj ? "Major" : "Elective",
+            category: "Major",
           },
           minSem: isCapstone ? 6 : isCollateral ? 0 : level >= 300 ? 3 : 0,
           maxSem,
@@ -1045,31 +1027,34 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
         collected.add(code);
       }
 
-      // selectFromCategories: one course per sub-category, ranked by career/interest fit
+      // selectFromCategories: one course per sub-category, ranked by career/interest fit.
+      // After satisfying the per-sub-category minimums, also fill any remaining slots
+      // needed to reach coursesRequired (e.g. 4 total but only 3 sub-categories).
       if (req.selectFromCategories) {
+        const subPicked = new Set<string>();
+
         for (const sub of req.selectFromCategories) {
-          // Rank available courses by how well they match the student's goals
           const candidates = sub.courses
-            .filter(c => !collected.has(c) && COURSE_CATALOG[c])
+            .filter(c => !collected.has(c) && COURSE_CATALOG[c] && !isInternshipCode(c))
             .sort((a, b) => scoreUpperLevelCourse(b, profile) - scoreUpperLevelCourse(a, profile));
 
           const code = candidates[0];
           if (code) {
             const data = COURSE_CATALOG[code];
-            const isMaj = code.startsWith(majorCode.split("_")[0] + " ");
             result.push({
               course: {
                 code: data.code,
                 name: data.name,
                 credits: data.credits,
                 fulfills: [`${major.name}: ${req.category} (${sub.category})`],
-                category: isMaj ? "Major" : "Elective",
+                category: "Major",
                 scheduleDisclaimer: true,
               },
               minSem: 3,
               maxSem: 7,
             });
             collected.add(code);
+            subPicked.add(code);
           } else {
             result.push({
               course: {
@@ -1086,29 +1071,65 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
             });
           }
         }
-        continue; // don't also do the generic fill below
+
+        // Fill any remaining slots beyond the per-sub-category picks
+        const extraNeeded = Math.max(0, req.coursesRequired - req.selectFromCategories.length);
+        if (extraNeeded > 0) {
+          const extraCandidates = req.courses
+            .filter(c => !collected.has(c) && !subPicked.has(c) && COURSE_CATALOG[c] && !isInternshipCode(c))
+            .sort((a, b) => scoreUpperLevelCourse(b, profile) - scoreUpperLevelCourse(a, profile));
+          for (let i = 0; i < Math.min(extraNeeded, extraCandidates.length); i++) {
+            const code = extraCandidates[i];
+            const data = COURSE_CATALOG[code];
+            result.push({
+              course: { code: data.code, name: data.name, credits: data.credits, fulfills: [`${major.name}: ${req.category}`], category: "Major", scheduleDisclaimer: true },
+              minSem: 3,
+              maxSem: 7,
+            });
+            collected.add(code);
+          }
+        }
+
+        continue;
       }
 
-      // Generic fill — count ALL already-collected courses from this req's list,
-      // not just mustIncludes. This prevents placing PHY 127 when PHY 221 is already
-      // collected for another major requirement (they cover the same material).
-      const already = req.courses.filter(c => collected.has(c)).length;
+      // Generic fill — only count courses explicitly added by this requirement's own
+      // mustInclude list toward the "already satisfied" total. Courses that happen to
+      // appear in both this list and another requirement's list (e.g. ETAD 460 in both
+      // Exploratory Distribution and Collateral Electronics) must NOT silently satisfy
+      // this requirement; they should be placed explicitly with the correct label.
+      const already = (req.mustInclude ?? []).filter(c => collected.has(c)).length;
       const needed = Math.max(0, req.coursesRequired - already);
       let count = 0;
 
-      // Sort candidates: prefer courses with high career fit + cross-req bonus
+      // Sort candidates:
+      //   1st key — prefer courses that need NO new prerequisites (prereqs already
+      //             collected or course has none). Choosing a course with an uncollected
+      //             prereq chain forces additional courses into the plan and risks
+      //             creating unfulfillable cascades (e.g. MAT 312 → MAT 135 → Calc I).
+      //   2nd key — career/interest fit + cross-requirement bonus.
+      function needsNewPrereqs(code: string): boolean {
+        const prereqs = COURSE_CATALOG[code]?.prerequisites ?? [];
+        if (prereqs.length === 0) return false;
+        // OR semantics (>3): satisfied if any prereq is already collected
+        if (prereqs.length > 3) return !prereqs.some(p => collected.has(p));
+        // AND semantics (≤3): all prereqs must be collected
+        return !prereqs.every(p => collected.has(p));
+      }
       const candidates = req.courses
-        .filter(c => !collected.has(c) && !req.mustInclude?.includes(c) && COURSE_CATALOG[c])
+        .filter(c => !collected.has(c) && !req.mustInclude?.includes(c) && COURSE_CATALOG[c] && !isInternshipCode(c))
         .sort((a, b) => {
+          const aN = needsNewPrereqs(a) ? 1 : 0;
+          const bN = needsNewPrereqs(b) ? 1 : 0;
+          if (aN !== bN) return aN - bN; // courses needing no new prereqs come first
           const sa = scoreCourseFit(a, profile) + (crossReqBonus[a] ?? 0) * 2;
           const sb = scoreCourseFit(b, profile) + (crossReqBonus[b] ?? 0) * 2;
-          return sb - sa;
+          return sb - sa; // tiebreak by career fit
         });
 
       for (const code of candidates) {
         if (count >= needed) break;
         const data = COURSE_CATALOG[code];
-        const isMaj = code.startsWith(majorCode.split("_")[0] + " ");
         const level = parseInt(code.match(/\d+/)?.[0] ?? "100");
         result.push({
           course: {
@@ -1116,7 +1137,7 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
             name: data.name,
             credits: data.credits,
             fulfills: [`${major.name}: ${req.category}`],
-            category: isMaj ? "Major" : "Elective",
+            category: "Major",
           },
           minSem: isCapstone ? 6 : isCollateral ? 0 : level >= 300 ? 3 : 0,
           maxSem,
@@ -1163,9 +1184,9 @@ function collectMinorCourses(profile: StudentProfile, collected: Set<string>, cr
       if (needed === 0) continue;
 
       // mustInclude first, then fill remaining from full list sorted by fit
-      const mustPlace = (req.mustInclude ?? []).filter(c => !collected.has(c) && COURSE_CATALOG[c]);
+      const mustPlace = (req.mustInclude ?? []).filter(c => !collected.has(c) && COURSE_CATALOG[c] && !isInternshipCode(c));
       const candidates = req.courses
-        .filter(c => !collected.has(c) && !(req.mustInclude ?? []).includes(c) && COURSE_CATALOG[c])
+        .filter(c => !collected.has(c) && !(req.mustInclude ?? []).includes(c) && COURSE_CATALOG[c] && !isInternshipCode(c))
         .sort((a, b) => {
           const sa = scoreCourseFit(a, profile) + (crossReqBonus[a] ?? 0) * 2;
           const sb = scoreCourseFit(b, profile) + (crossReqBonus[b] ?? 0) * 2;
@@ -1208,24 +1229,31 @@ function collectMissingPrereqs(
 
   while (toCheck.length > 0) {
     const code = toCheck.pop()!;
-    for (const prereq of PREREQUISITES[code] ?? []) {
-      if (seen.has(prereq) || !COURSE_CATALOG[prereq]) continue;
-      seen.add(prereq);
-      collected.add(prereq);
-      const data = COURSE_CATALOG[prereq];
-      const level = parseInt(prereq.match(/\d+/)?.[0] ?? "100");
-      extra.push({
-        course: {
-          code: data.code,
-          name: data.name,
-          credits: data.credits,
-          fulfills: ["Prerequisite"],
-          category: "Major",
-        },
-        minSem: 0,
-        maxSem: level >= 300 ? 6 : 5,
-      });
-      toCheck.push(prereq);
+    const prereqs = PREREQUISITES[code] ?? [];
+    if (prereqs.length === 0) continue;
+
+    const isOR = prereqs.length > 3;
+    if (isOR) {
+      // OR: if any option is already covered, skip
+      if (prereqs.some(p => seen.has(p))) continue;
+      // Add the first available catalog course as the canonical prereq
+      const best = prereqs.find(p => !seen.has(p) && COURSE_CATALOG[p] && !isInternshipCode(p));
+      if (!best) continue;
+      seen.add(best); collected.add(best);
+      const data = COURSE_CATALOG[best];
+      const level = parseInt(best.match(/\d+/)?.[0] ?? "100");
+      extra.push({ course: { code: data.code, name: data.name, credits: data.credits, fulfills: ["Prerequisite"], category: "Major" }, minSem: 0, maxSem: level >= 300 ? 6 : 5 });
+      toCheck.push(best);
+    } else {
+      // AND: collect each missing prereq individually
+      for (const prereq of prereqs) {
+        if (seen.has(prereq) || !COURSE_CATALOG[prereq] || isInternshipCode(prereq)) continue;
+        seen.add(prereq); collected.add(prereq);
+        const data = COURSE_CATALOG[prereq];
+        const level = parseInt(prereq.match(/\d+/)?.[0] ?? "100");
+        extra.push({ course: { code: data.code, name: data.name, credits: data.credits, fulfills: ["Prerequisite"], category: "Major" }, minSem: 0, maxSem: level >= 300 ? 6 : 5 });
+        toCheck.push(prereq);
+      }
     }
   }
   return extra;
@@ -1235,14 +1263,16 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
   const semesters: SemesterPlan[] = [];
   const warnings: string[] = [];
   const unfulfilledRequirements: string[] = [];
-  // Maps placed course code -> semesterIndex (for prereq checking)
   const placedMap = new Map<string, number>();
-  // Set of all codes either placed or collected (to avoid duplicates)
-  const usedCodes = new Set<string>();
+  const waivedCourses = getWaivedCourses(profile);
+  const usedCodes = new Set<string>(waivedCourses);
   const gemTracker = freshGEMTracker();
   const pref = preferredDepts(profile);
 
-  // Initialize 8 semesters
+  for (const code of waivedCourses) {
+    placedMap.set(code, -1);
+  }
+
   for (let year = 1; year <= 4; year++) {
     for (const semester of ["Fall", "Spring"] as const) {
       semesters.push({ year, semester, courses: [], totalCredits: 0, isOverloaded: false });
@@ -1253,118 +1283,230 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     warnings.push("With more than 2 majors, completing all requirements in 8 semesters may be difficult.");
   }
 
-  // 1. Place L&I sequence (fixed positions)
-  const liCourses: Array<{ semIdx: number; code: string; name: string; fulfills: string }> = [
-    { semIdx: 0, code: "L&I 100", name: "Explorations", fulfills: "L&I: Explorations" },
-    { semIdx: 1, code: "L&I 200", name: "Discoveries", fulfills: "L&I: Discoveries" },
-    { semIdx: 2, code: "L&I 300", name: "Intersectional Justice in U.S.", fulfills: "L&I: Intersectional Justice" },
-    { semIdx: 6, code: "L&I 400", name: "Global Issues", fulfills: "L&I: Global Issues" },
+  // 1. L&I fixed positions
+  const liSeq = [
+    { semIdx: 0, code: "L&I 100", name: "Explorations",                     fulfills: "L&I: Explorations" },
+    { semIdx: 1, code: "L&I 200", name: "Discoveries",                      fulfills: "L&I: Discoveries" },
+    { semIdx: 2, code: "L&I 300", name: "Intersectional Justice in U.S.",   fulfills: "L&I: Intersectional Justice" },
+    { semIdx: 6, code: "L&I 400", name: "Global Issues",                    fulfills: "L&I: Global Issues" },
   ];
-  for (const li of liCourses) {
-    placeCourse(semesters, {
-      code: li.code, name: li.name, credits: 1, fulfills: [li.fulfills], category: "GEM",
-    }, li.semIdx, placedMap);
+  for (const li of liSeq) {
+    placeCourse(semesters, { code: li.code, name: li.name, credits: 1, fulfills: [li.fulfills], category: "GEM" }, li.semIdx, placedMap);
     usedCodes.add(li.code);
     applyGEM(gemTracker, li.code);
   }
 
-  // 2. Collect required courses — major and minor kept separate for priority ordering
+  // 2. Collect every required course
   const crossReqBonus = buildCrossReqBonus(profile);
-  const majorCourses = collectMajorCourses(profile, usedCodes, crossReqBonus);
-  const minorCourses = collectMinorCourses(profile, usedCodes, crossReqBonus);
-
-  function sortBySequence(list: CourseToPlace[]): CourseToPlace[] {
-    return [...list].sort((a, b) => {
-      if (a.minSem !== b.minSem) return a.minSem - b.minSem;
-      const aNum = parseInt(a.course.code.match(/\d+/)?.[0] ?? "0");
-      const bNum = parseInt(b.course.code.match(/\d+/)?.[0] ?? "0");
-      return aNum - bNum;
-    });
-  }
-
-  function runPlacementPasses(items: CourseToPlace[]): CourseToPlace[] {
-    let queue = sortBySequence(items);
-    for (let pass = 0; pass < 8; pass++) {
-      const retry: CourseToPlace[] = [];
-      for (const item of queue) {
-        const semIdx = findSemester(semesters, item.course, item.minSem, item.maxSem, placedMap);
-        if (semIdx !== -1) {
-          placeCourse(semesters, item.course, semIdx, placedMap);
-          applyGEM(gemTracker, item.course.code);
-        } else {
-          retry.push(item);
-        }
-      }
-      queue = retry;
-      if (queue.length === 0) break;
-    }
-
-    return queue;
-  }
-
-  // 3. Place required courses: major and minor combined, sorted by sequence.
-  // Major courses come first in the array so they get first pick when two courses
-  // compete for the same semester slot during the multi-pass sweep.
+  const majorCourses  = collectMajorCourses(profile, usedCodes, crossReqBonus);
+  const minorCourses  = collectMinorCourses(profile, usedCodes, crossReqBonus);
   const missingPrereqs = collectMissingPrereqs([...majorCourses, ...minorCourses], usedCodes);
-const allRequired = sortBySequence([...majorCourses, ...minorCourses, ...missingPrereqs]);
-  const unplacedRequired = runPlacementPasses(allRequired);
 
-  // Rescue pass: force-place still-unplaced required courses schedule-blind
-  // before GEM/electives can claim those slots.
-  const trulyUnplaced: CourseToPlace[] = [];
-  for (const item of unplacedRequired) {
-    item.course.scheduleDisclaimer = true; // bypass isCourseAvailable
-    const semIdx = findSemester(semesters, item.course, item.minSem, item.maxSem, placedMap);
-    if (semIdx !== -1) {
-      placeCourse(semesters, item.course, semIdx, placedMap);
-      applyGEM(gemTracker, item.course.code);
-    } else {
-      trulyUnplaced.push(item);
+  // Each required course is tagged so the scheduler knows its budget category.
+  interface Slot {
+    item: CourseToPlace;
+    category: "Major" | "Minor";
+    earliest: number; // earliest semester this course can be placed
+    latest:   number; // latest semester before dependents can no longer fit
+    placed:   boolean;
+  }
+
+  const allSlots: Slot[] = [
+    ...[...missingPrereqs, ...majorCourses].map(item => ({ item, category: "Major" as const, earliest: 0, latest: 7, placed: false })),
+    ...minorCourses.map(item =>                          ({ item, category: "Minor" as const, earliest: 0, latest: 7, placed: false })),
+  ];
+
+  // 3. Compute [earliest, latest] windows via dependency graph
+  //
+  // A course's "required prerequisites" are the subset of its catalog prereqs
+  // that also appear in allSlots (the rest will be placed organically as GEM/electives).
+  // OR heuristic (>3 prereqs) → keep only the first required-set match.
+  // AND heuristic (≤3 prereqs) → keep all required-set matches.
+  const requiredCodes = new Set(allSlots.filter(s => !s.item.course.isPlaceholder).map(s => s.item.course.code));
+
+  function requiredDeps(code: string): string[] {
+    const prereqs = PREREQUISITES[code] ?? [];
+    const inSet = prereqs.filter(p => requiredCodes.has(p));
+    return prereqs.length > 3 ? inSet.slice(0, 1) : inSet;
+  }
+
+  // Earliest: DFS longest-chain from roots (memoised, cycle-safe)
+  const earliestCache = new Map<string, number>();
+  const inProgressE  = new Set<string>();
+  function earliest(code: string): number {
+    if (earliestCache.has(code)) return earliestCache.get(code)!;
+    if (inProgressE.has(code)) return 0;
+    inProgressE.add(code);
+    const slot = allSlots.find(s => s.item.course.code === code);
+    let e = slot?.item.minSem ?? 0;
+    for (const dep of requiredDeps(code)) e = Math.max(e, earliest(dep) + 1);
+    e = Math.min(e, 7);
+    earliestCache.set(code, e);
+    inProgressE.delete(code);
+    return e;
+  }
+  for (const s of allSlots) if (!s.item.course.isPlaceholder) earliest(s.item.course.code);
+
+  // Reverse graph for latest computation
+  const dependents = new Map<string, string[]>();
+  for (const s of allSlots) {
+    if (s.item.course.isPlaceholder) continue;
+    for (const dep of requiredDeps(s.item.course.code)) {
+      if (!dependents.has(dep)) dependents.set(dep, []);
+      dependents.get(dep)!.push(s.item.course.code);
     }
   }
-  for (const item of trulyUnplaced) {
-    unfulfilledRequirements.push(`${item.course.name} (${item.course.fulfills.join(", ")})`);
+
+  // Latest: DFS on reverse graph (memoised, cycle-safe)
+  const latestCache = new Map<string, number>();
+  const inProgressL = new Set<string>();
+  function latest(code: string): number {
+    if (latestCache.has(code)) return latestCache.get(code)!;
+    if (inProgressL.has(code)) return 7;
+    inProgressL.add(code);
+    const slot = allSlots.find(s => s.item.course.code === code);
+    let l = Math.min(slot?.item.maxSem ?? 7, 7);
+    for (const dep of dependents.get(code) ?? []) l = Math.min(l, latest(dep) - 1);
+    l = Math.max(l, earliestCache.get(code) ?? 0); // window must be non-empty
+    latestCache.set(code, l);
+    inProgressL.delete(code);
+    return l;
+  }
+  for (const s of allSlots) if (!s.item.course.isPlaceholder) latest(s.item.course.code);
+
+  // Bake windows into each slot
+  for (const s of allSlots) {
+    if (s.item.course.isPlaceholder) { s.earliest = s.item.minSem; s.latest = 7; }
+    else { s.earliest = earliestCache.get(s.item.course.code)!; s.latest = latestCache.get(s.item.course.code)!; }
   }
 
-// 4. GEM courses fill remaining gaps
-
-  // 4. GEM courses fill remaining gaps (schedule-gated, spread across semesters).
-  for (let semIdx = 0; semIdx < 8; semIdx++) {
-    while (semesters[semIdx].totalCredits < 4 && hasUnfulfilledGEM(gemTracker)) {
-      const gemCourse = findGEMCourse(gemTracker, semIdx, usedCodes, pref, placedMap);
-      if (!gemCourse) break;
-      placeCourse(semesters, gemCourse, semIdx, placedMap);
-      usedCodes.add(gemCourse.code);
-      applyGEM(gemTracker, gemCourse.code);
-    }
-  }
-
-  // 5. Fill every remaining open slot: try a real interest-aligned course first;
-  // only fall back to a named placeholder when no matching course is available.
-  // This ensures every semester always has exactly 4 courses (= 4 credits at Berea).
   const placeholderLabel = electivePlaceholderLabel(profile, pref);
-  for (let semIdx = 0; semIdx < 8; semIdx++) {
-    while (semesters[semIdx].totalCredits < 4) {
-      const elective = findInterestElective(semIdx, usedCodes, profile, pref, placedMap);
-      if (elective) {
-        placeCourse(semesters, elective, semIdx, placedMap);
-        usedCodes.add(elective.code);
-      } else {
-        semesters[semIdx].courses.push({
-          code: "Elective",
-          name: `${placeholderLabel} Elective`,
-          credits: 1,
-          fulfills: [`${placeholderLabel} Elective`],
-          category: "Elective",
-          isPlaceholder: true,
-          placeholderCategory: placeholderLabel,
-        });
-        semesters[semIdx].totalCredits += 1;
+
+  // 4. Semester-by-semester scheduling
+  //
+  // At each semester we collect all "ready" required courses:
+  //   • window includes this semester  (earliest ≤ sem ≤ latest)
+  //   • every required prereq is already placed (prereqsMet)
+  //   • the course is offered this semester (schedule check)
+  //
+  // Among ready courses we pick by urgency = tightest deadline first.
+  // Budget: up to 2 Major + 1 Minor per semester.
+  // Remaining slots go to GEM then interest-aligned electives.
+
+  for (let sem = 0; sem < 8; sem++) {
+    const open = () => 4 - semesters[sem].totalCredits;
+
+    function readyForSem(cat: "Major" | "Minor"): Slot[] {
+      return allSlots
+        .filter(s =>
+          !s.placed &&
+          s.category === cat &&
+          !s.item.course.isPlaceholder &&
+          s.earliest <= sem &&
+          sem <= s.latest &&
+          prereqsMet(s.item.course.code, sem, placedMap) &&
+          (s.item.course.scheduleDisclaimer || isCourseAvailable(s.item.course.code, sem))
+        )
+        .sort((a, b) => a.latest - b.latest || a.earliest - b.earliest);
+    }
+
+    // Major (up to 2)
+    let majorPlaced = 0;
+    for (const s of readyForSem("Major")) {
+      if (majorPlaced >= 2 || open() <= 0) break;
+      placeCourse(semesters, s.item.course, sem, placedMap);
+      applyGEM(gemTracker, s.item.course.code);
+      s.placed = true;
+      majorPlaced++;
+    }
+
+    // Minor (up to 1, from semester 2 onward so year-1 is major-focused)
+    if (sem >= 2) {
+      for (const s of readyForSem("Minor")) {
+        if (open() <= 0) break;
+        placeCourse(semesters, s.item.course, sem, placedMap);
+        applyGEM(gemTracker, s.item.course.code);
+        s.placed = true;
+        break;
+      }
+    }
+
+    // Placeholders for required courses (no real code, just reserve the slot)
+    for (const s of allSlots.filter(s => !s.placed && s.item.course.isPlaceholder && s.category === "Major" && sem >= s.earliest)) {
+      if (open() <= 0) break;
+      semesters[sem].courses.push(s.item.course);
+      semesters[sem].totalCredits += s.item.course.credits;
+      s.placed = true;
+    }
+
+    // GEM fills remaining (priority over free electives)
+    while (open() > 0 && hasUnfulfilledGEM(gemTracker)) {
+      const gem = findGEMCourse(gemTracker, sem, usedCodes, pref, placedMap);
+      if (!gem) break;
+      placeCourse(semesters, gem, sem, placedMap);
+      usedCodes.add(gem.code);
+      applyGEM(gemTracker, gem.code);
+    }
+
+    // Remaining slots become open placeholders — electives are added only AFTER
+    // all requirements are confirmed placed (see step 6 below).
+    while (open() > 0) {
+      semesters[sem].courses.push({ code: "Elective", name: `${placeholderLabel} Elective`, credits: 1, fulfills: [`${placeholderLabel} Elective`], category: "Elective", isPlaceholder: true, placeholderCategory: placeholderLabel });
+      semesters[sem].totalCredits += 1;
+    }
+  }
+
+  // 5. Rescue pass — any required course still unplaced either missed its window
+  //    (schedule conflict) or had too many competitors for its semester slots.
+  //    Displaces a placeholder to make room when needed.
+  //
+  //    CRITICAL: sort by earliest (= topological depth) so prerequisites are always
+  //    rescued before the courses that depend on them.
+  const rescueOrder = allSlots
+    .filter(s => !s.placed)
+    .sort((a, b) => a.earliest - b.earliest || a.latest - b.latest);
+
+  for (const s of rescueOrder) {
+    s.item.course.scheduleDisclaimer = true; // bypass isCourseAvailable only
+    let placed = false;
+    for (let sem = s.earliest; sem < 8 && !placed; sem++) {
+      if (!s.item.course.isPlaceholder && !prereqsMet(s.item.course.code, sem, placedMap)) continue;
+      if (semesters[sem].totalCredits >= 4) {
+        const idx = semesters[sem].courses.findIndex(c => c.isPlaceholder || c.category === "Elective");
+        if (idx === -1) continue;
+        semesters[sem].totalCredits -= semesters[sem].courses[idx].credits;
+        semesters[sem].courses.splice(idx, 1);
+      }
+      if (semesters[sem].totalCredits >= 4) continue;
+      placeCourse(semesters, s.item.course, sem, placedMap);
+      applyGEM(gemTracker, s.item.course.code);
+      placed = true;
+    }
+    if (!placed) unfulfilledRequirements.push(`${s.item.course.name} (${s.item.course.fulfills.join(", ")})`);
+  }
+
+  // 6. Electives — only filled when ALL requirements are successfully placed.
+  //    If any requirement is unfulfilled, every open slot stays as a placeholder
+  //    so the student can see exactly how many free slots remain and fill them
+  //    manually once the schedule conflict is resolved.
+  if (unfulfilledRequirements.length === 0) {
+    for (let sem = 0; sem < 8; sem++) {
+      for (let i = 0; i < semesters[sem].courses.length; i++) {
+        const c = semesters[sem].courses[i];
+        if (!c.isPlaceholder || c.category !== "Elective") continue;
+        const elective = findInterestElective(sem, usedCodes, profile, pref, placedMap);
+        if (elective) {
+          semesters[sem].courses[i] = elective;
+          // totalCredits unchanged (both 1 credit); update tracking maps
+          placedMap.set(elective.code, sem);
+          usedCodes.add(elective.code);
+        }
+        // If no elective found, the placeholder stays as-is
       }
     }
   }
 
-  // 5. Calculate totals
+  // 6. Calculate totals
   const totalCredits = semesters.reduce((s, sem) => s + sem.totalCredits, 0);
   const majorCredits = semesters.reduce(
     (s, sem) => s + sem.courses.filter(c => c.category === "Major").reduce((cs, c) => cs + c.credits, 0), 0

@@ -15,6 +15,8 @@ import type { StudentProfile as StudentProfileType } from "@/lib/types"
 import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types"
 import { ExportButton } from "@/components/plan/export-button"
 
+import type { MathPlacement } from "@/lib/types"
+
 interface Props {
   searchParams: Promise<{
     majors?: string
@@ -22,6 +24,8 @@ interface Props {
     interests?: string
     hobbies?: string
     careerGoals?: string
+    mathPlacement?: string
+    waivedCourses?: string
   }>
 }
 
@@ -34,6 +38,8 @@ export default async function PlanPage({ searchParams }: Props) {
     interests: params.interests ? params.interests.split(",") : ["Technology"],
     hobbies: params.hobbies ? params.hobbies.split(",") : [],
     careerGoals: params.careerGoals ? params.careerGoals.split(",") : ["Software Engineer"],
+    mathPlacement: (params.mathPlacement ?? "none") as MathPlacement,
+    waivedCourses: params.waivedCourses ? params.waivedCourses.split(",") : [],
   }
 
   const plan = generateAcademicPlan(profile)
