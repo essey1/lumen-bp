@@ -11,6 +11,25 @@ import { MINORS } from "./minors-data";
 import { COURSE_CATALOG } from "./course-catalog";
 import { isCourseAvailable } from "./course-schedule-data";
 
+// Capstone courses mapped to the major(s) that own them.
+// A capstone from major X should not appear in the plan of a student not enrolled in X.
+const CAPSTONE_OWNER: Map<string, Set<string>> = new Map();
+for (const [majorCode, major] of Object.entries(MAJORS)) {
+  for (const req of major.requirements) {
+    if (!req.category.toLowerCase().includes("capstone")) continue;
+    for (const code of [...req.courses, ...(req.mustInclude ?? [])]) {
+      if (!CAPSTONE_OWNER.has(code)) CAPSTONE_OWNER.set(code, new Set());
+      CAPSTONE_OWNER.get(code)!.add(majorCode);
+    }
+  }
+}
+
+function isOtherMajorCapstone(code: string, userMajors: string[]): boolean {
+  const owners = CAPSTONE_OWNER.get(code);
+  if (!owners) return false;
+  return !userMajors.some(m => owners.has(m));
+}
+
 // Prerequisites: built from course catalog + L&I sequence.
 // Sub-100-level courses (developmental, e.g. MAT 010) are excluded as placement constraints.
 function buildPrereqMap(): Record<string, string[]> {
@@ -815,10 +834,14 @@ function findInterestElective(
     if (isInternshipCode(code)) continue;
     const levelNum = parseInt(code.match(/\d+/)?.[0] ?? "0");
     if (levelNum < 100) continue; // skip developmental courses
+    // No 300+ level courses in semester 0 (Y1 Fall)
+    if (semIdx === 0 && levelNum >= 300) continue;
     // Y3 Fall through Y4 Fall: no intro-level electives; Y4 Spring is unconstrained
     if (semIdx >= 4 && semIdx < 7 && levelNum < 200) continue;
     if ((COURSE_CATALOG[code].credits ?? 1) < 1) continue; // skip fractional-credit
     if (/\d[A-Z]$/.test(code)) continue; // skip letter-suffixed Topics
+    // Capstone courses belong exclusively to their home major
+    if (isOtherMajorCapstone(code, profile.majors)) continue;
 
     if (!prereqsMet(code, semIdx, placedMap)) continue;
 
@@ -932,7 +955,8 @@ function findGEMCourse(
   semIdx: number,
   placed: Set<string>,
   preferred: string[],
-  placedMap: Map<string, number>
+  placedMap: Map<string, number>,
+  userMajors: string[] = []
 ): PlannedCourse | null {
   if (!hasUnfulfilledGEM(tracker)) return null;
 
@@ -949,6 +973,10 @@ function findGEMCourse(
     if (isInternshipCode(code)) continue;
     if ((COURSE_CATALOG[code].credits ?? 1) < 1) continue;
     if (/\d[A-Z]$/.test(code)) continue; // skip letter-suffixed Topics courses
+    // No 300+ level courses in semester 0 (Y1 Fall)
+    if (semIdx === 0 && parseInt(code.match(/\d+/)?.[0] ?? "0") >= 300) continue;
+    // Capstone courses belong exclusively to their home major
+    if (isOtherMajorCapstone(code, userMajors)) continue;
     if (!prereqsMet(code, semIdx, placedMap)) continue;
     const score = gemScore(tracker, code);
     if (score === 0) continue;
@@ -1441,7 +1469,7 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
 
     // GEM fills remaining (priority over free electives)
     while (open() > 0 && hasUnfulfilledGEM(gemTracker)) {
-      const gem = findGEMCourse(gemTracker, sem, usedCodes, pref, placedMap);
+      const gem = findGEMCourse(gemTracker, sem, usedCodes, pref, placedMap, profile.majors);
       if (!gem) break;
       placeCourse(semesters, gem, sem, placedMap);
       usedCodes.add(gem.code);
