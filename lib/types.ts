@@ -1,10 +1,21 @@
 // Course and curriculum types for Lumen academic planner
 
+/**
+ * Prerequisite tree node.
+ * - A bare string means a single required course.
+ * - { type: "AND", courses: [...] } means ALL children must be satisfied.
+ * - { type: "OR",  courses: [...] } means ANY ONE child suffices.
+ * Children can be strings or nested nodes, allowing full AND/OR nesting.
+ */
+export type PrereqNode =
+  | string
+  | { type: "AND" | "OR"; courses: PrereqNode[] };
+
 export interface Course {
   code: string;
   name: string;
   credits: number;
-  prerequisites?: string[];
+  prerequisites?: PrereqNode;
   // GEM attributes - a course can fulfill multiple requirements
   waysOfKnowing?: WayOfKnowing[];
   values?: Value[];

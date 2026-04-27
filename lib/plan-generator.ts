@@ -1,11 +1,38 @@
 import type {
   AcademicPlan,
   PlannedCourse,
+  PrereqNode,
   SemesterPlan,
   StudentProfile,
   WayOfKnowing,
 } from "./types";
 import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "./types";
+
+/**
+ * Flatten a PrereqNode tree into string[][] for internal scheduling logic.
+ * Outer array = AND (all groups must be satisfied).
+ * Inner array = OR (any one course in the group satisfies it).
+ */
+function flattenPrereq(node: PrereqNode | undefined): string[][] {
+  if (!node) return [];
+  if (typeof node === 'string') return [[node]];
+  if (node.type === 'OR') {
+    const options: string[] = [];
+    for (const c of node.courses) {
+      if (typeof c === 'string') options.push(c);
+      else {
+        // Nested node inside OR — collect all leaf strings
+        const sub = flattenPrereq(c);
+        for (const g of sub) options.push(...g);
+      }
+    }
+    return options.length > 0 ? [options] : [];
+  }
+  // AND: each child becomes its own group
+  const groups: string[][] = [];
+  for (const c of node.courses) groups.push(...flattenPrereq(c));
+  return groups;
+}
 import { MAJORS } from "./majors-data";
 import { MINORS } from "./minors-data";
 import { COURSE_CATALOG } from "./course-catalog";
@@ -31,24 +58,26 @@ function isOtherMajorCapstone(code: string, userMajors: string[]): boolean {
 }
 
 // Prerequisites: built from course catalog + L&I sequence.
-// Sub-100-level courses (developmental, e.g. MAT 010) are excluded as placement constraints.
-function buildPrereqMap(): Record<string, string[]> {
-  const map: Record<string, string[]> = {
-    "L&I 200": ["L&I 100"],
-    "L&I 300": ["L&I 200"],
-    "L&I 400": ["L&I 300"],
+// Format: Record<courseCode, string[][]>
+//   Outer array = AND groups (every group must be satisfied).
+//   Inner array = OR alternatives (any one in the group satisfies it).
+// Sub-100-level and catalog-absent courses are excluded from every group.
+function buildPrereqMap(): Record<string, string[][]> {
+  const map: Record<string, string[][]> = {
+    "L&I 200": [["L&I 100"]],
+    "L&I 300": [["L&I 200"]],
+    "L&I 400": [["L&I 300"]],
   };
   for (const [code, course] of Object.entries(COURSE_CATALOG)) {
-    if (!course.prerequisites?.length) continue;
-    const valid = course.prerequisites.filter(p => {
-      const num = parseInt(p.match(/\d+/)?.[0] ?? "0");
-      // Only keep prerequisites that are ≥100-level AND actually offered in the catalog.
-      // Courses absent from the catalog (e.g. MAT 110, a placement-level course) can
-      // never be placed, so including them as a prereq would permanently block the
-      // dependent course.
-      return num >= 100 && !!COURSE_CATALOG[p];
-    });
-    if (valid.length > 0) map[code] = valid;
+    if (!course.prerequisites) continue;
+    // Flatten the PrereqNode tree and filter out unavailable courses
+    const groups = flattenPrereq(course.prerequisites)
+      .map(orGroup => orGroup.filter(p => {
+        const num = parseInt(p.match(/\d+/)?.[0] ?? "0");
+        return num >= 100 && !!COURSE_CATALOG[p];
+      }))
+      .filter(g => g.length > 0);
+    if (groups.length > 0) map[code] = groups;
   }
   return map;
 }
@@ -1112,18 +1141,17 @@ function applyGEM(tracker: GEMTracker, courseCode: string): void {
   }
 }
 
-// Prereq semantics: when a course lists many alternatives (>3), any one is enough
-// (OR). Short lists (≤3) are true hard prerequisites that must ALL be satisfied.
+// Prerequisite check using the string[][] format:
+//   outer = AND  → every group must be satisfied
+//   inner = OR   → any one course in the group, placed before semIdx, satisfies it
 function prereqsMet(code: string, semIdx: number, placedMap: Map<string, number>): boolean {
-  const prereqs = PREREQUISITES[code] ?? [];
+  const prereqs = PREREQUISITES[code] ?? []; // string[][]
   if (prereqs.length === 0) return true;
   const placed = (p: string) => {
     const s = placedMap.get(p);
     return s !== undefined && s < semIdx;
   };
-  return prereqs.length > 3
-    ? prereqs.some(placed)   // OR: any one alternative suffices
-    : prereqs.every(placed); // AND: all hard prerequisites required
+  return prereqs.every(orGroup => orGroup.some(placed));
 }
 
 
@@ -1517,12 +1545,9 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
       //             creating unfulfillable cascades (e.g. MAT 312 → MAT 135 → Calc I).
       //   2nd key — career/interest fit + cross-requirement bonus.
       function needsNewPrereqs(code: string): boolean {
-        const prereqs = COURSE_CATALOG[code]?.prerequisites ?? [];
-        if (prereqs.length === 0) return false;
-        // OR semantics (>3): satisfied if any prereq is already collected
-        if (prereqs.length > 3) return !prereqs.some(p => collected.has(p));
-        // AND semantics (≤3): all prereqs must be collected
-        return !prereqs.every(p => collected.has(p));
+        const groups = flattenPrereq(COURSE_CATALOG[code]?.prerequisites);
+        if (groups.length === 0) return false;
+        return groups.some(orGroup => !orGroup.some(p => collected.has(p)));
       }
       const candidates = req.courses
         .filter(c => !collected.has(c) && !req.mustInclude?.includes(c) && COURSE_CATALOG[c] && !isInternshipCode(c))
@@ -1637,31 +1662,28 @@ function collectMissingPrereqs(
 
   while (toCheck.length > 0) {
     const code = toCheck.pop()!;
-    const prereqs = PREREQUISITES[code] ?? [];
-    if (prereqs.length === 0) continue;
+    const prereqGroups = PREREQUISITES[code] ?? []; // string[][]
+    if (prereqGroups.length === 0) continue;
 
-    const isOR = prereqs.length > 3;
-    if (isOR) {
-      // OR: if any option is already covered, skip
-      if (prereqs.some(p => seen.has(p))) continue;
-      // Add the first available catalog course as the canonical prereq
-      const best = prereqs.find(p => !seen.has(p) && COURSE_CATALOG[p] && !isInternshipCode(p));
+    for (const orGroup of prereqGroups) {
+      // Each orGroup is one AND requirement with OR alternatives.
+      // If any option in this group is already covered, the group is satisfied → skip.
+      if (orGroup.some(p => seen.has(p))) continue;
+
+      // Pick the best available option from the OR alternatives.
+      const best = orGroup.find(p => !seen.has(p) && COURSE_CATALOG[p] && !isInternshipCode(p));
       if (!best) continue;
-      seen.add(best); collected.add(best);
+
+      seen.add(best);
+      collected.add(best);
       const data = COURSE_CATALOG[best];
       const level = parseInt(best.match(/\d+/)?.[0] ?? "100");
-      extra.push({ course: { code: data.code, name: data.name, credits: data.credits, fulfills: ["Prerequisite"], category: "Major" }, minSem: 0, maxSem: level >= 300 ? 6 : 5 });
+      extra.push({
+        course: { code: data.code, name: data.name, credits: data.credits, fulfills: ["Prerequisite"], category: "Major" },
+        minSem: 0,
+        maxSem: level >= 300 ? 6 : 5,
+      });
       toCheck.push(best);
-    } else {
-      // AND: collect each missing prereq individually
-      for (const prereq of prereqs) {
-        if (seen.has(prereq) || !COURSE_CATALOG[prereq] || isInternshipCode(prereq)) continue;
-        seen.add(prereq); collected.add(prereq);
-        const data = COURSE_CATALOG[prereq];
-        const level = parseInt(prereq.match(/\d+/)?.[0] ?? "100");
-        extra.push({ course: { code: data.code, name: data.name, credits: data.credits, fulfills: ["Prerequisite"], category: "Major" }, minSem: 0, maxSem: level >= 300 ? 6 : 5 });
-        toCheck.push(prereq);
-      }
     }
   }
   return extra;
@@ -1726,16 +1748,19 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
 
   // 3. Compute [earliest, latest] windows via dependency graph
   //
-  // A course's "required prerequisites" are the subset of its catalog prereqs
-  // that also appear in allSlots (the rest will be placed organically as GEM/electives).
-  // OR heuristic (>3 prereqs) → keep only the first required-set match.
-  // AND heuristic (≤3 prereqs) → keep all required-set matches.
+  // For each AND group we pick the one option that appears in allSlots (if any).
+  // That becomes the canonical dependency edge for window propagation.
   const requiredCodes = new Set(allSlots.filter(s => !s.item.course.isPlaceholder).map(s => s.item.course.code));
 
   function requiredDeps(code: string): string[] {
-    const prereqs = PREREQUISITES[code] ?? [];
-    const inSet = prereqs.filter(p => requiredCodes.has(p));
-    return prereqs.length > 3 ? inSet.slice(0, 1) : inSet;
+    const prereqGroups = PREREQUISITES[code] ?? []; // string[][]
+    const deps: string[] = [];
+    for (const orGroup of prereqGroups) {
+      // Take the first option in the OR group that is in the required set.
+      const dep = orGroup.find(p => requiredCodes.has(p));
+      if (dep) deps.push(dep);
+    }
+    return deps;
   }
 
   // Earliest: DFS longest-chain from roots (memoised, cycle-safe)
