@@ -11,9 +11,10 @@ import { SemesterCard } from "@/components/plan/semester-card"
 import { OverflowWarning } from "@/components/plan/overflow-warning"
 import { CareerAdvice } from "@/components/plan/career-advice"
 import { generateAcademicPlan, getPlanStats } from "@/lib/plan-generator"
-import type { StudentProfile as StudentProfileType } from "@/lib/types"
+import type { StudentProfile as StudentProfileType, AcademicPlan } from "@/lib/types"
 import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types"
 import { ExportButton } from "@/components/plan/export-button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import type { MathPlacement } from "@/lib/types"
 
@@ -29,6 +30,107 @@ interface Props {
   }>
 }
 
+function PlanView({ plan, stats }: { plan: AcademicPlan, stats: ReturnType<typeof getPlanStats> }) {
+  const years = [
+    { label: "2026 – 27", fallTitle: "Fall 2026", springTitle: "Spring 2027", fall: plan.semesters[0], spring: plan.semesters[1] },
+    { label: "2027 – 28", fallTitle: "Fall 2027", springTitle: "Spring 2028", fall: plan.semesters[2], spring: plan.semesters[3] },
+    { label: "2028 – 29", fallTitle: "Fall 2028", springTitle: "Spring 2029", fall: plan.semesters[4], spring: plan.semesters[5] },
+    { label: "2029 – 30", fallTitle: "Fall 2029", springTitle: "Spring 2030", fall: plan.semesters[6], spring: plan.semesters[7] },
+  ]
+
+  const unfulfilledCourses = plan.unfulfilledRequirements.map((req, i) => ({
+    code: `REQ ${i + 1}`,
+    name: req,
+    credits: 1,
+  }))
+
+  return (
+    <>
+      {/* 4-Year Grid */}
+      <div className="mb-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {years.map(({ label, fallTitle, springTitle, fall, spring }) => (
+          <div key={label} className="space-y-4">
+            <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+              <GraduationCap className="h-5 w-5 text-primary" />
+              {label}
+            </h2>
+            <SemesterCard
+              title={fallTitle}
+              courses={fall.courses.map(c => ({
+                code: c.code,
+                name: c.name,
+                credits: c.credits,
+                fulfills: c.fulfills,
+                isPlaceholder: c.isPlaceholder,
+                placeholderCategory: c.placeholderCategory,
+                category: c.category,
+                scheduleDisclaimer: c.scheduleDisclaimer,
+              }))}
+              isOverloaded={fall.isOverloaded}
+            />
+            <SemesterCard
+              title={springTitle}
+              courses={spring.courses.map(c => ({
+                code: c.code,
+                name: c.name,
+                credits: c.credits,
+                fulfills: c.fulfills,
+                isPlaceholder: c.isPlaceholder,
+                placeholderCategory: c.placeholderCategory,
+                category: c.category,
+                scheduleDisclaimer: c.scheduleDisclaimer,
+              }))}
+              isOverloaded={spring.isOverloaded}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* Overflow Warning */}
+      {(plan.warnings.length > 0 || unfulfilledCourses.length > 0) && (
+        <OverflowWarning
+          courses={unfulfilledCourses}
+          warnings={plan.warnings}
+        />
+      )}
+
+      {/* Summary Stats */}
+      <Card className="mt-8 border-border bg-card">
+        <CardContent className="py-6">
+          <div className="grid gap-6 text-center md:grid-cols-3 lg:grid-cols-6">
+            <div>
+              <p className="text-3xl font-bold text-primary">{stats.totalCredits}</p>
+              <p className="text-sm text-muted-foreground">Total Credits</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-primary">{stats.totalCourses}</p>
+              <p className="text-sm text-muted-foreground">Courses</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-primary">{stats.majorCourses}</p>
+              <p className="text-sm text-muted-foreground">Major Courses</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-primary">{stats.creditsOutsideMajor}</p>
+              <p className="text-sm text-muted-foreground">Outside Major</p>
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-muted-foreground">{stats.placeholderCourses}</p>
+              <p className="text-sm text-muted-foreground">TBD Courses</p>
+            </div>
+            <div>
+              <p className={`text-3xl font-bold ${stats.overloadedSemesters > 0 ? "text-warning" : "text-primary"}`}>
+                {stats.overloadedSemesters}
+              </p>
+              <p className="text-sm text-muted-foreground">Overloaded</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </>
+  )
+}
+
 export default async function PlanPage({ searchParams }: Props) {
   const params = await searchParams
 
@@ -42,21 +144,14 @@ export default async function PlanPage({ searchParams }: Props) {
     waivedCourses: params.waivedCourses ? params.waivedCourses.split(",") : [],
   }
 
-  const plan = generateAcademicPlan(profile)
-  const stats = getPlanStats(plan)
+  const planA = generateAcademicPlan(profile, { planType: "A" })
+  const statsA = getPlanStats(planA)
 
-  const years = [
-    { label: "2026 – 27", fallTitle: "Fall 2026", springTitle: "Spring 2027", fall: plan.semesters[0], spring: plan.semesters[1] },
-    { label: "2027 – 28", fallTitle: "Fall 2027", springTitle: "Spring 2028", fall: plan.semesters[2], spring: plan.semesters[3] },
-    { label: "2028 – 29", fallTitle: "Fall 2028", springTitle: "Spring 2029", fall: plan.semesters[4], spring: plan.semesters[5] },
-    { label: "2029 – 30", fallTitle: "Fall 2029", springTitle: "Spring 2030", fall: plan.semesters[6], spring: plan.semesters[7] },
-  ]
+  const planB = generateAcademicPlan(profile, { planType: "B" })
+  const statsB = getPlanStats(planB)
 
-  const unfulfilledCourses = plan.unfulfilledRequirements.map((req, i) => ({
-    code: `REQ ${i + 1}`,
-    name: req,
-    credits: 1,
-  }))
+  const planC = generateAcademicPlan(profile, { planType: "C" })
+  const statsC = getPlanStats(planC)
 
   return (
     <div className="min-h-screen bg-background">
@@ -105,95 +200,52 @@ export default async function PlanPage({ searchParams }: Props) {
           careerGoals: profile.careerGoals,
         }} />
 
-        {/* 4-Year Grid */}
-        <div className="mb-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {years.map(({ label, fallTitle, springTitle, fall, spring }) => (
-            <div key={label} className="space-y-4">
-              <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
-                <GraduationCap className="h-5 w-5 text-primary" />
-                {label}
-              </h2>
-              <SemesterCard
-                title={fallTitle}
-                courses={fall.courses.map(c => ({
-                  code: c.code,
-                  name: c.name,
-                  credits: c.credits,
-                  fulfills: c.fulfills,
-                  isPlaceholder: c.isPlaceholder,
-                  placeholderCategory: c.placeholderCategory,
-                  category: c.category,
-                  scheduleDisclaimer: c.scheduleDisclaimer,
-                }))}
-                isOverloaded={fall.isOverloaded}
-              />
-              <SemesterCard
-                title={springTitle}
-                courses={spring.courses.map(c => ({
-                  code: c.code,
-                  name: c.name,
-                  credits: c.credits,
-                  fulfills: c.fulfills,
-                  isPlaceholder: c.isPlaceholder,
-                  placeholderCategory: c.placeholderCategory,
-                  category: c.category,
-                  scheduleDisclaimer: c.scheduleDisclaimer,
-                }))}
-                isOverloaded={spring.isOverloaded}
+        <Tabs defaultValue="planA" className="mt-8">
+          <div className="flex justify-center mb-8">
+            <TabsList>
+              <TabsTrigger value="planA">Plan A</TabsTrigger>
+              <TabsTrigger value="planB">Plan B</TabsTrigger>
+              <TabsTrigger value="planC">Plan C</TabsTrigger>
+            </TabsList>
+          </div>
+
+          <TabsContent value="planA">
+            <PlanView plan={planA} stats={statsA} />
+            <div className="mt-8">
+              <CareerAdvice
+                careerGoals={profile.careerGoals}
+                majors={profile.majors}
+                courses={planA.semesters.flatMap(s => s.courses.map(c => ({ code: c.code, name: c.name })))}
+                interests={profile.interests}
               />
             </div>
-          ))}
-        </div>
+          </TabsContent>
 
-        {/* Overflow Warning */}
-        {(plan.warnings.length > 0 || unfulfilledCourses.length > 0) && (
-          <OverflowWarning
-            courses={unfulfilledCourses}
-            warnings={plan.warnings}
-          />
-        )}
-
-        {/* Career Advice from AI */}
-        <CareerAdvice
-          careerGoals={profile.careerGoals}
-          majors={profile.majors}
-          courses={plan.semesters.flatMap(s => s.courses.map(c => ({ code: c.code, name: c.name })))}
-          interests={profile.interests}
-        />
-
-        {/* Summary Stats */}
-        <Card className="mt-8 border-border bg-card">
-          <CardContent className="py-6">
-            <div className="grid gap-6 text-center md:grid-cols-3 lg:grid-cols-6">
-              <div>
-                <p className="text-3xl font-bold text-primary">{stats.totalCredits}</p>
-                <p className="text-sm text-muted-foreground">Total Credits</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-primary">{stats.totalCourses}</p>
-                <p className="text-sm text-muted-foreground">Courses</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-primary">{stats.majorCourses}</p>
-                <p className="text-sm text-muted-foreground">Major Courses</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-primary">{stats.creditsOutsideMajor}</p>
-                <p className="text-sm text-muted-foreground">Outside Major</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-muted-foreground">{stats.placeholderCourses}</p>
-                <p className="text-sm text-muted-foreground">TBD Courses</p>
-              </div>
-              <div>
-                <p className={`text-3xl font-bold ${stats.overloadedSemesters > 0 ? "text-warning" : "text-primary"}`}>
-                  {stats.overloadedSemesters}
-                </p>
-                <p className="text-sm text-muted-foreground">Overloaded</p>
-              </div>
+          <TabsContent value="planB">
+            <PlanView plan={planB} stats={statsB} />
+            <div className="mt-8">
+              <CareerAdvice
+                careerGoals={profile.careerGoals}
+                majors={profile.majors}
+                courses={planB.semesters.flatMap(s => s.courses.map(c => ({ code: c.code, name: c.name })))}
+                interests={profile.interests}
+              />
             </div>
-          </CardContent>
-        </Card>
+          </TabsContent>
+
+          <TabsContent value="planC">
+            <PlanView plan={planC} stats={statsC} />
+            <div className="mt-8">
+              <CareerAdvice
+                careerGoals={profile.careerGoals}
+                majors={profile.majors}
+                courses={planC.semesters.flatMap(s => s.courses.map(c => ({ code: c.code, name: c.name })))}
+                interests={profile.interests}
+              />
+            </div>
+          </TabsContent>
+        </Tabs>
+        
       </main>
 
       {/* Footer */}

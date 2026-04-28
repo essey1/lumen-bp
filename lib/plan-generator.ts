@@ -990,7 +990,7 @@ const CAREER_KEYWORDS: Record<string, string[]> = {
 };
 
 // General career fit scorer — works for any course
-function scoreCourseFit(code: string, profile: StudentProfile): number {
+function scoreCourseFit(code: string, profile: StudentProfile, planType: "A" | "B" | "C" = "A"): number {
   const data = COURSE_CATALOG[code];
   if (!data) return 0;
 
@@ -1008,14 +1008,25 @@ function scoreCourseFit(code: string, profile: StudentProfile): number {
     if ((INTEREST_DEPT_MAP[tag] ?? []).includes(dept)) score += 3;
   }
 
-  // Course name word overlap
+  // Course name word overlap — whole-word only to prevent e.g. "development"
+  // matching "developmental" or "code" matching "encoder".
   for (const word of targetWords) {
-    if (word.length > 3 && nameLower.includes(word)) score += 2;
+    if (word.length > 3 && new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(nameLower)) score += 2;
   }
 
-  // Hint keyword overlap
+  // Hint keyword overlap — the hint phrase must be contained inside a target
+  // keyword (not the reverse) so that e.g. "family systems" never matches the
+  // single-word keyword "systems".
   for (const hint of COURSE_CAREER_HINTS[code] ?? []) {
-    if (targetWords.some(w => w.includes(hint) || hint.includes(w))) score += 2;
+    if (targetWords.some(w => w.includes(hint))) score += 2;
+  }
+
+  if (planType === "B") {
+    const hash = code.split("").reduce((a: number, b: string) => a + b.charCodeAt(0), 0);
+    score += (hash % 5) - 2;
+  } else if (planType === "C") {
+    const hash = code.split("").reduce((a: number, b: string) => a * 31 + b.charCodeAt(0), 1);
+    score += (hash % 5) - 2;
   }
 
   return score;
@@ -1036,8 +1047,8 @@ function buildCrossReqBonus(profile: StudentProfile): Record<string, number> {
 }
 
 // Backwards-compat alias for selectFromCategories (CSC upper-level)
-function scoreUpperLevelCourse(code: string, profile: StudentProfile): number {
-  return scoreCourseFit(code, profile);
+function scoreUpperLevelCourse(code: string, profile: StudentProfile, planType: "A" | "B" | "C" = "A"): number {
+  return scoreCourseFit(code, profile, planType);
 }
 
 // GEM requirements tracker
@@ -1166,6 +1177,15 @@ function placeCourse(
   if (!course.isPlaceholder) placedMap.set(course.code, semIdx);
 }
 
+// Count non-placeholder 100-level courses already in a semester's course list.
+function count100Level(courses: PlannedCourse[]): number {
+  return courses.filter(c => {
+    if (c.isPlaceholder) return false;
+    const n = parseInt(c.code.match(/\d+/)?.[0] ?? "0");
+    return n >= 100 && n < 200;
+  }).length;
+}
+
 // Build preferred department list from student profile
 function preferredDepts(profile: StudentProfile): string[] {
   const depts = new Set<string>();
@@ -1204,10 +1224,10 @@ function findInterestElective(
   profile: StudentProfile,
   preferred: string[],
   placedMap: Map<string, number>,
-  takenInSem: PlannedCourse[] = []
+  takenInSem: PlannedCourse[] = [],
+  planType: "A" | "B" | "C" = "A"
 ): PlannedCourse | null {
   const preferredSet = new Set(preferred);
-  const isUpperYears = semIdx >= 4;
 
   const deptTaken: Record<string, number> = {};
   for (const c of takenInSem) {
@@ -1218,6 +1238,7 @@ function findInterestElective(
 
   let bestCode: string | null = null;
   let bestScore = 0;
+  const sem100Count = semIdx >= 2 ? count100Level(takenInSem) : 0;
 
   for (const code of Object.keys(COURSE_CATALOG)) {
     if (placed.has(code)) continue;
@@ -1226,29 +1247,30 @@ function findInterestElective(
     if (isInternshipCode(code)) continue;
     const levelNum = parseInt(code.match(/\d+/)?.[0] ?? "0");
     if (levelNum < 100) continue; // skip developmental courses
+
+    // No 100-level electives from the chosen major or minor
+    const dept = code.split(" ")[0];
+    const isMajorOrMinorDept = profile.majors.some(m => m.split("_")[0] === dept) || (profile.minors ?? []).some(m => m.split("_")[0] === dept);
+    if (levelNum < 200 && isMajorOrMinorDept) continue;
     // No 300+ level courses in semester 0 (Y1 Fall)
     if (semIdx === 0 && levelNum >= 300) continue;
     // Y3 Fall through Y4 Fall: no intro-level electives; Y4 Spring is unconstrained
     if (semIdx >= 4 && semIdx < 7 && levelNum < 200) continue;
+    // From sophomore year: no more than 2 intro-level courses per term
+    if (semIdx >= 2 && levelNum >= 100 && levelNum < 200 && sem100Count >= 2) continue;
     if ((COURSE_CATALOG[code].credits ?? 1) < 1) continue; // skip fractional-credit
     if (/\d[A-Z]$/.test(code)) continue; // skip letter-suffixed Topics
     // Capstone courses belong exclusively to their home major
     if (isOtherMajorCapstone(code, profile.majors)) continue;
     // At most 2.5 credits from any one department per semester
-    const dept = code.split(" ")[0];
     const credits = COURSE_CATALOG[code].credits ?? 1;
     if ((deptTaken[dept] ?? 0) + credits > 2.5) continue;
 
     if (!prereqsMet(code, semIdx, placedMap)) continue;
 
-    const level = parseInt(code.match(/\d+/)?.[0] ?? "100");
-
-    let score = scoreCourseFit(code, profile);
-    if (score <= 0) continue;
-
-    if (isUpperYears && level >= 300) score += 1;
-    if (!isUpperYears && level < 300) score += 1;
-    if (preferredSet.has(dept)) score += 1;
+    // Electives must come exclusively from career/interest-aligned departments.
+    if (!preferredSet.has(dept)) continue;
+    const score = scoreCourseFit(code, profile, "A");
 
     if (score > bestScore) {
       bestScore = score;
@@ -1352,7 +1374,8 @@ function findGEMCourse(
   preferred: string[],
   placedMap: Map<string, number>,
   userMajors: string[] = [],
-  takenInSem: PlannedCourse[] = []
+  takenInSem: PlannedCourse[] = [],
+  profile?: StudentProfile
 ): PlannedCourse | null {
   if (!hasUnfulfilledGEM(tracker)) return null;
 
@@ -1369,6 +1392,7 @@ function findGEMCourse(
   let bestIsPreferred = false;
 
   const preferredSet = new Set(preferred);
+  const sem100Count = semIdx >= 2 ? count100Level(takenInSem) : 0;
 
   for (const code of Object.keys(COURSE_CATALOG)) {
     if (placed.has(code)) continue;
@@ -1377,12 +1401,20 @@ function findGEMCourse(
     if (isInternshipCode(code)) continue;
     if ((COURSE_CATALOG[code].credits ?? 1) < 1) continue;
     if (/\d[A-Z]$/.test(code)) continue; // skip letter-suffixed Topics courses
+
+    const dept = code.split(" ")[0];
+    const levelNum = parseInt(code.match(/\d+/)?.[0] ?? "0");
+    // From sophomore year: no more than 2 intro-level courses per term
+    if (semIdx >= 2 && levelNum >= 100 && levelNum < 200 && sem100Count >= 2) continue;
+    if (profile && levelNum < 200 && levelNum >= 100) {
+      const isMajorOrMinorDept = profile.majors.some(m => m.split("_")[0] === dept) || (profile.minors ?? []).some(m => m.split("_")[0] === dept);
+      if (isMajorOrMinorDept) continue; // No 100-level electives from the chosen major or minor
+    }
     // No 300+ level courses in semester 0 (Y1 Fall)
     if (semIdx === 0 && parseInt(code.match(/\d+/)?.[0] ?? "0") >= 300) continue;
     // Capstone courses belong exclusively to their home major
     if (isOtherMajorCapstone(code, userMajors)) continue;
     // At most 2.5 credits from any one department per semester
-    const dept = code.split(" ")[0];
     const credits = COURSE_CATALOG[code].credits ?? 1;
     if ((deptTaken[dept] ?? 0) + credits > 2.5) continue;
     if (!prereqsMet(code, semIdx, placedMap)) continue;
@@ -1425,7 +1457,7 @@ interface CourseToPlace {
   maxSem: number;
 }
 
-function collectMajorCourses(profile: StudentProfile, collected: Set<string>, crossReqBonus: Record<string, number> = {}): CourseToPlace[] {
+function collectMajorCourses(profile: StudentProfile, collected: Set<string>, crossReqBonus: Record<string, number> = {}, planType: "A" | "B" | "C" = "A"): CourseToPlace[] {
   const result: CourseToPlace[] = [];
 
   for (const majorCode of profile.majors) {
@@ -1472,7 +1504,7 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
         for (const sub of req.selectFromCategories) {
           const candidates = sub.courses
             .filter(c => !collected.has(c) && COURSE_CATALOG[c] && !isInternshipCode(c))
-            .sort((a, b) => scoreUpperLevelCourse(b, profile) - scoreUpperLevelCourse(a, profile));
+            .sort((a, b) => scoreUpperLevelCourse(b, profile, planType) - scoreUpperLevelCourse(a, profile, planType));
 
           const code = candidates[0];
           if (code) {
@@ -1513,7 +1545,7 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
         if (extraNeeded > 0) {
           const extraCandidates = req.courses
             .filter(c => !collected.has(c) && !subPicked.has(c) && COURSE_CATALOG[c] && !isInternshipCode(c))
-            .sort((a, b) => scoreUpperLevelCourse(b, profile) - scoreUpperLevelCourse(a, profile));
+            .sort((a, b) => scoreUpperLevelCourse(b, profile, planType) - scoreUpperLevelCourse(a, profile, planType));
           for (let i = 0; i < Math.min(extraNeeded, extraCandidates.length); i++) {
             const code = extraCandidates[i];
             const data = COURSE_CATALOG[code];
@@ -1555,8 +1587,8 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
           const aN = needsNewPrereqs(a) ? 1 : 0;
           const bN = needsNewPrereqs(b) ? 1 : 0;
           if (aN !== bN) return aN - bN; // courses needing no new prereqs come first
-          const sa = scoreCourseFit(a, profile) + (crossReqBonus[a] ?? 0) * 2;
-          const sb = scoreCourseFit(b, profile) + (crossReqBonus[b] ?? 0) * 2;
+          const sa = scoreCourseFit(a, profile, planType) + (crossReqBonus[a] ?? 0) * 2;
+          const sb = scoreCourseFit(b, profile, planType) + (crossReqBonus[b] ?? 0) * 2;
           return sb - sa; // tiebreak by career fit
         });
 
@@ -1601,7 +1633,7 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
   return result;
 }
 
-function collectMinorCourses(profile: StudentProfile, collected: Set<string>, crossReqBonus: Record<string, number> = {}): CourseToPlace[] {
+function collectMinorCourses(profile: StudentProfile, collected: Set<string>, crossReqBonus: Record<string, number> = {}, planType: "A" | "B" | "C" = "A"): CourseToPlace[] {
   const result: CourseToPlace[] = [];
 
   for (const minorCode of profile.minors ?? []) {
@@ -1621,8 +1653,8 @@ function collectMinorCourses(profile: StudentProfile, collected: Set<string>, cr
       const candidates = req.courses
         .filter(c => !collected.has(c) && !(req.mustInclude ?? []).includes(c) && COURSE_CATALOG[c] && !isInternshipCode(c))
         .sort((a, b) => {
-          const sa = scoreCourseFit(a, profile) + (crossReqBonus[a] ?? 0) * 2;
-          const sb = scoreCourseFit(b, profile) + (crossReqBonus[b] ?? 0) * 2;
+          const sa = scoreCourseFit(a, profile, planType) + (crossReqBonus[a] ?? 0) * 2;
+          const sb = scoreCourseFit(b, profile, planType) + (crossReqBonus[b] ?? 0) * 2;
           return sb - sa;
         });
 
@@ -1689,7 +1721,7 @@ function collectMissingPrereqs(
   return extra;
 }
 
-export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
+export function generateAcademicPlan(profile: StudentProfile, options?: { planType?: "A" | "B" | "C" }): AcademicPlan {
   const semesters: SemesterPlan[] = [];
   const warnings: string[] = [];
   const unfulfilledRequirements: string[] = [];
@@ -1713,11 +1745,16 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     warnings.push("With more than 2 majors, completing all requirements in 8 semesters may be difficult.");
   }
 
+  // 2. Collect every required course
+  const crossReqBonus = buildCrossReqBonus(profile);
+  const planType = options?.planType ?? "A";
+
   // 1. L&I fixed positions
+  // L&I 300: Y2 Spring (sem 3) for Plan A, Y3 Fall (sem 4) for Plan B
   const liSeq = [
     { semIdx: 0, code: "L&I 100", name: "Explorations",                     fulfills: "L&I: Explorations" },
     { semIdx: 1, code: "L&I 200", name: "Discoveries",                      fulfills: "L&I: Discoveries" },
-    { semIdx: 2, code: "L&I 300", name: "Intersectional Justice in U.S.",   fulfills: "L&I: Intersectional Justice" },
+    { semIdx: planType === "A" ? 3 : planType === "B" ? 4 : 5, code: "L&I 300", name: "Intersectional Justice in U.S.", fulfills: "L&I: Intersectional Justice" },
     { semIdx: 6, code: "L&I 400", name: "Global Issues",                    fulfills: "L&I: Global Issues" },
   ];
   for (const li of liSeq) {
@@ -1725,11 +1762,8 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     usedCodes.add(li.code);
     applyGEM(gemTracker, li.code);
   }
-
-  // 2. Collect every required course
-  const crossReqBonus = buildCrossReqBonus(profile);
-  const majorCourses  = collectMajorCourses(profile, usedCodes, crossReqBonus);
-  const minorCourses  = collectMinorCourses(profile, usedCodes, crossReqBonus);
+  const majorCourses  = collectMajorCourses(profile, usedCodes, crossReqBonus, planType);
+  const minorCourses  = collectMinorCourses(profile, usedCodes, crossReqBonus, planType);
   const missingPrereqs = collectMissingPrereqs([...majorCourses, ...minorCourses], usedCodes);
 
   // Each required course is tagged so the scheduler knows its budget category.
@@ -1840,13 +1874,27 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
           prereqsMet(s.item.course.code, sem, placedMap) &&
           (s.item.course.scheduleDisclaimer || isCourseAvailable(s.item.course.code, sem))
         )
-        .sort((a, b) => a.latest - b.latest || a.earliest - b.earliest);
+        .sort((a, b) => {
+          if (planType === "B") {
+            const hashA = a.item.course.code.charCodeAt(0) % 2;
+            const hashB = b.item.course.code.charCodeAt(0) % 2;
+            return (a.latest - b.latest) || (a.earliest - b.earliest) || (hashA - hashB);
+          }
+          if (planType === "C") {
+            const hashA = a.item.course.code.split("").reduce((s: number, c: string) => s * 31 + c.charCodeAt(0), 1) % 3;
+            const hashB = b.item.course.code.split("").reduce((s: number, c: string) => s * 31 + c.charCodeAt(0), 1) % 3;
+            return (a.latest - b.latest) || (a.earliest - b.earliest) || (hashA - hashB);
+          }
+          return a.latest - b.latest || a.earliest - b.earliest;
+        });
     }
 
     // Major (up to 2)
     let majorPlaced = 0;
     for (const s of readyForSem("Major")) {
       if (majorPlaced >= 2 || open() <= 0) break;
+      const lvl = parseInt(s.item.course.code.match(/\d+/)?.[0] ?? "0");
+      if (sem >= 2 && lvl >= 100 && lvl < 200 && count100Level(semesters[sem].courses) >= 2) continue;
       placeCourse(semesters, s.item.course, sem, placedMap);
       applyGEM(gemTracker, s.item.course.code);
       s.placed = true;
@@ -1857,6 +1905,8 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
     if (sem >= 2) {
       for (const s of readyForSem("Minor")) {
         if (open() <= 0) break;
+        const lvl = parseInt(s.item.course.code.match(/\d+/)?.[0] ?? "0");
+        if (lvl >= 100 && lvl < 200 && count100Level(semesters[sem].courses) >= 2) continue;
         placeCourse(semesters, s.item.course, sem, placedMap);
         applyGEM(gemTracker, s.item.course.code);
         s.placed = true;
@@ -1874,7 +1924,7 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
 
     // GEM fills remaining (priority over free electives)
     while (open() > 0 && hasUnfulfilledGEM(gemTracker)) {
-      const gem = findGEMCourse(gemTracker, sem, usedCodes, pref, placedMap, profile.majors, semesters[sem].courses);
+      const gem = findGEMCourse(gemTracker, sem, usedCodes, pref, placedMap, profile.majors, semesters[sem].courses, profile);
       if (!gem) break;
       placeCourse(semesters, gem, sem, placedMap);
       usedCodes.add(gem.code);
@@ -1902,8 +1952,10 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
   for (const s of rescueOrder) {
     s.item.course.scheduleDisclaimer = true; // bypass isCourseAvailable only
     let placed = false;
+    const rescueLvl = parseInt(s.item.course.code.match(/\d+/)?.[0] ?? "0");
     for (let sem = s.earliest; sem < 8 && !placed; sem++) {
       if (!s.item.course.isPlaceholder && !prereqsMet(s.item.course.code, sem, placedMap)) continue;
+      if (sem >= 2 && rescueLvl >= 100 && rescueLvl < 200 && count100Level(semesters[sem].courses) >= 2) continue;
       if (semesters[sem].totalCredits >= 4) {
         const idx = semesters[sem].courses.findIndex(c => c.isPlaceholder || c.category === "Elective");
         if (idx === -1) continue;
@@ -1927,7 +1979,7 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
       for (let i = 0; i < semesters[sem].courses.length; i++) {
         const c = semesters[sem].courses[i];
         if (!c.isPlaceholder || c.category !== "Elective") continue;
-        const elective = findInterestElective(sem, usedCodes, profile, pref, placedMap, semesters[sem].courses);
+        const elective = findInterestElective(sem, usedCodes, profile, pref, placedMap, semesters[sem].courses, planType);
         if (elective) {
           semesters[sem].courses[i] = elective;
           // totalCredits unchanged (both 1 credit); update tracking maps
@@ -1942,31 +1994,20 @@ export function generateAcademicPlan(profile: StudentProfile): AcademicPlan {
   // 6. Calculate totals
   const totalCredits = semesters.reduce((s, sem) => s + sem.totalCredits, 0);
 
-  // With multiple majors, courses from major A count as "outside major" for major B
-  // and vice versa.  For each major we only count courses whose dept prefix matches
-  // that major as "inside" — collateral courses (e.g. CHM for BIO) and courses from
-  // the other major both count toward the outside-major minimum.
-  // For a single major the calculation is: total − all-major-credits (existing behaviour).
-  let creditsOutsideMajor: number;
-  if (profile.majors.length <= 1) {
-    const majorCredits = semesters.reduce(
-      (s, sem) => s + sem.courses.filter(c => c.category === "Major").reduce((cs, c) => cs + c.credits, 0), 0
+  // "Inside major" credits = only courses whose dept prefix matches the major's
+  // primary department. Collateral courses from other depts (e.g. MAT/CHM for PHY_ENG)
+  // count as outside-major even though they are required by the major.
+  // For double majors this is applied per-major and the most restrictive result is used.
+  const outsideEach = profile.majors.map(majorCode => {
+    const prefix = majorCode.split("_")[0]; // "PHY_ENG" → "PHY", "CSC" → "CSC"
+    const insideCredits = semesters.reduce(
+      (s, sem) => s + sem.courses
+        .filter(c => c.category === "Major" && c.code.startsWith(prefix + " "))
+        .reduce((cs, c) => cs + c.credits, 0), 0
     );
-    creditsOutsideMajor = totalCredits - majorCredits;
-  } else {
-    // Per-major: inside credits = only courses whose code prefix matches that major's dept.
-    const outsideEach = profile.majors.map(majorCode => {
-      const prefix = majorCode.split("_")[0]; // "CHM_BIO" → "CHM", "CSC" → "CSC"
-      const insideCredits = semesters.reduce(
-        (s, sem) => s + sem.courses
-          .filter(c => c.category === "Major" && c.code.startsWith(prefix + " "))
-          .reduce((cs, c) => cs + c.credits, 0), 0
-      );
-      return totalCredits - insideCredits;
-    });
-    // Report the most restrictive (minimum across all majors)
-    creditsOutsideMajor = Math.min(...outsideEach);
-  }
+    return totalCredits - insideCredits;
+  });
+  const creditsOutsideMajor = profile.majors.length > 0 ? Math.min(...outsideEach) : totalCredits;
 
   if (totalCredits < MINIMUM_TOTAL_CREDITS) {
     warnings.push(`Total credits (${totalCredits}) is below the minimum of ${MINIMUM_TOTAL_CREDITS}.`);
