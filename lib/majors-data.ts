@@ -337,7 +337,7 @@ export const MAJORS: Record<string, Major> = {
   },
   ARH: {
     code: "ARH",
-    name: "Art: Art History",
+    name: "Art: History",
     degree: "B.A.",
     totalMajorCredits: 11,
     requirements: [
@@ -1527,7 +1527,7 @@ export const MAJORS: Record<string, Major> = {
   },
   REL: {
     code: "REL",
-    name: "Religion",
+    name: "Studies of Religion and Spirituality",
     degree: "B.A.",
     totalMajorCredits: 8,
     requirements: [
@@ -2731,7 +2731,7 @@ export const AVAILABLE_MAJORS = [
   { code: "PSY", name: "Psychology", degree: "B.A." },
   { code: "ANR", name: "Agriculture and Natural Resources", degree: "B.S." },
   { code: "ART", name: "Art: Studio", degree: "B.A." },
-  { code: "ARH", name: "Art: Art History", degree: "B.A." },
+  { code: "ARH", name: "Art: History", degree: "B.A." },
   { code: "AST_COMP", name: "Asian Studies: Comparative Asia", degree: "B.A." },
   { code: "AST_CHI", name: "Asian Studies: Chinese Studies", degree: "B.A." },
   { code: "AST_JPN", name: "Asian Studies: Japanese Studies", degree: "B.A." },
@@ -2763,7 +2763,7 @@ export const AVAILABLE_MAJORS = [
   { code: "PHY", name: "Physics", degree: "B.A." },
   { code: "PHY_ENG", name: "Engineering Physics", degree: "B.S." },
   { code: "PSC", name: "Political Science", degree: "B.A." },
-  { code: "REL", name: "Religion", degree: "B.A." },
+  { code: "REL", name: "Studies of Religion and Spirituality", degree: "B.A." },
   { code: "SOC", name: "Sociology", degree: "B.A." },
   { code: "SENS", name: "Environmental Science", degree: "B.A." },
   { code: "THR", name: "Theatre", degree: "B.A." },
