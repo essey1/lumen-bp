@@ -57,6 +57,13 @@ function isOtherMajorCapstone(code: string, userMajors: string[]): boolean {
   return !userMajors.some(m => owners.has(m));
 }
 
+// Returns 0 for Plan A, 1 for Plan B, 2 for Plan C.
+// Used to offset into a sorted candidate list so each plan selects
+// a different (but still career-aligned) course when there's a choice.
+function planTypeOffset(planType: "A" | "B" | "C"): number {
+  return planType === "A" ? 0 : planType === "B" ? 1 : 2;
+}
+
 // Prerequisites: built from course catalog + L&I sequence.
 // Format: Record<courseCode, string[][]>
 //   Outer array = AND groups (every group must be satisfied).
@@ -1236,8 +1243,7 @@ function findInterestElective(
     deptTaken[d] = (deptTaken[d] ?? 0) + c.credits;
   }
 
-  let bestCode: string | null = null;
-  let bestScore = 0;
+  const scoredCandidates: Array<{ code: string; score: number }> = [];
   const sem100Count = semIdx >= 2 ? count100Level(takenInSem) : 0;
 
   for (const code of Object.keys(COURSE_CATALOG)) {
@@ -1271,12 +1277,15 @@ function findInterestElective(
     // Electives must come exclusively from career/interest-aligned departments.
     if (!preferredSet.has(dept)) continue;
     const score = scoreCourseFit(code, profile, "A");
-
-    if (score > bestScore) {
-      bestScore = score;
-      bestCode = code;
-    }
+    if (score > 0) scoredCandidates.push({ code, score });
   }
+
+  scoredCandidates.sort((a, b) => b.score - a.score);
+  // Each plan picks a different rank so electives vary across plans.
+  const electiveOffset = planTypeOffset(planType);
+  const bestCode = scoredCandidates.length > 0
+    ? scoredCandidates[Math.min(electiveOffset, scoredCandidates.length - 1)].code
+    : null;
 
   if (!bestCode) return null;
   const cat = COURSE_CATALOG[bestCode];
@@ -1503,10 +1512,11 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
 
         for (const sub of req.selectFromCategories) {
           const candidates = sub.courses
-            .filter(c => !collected.has(c) && COURSE_CATALOG[c] && !isInternshipCode(c))
-            .sort((a, b) => scoreUpperLevelCourse(b, profile, planType) - scoreUpperLevelCourse(a, profile, planType));
+            .filter(c => !collected.has(c) && COURSE_CATALOG[c] && !isInternshipCode(c) && !isOtherMajorCapstone(c, profile.majors))
+            .sort((a, b) => scoreUpperLevelCourse(b, profile, "A") - scoreUpperLevelCourse(a, profile, "A"));
 
-          const code = candidates[0];
+          const subOffset = planTypeOffset(planType);
+          const code = candidates.length > 0 ? candidates[Math.min(subOffset, candidates.length - 1)] : undefined;
           if (code) {
             const data = COURSE_CATALOG[code];
             result.push({
@@ -1582,17 +1592,23 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
         return groups.some(orGroup => !orGroup.some(p => collected.has(p)));
       }
       const candidates = req.courses
-        .filter(c => !collected.has(c) && !req.mustInclude?.includes(c) && COURSE_CATALOG[c] && !isInternshipCode(c))
+        .filter(c => !collected.has(c) && !req.mustInclude?.includes(c) && COURSE_CATALOG[c] && !isInternshipCode(c) && (isCapstone || !isOtherMajorCapstone(c, profile.majors)))
         .sort((a, b) => {
           const aN = needsNewPrereqs(a) ? 1 : 0;
           const bN = needsNewPrereqs(b) ? 1 : 0;
           if (aN !== bN) return aN - bN; // courses needing no new prereqs come first
-          const sa = scoreCourseFit(a, profile, planType) + (crossReqBonus[a] ?? 0) * 2;
-          const sb = scoreCourseFit(b, profile, planType) + (crossReqBonus[b] ?? 0) * 2;
+          const sa = scoreCourseFit(a, profile, "A") + (crossReqBonus[a] ?? 0) * 2;
+          const sb = scoreCourseFit(b, profile, "A") + (crossReqBonus[b] ?? 0) * 2;
           return sb - sa; // tiebreak by career fit
         });
 
-      for (const code of candidates) {
+      // Each plan picks a different slice of the sorted candidate list.
+      // Plan A takes from rank 0, B from rank 1, C from rank 2, wrapping
+      // back to the front when the list is shorter than the offset.
+      const majorOffset = planTypeOffset(planType);
+      const orderedCandidates = [...candidates.slice(majorOffset), ...candidates.slice(0, majorOffset)];
+
+      for (const code of orderedCandidates) {
         if (count >= needed) break;
         const data = COURSE_CATALOG[code];
         const level = parseInt(code.match(/\d+/)?.[0] ?? "100");
@@ -1651,15 +1667,19 @@ function collectMinorCourses(profile: StudentProfile, collected: Set<string>, cr
       // mustInclude first, then fill remaining from full list sorted by fit
       const mustPlace = (req.mustInclude ?? []).filter(c => !collected.has(c) && COURSE_CATALOG[c] && !isInternshipCode(c));
       const candidates = req.courses
-        .filter(c => !collected.has(c) && !(req.mustInclude ?? []).includes(c) && COURSE_CATALOG[c] && !isInternshipCode(c))
+        .filter(c => !collected.has(c) && !(req.mustInclude ?? []).includes(c) && COURSE_CATALOG[c] && !isInternshipCode(c) && !isOtherMajorCapstone(c, profile.majors))
         .sort((a, b) => {
-          const sa = scoreCourseFit(a, profile, planType) + (crossReqBonus[a] ?? 0) * 2;
-          const sb = scoreCourseFit(b, profile, planType) + (crossReqBonus[b] ?? 0) * 2;
+          const sa = scoreCourseFit(a, profile, "A") + (crossReqBonus[a] ?? 0) * 2;
+          const sb = scoreCourseFit(b, profile, "A") + (crossReqBonus[b] ?? 0) * 2;
           return sb - sa;
         });
 
+      // Apply rank offset to optional candidates; mustInclude courses are always placed first.
+      const minorOffset = planTypeOffset(planType);
+      const orderedCandidates = [...candidates.slice(minorOffset), ...candidates.slice(0, minorOffset)];
+
       let count = 0;
-      for (const code of [...mustPlace, ...candidates]) {
+      for (const code of [...mustPlace, ...orderedCandidates]) {
         if (count >= needed) break;
         const data = COURSE_CATALOG[code];
         if (!data) continue;
