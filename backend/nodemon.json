@@ -1,0 +1,7 @@
+{
+  "verbose": true,
+  "ignore": ["*.test.js", "**/node_modules/**", "logs/*"],
+  "watch": ["src/**/*.js", "server.js", ".env"],
+  "ext": "js,json,env",
+  "exec": "node"
+}
