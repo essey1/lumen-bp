@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: 'Lumen - Academic Planner for Berea College',
   description: 'Plan your 4-year academic journey at Berea College with Lumen',
   generator: 'v0.app',
-  icons: {
+  icons: {  
     icon: [
       {
         url: '/icon-light-32x32.png',
