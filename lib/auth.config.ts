@@ -1,90 +1,41 @@
 import type { NextAuthConfig } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { compare } from "bcryptjs";
-import { prisma } from "@/lib/prisma";
 
-export const authConfig: NextAuthConfig = {
-  providers: [
-    CredentialsProvider({
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          return null;
-        }
-
-        try {
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email as string },
-          });
-
-          if (!user || !user.password) {
-            return null;
-          }
-
-          const isPasswordValid = await compare(
-            credentials.password as string,
-            user.password
-          );
-
-          if (!isPasswordValid) {
-            return null;
-          }
-
-          // 🚨 DO NOT RETURN USER YET
-          // We force OTP step if enabled
-          if (user.otpEnabled) {
-            return {
-              id: user.id,
-              email: user.email,
-              otpRequired: true,
-            } as any;
-          }
-
-          return {
-            id: user.id,
-            email: user.email,
-            name: user.name,
-            image: user.image,
-          };
-        } catch (error) {
-          console.error("Auth error:", error);
-          return null;
-        }
-      },
-    }),
-  ],
+export const authConfig = {
+  providers: [],
   pages: {
     signIn: "/auth/login",
     error: "/auth/login",
   },
   callbacks: {
-    authorized({ auth, request: { pathname } }) {
+    authorized({ auth, request }) {
       const isLoggedIn = !!auth?.user;
+      const { nextUrl } = request;
+      const pathname = nextUrl.pathname;
       const isOnAuthPage = pathname.startsWith("/auth");
-      const isOnProtectedPage = pathname.startsWith("/plan") || pathname.startsWith("/planner");
 
       if (isOnAuthPage) {
-        return !isLoggedIn ? true : false;
+        // If the user is already logged in and tries to go to /auth/login,
+        // redirect them to the planner instead of the public home page.
+        if (isLoggedIn) return Response.redirect(new URL("/planner", nextUrl));
+        return true;
       }
-      if (isOnProtectedPage) {
-        return isLoggedIn;
-      }
-      return true;
+
+      // PRIVATE BY DEFAULT: Any other page (including '/') now requires authentication.
+      return isLoggedIn;
     },
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id;
+        token.id = (user as any).id;
+        (token as any).token = (user as any).token; // Pass backend session token
       }
       return token;
     },
     async session({ session, token }) {
-      if (session.user) {
+      if (session.user && token.id) {
         session.user.id = token.id as string;
+        (session.user as any).token = (token as any).token; // Pass backend session token to session
       }
       return session;
     },
   },
-};
+} satisfies NextAuthConfig;
