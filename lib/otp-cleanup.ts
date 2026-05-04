@@ -10,8 +10,8 @@ import { prisma } from "@/lib/prisma"
  * import cron from 'node-cron'
  * import { cleanupExpiredOTPsCron } from '@/lib/otp-cleanup'
  * 
- * // Run cleanup every 5 minutes
- * cron.schedule('*/5 * * * *', cleanupExpiredOTPsCron)
+ * // Run cleanup every 5 minutes:
+ * // cron.schedule("<every five minutes>", cleanupExpiredOTPsCron)
  */
 
 export async function cleanupExpiredOTPsCron(): Promise<{ deleted: number }> {
