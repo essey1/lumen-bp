@@ -1,142 +1,113 @@
-"use client"
+"use client";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+export default function VerifyOtpPage() {
+  const [otp, setOtp] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
 
-export default function VerifyPage() {
-  const [code, setCode] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null)
-  const router = useRouter()
+  useEffect(() => {
+    if (!email) {
+      router.push("/auth/login"); // Redirect if no email is provided
+    }
+  }, [email, router]);
 
-  const handleVerify = async () => {
-    if (!code) {
-      setError("Please enter the verification code")
-      return
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+    const backendUrl = process.env.NEXT_PUBLIC_AUTH_BACKEND_URL || "http://localhost:4000";
+
+    if (!email) {
+      setError("Email not found. Please go back to login.");
+      setIsLoading(false);
+      return;
     }
 
-    setLoading(true)
-    setError("")
-
     try {
-      const res = await fetch("/api/auth/verify-otp", {
+      // Step 1: Verify OTP with your Express backend
+      const res = await fetch(`${backendUrl}/api/auth/verify-otp`, {
         method: "POST",
-        body: JSON.stringify({ code }),
-        credentials: "include" // Send cookies with request
-      })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, otp }),
+      });
 
-      const data = await res.json()
+      const data = await res.json();
 
-      if (data.success) {
-        // Redirect to dashboard or home
-        router.push("/plan")
+      if (!res.ok || !data.success) {
+        setError(data.message || "Invalid OTP. Please try again.");
       } else {
-        setError(data.error || "Invalid or expired code")
-        
-        // Extract remaining attempts from error message
-        const match = data.error?.match(/(\d+) attempt/)
-        if (match) {
-          setRemainingAttempts(parseInt(match[1]))
+        // Step 2: If OTP is valid, use NextAuth's signIn to establish the session
+        // We pass a special flag 'otpVerified' to tell our NextAuth authorize function
+        // that this user has already passed the OTP step.
+        const nextAuthSignInResult = await signIn("credentials", {
+          email,
+          otpVerified: true, // Custom flag
+          token: data.token, // Pass the session token from Express backend
+          redirect: false,
+        });
+
+        if (nextAuthSignInResult?.error) {
+          setError(nextAuthSignInResult.error || "Failed to establish session.");
+        } else {
+          router.push("/planner"); // Redirect to protected page
+          router.refresh();
         }
       }
     } catch (err) {
-      setError("An error occurred. Please try again.")
-      console.error(err)
+      console.error("OTP verification error:", err);
+      setError("An unexpected error occurred during OTP verification.");
     } finally {
-      setLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  const handleResend = async () => {
-    setLoading(true)
-    setError("")
-
-    try {
-      const res = await fetch("/api/auth/send-otp", {
-        method: "POST",
-        body: JSON.stringify({ email: document.cookie.match(/otp_email=([^;]*)/)?.[1] || "" }),
-        credentials: "include"
-      })
-
-      const data = await res.json()
-
-      if (data.success) {
-        setCode("")
-        setRemainingAttempts(null)
-        setError("New code sent to your email")
-        setTimeout(() => setError(""), 3000)
-      } else {
-        setError(data.error || "Failed to resend code")
-      }
-    } catch (err) {
-      setError("Failed to resend code")
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
+  if (!email) {
+    return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="w-full max-w-md rounded-lg border border-gray-200 p-8 shadow-md">
-        <h1 className="mb-2 text-2xl font-bold">Verify Your Identity</h1>
-        <p className="mb-6 text-gray-600">
-          Enter the verification code sent to your email
-        </p>
-
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Verification Code
-            </label>
-            <input
-              type="text"
-              value={code}
-              onChange={(e) => setCode(e.target.value.slice(0, 6))}
-              placeholder="000000"
-              maxLength={6}
-              className="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-center text-lg font-mono tracking-widest"
-              disabled={loading}
-            />
-          </div>
-
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
+      <div className="w-full max-w-md space-y-8 rounded-xl border bg-white p-10 shadow-lg">
+        <div className="text-center">
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Verify your login</h2>
+          <p className="mt-2 text-sm text-gray-600">A verification code has been sent to {email}</p>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className={`rounded p-3 text-sm ${
-              error.includes("sent") 
-                ? "bg-green-50 text-green-600" 
-                : "bg-red-50 text-red-600"
-            }`}>
+            <div className="rounded-md bg-red-50 p-4 text-sm text-red-700 border border-red-200">
               {error}
             </div>
           )}
-
-          {remainingAttempts !== null && remainingAttempts <= 1 && (
-            <div className="rounded bg-yellow-50 p-3 text-sm text-yellow-700">
-              ⚠️ Last attempt remaining
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="otp" className="block text-sm font-medium text-gray-700">Verification Code</label>
+              <input
+                id="otp"
+                name="otp"
+                type="text"
+                required
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                maxLength={6}
+              />
             </div>
-          )}
-
+          </div>
           <button
-            onClick={handleVerify}
-            disabled={loading}
-            className="w-full rounded bg-blue-600 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-50"
+            type="submit"
+            disabled={isLoading}
+            className="flex w-full justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
           >
-            {loading ? "Verifying..." : "Verify"}
+            {isLoading ? "Verifying..." : "Verify Code"}
           </button>
-        </div>
-
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Didn't receive a code?{" "}
-          <button
-            onClick={handleResend}
-            disabled={loading}
-            className="text-blue-600 hover:underline disabled:opacity-50"
-          >
-            Resend
-          </button>
-        </p>
+        </form>
       </div>
     </div>
-  )
+  );
 }

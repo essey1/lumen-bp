@@ -10,8 +10,11 @@ const cors       = require('cors');
 const helmet     = require('helmet');
 const rateLimit  = require('express-rate-limit');
 const { Resend } = require('resend');
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
 
 const app    = express();
+const prisma = new PrismaClient();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ── Middleware ────────────────────────────────────────────────
@@ -49,19 +52,12 @@ function maskEmail(email) {
   return user[0] + '***@' + domain;
 }
 
-// ── Mock user lookup ──────────────────────────────────────────
-// Replace this with a real DB query (Postgres, MongoDB, etc.)
-const MOCK_USERS = [
-  { username: 'mountaineer', email: 'mountaineer@berea.edu', passwordHash: 'bereacollege' },
-  { username: 'brightfietsop', email: 'brightfietsop@gmail.com', passwordHash: 'Bb651573340$' },
-  // Add real users or hook up bcrypt + DB here
-];
-
-function findUser(username, password) {
-  // In production: query DB and use bcrypt.compare(password, user.passwordHash)
-  return MOCK_USERS.find(
-    u => u.username === username && u.passwordHash === password
-  ) || null;
+async function findUser(email, password) {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user || !user.password) return null;
+  
+  const isValid = await bcrypt.compare(password, user.password);
+  return isValid ? user : null;
 }
 
 // ── Routes ────────────────────────────────────────────────────
@@ -82,7 +78,7 @@ app.get('/', (req, res) => {
       <div style="background: #f3f4f6; border-radius: 8px; padding: 1.5rem; margin-top: 2rem; border-left: 4px solid #1D9E75;">
         <h3 style="margin-top: 0;">Test the Authenticator Now</h3>
         <p>To see the authenticator work, run this command in a <strong>new terminal</strong> window:</p>
-        <code style="display: block; background: #1f2937; color: #f9fafb; padding: 1rem; border-radius: 4px; font-size: 0.85rem; overflow-x: auto; white-space: pre-wrap;">curl -X POST ${host}/api/auth/login -H "Content-Type: application/json" -d "{\\"username\\":\\"mountaineer\\", \\"password\\":\\"bereacollege\\"}"</code>
+        <code style="display: block; background: #1f2937; color: #f9fafb; padding: 1rem; border-radius: 4px; font-size: 0.85rem; overflow-x: auto; white-space: pre-wrap;">curl.exe --% -X POST ${host}/api/auth/login -H "Content-Type: application/json" -d "{\\"email\\":\\"mountaineer@berea.edu\\", \\"password\\":\\"bereacollege\\"}"</code>
         <p style="margin-bottom: 0; margin-top: 1rem;">After running that, look at your <strong>VS Code terminal logs</strong>. You will see the generated OTP code printed there!</p>
       </div>
     </div>
@@ -91,49 +87,56 @@ app.get('/', (req, res) => {
 
 /**
  * POST /api/auth/login
- * Body: { username, password }
+ * Body: { email, password }
  * Validates credentials, sends OTP email, returns masked email.
  */
 app.post('/api/auth/login', authLimiter, async (req, res) => {
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res.status(400).json({ success: false, message: 'Username and password are required.' });
-  }
-
-  const user = findUser(username.trim().toLowerCase(), password);
-  if (!user) {
-    // Generic message — don't reveal which field is wrong
-    return res.status(401).json({ success: false, message: 'Invalid credentials.' });
-  }
-
-  // Generate and store OTP
-  const otp = generateOtp();
-  otpStore.set(user.email, {
-    otp,
-    expiresAt: Date.now() + OTP_EXPIRY_MS,
-    attempts:  0,
-  });
-  console.log(`[OTP] Generated for ${user.email}: ${otp}`);
-
-  // Send email via Resend
   try {
-    await resend.emails.send({
-      from:    process.env.FROM_EMAIL || 'Lumen BP <noreply@yourdomain.com>',
-      to:      user.email,
-      subject: 'Your Lumen BP verification code',
-      html:    buildEmailHtml(otp, user.username),
-    });
-  } catch (err) {
-    console.error('[Resend error]', err);
-    return res.status(500).json({ success: false, message: 'Failed to send verification email.' });
-  }
+    const { email, password } = req.body;
+    console.log(`[Auth] Received login request for: ${email}`);
 
-  return res.json({
-    success:     true,
-    maskedEmail: maskEmail(user.email),
-    message:     'Verification code sent.',
-  });
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Email and password are required.' });
+    }
+
+    const user = await findUser(email.trim().toLowerCase(), password);
+    if (!user) {
+      console.warn(`[Auth] Login failed: Invalid credentials for ${email}`);
+      // Generic message — don't reveal which field is wrong
+      return res.status(401).json({ success: false, message: 'Invalid credentials.' });
+    }
+
+    // Generate and store OTP
+    const otp = generateOtp();
+    otpStore.set(user.email, {
+      otp,
+      expiresAt: Date.now() + OTP_EXPIRY_MS,
+      attempts:  0,
+    });
+    console.log(`[OTP] Generated for ${user.email}: ${otp}`);
+
+    // Send email via Resend
+    try {
+      await resend.emails.send({
+        from:    process.env.FROM_EMAIL || 'Lumen BP <noreply@yourdomain.com>',
+        to:      user.email,
+        subject: 'Your Lumen BP verification code',
+        html:    buildEmailHtml(otp, user.name || user.email.split('@')[0]),
+      });
+    } catch (err) {
+      console.error('[Resend error]', err);
+      return res.status(500).json({ success: false, message: 'Failed to send verification email.' });
+    }
+
+    return res.json({
+      success:     true,
+      maskedEmail: maskEmail(user.email),
+      message:     'Verification code sent.',
+    });
+  } catch (error) {
+    console.error('[Auth Critical Error]', error);
+    return res.status(500).json({ success: false, message: 'Internal server error. Check backend logs.' });
+  }
 });
 
 /**
@@ -179,7 +182,7 @@ app.post('/api/auth/verify-otp', authLimiter, (req, res) => {
   return res.json({
     success: true,
     message: 'Verified successfully.',
-    token:   sessionToken,
+    token:   sessionToken, // Return the session token
     user:    { email },
   });
 });
@@ -311,13 +314,8 @@ const startServer = (port) => {
   app.listen(port, () => {
     console.log(`\x1b[32m[Lumen BP] Auth server is LIVE on http://localhost:${port}\x1b[0m`);
   }).on('error', (err) => {
-    if (err.code === 'EADDRINUSE') {
-      console.log(`Port ${port} is busy, trying ${Number(port) + 1}...`);
-      startServer(Number(port) + 1);
-    } else {
-      console.error('[Error] Server failed to start:', err);
-      process.exit(1);
-    }
+    console.error('[Error] Server failed to start:', err);
+    process.exit(1);
   });
 };
 

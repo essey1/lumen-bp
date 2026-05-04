@@ -6,6 +6,7 @@ CREATE TABLE "User" (
     "emailVerified" DATETIME,
     "password" TEXT,
     "image" TEXT,
+    "otpEnabled" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL
 );
@@ -41,6 +42,18 @@ CREATE TABLE "VerificationToken" (
     "identifier" TEXT NOT NULL,
     "token" TEXT NOT NULL,
     "expires" DATETIME NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "OTP" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "hashedCode" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "attempts" INTEGER NOT NULL DEFAULT 0,
+    "lastResendAt" DATETIME,
+    "expiresAt" DATETIME NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "OTP_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex
