@@ -53,10 +53,15 @@ export default function SignupPage() {
         body: JSON.stringify({ email }),
       });
 
+      const otpData = await otpRes.json();
+
       if (!otpRes.ok) {
-        const otpData = await otpRes.json();
         setError(otpData.error || "Failed to send verification code");
         return;
+      }
+
+      if (otpData.devCode) {
+        sessionStorage.setItem("devCode", otpData.devCode);
       }
 
       router.push(`/auth/verify-otp?email=${encodeURIComponent(email)}`);

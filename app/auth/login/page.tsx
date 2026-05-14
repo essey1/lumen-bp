@@ -30,11 +30,15 @@ export default function LoginPage() {
       }
 
       if (credData.otpRequired) {
-        await fetch("/api/auth/send-otp", {
+        const otpRes = await fetch("/api/auth/send-otp", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: normalizedEmail }),
         });
+        const otpData = await otpRes.json();
+        if (otpData.devCode) {
+          sessionStorage.setItem("devCode", otpData.devCode);
+        }
         router.push(`/auth/verify-otp?email=${encodeURIComponent(normalizedEmail)}`);
       } else {
         router.push("/planner");

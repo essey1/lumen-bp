@@ -24,7 +24,7 @@ export async function sendOTP(email: string, code: string): Promise<void> {
 
 export async function cleanupExpiredOTPs(): Promise<void> {
   try {
-    await prisma.otp.deleteMany({
+    await prisma.oTP.deleteMany({
       where: {
         expiresAt: { lt: new Date() }
       }

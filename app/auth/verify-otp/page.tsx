@@ -7,9 +7,18 @@ function VerifyOtpForm() {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [devCode, setDevCode] = useState<string | null>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
+
+  useEffect(() => {
+    const code = sessionStorage.getItem("devCode");
+    if (code) {
+      setDevCode(code);
+      sessionStorage.removeItem("devCode");
+    }
+  }, []);
 
   useEffect(() => {
     if (!email) {
@@ -75,6 +84,13 @@ function VerifyOtpForm() {
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Verify your login</h2>
           <p className="mt-2 text-sm text-gray-600">A verification code has been sent to {email}</p>
         </div>
+
+        {devCode && (
+          <div className="rounded-md bg-yellow-50 border border-yellow-300 p-4 text-center">
+            <p className="text-xs font-medium text-yellow-700 uppercase tracking-wide mb-1">Dev mode — your code</p>
+            <p className="text-2xl font-bold tracking-widest text-yellow-900">{devCode}</p>
+          </div>
+        )}
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
             <div className="rounded-md bg-red-50 p-4 text-sm text-red-700 border border-red-200">
