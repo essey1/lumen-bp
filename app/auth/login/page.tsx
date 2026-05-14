@@ -13,29 +13,35 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    const backendUrl = process.env.NEXT_PUBLIC_AUTH_BACKEND_URL || "http://localhost:4000";
+    const normalizedEmail = email.trim().toLowerCase();
 
     try {
-      const res = await fetch(`${backendUrl}/api/auth/login`, {
+      const credRes = await fetch("/api/auth/verify-credentials", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: email.trim().toLowerCase(),
-          password,
-        }),
+        body: JSON.stringify({ email: normalizedEmail, password }),
       });
 
-      const data = await res.json();
+      const credData = await credRes.json();
 
-      if (!res.ok || !data.success) {
-        setError(data.message || "Invalid credentials.");
+      if (!credRes.ok || !credData.success) {
+        setError(credData.error || "Invalid credentials.");
+        return;
+      }
+
+      if (credData.otpRequired) {
+        await fetch("/api/auth/send-otp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: normalizedEmail }),
+        });
+        router.push(`/auth/verify-otp?email=${encodeURIComponent(normalizedEmail)}`);
       } else {
-        // Credentials valid, OTP sent. Redirect to OTP verification page.
-        router.push(`/auth/verify-otp?email=${encodeURIComponent(email.trim().toLowerCase())}`);
+        router.push("/planner");
       }
     } catch (err) {
-      console.error("Login Fetch Error:", err);
-      setError("Cannot reach the authentication server. Ensure port 4000 is active.");
+      console.error("Login error:", err);
+      setError("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }
