@@ -21,7 +21,6 @@ function VerifyOtpForm() {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    const backendUrl = process.env.NEXT_PUBLIC_AUTH_BACKEND_URL || "http://localhost:4000";
 
     if (!email) {
       setError("Email not found. Please go back to login.");
@@ -30,25 +29,23 @@ function VerifyOtpForm() {
     }
 
     try {
-      // Step 1: Verify OTP with your Express backend
-      const res = await fetch(`${backendUrl}/api/auth/verify-otp`, {
+      // Step 1: Verify OTP with the Next.js API route
+      const res = await fetch("/api/auth/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
+        body: JSON.stringify({ code: otp }),
       });
 
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setError(data.message || "Invalid OTP. Please try again.");
+        setError(data.error || "Invalid OTP. Please try again.");
       } else {
-        // Step 2: If OTP is valid, use NextAuth's signIn to establish the session
-        // We pass a special flag 'otpVerified' to tell our NextAuth authorize function
-        // that this user has already passed the OTP step.
+        // Step 2: OTP is valid — establish the NextAuth session
         const nextAuthSignInResult = await signIn("credentials", {
           email,
-          otpVerified: true, // Custom flag
-          token: data.token, // Pass the session token from Express backend
+          otpVerified: true,
+          token: data.userId,
           redirect: false,
         });
 

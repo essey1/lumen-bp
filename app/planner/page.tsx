@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react"
+import { ArrowLeft, ArrowRight, Check, Sparkles, User } from "lucide-react"
 import { MajorStep } from "@/components/planner/major-step"
 import { MinorStep } from "@/components/planner/minor-step"
 import { InterestsStep } from "@/components/planner/interests-step"
@@ -83,8 +83,14 @@ export default function PlannerPage() {
             </div>
             <span className="text-xl font-semibold text-foreground">Lumen</span>
           </Link>
-          <div className="hidden text-sm text-muted-foreground sm:block">
-            Step {currentStep} of {STEPS.length}
+          <div className="flex items-center gap-4">
+            <div className="hidden text-sm text-muted-foreground sm:block">
+              Step {currentStep} of {STEPS.length}
+            </div>
+            <Link href="/profile" className="flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm text-foreground hover:bg-muted transition-colors">
+              <User className="h-4 w-4" />
+              Profile
+            </Link>
           </div>
         </div>
       </header>

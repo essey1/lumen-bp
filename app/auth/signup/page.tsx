@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -47,16 +46,20 @@ export default function SignupPage() {
         return;
       }
 
-      // Auto sign in after signup
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
+      // Send OTP and redirect to verify page (same flow as login)
+      const otpRes = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
 
-      if (result?.ok) {
-        router.push("/plan");
+      if (!otpRes.ok) {
+        const otpData = await otpRes.json();
+        setError(otpData.error || "Failed to send verification code");
+        return;
       }
+
+      router.push(`/auth/verify-otp?email=${encodeURIComponent(email)}`);
     } catch (err) {
       setError("An error occurred. Please try again.");
     } finally {

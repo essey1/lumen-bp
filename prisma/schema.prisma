@@ -18,6 +18,9 @@ model User {
   password      String?
   image         String?
   otpEnabled    Boolean   @default(true)
+  major         String?
+  year          Int?
+  bio           String?
   accounts      Account[]
   sessions      Session[]
   otps          OTP[]
