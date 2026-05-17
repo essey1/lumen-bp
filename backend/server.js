@@ -64,6 +64,43 @@ async function findUser(email, password) {
 let currentPort = process.env.PORT || 4000;
 
 /**
+ * POST /api/auth/register
+ * Body: { email, password, name? }
+ * Registers a new user if email is not already taken.
+ */
+app.post('/api/auth/register', async (req, res) => {
+  try {
+    const { email, password, name } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: 'Email and password are required.' });
+    }
+    const existingUser = await prisma.user.findUnique({ where: { email: email.trim().toLowerCase() } });
+    if (existingUser) {
+      return res.status(409).json({ success: false, message: 'Email is already registered.' });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await prisma.user.create({
+      data: {
+        email: email.trim().toLowerCase(),
+        password: hashedPassword,
+        name: name || null,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    return res.status(201).json({ success: true, user });
+  } catch (error) {
+    console.error('[Register Error]', error);
+    return res.status(500).json({ success: false, message: 'Failed to register user.' });
+  }
+});
+
+/**
  * GET /
  * Health check endpoint to verify the server is live and provide test instructions.
  */
@@ -232,6 +269,68 @@ app.post('/api/auth/resend-otp', authLimiter, async (req, res) => {
  */
 app.get('/api/auth/me', requireAuth, (req, res) => {
   res.json({ success: true, user: req.user });
+});
+
+/**
+ * GET /api/user/profile
+ * Returns the current user's profile (protected route).
+ */
+app.get('/api/user/profile', requireAuth, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found.' });
+    }
+    return res.json({ success: true, user });
+  } catch (error) {
+    console.error('[Profile Fetch Error]', error);
+    return res.status(500).json({ success: false, message: 'Failed to fetch profile.' });
+  }
+});
+
+/**
+ * POST /api/user/profile
+ * Updates the current user's profile (protected route).
+ * Body: { name?, image? }
+ */
+app.post('/api/user/profile', requireAuth, async (req, res) => {
+  try {
+    const { email } = req.user;
+    const { name, image } = req.body;
+    if (!name && !image) {
+      return res.status(400).json({ success: false, message: 'No profile fields provided.' });
+    }
+    const updatedUser = await prisma.user.update({
+      where: { email },
+      data: {
+        ...(name && { name }),
+        ...(image && { image }),
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+    return res.json({ success: true, user: updatedUser });
+  } catch (error) {
+    console.error('[Profile Update Error]', error);
+    return res.status(500).json({ success: false, message: 'Failed to update profile.' });
+  }
 });
 
 // ── Session token helpers ─────────────────────────────────────

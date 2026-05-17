@@ -1,0 +1,17 @@
+[Error] Server failed to start: Error: listen EADDRINUSE: address already in use :::4000
+    at Server.setupListenHandle [as _listen2] (node:net:2008:16)
+    at listenInCluster (node:net:2065:12)
+    at Server.listen (node:net:2170:7)
+    at app.listen (C:\Users\feitsopb\.vscode\lumen-bp\backend\node_modules\express\lib\application.js:635:24)
+    at startServer (C:\Users\feitsopb\.vscode\lumen-bp\backend\server.js:314:7)
+    at Object.<anonymous> (C:\Users\feitsopb\.vscode\lumen-bp\backend\server.js:322:1)
+    at Module._compile (node:internal/modules/cjs/loader:1830:14)
+    at Object..js (node:internal/modules/cjs/loader:1961:10)
+    at Module.load (node:internal/modules/cjs/loader:1553:32)
+    at Module._load (node:internal/modules/cjs/loader:1355:12) {
+  code: 'EADDRINUSE',
+  errno: -4091,
+  syscall: 'listen',
+  address: '::',
+  port: 4000
+}
