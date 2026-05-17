@@ -1741,7 +1741,16 @@ function collectMissingPrereqs(
   return extra;
 }
 
-export function generateAcademicPlan(profile: StudentProfile, options?: { planType?: "A" | "B" | "C" }): AcademicPlan {
+export interface CompletedSemesterInput {
+  year: number;
+  semester: "Fall" | "Spring";
+  courses: { code: string; name: string; credits: number }[];
+}
+
+export function generateAcademicPlan(
+  profile: StudentProfile,
+  options?: { planType?: "A" | "B" | "C"; completedSemesters?: CompletedSemesterInput[] }
+): AcademicPlan {
   const semesters: SemesterPlan[] = [];
   const warnings: string[] = [];
   const unfulfilledRequirements: string[] = [];
@@ -1750,6 +1759,19 @@ export function generateAcademicPlan(profile: StudentProfile, options?: { planTy
   const usedCodes = new Set<string>(waivedCourses);
   const gemTracker = freshGEMTracker();
   const pref = preferredDepts(profile);
+
+  const completedSems = options?.completedSemesters ?? [];
+  const completedCount = completedSems.length;
+
+  // Mark all courses from completed semesters as already taken
+  for (const sem of completedSems) {
+    for (const c of sem.courses) {
+      if (c.code.trim()) {
+        usedCodes.add(c.code.trim());
+        placedMap.set(c.code.trim(), -1);
+      }
+    }
+  }
 
   for (const code of waivedCourses) {
     placedMap.set(code, -1);
@@ -1770,7 +1792,8 @@ export function generateAcademicPlan(profile: StudentProfile, options?: { planTy
   const planType = options?.planType ?? "A";
 
   // 1. L&I fixed positions
-  // L&I 300: Y2 Spring (sem 3) for Plan A, Y3 Fall (sem 4) for Plan B
+  // For each L&I course: if already taken (in usedCodes), skip it.
+  // If its default semIdx falls in a completed semester, push it to the first future semester.
   const liSeq = [
     { semIdx: 0, code: "L&I 100", name: "Explorations",                     fulfills: "L&I: Explorations" },
     { semIdx: 1, code: "L&I 200", name: "Discoveries",                      fulfills: "L&I: Discoveries" },
@@ -1778,7 +1801,14 @@ export function generateAcademicPlan(profile: StudentProfile, options?: { planTy
     { semIdx: 6, code: "L&I 400", name: "Global Issues",                    fulfills: "L&I: Global Issues" },
   ];
   for (const li of liSeq) {
-    placeCourse(semesters, { code: li.code, name: li.name, credits: 1, fulfills: [li.fulfills], category: "GEM" }, li.semIdx, placedMap);
+    if (usedCodes.has(li.code)) {
+      // Already taken by student; apply GEM credit but don't place in future semesters
+      applyGEM(gemTracker, li.code);
+      continue;
+    }
+    // Push semIdx forward if it falls inside a completed semester
+    const targetIdx = li.semIdx < completedCount ? completedCount : li.semIdx;
+    placeCourse(semesters, { code: li.code, name: li.name, credits: 1, fulfills: [li.fulfills], category: "GEM" }, targetIdx, placedMap);
     usedCodes.add(li.code);
     applyGEM(gemTracker, li.code);
   }
@@ -2039,7 +2069,29 @@ export function generateAcademicPlan(profile: StudentProfile, options?: { planTy
     warnings.push(`${unfulfilledRequirements.length} requirement(s) could not fit in 8 semesters.`);
   }
 
-  return { student: profile, semesters, totalCredits, creditsOutsideMajor, unfulfilledRequirements, warnings };
+  // Replace generated semesters with the student's actual completed semester data
+  for (let i = 0; i < completedCount && i < semesters.length; i++) {
+    const src = completedSems[i];
+    const courses = src.courses
+      .filter(c => c.code.trim() || c.name.trim())
+      .map(c => ({
+        code: c.code.trim() || "—",
+        name: c.name.trim() || "Unknown Course",
+        credits: c.credits,
+        fulfills: [] as string[],
+        category: "Elective" as const,
+        isPlaceholder: false,
+      }));
+    const total = courses.reduce((s, c) => s + c.credits, 0);
+    semesters[i] = { year: src.year, semester: src.semester, courses, totalCredits: total, isOverloaded: false, isCompleted: true };
+  }
+
+  // Recompute totals with completed semesters included
+  const finalTotalCredits = semesters.reduce((s, sem) => s + sem.totalCredits, 0);
+  const finalCreditsOutsideMajor = semesters.reduce((s, sem) =>
+    s + sem.courses.filter(c => c.category !== "Major").reduce((x, c) => x + c.credits, 0), 0);
+
+  return { student: profile, semesters, totalCredits: finalTotalCredits, creditsOutsideMajor: finalCreditsOutsideMajor, unfulfilledRequirements, warnings };
 }
 
 export function getPlanStats(plan: AcademicPlan) {

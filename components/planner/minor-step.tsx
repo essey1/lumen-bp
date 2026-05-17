@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
 import { AVAILABLE_MINORS } from "@/lib/minors-data"
+import { getMajorDeptKey } from "@/lib/majors-data"
 
 const MINORS = AVAILABLE_MINORS.map(m => ({ code: m.code, label: m.name }))
 const MAX_SELECTIONS = 2
@@ -26,12 +27,20 @@ const MAX_SELECTIONS = 2
 interface MinorStepProps {
   selected: string[]
   onChange: (value: string[]) => void
+  selectedMajors?: string[]
 }
 
-export function MinorStep({ selected, onChange }: MinorStepProps) {
+export function MinorStep({ selected, onChange, selectedMajors = [] }: MinorStepProps) {
+  // A minor is blocked if its code matches the dept key of any selected major
+  const blockedMinorCodes = new Set(
+    selectedMajors.map(m => getMajorDeptKey(m))
+  )
   const [open, setOpen] = useState(false)
 
+  const isMinorBlocked = (code: string) => blockedMinorCodes.has(code)
+
   const toggle = (code: string) => {
+    if (isMinorBlocked(code)) return
     if (selected.includes(code)) {
       onChange(selected.filter(m => m !== code))
     } else if (selected.length < MAX_SELECTIONS) {
@@ -89,16 +98,21 @@ export function MinorStep({ selected, onChange }: MinorStepProps) {
             <CommandList>
               <CommandEmpty>No minor found.</CommandEmpty>
               <CommandGroup>
-                {MINORS.map(m => (
+                {MINORS.map(m => {
+                const blocked = isMinorBlocked(m.code)
+                return (
                   <CommandItem
                     key={m.code}
                     value={m.label}
+                    disabled={blocked}
                     onSelect={() => toggle(m.code)}
                   >
                     <Check className={cn("mr-2 h-4 w-4", selected.includes(m.code) ? "opacity-100" : "opacity-0")} />
-                    {m.label}
+                    <span className={cn(blocked && "opacity-40 line-through")}>{m.label}</span>
+                    {blocked && <span className="ml-auto text-[10px] text-muted-foreground">same as major</span>}
                   </CommandItem>
-                ))}
+                )
+              })}
               </CommandGroup>
             </CommandList>
           </Command>
@@ -109,22 +123,29 @@ export function MinorStep({ selected, onChange }: MinorStepProps) {
       <div>
         <p className="mb-3 text-center text-sm text-muted-foreground">Or choose from available minors:</p>
         <div className="flex flex-wrap justify-center gap-2">
-          {MINORS.map(m => (
-            <button
-              key={m.code}
-              onClick={() => toggle(m.code)}
-              disabled={!selected.includes(m.code) && selected.length >= MAX_SELECTIONS}
-              className={cn(
-                "rounded-full border px-3 py-1.5 text-sm font-medium transition-all",
-                selected.includes(m.code)
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-background text-foreground hover:border-primary hover:bg-primary/5",
-                !selected.includes(m.code) && selected.length >= MAX_SELECTIONS && "cursor-not-allowed opacity-50"
-              )}
-            >
-              {m.label}
-            </button>
-          ))}
+          {MINORS.map(m => {
+            const blocked = isMinorBlocked(m.code)
+            const atMax = !selected.includes(m.code) && selected.length >= MAX_SELECTIONS
+            return (
+              <button
+                key={m.code}
+                onClick={() => toggle(m.code)}
+                disabled={blocked || atMax}
+                title={blocked ? "You're already studying this as a major" : undefined}
+                className={cn(
+                  "rounded-full border px-3 py-1.5 text-sm font-medium transition-all",
+                  selected.includes(m.code)
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : blocked
+                      ? "cursor-not-allowed border-border bg-background text-muted-foreground opacity-40 line-through"
+                      : "border-border bg-background text-foreground hover:border-primary hover:bg-primary/5",
+                  atMax && !blocked && "cursor-not-allowed opacity-50"
+                )}
+              >
+                {m.label}
+              </button>
+            )
+          })}
         </div>
       </div>
 

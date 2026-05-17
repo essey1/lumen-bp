@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -8,7 +8,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, ArrowLeft, LogOut, Save, User } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Sparkles, LogOut, Save, User, BookOpen, Trash2, ArrowRight, PlusCircle, Loader2,
+  LayoutDashboard, Settings,
+} from "lucide-react";
 
 const MAJORS = [
   "Computer and Information Science",
@@ -74,16 +78,34 @@ type Profile = {
   bio: string | null;
 };
 
+type SavedPlanSummary = {
+  id: string;
+  name: string;
+  majors: string;
+  minors: string;
+  planType: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 export default function ProfilePage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [form, setForm] = useState({ name: "", major: "", year: "", bio: "" });
-  const [status, setStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
-  const [errorMsg, setErrorMsg] = useState("");
+  const [profileStatus, setProfileStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [profileError, setProfileError] = useState("");
+
+  const [plans, setPlans] = useState<SavedPlanSummary[]>([]);
+  const [plansLoading, setPlansLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/profile")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("Unauthorized");
+        return r.json();
+      })
       .then((data: Profile) => {
         setProfile(data);
         setForm({
@@ -96,10 +118,23 @@ export default function ProfilePage() {
       .catch(() => router.push("/auth/login"));
   }, [router]);
 
-  async function handleSave(e: React.FormEvent) {
+  const loadPlans = useCallback(() => {
+    setPlansLoading(true);
+    fetch("/api/plans")
+      .then((r) => r.json())
+      .then((data) => {
+        setPlans(Array.isArray(data) ? data : []);
+        setPlansLoading(false);
+      })
+      .catch(() => setPlansLoading(false));
+  }, []);
+
+  useEffect(() => { loadPlans(); }, [loadPlans]);
+
+  async function handleSaveProfile(e: React.FormEvent) {
     e.preventDefault();
-    setStatus("saving");
-    setErrorMsg("");
+    setProfileStatus("saving");
+    setProfileError("");
 
     const res = await fetch("/api/profile", {
       method: "PUT",
@@ -115,13 +150,25 @@ export default function ProfilePage() {
     if (res.ok) {
       const updated: Profile = await res.json();
       setProfile(updated);
-      setStatus("saved");
-      setTimeout(() => setStatus("idle"), 2500);
+      setProfileStatus("saved");
+      setTimeout(() => setProfileStatus("idle"), 2500);
     } else {
       const data = await res.json();
-      setErrorMsg(data.error || "Failed to save changes");
-      setStatus("error");
+      setProfileError(data.error || "Failed to save changes");
+      setProfileStatus("error");
     }
+  }
+
+  async function handleDeletePlan(planId: string) {
+    if (confirmDeleteId !== planId) {
+      setConfirmDeleteId(planId);
+      return;
+    }
+    setDeletingId(planId);
+    setConfirmDeleteId(null);
+    await fetch(`/api/plans/${planId}`, { method: "DELETE" });
+    setDeletingId(null);
+    loadPlans();
   }
 
   if (!profile) {
@@ -134,9 +181,10 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Header */}
       <header className="border-b border-border bg-card">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <Link href="/planner" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
               <Sparkles className="h-5 w-5 text-primary-foreground" />
             </div>
@@ -152,109 +200,226 @@ export default function ProfilePage() {
         </div>
       </header>
 
-      <main className="container mx-auto max-w-2xl px-4 py-10">
-        <Link
-          href="/planner"
-          className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Planner
-        </Link>
-
-        <div className="mb-8 flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <User className="h-8 w-8 text-primary" />
+      <main className="container mx-auto max-w-3xl px-4 py-8">
+        {/* User identity strip */}
+        <div className="mb-6 flex items-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 shrink-0">
+            <User className="h-7 w-7 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-foreground">{profile.name || "Your Profile"}</h1>
+            <h1 className="text-xl font-bold text-foreground leading-tight">
+              {profile.name || "Your Dashboard"}
+            </h1>
             <p className="text-sm text-muted-foreground">{profile.email}</p>
+            {profile.major && (
+              <p className="text-xs text-muted-foreground mt-0.5">{profile.major}{profile.year ? ` · Year ${profile.year}` : ""}</p>
+            )}
           </div>
         </div>
 
-        <Card className="border-border">
-          <CardHeader>
-            <CardTitle className="text-lg">Profile Information</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSave} className="space-y-5">
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">Full Name</label>
-                <Input
-                  value={form.name}
-                  onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                  placeholder="Your name"
-                  required
-                />
+        {/* Tabs: Dashboard | Settings */}
+        <Tabs defaultValue="dashboard">
+          <TabsList className="mb-6 w-full justify-start">
+            <TabsTrigger value="dashboard" className="gap-1.5">
+              <LayoutDashboard className="h-4 w-4" />
+              Dashboard
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="gap-1.5">
+              <Settings className="h-4 w-4" />
+              Profile Settings
+            </TabsTrigger>
+          </TabsList>
+
+          {/* ── Dashboard tab ── */}
+          <TabsContent value="dashboard" className="space-y-6">
+            {/* Quick actions */}
+            <div className="flex flex-wrap gap-3">
+              <Link href="/planner">
+                <Button className="gap-2">
+                  <PlusCircle className="h-4 w-4" />
+                  Create a Plan
+                </Button>
+              </Link>
+            </div>
+
+            {/* Saved plans */}
+            <section>
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
+                  <BookOpen className="h-4 w-4 text-primary" />
+                  My Saved Plans
+                  {plans.length > 0 && (
+                    <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground font-normal">
+                      {plans.length}
+                    </span>
+                  )}
+                </h2>
               </div>
 
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">Major</label>
-                <select
-                  value={form.major}
-                  onChange={(e) => setForm((f) => ({ ...f, major: e.target.value }))}
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                >
-                  <option value="">Select your major</option>
-                  {MAJORS.map((m) => (
-                    <option key={m} value={m}>
-                      {m}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">Year</label>
-                <select
-                  value={form.year}
-                  onChange={(e) => setForm((f) => ({ ...f, year: e.target.value }))}
-                  className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                >
-                  <option value="">Select your year</option>
-                  {YEARS.map((y) => (
-                    <option key={y.value} value={y.value}>
-                      {y.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">
-                  Bio <span className="text-muted-foreground font-normal">(optional)</span>
-                </label>
-                <Textarea
-                  value={form.bio}
-                  onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
-                  placeholder="Tell us a bit about yourself, your goals, or interests..."
-                  rows={4}
-                  maxLength={500}
-                />
-                <p className="text-xs text-muted-foreground text-right">{form.bio.length}/500</p>
-              </div>
-
-              {status === "error" && (
-                <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
-                  {errorMsg}
-                </p>
+              {plansLoading ? (
+                <div className="flex items-center gap-2 py-8 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Loading plans…
+                </div>
+              ) : plans.length === 0 ? (
+                <Card className="border-dashed border-border">
+                  <CardContent className="py-10 text-center">
+                    <BookOpen className="mx-auto mb-3 h-10 w-10 text-muted-foreground/40" />
+                    <p className="text-sm font-medium text-foreground">No saved plans yet</p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Generate a plan and click &quot;Save Plan&quot; to keep it here.
+                    </p>
+                    <Link href="/planner" className="mt-4 inline-block">
+                      <Button size="sm" className="gap-1.5">
+                        <PlusCircle className="h-4 w-4" />
+                        Create Your First Plan
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-3">
+                  {plans.map((plan) => {
+                    const majors = (() => { try { return JSON.parse(plan.majors) as string[]; } catch { return []; } })();
+                    const minors = (() => { try { return JSON.parse(plan.minors) as string[]; } catch { return []; } })();
+                    return (
+                      <Card key={plan.id} className="border-border hover:shadow-sm transition-shadow">
+                        <CardContent className="py-4">
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="min-w-0 flex-1">
+                              <p className="font-semibold text-foreground truncate">{plan.name}</p>
+                              <p className="mt-0.5 text-xs text-muted-foreground truncate">
+                                Plan {plan.planType}
+                                {majors.length > 0 && ` · ${majors[0]}`}
+                                {minors.length > 0 && ` · Minor: ${minors[0]}`}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                Updated {new Date(plan.updatedAt).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0">
+                              <Button
+                                size="sm"
+                                variant={confirmDeleteId === plan.id ? "destructive" : "ghost"}
+                                onClick={() => handleDeletePlan(plan.id)}
+                                disabled={deletingId === plan.id}
+                                className="gap-1"
+                              >
+                                {deletingId === plan.id ? (
+                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                ) : (
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                )}
+                                {confirmDeleteId === plan.id ? "Confirm" : ""}
+                              </Button>
+                              {confirmDeleteId === plan.id && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => setConfirmDeleteId(null)}
+                                  className="text-xs"
+                                >
+                                  Cancel
+                                </Button>
+                              )}
+                              <Link href={`/plan/${plan.id}`}>
+                                <Button size="sm" className="gap-1.5">
+                                  View <ArrowRight className="h-3.5 w-3.5" />
+                                </Button>
+                              </Link>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
               )}
+            </section>
+          </TabsContent>
 
-              <Button
-                type="submit"
-                disabled={status === "saving"}
-                className="w-full gap-2"
-                variant={status === "saved" ? "outline" : "default"}
-              >
-                <Save className="h-4 w-4" />
-                {status === "saving"
-                  ? "Saving..."
-                  : status === "saved"
-                  ? "Saved!"
-                  : "Save Changes"}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
+          {/* ── Settings tab ── */}
+          <TabsContent value="settings">
+            <Card className="border-border">
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Profile Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSaveProfile} className="space-y-5">
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-foreground">Full Name</label>
+                    <Input
+                      value={form.name}
+                      onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                      placeholder="Your name"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-foreground">Major</label>
+                    <select
+                      value={form.major}
+                      onChange={(e) => setForm((f) => ({ ...f, major: e.target.value }))}
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    >
+                      <option value="">Select your major</option>
+                      {MAJORS.map((m) => (
+                        <option key={m} value={m}>{m}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-foreground">Year</label>
+                    <select
+                      value={form.year}
+                      onChange={(e) => setForm((f) => ({ ...f, year: e.target.value }))}
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    >
+                      <option value="">Select your year</option>
+                      {YEARS.map((y) => (
+                        <option key={y.value} value={y.value}>{y.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-foreground">
+                      Bio <span className="text-muted-foreground font-normal">(optional)</span>
+                    </label>
+                    <Textarea
+                      value={form.bio}
+                      onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
+                      placeholder="Tell us a bit about yourself, your goals, or interests..."
+                      rows={4}
+                      maxLength={500}
+                    />
+                    <p className="text-xs text-muted-foreground text-right">{form.bio.length}/500</p>
+                  </div>
+
+                  {profileStatus === "error" && (
+                    <p className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                      {profileError}
+                    </p>
+                  )}
+
+                  <Button
+                    type="submit"
+                    disabled={profileStatus === "saving"}
+                    className="w-full gap-2"
+                    variant={profileStatus === "saved" ? "outline" : "default"}
+                  >
+                    <Save className="h-4 w-4" />
+                    {profileStatus === "saving" ? "Saving..." : profileStatus === "saved" ? "Saved!" : "Save Changes"}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   );

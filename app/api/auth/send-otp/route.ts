@@ -3,8 +3,6 @@ import { prisma } from "@/lib/prisma"
 import { generateOTP, hashOTP, getOTPExpiry, isResendAllowed } from "@/lib/otp"
 import { sendOTP, cleanupExpiredOTPs } from "@/lib/email"
 
-const isDev = process.env.NODE_ENV !== "production"
-
 export async function POST(req: Request) {
   try {
     const { email } = await req.json()
@@ -44,13 +42,10 @@ export async function POST(req: Request) {
 
     await sendOTP(email, code)
 
-    const response = NextResponse.json({
-      success: true,
-      ...(isDev && { devCode: code }),
-    })
+    const response = NextResponse.json({ success: true })
     response.cookies.set("otp_email", email, {
       httpOnly: true,
-      secure: !isDev,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       maxAge: 5 * 60,
     })

@@ -164,6 +164,7 @@ export interface SemesterPlan {
   courses: PlannedCourse[];
   totalCredits: number;
   isOverloaded: boolean;
+  isCompleted?: boolean; // true for semesters the student has already finished
 }
 
 export interface PlannedCourse {

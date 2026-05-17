@@ -28,16 +28,14 @@ function IdleSessionGuard({ children }: { children: ReactNode }) {
       clearIdleTimer();
       window.localStorage.setItem(LAST_ACTIVITY_KEY, String(Date.now()));
       timeoutRef.current = window.setTimeout(() => {
+        window.localStorage.removeItem(LAST_ACTIVITY_KEY);
         signOut({ callbackUrl: "/auth/login?reason=idle" });
       }, IDLE_TIMEOUT_MS);
     };
 
-    const lastActivityAt = Number(window.localStorage.getItem(LAST_ACTIVITY_KEY) || Date.now());
-    if (Date.now() - lastActivityAt > IDLE_TIMEOUT_MS) {
-      signOut({ callbackUrl: "/auth/login?reason=idle" });
-      return;
-    }
-
+    // Always stamp activity fresh when a session starts so a stale
+    // localStorage value from a previous session doesn't cause instant logout.
+    window.localStorage.setItem(LAST_ACTIVITY_KEY, String(Date.now()));
     resetIdleTimer();
     ACTIVITY_EVENTS.forEach((eventName) => {
       window.addEventListener(eventName, resetIdleTimer, { passive: true });

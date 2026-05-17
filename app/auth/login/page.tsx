@@ -1,105 +1,99 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Sparkles } from "lucide-react";
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    const normalizedEmail = email.trim().toLowerCase();
 
-    try {
-      const credRes = await fetch("/api/auth/verify-credentials", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: normalizedEmail, password }),
-      });
+    const result = await signIn("credentials", {
+      email: email.trim().toLowerCase(),
+      password,
+      redirect: false,
+    });
 
-      const credData = await credRes.json();
-
-      if (!credRes.ok || !credData.success) {
-        setError(credData.error || "Invalid credentials.");
-        return;
-      }
-
-      if (credData.otpRequired) {
-        const otpRes = await fetch("/api/auth/send-otp", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: normalizedEmail }),
-        });
-        const otpData = await otpRes.json();
-        if (otpData.devCode) {
-          sessionStorage.setItem("devCode", otpData.devCode);
-        }
-        router.push(`/auth/verify-otp?email=${encodeURIComponent(normalizedEmail)}`);
-      } else {
-        router.push("/planner");
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-      setError("Something went wrong. Please try again.");
-    } finally {
+    if (result?.error) {
+      setError("Invalid email or password.");
       setIsLoading(false);
+    } else {
+      window.location.href = "/profile";
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md space-y-8 rounded-xl border bg-white p-10 shadow-lg">
-        <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Sign in to Lumen</h2>
-          <p className="mt-2 text-sm text-gray-600">Enter your test credentials</p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="rounded-md bg-red-50 p-4 text-sm text-red-700 border border-red-200">
-              {error}
+    <div className="min-h-screen flex flex-col bg-background">
+      <header className="border-b border-border bg-card px-4 py-4">
+        <div className="container mx-auto flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+              <Sparkles className="h-4 w-4 text-primary-foreground" />
             </div>
-          )}
-          <div className="space-y-4">
+            <span className="text-lg font-semibold text-foreground">Lumen</span>
+          </Link>
+          <Link href="/auth/signup" className="text-sm text-muted-foreground hover:text-foreground">
+            {"Don't"} have an account?{" "}
+            <span className="text-primary font-medium">Sign up</span>
+          </Link>
+        </div>
+      </header>
+
+      <div className="flex flex-1 items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          <h1 className="mb-1 text-2xl font-bold text-foreground">Welcome back</h1>
+          <p className="mb-8 text-sm text-muted-foreground">Sign in to your Lumen account</p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
-              <input
-                id="email"
-                name="email"
+              <label className="mb-1.5 block text-sm font-medium text-foreground">Email</label>
+              <Input
                 type="email"
-                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-                autoComplete="email"
+                placeholder="janedoe@berea.edu"
+                required
+                disabled={isLoading}
+                autoFocus
               />
             </div>
+
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-              <input
-                id="password"
-                name="password"
+              <label className="mb-1.5 block text-sm font-medium text-foreground">Password</label>
+              <Input
                 type="password"
-                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
-                autoComplete="current-password"
+                placeholder="••••••••"
+                required
+                disabled={isLoading}
               />
             </div>
-          </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="flex w-full justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            {isLoading ? "Sending OTP..." : "Sign In"}
-          </button>
-        </form>
+
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign In"}
+            </Button>
+          </form>
+        </div>
       </div>
     </div>
   );
