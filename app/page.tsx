@@ -15,11 +15,17 @@ export default function LandingPage() {
             </div>
             <span className="text-xl font-semibold text-foreground">Lumen</span>
           </div>
-          <Link href="/planner">
-            <Button variant="outline" size="sm">
-              Get Started
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/planner">
+              <Button variant="ghost" size="sm">Create a Plan</Button>
+            </Link>
+            <Link href="/auth/login">
+              <Button variant="outline" size="sm">Sign In</Button>
+            </Link>
+            <Link href="/auth/signup">
+              <Button size="sm">Sign Up</Button>
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -59,12 +65,12 @@ export default function LandingPage() {
               <Link href="/planner">
                 <Button size="lg" className="gap-2 text-base px-8 py-6 text-lg shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-500 animate-[pulse-glow_3s_ease-in-out_infinite]">
                   <Compass className="h-6 w-6 animate-[spin_6s_linear_infinite]" />
-                  Start Planning
+                  Create a Plan
                 </Button>
               </Link>
-              <Link href="/plan">
+              <Link href="/auth/login">
                 <Button variant="outline" size="lg" className="gap-2 text-base px-8 py-6 text-lg bg-card/95 backdrop-blur-md hover:bg-card hover:scale-110 transition-all duration-500 shadow-xl animate-[borderGlow_4s_ease-in-out_infinite]">
-                  View Sample Plan
+                  Sign In
                 </Button>
               </Link>
             </div>
@@ -146,7 +152,7 @@ export default function LandingPage() {
           <p className="mb-8 text-muted-foreground">
             Join hundreds of Berea College students who have mapped their academic journey with Lumen.
           </p>
-          <Link href="/planner">
+          <Link href="/auth/signup">
             <Button size="lg" className="gap-2">
               <Sparkles className="h-5 w-5" />
               Get Started — {"It's"} Free

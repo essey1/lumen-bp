@@ -1707,9 +1707,10 @@ export const MAJORS: Record<string, Major> = {
       },
       {
         category: "Design Distribution",
-        description: "Design courses (choose one pair)",
+        description: "Choose ONE track — Design: ETAD 130 + ETAD 330, OR Electronics: ETAD 265 + ETAD 460. Plan defaults to Design track. If on Electronics track, edit the plan to replace ETAD 130→ETAD 265 and ETAD 330→ETAD 460.",
         coursesRequired: 2,
-        courses: ["ETAD 130", "ETAD 330", "ETAD 265", "ETAD 460"],
+        courses: ["ETAD 130", "ETAD 330"],
+        mustInclude: ["ETAD 130", "ETAD 330"],
       },
       {
         category: "Additional Distribution",
@@ -3020,3 +3021,34 @@ export const AVAILABLE_MAJORS = [
   { code: "THR", name: "Theatre", degree: "B.A." },
   { code: "WGS", name: "Women's, Gender, and Sexuality Studies", degree: "B.A." },
 ];
+
+// Majors that share a department — only one per group may be selected.
+export const MAJOR_DEPARTMENT_GROUPS: string[][] = [
+  ["CSC", "CSC_CS", "CSC_MATH", "CSC_IS"],
+  ["AST_COMP", "AST_CHI", "AST_JPN"],
+  ["CHM_GEN", "CHM_BIO", "CHM_PRO"],
+  ["CFS_CD", "CFS_FS", "CFS_NFS"],
+  ["ECO", "ECO_QUANT"],
+  ["ETAD", "ETAD_MGMT"],
+  ["ART", "ARH"],
+  ["PHY", "PHY_ENG"],
+];
+
+/** Returns the shared department key for a major code (the first code in its group). */
+export function getMajorDeptKey(code: string): string {
+  for (const group of MAJOR_DEPARTMENT_GROUPS) {
+    if (group.includes(code)) return group[0];
+  }
+  return code;
+}
+
+/** True if selecting `code` conflicts with an already-selected major from the same department. */
+export function isMajorBlockedByDept(code: string, selected: string[]): boolean {
+  const dept = getMajorDeptKey(code);
+  return selected.some(s => s !== code && getMajorDeptKey(s) === dept);
+}
+
+/** Base department prefix for a major code — used to block same-dept minors. */
+export function getMajorBasePrefix(code: string): string {
+  return getMajorDeptKey(code).split("_")[0];
+}

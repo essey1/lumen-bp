@@ -1,26 +1,28 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react"
+import { ArrowLeft, ArrowRight, Check, Sparkles, User } from "lucide-react"
 import { MajorStep } from "@/components/planner/major-step"
 import { MinorStep } from "@/components/planner/minor-step"
 import { InterestsStep } from "@/components/planner/interests-step"
 import { CareerStep } from "@/components/planner/career-step"
 import { MathPlacementStep } from "@/components/planner/math-placement-step"
 import { WaivedCoursesStep } from "@/components/planner/waived-courses-step"
+import { type CompletedSemesterData } from "@/components/planner/completed-semesters-step"
+import { AVAILABLE_MAJORS } from "@/lib/majors-data"
 import type { MathPlacement } from "@/lib/types"
 
 const STEPS = [
-  { id: 1, title: "Major",       description: "Choose your field of study" },
-  { id: 2, title: "Minor",       description: "Add a minor (optional)" },
-  { id: 3, title: "Interests",   description: "What excites you academically?" },
-  { id: 4, title: "Career Goals",description: "Where are you headed?" },
-  { id: 5, title: "Math Waiver", description: "Up to what math level have you waived?" },
-  { id: 6, title: "Other Waivers", description: "Add any other courses already waived" },
+  { id: 1, title: "Major",          description: "Choose your field of study" },
+  { id: 2, title: "Minor",          description: "Add a minor (optional)" },
+  { id: 3, title: "Interests",      description: "What excites you academically?" },
+  { id: 4, title: "Career Goals",   description: "Where are you headed?" },
+  { id: 5, title: "Math Waiver",    description: "Up to what math level have you waived?" },
+  { id: 6, title: "Other Waivers",  description: "Add any other courses already waived" },
 ]
 
 export default function PlannerPage() {
@@ -34,6 +36,30 @@ export default function PlannerPage() {
     mathPlacement: "none" as MathPlacement,
     waivedCourses: [] as string[],
   })
+  const [completedSemesters, setCompletedSemesters] = useState<CompletedSemesterData[]>([])
+
+  // Pre-populate majors and completed semesters from the user's profile (if logged in)
+  useEffect(() => {
+    fetch("/api/profile")
+      .then(r => r.ok ? r.json() : null)
+      .then(profile => {
+        if (!profile) return
+        if (profile.major) {
+          const names: string[] = profile.major.split(", ").map((s: string) => s.trim()).filter(Boolean)
+          const codes = names
+            .map((name: string) => AVAILABLE_MAJORS.find(m => m.name === name)?.code)
+            .filter((c): c is string => !!c)
+          if (codes.length > 0) setFormData(prev => ({ ...prev, majors: codes }))
+        }
+        if (profile.completedSemesters) {
+          try {
+            const parsed: CompletedSemesterData[] = JSON.parse(profile.completedSemesters)
+            setCompletedSemesters(parsed)
+          } catch { /* ignore */ }
+        }
+      })
+      .catch(() => {}) // not logged in — skip
+  }, [])
 
   const progress = (currentStep / STEPS.length) * 100
 
@@ -41,6 +67,13 @@ export default function PlannerPage() {
     if (currentStep < STEPS.length) {
       setCurrentStep(currentStep + 1)
     } else {
+      // Pass completed semesters (from profile) via sessionStorage to the plan page
+      if (completedSemesters.length > 0) {
+        sessionStorage.setItem("completedSemesters", JSON.stringify(completedSemesters))
+      } else {
+        sessionStorage.removeItem("completedSemesters")
+      }
+
       const params = new URLSearchParams()
       if (formData.majors.length > 0) params.set("majors", formData.majors.join(","))
       if (formData.minors.length > 0) params.set("minors", formData.minors.join(","))
@@ -63,11 +96,11 @@ export default function PlannerPage() {
   const canProceed = () => {
     switch (currentStep) {
       case 1: return formData.majors.length >= 1
-      case 2: return true // minor is optional
+      case 2: return true
       case 3: return formData.interests.length >= 1
       case 4: return formData.careerGoals.length >= 1
-      case 5: return true // math placement always has a valid selection
-      case 6: return true // waived courses are optional
+      case 5: return true
+      case 6: return true
       default: return true
     }
   }
@@ -83,8 +116,14 @@ export default function PlannerPage() {
             </div>
             <span className="text-xl font-semibold text-foreground">Lumen</span>
           </Link>
-          <div className="hidden text-sm text-muted-foreground sm:block">
-            Step {currentStep} of {STEPS.length}
+          <div className="flex items-center gap-4">
+            <div className="hidden text-sm text-muted-foreground sm:block">
+              Step {currentStep} of {STEPS.length}
+            </div>
+            <Link href="/profile" className="flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm text-foreground hover:bg-muted transition-colors">
+              <User className="h-4 w-4" />
+              Profile
+            </Link>
           </div>
         </div>
       </header>
@@ -143,7 +182,7 @@ export default function PlannerPage() {
               <MajorStep selected={formData.majors} onChange={v => updateFormData("majors", v)} />
             )}
             {currentStep === 2 && (
-              <MinorStep selected={formData.minors} onChange={v => updateFormData("minors", v)} />
+              <MinorStep selected={formData.minors} onChange={v => updateFormData("minors", v)} selectedMajors={formData.majors} />
             )}
             {currentStep === 3 && (
               <InterestsStep selected={formData.interests} onChange={v => updateFormData("interests", v)} />

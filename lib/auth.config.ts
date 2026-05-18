@@ -2,6 +2,8 @@ import type { NextAuthConfig } from "next-auth";
 
 export const authConfig = {
   providers: [],
+  secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true,
   pages: {
     signIn: "/auth/login",
     error: "/auth/login",
@@ -12,15 +14,17 @@ export const authConfig = {
       const { nextUrl } = request;
       const pathname = nextUrl.pathname;
       const isOnAuthPage = pathname.startsWith("/auth");
+      const isPublicPage = isOnAuthPage || pathname === "/";
 
       if (isOnAuthPage) {
-        // If the user is already logged in and tries to go to /auth/login,
-        // redirect them to the planner instead of the public home page.
-        if (isLoggedIn) return Response.redirect(new URL("/planner", nextUrl));
+        if (isLoggedIn) return Response.redirect(new URL("/profile", nextUrl));
         return true;
       }
 
-      // PRIVATE BY DEFAULT: Any other page (including '/') now requires authentication.
+      if (pathname === "/") return true;
+      if (pathname.startsWith("/planner")) return true;
+      if (pathname.startsWith("/plan") && !pathname.startsWith("/plan/")) return true;
+
       return isLoggedIn;
     },
     async jwt({ token, user }) {

@@ -18,7 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
-import { AVAILABLE_MAJORS } from "@/lib/majors-data"
+import { AVAILABLE_MAJORS, isMajorBlockedByDept } from "@/lib/majors-data"
 
 // Format majors for display - using code for data, name for display
 const MAJORS = AVAILABLE_MAJORS.map(m => ({
@@ -40,10 +40,16 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
   const toggleMajor = (code: string) => {
     if (selected.includes(code)) {
       onChange(selected.filter((m) => m !== code))
-    } else if (selected.length < MAX_SELECTIONS) {
+    } else if (selected.length < MAX_SELECTIONS && !isMajorBlockedByDept(code, selected)) {
       onChange([...selected, code])
     }
   }
+
+  const isDisabled = (code: string) =>
+    !selected.includes(code) && (selected.length >= MAX_SELECTIONS || isMajorBlockedByDept(code, selected))
+
+  const disabledReason = (code: string) =>
+    isMajorBlockedByDept(code, selected) ? "You already selected a major from this department" : "Maximum selections reached"
 
   const removeMajor = (code: string) => {
     onChange(selected.filter((m) => m !== code))
@@ -103,9 +109,7 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
             className="w-full justify-between"
             disabled={selected.length >= MAX_SELECTIONS}
           >
-            {selected.length >= MAX_SELECTIONS
-              ? "Maximum selections reached"
-              : "Search and select a major..."}
+            {selected.length >= MAX_SELECTIONS ? "Maximum selections reached" : "Search and select a major..."}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -115,26 +119,29 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
             <CommandList>
               <CommandEmpty>No major found.</CommandEmpty>
               <CommandGroup>
-                {MAJORS.map((major) => (
-                  <CommandItem
-                    key={major.code}
-                    value={major.label}
-                    onSelect={() => {
-                      toggleMajor(major.code)
-                      if (!selected.includes(major.code)) {
-                        setOpen(false)
-                      }
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        selected.includes(major.code) ? "opacity-100" : "opacity-0"
+                {MAJORS.map((major) => {
+                  const blocked = isMajorBlockedByDept(major.code, selected)
+                  return (
+                    <CommandItem
+                      key={major.code}
+                      value={major.label}
+                      disabled={blocked && !selected.includes(major.code)}
+                      onSelect={() => {
+                        if (blocked && !selected.includes(major.code)) return
+                        toggleMajor(major.code)
+                        if (!selected.includes(major.code)) setOpen(false)
+                      }}
+                    >
+                      <Check className={cn("mr-2 h-4 w-4", selected.includes(major.code) ? "opacity-100" : "opacity-0")} />
+                      <span className={cn(blocked && !selected.includes(major.code) && "opacity-40 line-through")}>
+                        {major.label}
+                      </span>
+                      {blocked && !selected.includes(major.code) && (
+                        <span className="ml-auto text-[10px] text-muted-foreground">same dept</span>
                       )}
-                    />
-                    {major.label}
-                  </CommandItem>
-                ))}
+                    </CommandItem>
+                  )
+                })}
               </CommandGroup>
             </CommandList>
           </Command>
@@ -147,26 +154,29 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
           Or choose from available options:
         </p>
         <div className="flex flex-wrap justify-center gap-2">
-          {MAJORS.map((major) => (
-            <button
-              key={major.code}
-              onClick={() => toggleMajor(major.code)}
-              disabled={
-                !selected.includes(major.code) && selected.length >= MAX_SELECTIONS
-              }
-              className={cn(
-                "rounded-full border px-4 py-2 text-sm font-medium transition-all",
-                selected.includes(major.code)
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-background text-foreground hover:border-primary hover:bg-primary/5",
-                !selected.includes(major.code) &&
-                  selected.length >= MAX_SELECTIONS &&
-                  "cursor-not-allowed opacity-50"
-              )}
-            >
-              {major.label}
-            </button>
-          ))}
+          {MAJORS.map((major) => {
+            const dis = isDisabled(major.code)
+            const blocked = isMajorBlockedByDept(major.code, selected)
+            return (
+              <button
+                key={major.code}
+                onClick={() => toggleMajor(major.code)}
+                disabled={dis}
+                title={dis ? disabledReason(major.code) : undefined}
+                className={cn(
+                  "rounded-full border px-4 py-2 text-sm font-medium transition-all",
+                  selected.includes(major.code)
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : blocked
+                      ? "cursor-not-allowed border-border bg-background text-muted-foreground opacity-40 line-through"
+                      : "border-border bg-background text-foreground hover:border-primary hover:bg-primary/5",
+                  dis && !blocked && "cursor-not-allowed opacity-50"
+                )}
+              >
+                {major.label}
+              </button>
+            )
+          })}
         </div>
       </div>
     </div>
