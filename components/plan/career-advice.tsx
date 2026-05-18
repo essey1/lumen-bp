@@ -67,16 +67,16 @@ export function CareerAdvice({
   }
 
   return (
-    <Card className="mt-8 border-primary/20 bg-gradient-to-br from-card to-primary/5">
+    <Card className="mt-8 border-[#0b6b82]/20 bg-gradient-to-br from-white/90 to-[#e6f4f4]">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
-          <Sparkles className="h-5 w-5 text-primary" />
+          <Sparkles className="h-5 w-5 fill-[#f0b83f] text-[#f0b83f]" />
           Career Advice for {careerGoals.join(", ")}
         </CardTitle>
       </CardHeader>
       <CardContent>
         {loading && (
-          <div className="flex items-center gap-3 py-6 text-muted-foreground">
+          <div className="flex items-center gap-3 py-6 text-[#40505a]">
             <Loader2 className="h-5 w-5 animate-spin" />
             <span>Generating personalized advice based on your goals...</span>
           </div>
@@ -89,7 +89,7 @@ export function CareerAdvice({
               variant="outline"
               size="sm"
               onClick={fetchAdvice}
-              className="gap-2"
+              className="gap-2 rounded-full border-[#0b6b82]/25 bg-white/70 text-[#10212a] hover:bg-[#e6f4f4]"
             >
               <RefreshCw className="h-4 w-4" />
               Try Again
@@ -99,7 +99,7 @@ export function CareerAdvice({
 
         {advice && !loading && (
           <div className="space-y-4">
-            <div className="prose prose-sm max-w-none text-foreground">
+            <div className="prose prose-sm max-w-none text-[#10212a]">
               {advice.split("\n\n").map((block, idx) => {
                 // Check if it's a header (starts with **)
                 if (block.startsWith("**") && block.includes("**\n")) {
@@ -107,11 +107,11 @@ export function CareerAdvice({
                   const headerText = header.replace(/\*\*/g, "");
                   return (
                     <div key={idx} className="mb-4">
-                      <h3 className="text-base font-semibold text-primary mb-2 mt-4 first:mt-0">
+                      <h3 className="text-base font-semibold text-[#0b6b82] mb-2 mt-4 first:mt-0">
                         {headerText}
                       </h3>
                       {rest.length > 0 && (
-                        <div className="text-sm leading-relaxed text-muted-foreground">
+                        <div className="text-sm leading-relaxed text-[#40505a]">
                           {rest.join("\n")}
                         </div>
                       )}
@@ -132,9 +132,9 @@ export function CareerAdvice({
                           <li key={i} className="leading-relaxed">
                             {parts.map((part, j) => {
                               if (part.startsWith("**") && part.endsWith("**")) {
-                                return <strong key={j} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
+                                return <strong key={j} className="font-semibold text-[#10212a]">{part.slice(2, -2)}</strong>;
                               }
-                              return <span key={j} className="text-muted-foreground">{part}</span>;
+                              return <span key={j} className="text-[#40505a]">{part}</span>;
                             })}
                           </li>
                         );
@@ -156,9 +156,9 @@ export function CareerAdvice({
                           <li key={i} className="leading-relaxed">
                             {parts.map((part, j) => {
                               if (part.startsWith("**") && part.endsWith("**")) {
-                                return <strong key={j} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
+                                return <strong key={j} className="font-semibold text-[#10212a]">{part.slice(2, -2)}</strong>;
                               }
-                              return <span key={j} className="text-muted-foreground">{part}</span>;
+                              return <span key={j} className="text-[#40505a]">{part}</span>;
                             })}
                           </li>
                         );
@@ -170,10 +170,10 @@ export function CareerAdvice({
                 // Regular paragraph with potential bold text
                 const parts = block.split(/(\*\*[^*]+\*\*)/);
                 return (
-                  <p key={idx} className="text-sm leading-relaxed mb-3 text-muted-foreground">
+                  <p key={idx} className="text-sm leading-relaxed mb-3 text-[#40505a]">
                     {parts.map((part, j) => {
                       if (part.startsWith("**") && part.endsWith("**")) {
-                        return <strong key={j} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
+                        return <strong key={j} className="font-semibold text-[#10212a]">{part.slice(2, -2)}</strong>;
                       }
                       return <span key={j}>{part}</span>;
                     })}
@@ -181,12 +181,12 @@ export function CareerAdvice({
                 );
               })}
             </div>
-            <div className="pt-2 border-t border-border">
+            <div className="pt-2 border-t border-[#0b6b82]/15">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={fetchAdvice}
-                className="gap-2 text-muted-foreground hover:text-foreground"
+                className="gap-2 rounded-full text-[#40505a] hover:text-[#10212a]"
               >
                 <RefreshCw className="h-4 w-4" />
                 Regenerate Advice

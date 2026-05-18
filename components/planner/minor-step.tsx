@@ -55,9 +55,9 @@ export function MinorStep({ selected, onChange }: MinorStepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-[#6b5d4b]">
           Select up to {MAX_SELECTIONS} minors (optional) •{" "}
-          <span className="font-medium text-primary">
+          <span className="font-medium text-[#0b6b82]">
             {selected.length} selected
           </span>
         </p>
@@ -70,12 +70,12 @@ export function MinorStep({ selected, onChange }: MinorStepProps) {
             <Badge
               key={minor}
               variant="secondary"
-              className="gap-1 px-3 py-1.5 text-sm"
+              className="gap-1 rounded-full bg-[#0b6b82] px-3 py-1.5 text-sm text-white"
             >
               {minor}
               <button
                 onClick={() => removeMinor(minor)}
-                className="ml-1 rounded-full hover:bg-muted"
+                className="ml-1 rounded-full hover:bg-white/20"
               >
                 <X className="h-3 w-3" />
                 <span className="sr-only">Remove {minor}</span>
@@ -92,7 +92,7 @@ export function MinorStep({ selected, onChange }: MinorStepProps) {
             variant="outline"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between"
+            className="w-full justify-between rounded-full border-[#0b6b82]/25 bg-white/80 text-[#10212a] hover:bg-[#e6f4f4]"
             disabled={selected.length >= MAX_SELECTIONS}
           >
             {selected.length >= MAX_SELECTIONS
@@ -101,7 +101,7 @@ export function MinorStep({ selected, onChange }: MinorStepProps) {
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0" align="start">
+        <PopoverContent className="w-full border-[#0b6b82]/20 bg-[#fffaf0] p-0 text-[#10212a]" align="start">
           <Command>
             <CommandInput placeholder="Search minors..." />
             <CommandList>
@@ -135,7 +135,7 @@ export function MinorStep({ selected, onChange }: MinorStepProps) {
 
       {/* Quick Select Grid */}
       <div>
-        <p className="mb-3 text-center text-sm text-muted-foreground">
+        <p className="mb-3 text-center text-sm text-[#6b5d4b]">
           Or choose from available options:
         </p>
         <div className="flex flex-wrap justify-center gap-2">
@@ -149,8 +149,8 @@ export function MinorStep({ selected, onChange }: MinorStepProps) {
               className={cn(
                 "rounded-full border px-4 py-2 text-sm font-medium transition-all",
                 selected.includes(minor)
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-background text-foreground hover:border-primary hover:bg-primary/5",
+                  ? "border-[#0b6b82] bg-[#0b6b82] text-white shadow-[0_0_18px_rgba(11,107,130,0.24)]"
+                  : "border-[#0b6b82]/20 bg-white/72 text-[#10212a] hover:border-[#0b6b82] hover:bg-[#e6f4f4]",
                 !selected.includes(minor) &&
                   selected.length >= MAX_SELECTIONS &&
                   "cursor-not-allowed opacity-50"
@@ -163,8 +163,8 @@ export function MinorStep({ selected, onChange }: MinorStepProps) {
       </div>
 
       {/* Skip hint */}
-      <p className="text-center text-sm text-muted-foreground">
-        {"Don't"} have a minor in mind? No worries — you can skip this step.
+      <p className="text-center text-sm text-[#6b5d4b]">
+        {"Don't"} have a minor in mind? No worries - you can skip this step.
       </p>
     </div>
   )

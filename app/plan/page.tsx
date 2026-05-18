@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
@@ -14,6 +15,7 @@ import { StudentProfile } from "@/components/plan/student-profile"
 import { SemesterCard } from "@/components/plan/semester-card"
 import { OverflowWarning } from "@/components/plan/overflow-warning"
 import { CareerAdvice } from "@/components/plan/career-advice"
+import { LumenFireflies, LumenGuideBear } from "@/components/lumen-ambience"
 import { generateAcademicPlan, getPlanStats } from "@/lib/plan-generator"
 import type { StudentProfile as StudentProfileType, AcademicPlan } from "@/lib/types"
 import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types"
@@ -57,24 +59,34 @@ function PlanContent() {
   }))
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#06151d] text-[#101820]">
+      <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_50%_8%,rgba(47,160,154,0.52),transparent_34%),radial-gradient(circle_at_12%_84%,rgba(255,210,97,0.2),transparent_28%),radial-gradient(circle_at_88%_78%,rgba(87,71,137,0.32),transparent_31%)]" />
+      <LumenFireflies className="fixed" />
+      <LumenGuideBear fixed className="scale-90 origin-bottom-left" />
+      <div className="pointer-events-none fixed left-[-8rem] top-[-4rem] h-[42rem] w-[16rem] rotate-[13deg] rounded-[50%] border-r-[28px] border-[#20180f]/80" />
+      <div className="pointer-events-none fixed right-[-8rem] top-[-3rem] h-[40rem] w-[16rem] rotate-[-14deg] rounded-[50%] border-l-[28px] border-[#20180f]/80" />
       {/* Header */}
-      <header className="border-b border-border bg-card">
+      <header className="relative z-10 border-b border-[#ffe08a]/20 bg-[#07151d]/78 text-[#fff7d6] backdrop-blur">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
           <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              <Sparkles className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-semibold text-foreground">Lumen</span>
+            <Image
+              src="/berea-bear-logo.png"
+              alt="Berea bear logo"
+              width={160}
+              height={126}
+              priority
+              className="h-10 w-10 object-contain"
+            />
+            <span className="text-xl font-semibold text-[#fff7d6]">Lumen</span>
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/planner">
-              <Button variant="outline" size="sm" className="gap-2">
+              <Button variant="outline" size="sm" className="gap-2 rounded-full border-[#fff7d6]/30 bg-[#fff7d6]/10 text-[#fff7d6] hover:bg-[#fff7d6]/20 hover:text-white">
                 <ArrowLeft className="h-4 w-4" />
                 Edit Preferences
               </Button>
             </Link>
-            <Button size="sm" className="gap-2">
+            <Button size="sm" className="gap-2 rounded-full bg-[#fff4cb] text-[#06151d] hover:bg-[#ffe08a]">
               <Download className="h-4 w-4" />
               Export
             </Button>
@@ -82,121 +94,126 @@ function PlanContent() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="relative z-10 container mx-auto px-4 py-8">
         {/* Page Title */}
-        <div className="mb-8 text-center">
-          <h1 className="mb-2 text-3xl font-bold text-foreground md:text-4xl">
+        <div className="mb-8 rounded-[22px] bg-[#fffaf0]/95 px-6 py-8 text-center shadow-[0_24px_80px_rgba(0,0,0,0.34)] ring-1 ring-[#ffe08a]/30 backdrop-blur">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#0b6b82]/10">
+            <Sparkles className="h-7 w-7 fill-[#f0b83f] stroke-[#f0b83f]" />
+          </div>
+          <h1 className="mb-2 font-serif text-4xl font-bold text-[#10212a] md:text-6xl">
             Your Academic Plan
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-[#40505a]">
             A personalized 4-year course roadmap based on your goals
           </p>
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-sm">
-            <span className="text-muted-foreground">Minimum {MINIMUM_TOTAL_CREDITS} credits required</span>
-            <span className="text-muted-foreground">|</span>
-            <span className="text-muted-foreground">{MINIMUM_CREDITS_OUTSIDE_MAJOR} credits outside major</span>
+            <span className="text-[#40505a]">Minimum {MINIMUM_TOTAL_CREDITS} credits required</span>
+            <span className="text-[#40505a]">|</span>
+            <span className="text-[#40505a]">{MINIMUM_CREDITS_OUTSIDE_MAJOR} credits outside major</span>
           </div>
         </div>
 
-        {/* Student Profile Summary */}
-        <StudentProfile profile={{
-          majors: profile.majors,
-          interests: profile.interests,
-          careerGoals: profile.careerGoals,
-        }} />
+        <div className="rounded-[22px] bg-[#fffaf0]/95 p-4 shadow-[0_20px_60px_rgba(0,0,0,0.28)] ring-1 ring-[#ffe08a]/30 sm:p-6">
+          {/* Student Profile Summary */}
+          <StudentProfile profile={{
+            majors: profile.majors,
+            interests: profile.interests,
+            careerGoals: profile.careerGoals,
+          }} />
 
-        {/* 4-Year Grid */}
-        <div className="mb-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {years.map(({ year, fall, spring }) => (
-            <div key={year} className="space-y-4">
-              <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
-                <GraduationCap className="h-5 w-5 text-primary" />
-                Year {year}
-              </h2>
-              <SemesterCard
-                title="Fall Semester"
-                courses={fall.courses.map(c => ({
-                  code: c.code,
-                  name: c.name,
-                  credits: c.credits,
-                  isPlaceholder: c.isPlaceholder,
-                  placeholderCategory: c.placeholderCategory,
-                  category: c.category,
-                }))}
-                isOverloaded={fall.isOverloaded}
-              />
-              <SemesterCard
-                title="Spring Semester"
-                courses={spring.courses.map(c => ({
-                  code: c.code,
-                  name: c.name,
-                  credits: c.credits,
-                  isPlaceholder: c.isPlaceholder,
-                  placeholderCategory: c.placeholderCategory,
-                  category: c.category,
-                }))}
-                isOverloaded={spring.isOverloaded}
-              />
-            </div>
-          ))}
-        </div>
+          {/* 4-Year Grid */}
+          <div className="mb-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {years.map(({ year, fall, spring }) => (
+              <div key={year} className="space-y-4">
+                <h2 className="flex items-center gap-2 text-lg font-semibold text-[#10212a]">
+                  <GraduationCap className="h-5 w-5 text-[#0b6b82]" />
+                  Year {year}
+                </h2>
+                <SemesterCard
+                  title="Fall Semester"
+                  courses={fall.courses.map(c => ({
+                    code: c.code,
+                    name: c.name,
+                    credits: c.credits,
+                    isPlaceholder: c.isPlaceholder,
+                    placeholderCategory: c.placeholderCategory,
+                    category: c.category,
+                  }))}
+                  isOverloaded={fall.isOverloaded}
+                />
+                <SemesterCard
+                  title="Spring Semester"
+                  courses={spring.courses.map(c => ({
+                    code: c.code,
+                    name: c.name,
+                    credits: c.credits,
+                    isPlaceholder: c.isPlaceholder,
+                    placeholderCategory: c.placeholderCategory,
+                    category: c.category,
+                  }))}
+                  isOverloaded={spring.isOverloaded}
+                />
+              </div>
+            ))}
+          </div>
 
-        {/* Overflow Warning */}
-        {(plan.warnings.length > 0 || unfulfilledCourses.length > 0) && (
-          <OverflowWarning 
-            courses={unfulfilledCourses} 
-            warnings={plan.warnings}
+          {/* Overflow Warning */}
+          {(plan.warnings.length > 0 || unfulfilledCourses.length > 0) && (
+            <OverflowWarning 
+              courses={unfulfilledCourses} 
+              warnings={plan.warnings}
+            />
+          )}
+
+          {/* Career Advice from AI */}
+          <CareerAdvice
+            careerGoals={profile.careerGoals}
+            majors={profile.majors}
+            courses={plan.semesters.flatMap(s => s.courses.map(c => ({ code: c.code, name: c.name })))}
+            interests={profile.interests}
           />
-        )}
 
-        {/* Career Advice from AI */}
-        <CareerAdvice
-          careerGoals={profile.careerGoals}
-          majors={profile.majors}
-          courses={plan.semesters.flatMap(s => s.courses.map(c => ({ code: c.code, name: c.name })))}
-          interests={profile.interests}
-        />
-
-        {/* Summary Stats */}
-        <Card className="mt-8 border-border bg-card">
-          <CardContent className="py-6">
-            <div className="grid gap-6 text-center md:grid-cols-3 lg:grid-cols-6">
-              <div>
-                <p className="text-3xl font-bold text-primary">{stats.totalCredits}</p>
-                <p className="text-sm text-muted-foreground">Total Credits</p>
+          {/* Summary Stats */}
+          <Card className="mt-8 border-[#0b6b82]/15 bg-white/80">
+            <CardContent className="py-6">
+              <div className="grid gap-6 text-center md:grid-cols-3 lg:grid-cols-6">
+                <div>
+                  <p className="text-3xl font-bold text-[#0b6b82]">{stats.totalCredits}</p>
+                  <p className="text-sm text-[#40505a]">Total Credits</p>
+                </div>
+                <div>
+                  <p className="text-3xl font-bold text-[#0b6b82]">{stats.totalCourses}</p>
+                  <p className="text-sm text-[#40505a]">Courses</p>
+                </div>
+                <div>
+                  <p className="text-3xl font-bold text-[#0b6b82]">{stats.majorCourses}</p>
+                  <p className="text-sm text-[#40505a]">Major Courses</p>
+                </div>
+                <div>
+                  <p className="text-3xl font-bold text-[#0b6b82]">{stats.creditsOutsideMajor}</p>
+                  <p className="text-sm text-[#40505a]">Outside Major</p>
+                </div>
+                <div>
+                  <p className="text-3xl font-bold text-[#536b78]">{stats.placeholderCourses}</p>
+                  <p className="text-sm text-[#40505a]">TBD Courses</p>
+                </div>
+                <div>
+                  <p className={`text-3xl font-bold ${stats.overloadedSemesters > 0 ? "text-warning" : "text-[#0b6b82]"}`}>
+                    {stats.overloadedSemesters}
+                  </p>
+                  <p className="text-sm text-[#40505a]">
+                    Overloaded
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="text-3xl font-bold text-primary">{stats.totalCourses}</p>
-                <p className="text-sm text-muted-foreground">Courses</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-primary">{stats.majorCourses}</p>
-                <p className="text-sm text-muted-foreground">Major Courses</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-primary">{stats.creditsOutsideMajor}</p>
-                <p className="text-sm text-muted-foreground">Outside Major</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-muted-foreground">{stats.placeholderCourses}</p>
-                <p className="text-sm text-muted-foreground">TBD Courses</p>
-              </div>
-              <div>
-                <p className={`text-3xl font-bold ${stats.overloadedSemesters > 0 ? "text-warning" : "text-primary"}`}>
-                  {stats.overloadedSemesters}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  Overloaded
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </main>
 
       {/* Footer */}
-      <footer className="mt-12 border-t border-border bg-card py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+      <footer className="relative z-10 mt-12 border-t border-[#ffe08a]/20 bg-[#07151d]/78 py-8 text-[#fff7d6]/75">
+        <div className="container mx-auto px-4 text-center text-sm">
           <p>
             This is a sample plan based on your preferences. Consult with your
             academic advisor for official course registration.
@@ -210,10 +227,10 @@ function PlanContent() {
 export default function PlanPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="min-h-screen bg-[#06151d] flex items-center justify-center text-[#fff7d6]">
         <div className="text-center">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-4" />
-          <p className="text-muted-foreground">Generating your plan...</p>
+          <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#ffe08a] border-t-transparent mx-auto mb-4" />
+          <p>Generating your plan...</p>
         </div>
       </div>
     }>

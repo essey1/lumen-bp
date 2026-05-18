@@ -20,27 +20,27 @@ export function OverflowWarning({ courses, warnings = [] }: OverflowWarningProps
   const totalCredits = courses.reduce((sum, course) => sum + course.credits, 0)
 
   return (
-    <Alert className="border-warning bg-warning/10">
-      <AlertTriangle className="h-5 w-5 text-warning" />
-      <AlertTitle className="text-warning-foreground">
+    <Alert className="border-[#d59c23]/40 bg-[#fff4cb]">
+      <AlertTriangle className="h-5 w-5 text-[#a15e08]" />
+      <AlertTitle className="text-[#6f3e04]">
         Additional Requirements
       </AlertTitle>
       <AlertDescription className="mt-3">
         {warnings.length > 0 && (
-          <ul className="mb-4 list-disc pl-5 text-sm text-foreground space-y-1">
+          <ul className="mb-4 list-disc space-y-1 pl-5 text-sm text-[#10212a]">
             {warnings.map((warning, i) => (
               <li key={i}>{warning}</li>
             ))}
           </ul>
         )}
         {courses.length > 0 && (
-          <p className="mb-4 text-sm text-foreground">
+          <p className="mb-4 text-sm text-[#10212a]">
             You will need to either overload a semester or enroll for additional
             semesters to complete these requirements:
           </p>
         )}
         {courses.length > 0 && (
-          <Card className="border-warning/30 bg-background">
+          <Card className="border-[#d59c23]/30 bg-white/80">
             <CardContent className="py-4">
               <div className="space-y-2">
                 {courses.map((course) => (
@@ -49,21 +49,21 @@ export function OverflowWarning({ courses, warnings = [] }: OverflowWarningProps
                     className="flex items-center justify-between"
                   >
                     <div>
-                      <span className="font-medium text-primary">
+                      <span className="font-medium text-[#0b6b82]">
                         {course.code}
                       </span>
-                      <span className="mx-2 text-muted-foreground">—</span>
-                      <span className="text-foreground">{course.name}</span>
+                      <span className="mx-2 text-[#6b5d4b]">-</span>
+                      <span className="text-[#10212a]">{course.name}</span>
                     </div>
-                    <Badge variant="outline">{course.credits} credits</Badge>
+                    <Badge variant="outline" className="border-[#d59c23]/40 text-[#10212a]">{course.credits} credits</Badge>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 flex items-center justify-between border-t border-border pt-4">
-                <span className="text-sm font-medium text-muted-foreground">
+              <div className="mt-4 flex items-center justify-between border-t border-[#d59c23]/25 pt-4">
+                <span className="text-sm font-medium text-[#6b5d4b]">
                   Total additional credits needed:
                 </span>
-                <Badge className="bg-warning text-warning-foreground hover:bg-warning">
+                <Badge className="bg-[#d59c23] text-[#10212a] hover:bg-[#d59c23]">
                   {totalCredits} credits
                 </Badge>
               </div>

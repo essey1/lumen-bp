@@ -30,17 +30,17 @@ export function SemesterCard({
   return (
     <Card
       className={cn(
-        "border-border bg-card transition-shadow hover:shadow-md",
-        isOverloaded && "border-warning"
+        "border-[#0b6b82]/15 bg-white/82 shadow-sm transition-shadow hover:shadow-md",
+        isOverloaded && "border-[#d59c23]"
       )}
     >
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm font-medium text-foreground">
+          <CardTitle className="text-sm font-medium text-[#10212a]">
             {title}
           </CardTitle>
           {isOverloaded && (
-            <AlertTriangle className="h-4 w-4 text-warning" />
+            <AlertTriangle className="h-4 w-4 text-[#d59c23]" />
           )}
         </div>
       </CardHeader>
@@ -49,18 +49,18 @@ export function SemesterCard({
           <div
             key={`${course.code}-${idx}`}
             className={cn(
-              "flex items-start justify-between gap-2 border-b border-border pb-2 last:border-0 last:pb-0",
-              course.isPlaceholder && "bg-muted/50 rounded-md px-2 py-1 -mx-2 border-dashed"
+              "flex items-start justify-between gap-2 border-b border-[#0b6b82]/10 pb-2 last:border-0 last:pb-0",
+              course.isPlaceholder && "bg-[#fff4cb]/60 rounded-md px-2 py-1 -mx-2 border-dashed"
             )}
           >
             <div className="min-w-0 flex-1">
               <p className={cn(
                 "text-xs font-semibold",
-                course.isPlaceholder ? "text-muted-foreground italic" : "text-primary"
+                course.isPlaceholder ? "text-[#6b5d4b] italic" : "text-[#0b6b82]"
               )}>
                 {course.isPlaceholder ? (
                   <span className="flex items-center gap-1">
-                    <span className="text-[10px] bg-muted px-1 rounded">TBD</span>
+                    <span className="rounded bg-[#0b6b82]/10 px-1 text-[10px]">TBD</span>
                     {course.placeholderCategory || "Elective"}
                   </span>
                 ) : (
@@ -69,7 +69,7 @@ export function SemesterCard({
               </p>
               <p className={cn(
                 "truncate text-xs",
-                course.isPlaceholder ? "text-muted-foreground/70 italic" : "text-muted-foreground"
+                course.isPlaceholder ? "text-[#6b5d4b]/75 italic" : "text-[#40505a]"
               )}>
                 {course.name}
               </p>
@@ -78,7 +78,7 @@ export function SemesterCard({
               variant={course.isPlaceholder ? "outline" : "secondary"} 
               className={cn(
                 "shrink-0 text-xs",
-                course.isPlaceholder && "border-dashed"
+                course.isPlaceholder && "border-dashed border-[#d59c23]/40 bg-[#fff4cb] text-[#10212a]"
               )}
             >
               {course.credits === 1 ? "1 cr" : `${course.credits} cr`}
@@ -90,16 +90,16 @@ export function SemesterCard({
         <div
           className={cn(
             "flex items-center justify-between rounded-md px-2 py-1.5",
-            isOverloaded ? "bg-warning/10" : "bg-muted"
+            isOverloaded ? "bg-[#fff4cb]" : "bg-[#e6f4f4]"
           )}
         >
-          <span className="text-xs font-medium text-muted-foreground">
+          <span className="text-xs font-medium text-[#40505a]">
             Total
           </span>
           <span
             className={cn(
               "text-sm font-bold",
-              isOverloaded ? "text-warning" : "text-foreground"
+              isOverloaded ? "text-[#a15e08]" : "text-[#10212a]"
             )}
           >
             {totalCredits} {totalCredits === 1 ? "credit" : "credits"}

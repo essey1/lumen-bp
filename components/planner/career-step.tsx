@@ -46,12 +46,12 @@ export function CareerStep({ selected, onChange }: CareerStepProps) {
   return (
     <div className="space-y-6">
       <div className="text-center">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-[#6b5d4b]">
           Select up to {MAX_SELECTIONS} career goals •{" "}
           <span
             className={cn(
               "font-medium",
-              selected.length >= 1 ? "text-primary" : "text-muted-foreground"
+              selected.length >= 1 ? "text-[#0b6b82]" : "text-[#6b5d4b]"
             )}
           >
             {selected.length} selected
@@ -74,8 +74,8 @@ export function CareerStep({ selected, onChange }: CareerStepProps) {
               className={cn(
                 "flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition-all",
                 isSelected
-                  ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                  : "border-border bg-background text-foreground hover:border-primary hover:bg-primary/5",
+                  ? "border-[#0b6b82] bg-[#0b6b82] text-white shadow-[0_0_18px_rgba(11,107,130,0.24)]"
+                  : "border-[#0b6b82]/20 bg-white/72 text-[#10212a] hover:border-[#0b6b82] hover:bg-[#e6f4f4]",
                 isDisabled && "cursor-not-allowed opacity-50"
               )}
             >
@@ -93,13 +93,13 @@ export function CareerStep({ selected, onChange }: CareerStepProps) {
             key={i}
             className={cn(
               "h-2 w-8 rounded-full transition-colors",
-              i < selected.length ? "bg-primary" : "bg-muted"
+              i < selected.length ? "bg-[#f0b83f]" : "bg-[#0b6b82]/15"
             )}
           />
         ))}
       </div>
 
-      <p className="text-center text-sm text-muted-foreground">
+      <p className="text-center text-sm text-[#6b5d4b]">
         {"We'll"} tailor your course plan to help you reach these goals
       </p>
     </div>
