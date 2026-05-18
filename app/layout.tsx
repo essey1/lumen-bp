@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { AuthSessionShell } from '@/components/auth-session-shell'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
   title: 'Lumen - Academic Planner for Berea College',
   description: 'Plan your 4-year academic journey at Berea College with Lumen',
   generator: 'v0.app',
-  icons: {
+  icons: {  
     icon: [
       {
         url: '/icon-light-32x32.png',
@@ -37,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased">
-        {children}
+        <AuthSessionShell>{children}</AuthSessionShell>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

@@ -1,9 +1,21 @@
 // Course and curriculum types for Lumen academic planner
 
+/**
+ * Prerequisite tree node.
+ * - A bare string means a single required course.
+ * - { type: "AND", courses: [...] } means ALL children must be satisfied.
+ * - { type: "OR",  courses: [...] } means ANY ONE child suffices.
+ * Children can be strings or nested nodes, allowing full AND/OR nesting.
+ */
+export type PrereqNode =
+  | string
+  | { type: "AND" | "OR"; courses: PrereqNode[] };
+
 export interface Course {
   code: string;
   name: string;
   credits: number;
+  prerequisites?: PrereqNode;
   // GEM attributes - a course can fulfill multiple requirements
   waysOfKnowing?: WayOfKnowing[];
   values?: Value[];
@@ -17,7 +29,7 @@ export type WayOfKnowing =
   | "Creative Arts"
   | "Cultural & Ethnic Studies"
   | "Humanities"
-  | "Quantitative Focus"
+  | "Quantitative Reasoning"
   | "Natural Science"
   | "Social Science";
 
@@ -28,7 +40,7 @@ export type Value =
   | "Seeking Meaning"
   | "Sustainability";
 
-export type Richness = "International" | "Quantitative" | "Writing";
+export type Richness = "Internationally Rich" | "Quantitatively Rich" | "Writing";
 
 export type LearningInquiryCore =
   | "Explorations"
@@ -36,7 +48,34 @@ export type LearningInquiryCore =
   | "Intersectional Justice in U.S."
   | "Global Issues";
 
-export type Additional = "ALE" | "Physical Activity";
+export type Additional =
+  | "ALE"
+  | "ALES"
+  | "Physical Activity"
+  | "NSL"
+  | "AAWP"
+  | "ARTP"
+  | "INTN"
+  | "INTP"
+  | "RELP"
+  | "PED2"
+  | "WHP"
+  | "PR"
+  | "PRQ"
+  | "SKI"
+  | "CGI"
+  | "CHUN"
+  | "IART"
+  | "APPA"
+  | "BLAC"
+  | "WISS"
+  | "SHRT"
+  | "LABR"
+  | "DANC"
+  | "PSLB"
+  | "EAUT"
+  | "ECUL"
+  | "EGEN";
 
 export interface GEMRequirements {
   learningInquiryCore: {
@@ -50,14 +89,21 @@ export interface GEMRequirements {
     creativeArts: number; // 1
     culturalEthnicStudies: number; // 1
     humanities: number; // 1
-    quantitativeFocus: number; // 1
+    quantitativeReasoning: number; // 1
     naturalScience: number; // 2
     socialScience: number; // 1
   };
   richnesses: {
-    international: number; // 1
-    quantitative: number; // 1
-    writing: number; // 2
+    internationallyRich: number; // 1
+    quantitativelyRich: number; // 1
+    writingRich: number; // 2
+  };
+  values: {
+    beyondTheBorders: number; // 1
+    holisticWellness: number; // 1
+    powerAndEquity: number; // 1
+    seekingMeaning: number; // 1
+    sustainability: number; // 1
   };
   additional: {
     ale: number; // 1
@@ -94,12 +140,22 @@ export interface Minor {
   totalMinorCredits: number;
 }
 
+// Ordered list of math levels a student may have completed/waived before enrollment.
+// Each value means "completed up to and including this course."
+export type MathPlacement =
+  | "none"
+  | "MAT 010" | "MAT 011" | "MAT 012"
+  | "MAT 115" | "MAT 125" | "MAT 135"
+  | "MAT 225" | "MAT 330";
+
 export interface StudentProfile {
   majors: string[];
   minors: string[]; // Kept for compatibility but not used in planner
   interests: string[];
   hobbies: string[];
   careerGoals: string[];
+  mathPlacement?: MathPlacement; // highest math level already completed/waived
+  waivedCourses?: string[]; // other specific courses already waived
 }
 
 export interface SemesterPlan {
@@ -115,9 +171,10 @@ export interface PlannedCourse {
   name: string;
   credits: number;
   fulfills: string[]; // What requirements this fulfills
-  category: "Major" | "GEM" | "Elective"; // Minor removed
+  category: "Major" | "Minor" | "GEM" | "Elective";
   isPlaceholder?: boolean; // True if this is a placeholder course
   placeholderCategory?: string; // Category for placeholder (e.g., "Design", "Systems")
+  scheduleDisclaimer?: boolean; // True when exact semester offering is uncertain (e.g. rotating upper-level)
 }
 
 export interface AcademicPlan {

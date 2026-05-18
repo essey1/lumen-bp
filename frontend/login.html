@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumen BP — Sign In</title>
+  <link rel="stylesheet" href="auth.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="lbp-overlay"></div>
+
+  <script src="auth.js"></script>
+  <script>
+    const auth = new window.LumenAuth('http://localhost:4001');
+    let currentStep = 'login'; // login, otp, success
+
+    // ── Render function ────────────────────────────────────────
+    function render() {
+      const app = document.getElementById('app');
+      app.className = 'lbp-overlay lbp-auth';
+      
+      if (currentStep === 'login') {
+        app.innerHTML = `
+          <div class="lbp-card">
+            <div class="lbp-logo">
+              <div class="lbp-logo-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 1.5C5.3 1.5 1.5 5.3 1.5 10s3.8 8.5 8.5 8.5 8.5-3.8 8.5-8.5-3.8-8.5-8.5-8.5zm0 15c-3.6 0-6.5-2.9-6.5-6.5s2.9-6.5 6.5-6.5 6.5 2.9 6.5 6.5-2.9 6.5-6.5 6.5z" fill="white"/>
+                </svg>
+              </div>
+              <div>
+                <div class="lbp-logo-name">Lumen BP</div>
+                <div class="lbp-logo-sub">Berea Planner</div>
+              </div>
+            </div>
+
+            <div class="lbp-steps">
+              <div class="lbp-step active"></div>
+              <div class="lbp-step"></div>
+            </div>
+
+            <h1 class="lbp-title">Welcome back</h1>
+            <p class="lbp-sub">Enter your <strong>Berea ID</strong> and password</p>
+
+            <div class="lbp-field">
+              <label for="username">Berea ID</label>
+              <input id="username" type="text" placeholder="mountaineer" />
+              <div class="lbp-error" id="username-error"></div>
+            </div>
+
+            <div class="lbp-field">
+              <label for="password">Password</label>
+              <input id="password" type="password" placeholder="••••••••" />
+              <div class="lbp-error" id="password-error"></div>
+            </div>
+
+            <button class="lbp-btn lbp-btn-primary" id="login-btn">Sign in</button>
+            <div class="lbp-error" id="login-error"></div>
+          </div>
+        `;
+        
+        document.getElementById('login-btn').addEventListener('click', handleLogin);
+        document.getElementById('username').addEventListener('keypress', e => {
+          if (e.key === 'Enter') handleLogin();
+        });
+        document.getElementById('password').addEventListener('keypress', e => {
+          if (e.key === 'Enter') handleLogin();
+        });
+      } 
+      else if (currentStep === 'otp') {
+        app.innerHTML = `
+          <div class="lbp-card">
+            <div class="lbp-logo">
+              <div class="lbp-logo-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 1.5C5.3 1.5 1.5 5.3 1.5 10s3.8 8.5 8.5 8.5 8.5-3.8 8.5-8.5-3.8-8.5-8.5-8.5zm0 15c-3.6 0-6.5-2.9-6.5-6.5s2.9-6.5 6.5-6.5 6.5 2.9 6.5 6.5-2.9 6.5-6.5 6.5z" fill="white"/>
+                </svg>
+              </div>
+              <div>
+                <div class="lbp-logo-name">Lumen BP</div>
+                <div class="lbp-logo-sub">Berea Planner</div>
+              </div>
+            </div>
+
+            <div class="lbp-steps">
+              <div class="lbp-step done"></div>
+              <div class="lbp-step active"></div>
+            </div>
+
+            <div class="lbp-email-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z" stroke="#1D9E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M4 6l8 6 8-6" stroke="#1D9E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+
+            <h1 class="lbp-title">Check your email</h1>
+            <p class="lbp-sub">We sent a code to <strong id="masked-email"></strong></p>
+
+            <div>
+              <label style="font-size: 13px; font-weight: 500; color: #374151; display: block; margin-bottom: 8px;">Enter 6-digit code</label>
+              <div class="lbp-otp-wrap" id="otp-wrap">
+                <input type="text" class="lbp-otp-input" maxlength="1" data-index="0" />
+                <input type="text" class="lbp-otp-input" maxlength="1" data-index="1" />
+                <input type="text" class="lbp-otp-input" maxlength="1" data-index="2" />
+                <input type="text" class="lbp-otp-input" maxlength="1" data-index="3" />
+                <input type="text" class="lbp-otp-input" maxlength="1" data-index="4" />
+                <input type="text" class="lbp-otp-input" maxlength="1" data-index="5" />
+              </div>
+              <div class="lbp-error" id="otp-error"></div>
+            </div>
+
+            <div class="lbp-timer-row">
+              <span id="timer">Expires in 5:00</span>
+              <button class="lbp-resend-btn" id="resend-btn" disabled>Resend code</button>
+            </div>
+
+            <button class="lbp-btn lbp-btn-primary" id="verify-btn">Verify</button>
+            <button class="lbp-btn lbp-btn-ghost" id="back-btn">Back</button>
+          </div>
+        `;
+
+        document.getElementById('masked-email').textContent = auth._pendingEmail;
+        setupOtpInputs();
+        document.getElementById('verify-btn').addEventListener('click', handleVerify);
+        document.getElementById('back-btn').addEventListener('click', () => {
+          currentStep = 'login';
+          render();
+        });
+        document.getElementById('resend-btn').addEventListener('click', handleResend);
+        startTimer();
+      }
+      else if (currentStep === 'success') {
+        app.innerHTML = `
+          <div class="lbp-card">
+            <div class="lbp-logo">
+              <div class="lbp-logo-icon">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M10 1.5C5.3 1.5 1.5 5.3 1.5 10s3.8 8.5 8.5 8.5 8.5-3.8 8.5-8.5-3.8-8.5-8.5-8.5zm0 15c-3.6 0-6.5-2.9-6.5-6.5s2.9-6.5 6.5-6.5 6.5 2.9 6.5 6.5-2.9 6.5-6.5 6.5z" fill="white"/>
+                </svg>
+              </div>
+              <div>
+                <div class="lbp-logo-name">Lumen BP</div>
+                <div class="lbp-logo-sub">Berea Planner</div>
+              </div>
+            </div>
+
+            <div class="lbp-steps">
+              <div class="lbp-step done"></div>
+              <div class="lbp-step done"></div>
+            </div>
+
+            <div style="text-align: center; margin: 1.5rem 0;">
+              <div class="lbp-check-circle" style="margin: 0 auto;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17l-5-5" stroke="#1D9E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+            </div>
+
+            <h1 class="lbp-title" style="text-align: center;">Verified!</h1>
+            <p class="lbp-sub" style="text-align: center;">You're all set. Welcome to Lumen BP.</p>
+
+            <div class="lbp-info-box">
+              <div class="lbp-info-row">
+                <span class="lbp-info-label">Session</span>
+                <span class="lbp-badge">Active</span>
+              </div>
+              <div class="lbp-info-row">
+                <span class="lbp-info-label">Email</span>
+                <span class="lbp-info-val" id="success-email"></span>
+              </div>
+            </div>
+
+            <button class="lbp-btn lbp-btn-primary" id="continue-btn">Continue to dashboard</button>
+          </div>
+        `;
+
+        const user = auth.getUser();
+        document.getElementById('success-email').textContent = user.email;
+        document.getElementById('continue-btn').addEventListener('click', () => {
+          // Redirect to your main app page
+          window.location.href = 'http://localhost:3000/';
+        });
+      }
+    }
+
+    // ── Handlers ───────────────────────────────────────────────
+    async function handleLogin() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      if (!username || !password) {
+        showError('login-error', 'Please enter both username and password');
+        return;
+      }
+
+      const btn = document.getElementById('login-btn');
+      btn.disabled = true;
+      btn.textContent = 'Signing in...';
+
+      const res = await auth.login(username, password);
+      if (res.success) {
+        currentStep = 'otp';
+        render();
+      } else {
+        showError('login-error', res.message || 'Login failed');
+        btn.disabled = false;
+        btn.textContent = 'Sign in';
+      }
+    }
+
+    function setupOtpInputs() {
+      const inputs = document.querySelectorAll('.lbp-otp-input');
+      inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+          if (e.target.value) {
+            if (index < inputs.length - 1) inputs[index + 1].focus();
+            checkOtpComplete(inputs);
+          }
+        });
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Backspace' && !e.target.value && index > 0) {
+            inputs[index - 1].focus();
+          }
+        });
+      });
+      inputs[0].focus();
+    }
+
+    function checkOtpComplete(inputs) {
+      const allFilled = Array.from(inputs).every(i => i.value.length === 1);
+      if (allFilled) {
+        document.getElementById('verify-btn').focus();
+      }
+    }
+
+    async function handleVerify() {
+      const inputs = document.querySelectorAll('.lbp-otp-input');
+      const otp = Array.from(inputs).map(i => i.value).join('');
+
+      if (otp.length !== 6) {
+        showError('otp-error', 'Please enter all 6 digits');
+        inputs.forEach(i => i.classList.add('lbp-otp-err'));
+        return;
+      }
+
+      const btn = document.getElementById('verify-btn');
+      btn.disabled = true;
+      btn.textContent = 'Verifying...';
+
+      const res = await auth.verifyOtp(otp);
+      if (res.success) {
+        currentStep = 'success';
+        render();
+      } else {
+        showError('otp-error', res.message || 'Verification failed');
+        inputs.forEach(i => i.classList.add('lbp-otp-err'));
+        btn.disabled = false;
+        btn.textContent = 'Verify';
+      }
+    }
+
+    async function handleResend() {
+      const btn = document.getElementById('resend-btn');
+      btn.disabled = true;
+
+      const res = await auth.resendOtp();
+      showError('otp-error', res.message || (res.success ? 'Code resent' : 'Failed to resend'));
+      
+      if (res.success) {
+        startTimer();
+      }
+    }
+
+    function startTimer() {
+      let seconds = 300; // 5 minutes
+      const timerEl = document.getElementById('timer');
+      const resendBtn = document.getElementById('resend-btn');
+
+      const interval = setInterval(() => {
+        seconds--;
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        timerEl.textContent = `Expires in ${mins}:${secs.toString().padStart(2, '0')}`;
+
+        if (seconds <= 0) {
+          clearInterval(interval);
+          resendBtn.disabled = false;
+        }
+      }, 1000);
+    }
+
+    function showError(id, message) {
+      const el = document.getElementById(id);
+      el.textContent = message;
+      el.classList.add('visible');
+      setTimeout(() => el.classList.remove('visible'), 4000);
+    }
+
+    // ── Initial render ─────────────────────────────────────────
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,3694 @@
+[
+  {
+    "course": "AFR 100 Models & Mentors for Success",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 103 Survey of African His (HIS)",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "AFR 165 Intro to Afr-Amer History(HIS)",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 166 Survey Black Atlantic (HIS)",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 167 Survey Africana Womanism",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 200 Readings in Black Psy (PSY)",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 204 African Amer Intellect Thought",
+    "prerequisites": "GSTR 110"
+  },
+  {
+    "course": "AFR 207 Black Education",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 215 Black Popular Culture & Media",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 222 Intro to African-Amer Studies",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "AFR 242 African American Cinema (HIS)",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 245 Black Urban History (HIS)",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 247 Transatlantic Slave Trade(HIS)",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 248 Black & Indig Appal (HIS)",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 249 Black Medicine & Tech (HIS)",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 255 Readings Moorish History",
+    "prerequisites": "AFR 103 Survey of African History (HIS), HIS/ AFR 165 Introduction to African American History, AFR 222 Introduction to AFR Studies, or permission of instructor."
+  },
+  {
+    "course": "AFR 286ZZ One-Time Cross-Listed Course",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 306 Black Resistance-Black Futures",
+    "prerequisites": null
+  },
+  {
+    "course": "AFR 350 Sem in Afr & Afr-Amer Std",
+    "prerequisites": "AFR 222 , AFR/ HIS 165 (or concurrent enrollment) and junior status (or permission of instructor)"
+  },
+  {
+    "course": "AFR 356 Sem-African-Amer History (HIS)",
+    "prerequisites": "HIS 161 and 162; or AFR/ HIS 165 ; or permission of the instructor"
+  },
+  {
+    "course": "AFR 450 Sem in Afr & Afr-Amer Std II",
+    "prerequisites": "AFR 222 , AFR/ HIS 165 and Senior Status or permission of instructor"
+  },
+  {
+    "course": "ANR 100 Intr to Agr & Natural Resource",
+    "prerequisites": null
+  },
+  {
+    "course": "ANR 110 Animal Science",
+    "prerequisites": null
+  },
+  {
+    "course": "ANR 130 Plant Science",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "ANR 201 Food & Agriculture in Africa",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "ANR 240 Soil Science",
+    "prerequisites": "ANR 130 or BIO 114 and CHM 101"
+  },
+  {
+    "course": "ANR 265 Bees and Beekeeping",
+    "prerequisites": "Any ANR or BIO course; or permission of instructor"
+  },
+  {
+    "course": "ANR 310 Nutritional Studies",
+    "prerequisites": "ANR 110 or BIO 110 ; and CHM 131 , CHM 134, or CHM 113 ; or perm. of instructor"
+  },
+  {
+    "course": "ANR 312 Advanced Livestock Systems",
+    "prerequisites": "ANR 110 or permission of instructor"
+  },
+  {
+    "course": "ANR 318 Food Policy (CFS)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210 or permission"
+  },
+  {
+    "course": "ANR 319 Farm to Table: Valu-Added Prod",
+    "prerequisites": "Completion of ANR 110 and ANR 130 or permission."
+  },
+  {
+    "course": "ANR 320 Animal Diseases",
+    "prerequisites": "ANR 110 or BIO 110"
+  },
+  {
+    "course": "ANR 324 Nutritional Physio & Biochem",
+    "prerequisites": "CHM 113 , 131, or 134); or permission of instructor"
+  },
+  {
+    "course": "ANR 325 Animal Reproduction & Breeding",
+    "prerequisites": "ANR 110 or BIO 110 , or permission of instructor"
+  },
+  {
+    "course": "ANR 328 Ecological Weed Manage. (SENS)",
+    "prerequisites": null
+  },
+  {
+    "course": "ANR 330 Forage and Row Crop Production",
+    "prerequisites": "ANR 130 or BIO 114"
+  },
+  {
+    "course": "ANR 334 Appalachian Plants & Ppl (APS)",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 , and any ANR, APS, or BIO course."
+  },
+  {
+    "course": "ANR 342 Soil & Water Conservation",
+    "prerequisites": "ANR 240 (formerly ANR 340) or permission of instructor"
+  },
+  {
+    "course": "ANR 350 Horticulture",
+    "prerequisites": "ANR 130 or BIO 114"
+  },
+  {
+    "course": "ANR 360 Forest & Wildlife Management",
+    "prerequisites": "ANR 130 or ANR 110 or BIO 110"
+  },
+  {
+    "course": "ANR 375 Farm Resource Management",
+    "prerequisites": "ECO 102 or BUS 120"
+  },
+  {
+    "course": "ANR 492 Senior Seminar",
+    "prerequisites": "At least two ANR 300-level electives and senior standing"
+  },
+  {
+    "course": "ANR 494 Labor/Field Learning Exper",
+    "prerequisites": "Permission of the Program Chairperson"
+  },
+  {
+    "course": "APS 100 Cultures, Values, Perspectives",
+    "prerequisites": null
+  },
+  {
+    "course": "APS 112 Appalachian Ceramics",
+    "prerequisites": null
+  },
+  {
+    "course": "APS 113 Appalachian Weaving",
+    "prerequisites": null
+  },
+  {
+    "course": "APS 121 Appalachian Cultures",
+    "prerequisites": null
+  },
+  {
+    "course": "APS 132 Appalachian America (HIS)",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "APS 140 Appalachian Literature (ENG)",
+    "prerequisites": null
+  },
+  {
+    "course": "APS 200 Appalachian Challenges & Opps",
+    "prerequisites": null
+  },
+  {
+    "course": "APS 209 Appalachian Foodways (CFS)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210 or permission"
+  },
+  {
+    "course": "APS 210 Health in Appalachia (HLT)",
+    "prerequisites": "WELL 150 or permission; and L&I 100 (or waiver) or GSTR 110 (or waiver)."
+  },
+  {
+    "course": "APS 213 Appalachian Crafts (ETAD)",
+    "prerequisites": "GSTR 110 (or waiver)"
+  },
+  {
+    "course": "APS 215 Sustainable Appal Comm (SENS)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "APS 220 Gender in Appalachia (WGS)",
+    "prerequisites": null
+  },
+  {
+    "course": "APS 224 Appalachian Music (MUS)",
+    "prerequisites": null
+  },
+  {
+    "course": "APS 229 Contemporary Issues-Appalachia",
+    "prerequisites": "GSTR 110 (or waiver)"
+  },
+  {
+    "course": "APS 230 African Amer Appalachia (AFR)",
+    "prerequisites": "GSTR 110 (or waiver)"
+  },
+  {
+    "course": "APS 235 Humans & Nature in Sthrn. App.",
+    "prerequisites": "GSTR 210"
+  },
+  {
+    "course": "APS 236 Folk Arts-Cultural Expression",
+    "prerequisites": null
+  },
+  {
+    "course": "APS 330 Comm Analysis:Appal Case(SOC)",
+    "prerequisites": "One introductory ECO, HIS, PSC, or SOC course"
+  },
+  {
+    "course": "APS 334 Appalachian Plants & Ppl (ANR)",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 , and any ANR, APS, or BIO course."
+  },
+  {
+    "course": "ARH 121 Survey of Western Art I",
+    "prerequisites": null
+  },
+  {
+    "course": "ARH 124 Survey of Western Art II",
+    "prerequisites": null
+  },
+  {
+    "course": "ARH 130 Studies in World Art",
+    "prerequisites": null
+  },
+  {
+    "course": "ARH 210 Topics in Islamic Art & Archit",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "ARH 215 History of Printmaking",
+    "prerequisites": null
+  },
+  {
+    "course": "ARH 230 Topics in Latin American Art",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "ARH 232 Art of Ancient Greece & Rome",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "ARH 234 Intro to Archaeological Method",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "ARH 239 Native Nrth Amer Art&Archaelog",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "ARH 242 Medieval Art",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "ARH 243 Women in Art (WGS)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "ARH 249 Topics in Asian Art (AST)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "ARH 255 20th & 21st Century Art",
+    "prerequisites": "L&I 200 (or wavier) GSTR 210"
+  },
+  {
+    "course": "ARH 262 Italian Renaissance Art & Arc.",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210"
+  },
+  {
+    "course": "ARH 263 Introduction to Museum Work",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 or permission of Instructor"
+  },
+  {
+    "course": "ARH 265 Baroque Art & Architecture",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210"
+  },
+  {
+    "course": "ARH 340 Seminar in Art History",
+    "prerequisites": "One 200-level ARH course or permission of the instructor"
+  },
+  {
+    "course": "ARH 450 Adv Research in Art History",
+    "prerequisites": "ARH 340"
+  },
+  {
+    "course": "ART 134 Fibers & Color Theory",
+    "prerequisites": null
+  },
+  {
+    "course": "ART 135 Illusionistic Drawing/Painting",
+    "prerequisites": null
+  },
+  {
+    "course": "ART 136 Printmaking & 2D Composition",
+    "prerequisites": null
+  },
+  {
+    "course": "ART 137 Sculpture and Intermedia",
+    "prerequisites": null
+  },
+  {
+    "course": "ART 200C Topics in Ceramics",
+    "prerequisites": null
+  },
+  {
+    "course": "ART 200D Topics in Drawing",
+    "prerequisites": null
+  },
+  {
+    "course": "ART 200F Topics in Fibers",
+    "prerequisites": null
+  },
+  {
+    "course": "ART 200P Topics in Printmaking",
+    "prerequisites": null
+  },
+  {
+    "course": "ART 200S Topics in Sculpture",
+    "prerequisites": null
+  },
+  {
+    "course": "ART 211 Printmaking II",
+    "prerequisites": "ART 134 , ART 135 , ART 136 and ART 137 with an average 2.0 or higher; or permission of instructor"
+  },
+  {
+    "course": "ART 216 Drawing and Painting II",
+    "prerequisites": "ART 134 , ART 135 , ART 136 and ART 137 with an average 2.0 or higher; or permission of instructor"
+  },
+  {
+    "course": "ART 225 Fibers II",
+    "prerequisites": "ART 134 , ART 135 , ART 136 and ART 137 with an average 2.0 or higher; or permission of instructor"
+  },
+  {
+    "course": "ART 230 Sculpture and Intermedia II",
+    "prerequisites": "ART 134 , ART 135 , ART 136 , ART 137 with an average 2.0 or higher; or permission of instructor"
+  },
+  {
+    "course": "ART 251 Art & Arch. In Ireland",
+    "prerequisites": "GSTR 210 , two terms completed at Berea College, and permission of the instructors."
+  },
+  {
+    "course": "ART 300C Topics in Ceramics",
+    "prerequisites": "ART 134 , ART 135 , ART 136 , and ART 137 and Art Portfolio, or permission of instructor"
+  },
+  {
+    "course": "ART 300D Topics in Drawing",
+    "prerequisites": "ART 134 , ART 135 , ART 136 , and ART 137 and Art Portfolio, or permission of instructor"
+  },
+  {
+    "course": "ART 300F Topics in Fibers",
+    "prerequisites": "ART 134 , ART 135 , ART 136 , and ART 137 and Art Portfolio, or permission of instructor"
+  },
+  {
+    "course": "ART 300P Topics in Printmaking",
+    "prerequisites": "ART 134 , ART 135 , ART 136 , and ART 137 and Art Portfolio, or permission of instructor"
+  },
+  {
+    "course": "ART 300S Topics in Sculpture",
+    "prerequisites": "ART 134 , ART 135 , ART 136 , and ART 137 and Art Portfolio, or permission of instructor"
+  },
+  {
+    "course": "ART 311 Printmaking III",
+    "prerequisites": "ART 211 or permission of instructor"
+  },
+  {
+    "course": "ART 316 Drawing and Painting III",
+    "prerequisites": "ART 216 or permission of instructor."
+  },
+  {
+    "course": "ART 325 Fibers III",
+    "prerequisites": "ART 225 or permission of instructor"
+  },
+  {
+    "course": "ART 330 Sculpture and Intermedia III",
+    "prerequisites": "ART 230 or permission of instructor"
+  },
+  {
+    "course": "ART 411 Printmaking IV",
+    "prerequisites": "ART 311 or permission of instructor"
+  },
+  {
+    "course": "ART 416 Drawing and Painting IV",
+    "prerequisites": "ART 316 or permission of instructor."
+  },
+  {
+    "course": "ART 425 Fibers IV",
+    "prerequisites": "ART 325 or permission of instructor"
+  },
+  {
+    "course": "ART 430 Sculpture and Intermedia IV",
+    "prerequisites": "ART 330 or permission of instructor"
+  },
+  {
+    "course": "ART 491 Independent Studio",
+    "prerequisites": "Permission of Program"
+  },
+  {
+    "course": "ART 492A Printmaking Capstone",
+    "prerequisites": null
+  },
+  {
+    "course": "ART 492B Painting Capstone",
+    "prerequisites": null
+  },
+  {
+    "course": "ART 492C Fibers Capstone",
+    "prerequisites": null
+  },
+  {
+    "course": "ART 492D Sculpture Capstone",
+    "prerequisites": null
+  },
+  {
+    "course": "AST 100 Introduction to Asian Studies",
+    "prerequisites": null
+  },
+  {
+    "course": "AST 122 History of China (HIS)",
+    "prerequisites": null
+  },
+  {
+    "course": "AST 123 History of Japan (HIS)",
+    "prerequisites": null
+  },
+  {
+    "course": "AST 132 Religions of China",
+    "prerequisites": null
+  },
+  {
+    "course": "AST 135 Religions of Japan",
+    "prerequisites": null
+  },
+  {
+    "course": "AST 203 Taiko Drum Ensemble",
+    "prerequisites": "Adequate level of fitness to be able to safely meet the physical demands of taiko drumming (or as approved by the instructor)."
+  },
+  {
+    "course": "AST 204 Yoga (WELL)",
+    "prerequisites": null
+  },
+  {
+    "course": "AST 205 Tai Chi (WELL)",
+    "prerequisites": null
+  },
+  {
+    "course": "AST 206 Intro to Asian Cinema",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "AST 210 U.S. E. Asian Foreign Pol(PSC)",
+    "prerequisites": null
+  },
+  {
+    "course": "AST 229 Contesting Empires (HIS)",
+    "prerequisites": "AST 100 or L&I 200 (or GSTR 210 )"
+  },
+  {
+    "course": "AST 240 Kinshp/Gen SE Asia (WGS)",
+    "prerequisites": null
+  },
+  {
+    "course": "AST 243 The Silk Road (HIS)",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "AST 249 Topics in Asian Art (ARH)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "AST 260 Buddhism (REL)",
+    "prerequisites": "L&I 100 (or waiver), or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "AST 271 South Asian Phil (PHI, REL)",
+    "prerequisites": null
+  },
+  {
+    "course": "AST 324A Seminar in Asian History (HIS)",
+    "prerequisites": "AST/HIS 243 or AST/ HIS 229 or AST/SOC/ WGS 240 or PSC 250 or permission of instructor"
+  },
+  {
+    "course": "AST 325A Topics in Asian Studies",
+    "prerequisites": "AST/HIS 243 or AST/ HIS 229 or AST/SOC/ WGS 240 or PSC 250 or permission of instructor"
+  },
+  {
+    "course": "AST 401 Senior Sem-Asian Studies",
+    "prerequisites": "one 300-level AST course and Senior standing, or permission of instructor"
+  },
+  {
+    "course": "BIO 100 Introduction to Biology",
+    "prerequisites": "Completion or waiver of MAT 010, or permission of instructor"
+  },
+  {
+    "course": "BIO 110 Modern Biology",
+    "prerequisites": "Completion or waiver of MAT 012, or permission of instructor; a freshman-level majors course"
+  },
+  {
+    "course": "BIO 113 Experimental Zoology",
+    "prerequisites": "BIO 110 with a grade of C or higher, or permission of instructor; a freshman-level course"
+  },
+  {
+    "course": "BIO 114 Botany",
+    "prerequisites": "BIO 110 with a grade of C or higher; OR permission of instructor; a freshman-level course"
+  },
+  {
+    "course": "BIO 201 Human Anatomy & Physiology I",
+    "prerequisites": "Completion of MAT 012, or permission of instructor"
+  },
+  {
+    "course": "BIO 201P A&P I Peer-Assisted Learning",
+    "prerequisites": null
+  },
+  {
+    "course": "BIO 202 Human Anatomy & Physiology II",
+    "prerequisites": "BIO 201 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "BIO 202P A&P II Peer-Assisted Learning",
+    "prerequisites": null
+  },
+  {
+    "course": "BIO 207 Pathophysiology:Altered Health",
+    "prerequisites": "EITHER 1) BIO 102or BIO 202 , plus CHM 113 or CHM 131 OR 2) BIO 220 , BIO 323 , and CHM 221"
+  },
+  {
+    "course": "BIO 220 Comparative Vertebrate Anatomy",
+    "prerequisites": "BIO 110 or permission of instructor; a sophomore/junior level course."
+  },
+  {
+    "course": "BIO 222 Microbiology",
+    "prerequisites": "( CHM 113 & BIO 101) or ( CHM 113 & BIO 201 ) or ( BIO 110 & CHM 221 ) or permission of instructor; a sophomore-level course"
+  },
+  {
+    "course": "BIO 306 Histology and Histotechnique",
+    "prerequisites": "BIO 113 or permission of instructor. A sophomore or junior level course."
+  },
+  {
+    "course": "BIO 310 Ecology (SENS)",
+    "prerequisites": "A laboratory-science course"
+  },
+  {
+    "course": "BIO 323 Principles of Physiology",
+    "prerequisites": "BIO 110 &113 AND CHM 221 ; OR permission of instructor; a sophomore-, junior-, or senior-level course"
+  },
+  {
+    "course": "BIO 324 Parasitology",
+    "prerequisites": "BIO 113 or permission of instructor; a sophomore-, junior-, or senior-level course"
+  },
+  {
+    "course": "BIO 325 Neurobiology",
+    "prerequisites": "BIO 110 and CHM 221 , OR permission of instructor; a junior/senior level course."
+  },
+  {
+    "course": "BIO 327 Herpetology",
+    "prerequisites": "BIO 113 OR permission of instructor; a sophomore- or junior-level course"
+  },
+  {
+    "course": "BIO 330 Genetics",
+    "prerequisites": "BIO 110 & 113 AND CHM 222 ; or permission of instructor; a junior- or senior-level course"
+  },
+  {
+    "course": "BIO 331 Developmental Biology",
+    "prerequisites": "BIO 113 and CHM 221 , OR permission of instructor; a sophomore- or junior-level course"
+  },
+  {
+    "course": "BIO 332 Mammalogy",
+    "prerequisites": "BIO 113 or permission of instructor"
+  },
+  {
+    "course": "BIO 338 Ornithology",
+    "prerequisites": "Bio 113 or permission of instructor."
+  },
+  {
+    "course": "BIO 342 Field Botany",
+    "prerequisites": "BIO 114 or permission of instructor; a junior- or senior-level course"
+  },
+  {
+    "course": "BIO 344 Dendrology & Forest Ecology",
+    "prerequisites": "BIO 114 or permission of instructor; a junior- or senior-level course"
+  },
+  {
+    "course": "BIO 346 Conservation Biology",
+    "prerequisites": "BIO 110 or permission of instructor."
+  },
+  {
+    "course": "BIO 441 Cell and Molecular Biology",
+    "prerequisites": "BIO 110 and CHM 222 , OR permission of instructor."
+  },
+  {
+    "course": "BIO 494 Evolution",
+    "prerequisites": "BIO 330 and senior standing."
+  },
+  {
+    "course": "BUS 110 SIFE Leadership",
+    "prerequisites": null
+  },
+  {
+    "course": "BUS 114 Business App & Prog (CSC)",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "BUS 120 Accounting I",
+    "prerequisites": "Completion or waiver of MAT 012; first-year or sophomore standing preferred"
+  },
+  {
+    "course": "BUS 130 Accounting II",
+    "prerequisites": "BUS 120 with a grade of C or higher; first-year or sophomore standing preferred"
+  },
+  {
+    "course": "BUS 221 Management Info. Systems (CSC)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "BUS 240 Business Law",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 ; sophomore or junior standing preferred"
+  },
+  {
+    "course": "BUS 257 Consumer Behavior",
+    "prerequisites": "L& I 200 (or waiver) or GSTR 210 ; sophomore or junior standing preferred"
+  },
+  {
+    "course": "BUS 315 Management",
+    "prerequisites": "BUS 120 or ECO 102; or permission of instructor"
+  },
+  {
+    "course": "BUS 323 Income Tax",
+    "prerequisites": "BUS 130"
+  },
+  {
+    "course": "BUS 324 Managerial Accounting",
+    "prerequisites": "BUS 130"
+  },
+  {
+    "course": "BUS 326 Intermediate Accounting I",
+    "prerequisites": "BUS 130"
+  },
+  {
+    "course": "BUS 327 Intermediate Accounting II",
+    "prerequisites": "BUS 326"
+  },
+  {
+    "course": "BUS 328 Data Analytics (CSC)",
+    "prerequisites": "ECO 250"
+  },
+  {
+    "course": "BUS 336 E-Commerce (CSC)",
+    "prerequisites": "CSC 226 or CSC 236"
+  },
+  {
+    "course": "BUS 345 Human Resources Management",
+    "prerequisites": "Junior or senior standing preferred"
+  },
+  {
+    "course": "BUS 346 Investment Analysis",
+    "prerequisites": "BUS 130 and ECO 250 ; junior or senior standing preferred"
+  },
+  {
+    "course": "BUS 357 International Finance (ECO)",
+    "prerequisites": "ECO 101"
+  },
+  {
+    "course": "BUS 363 Marketing",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 , AND ECO 102, or permission of instructor; sophomore or junior standing preferred"
+  },
+  {
+    "course": "BUS 364 Production & Operations Mgt",
+    "prerequisites": "MAT 115 (or waiver); requirement met; either ECO 250 or TEC 352; OR permission of instructor"
+  },
+  {
+    "course": "BUS 366 Financial Management",
+    "prerequisites": "BUS 130 and ECO 250 ; junior (preferred) or senior standing"
+  },
+  {
+    "course": "BUS 367 Marketing Research",
+    "prerequisites": "BUS 363 and ECO 250 or MAT 104"
+  },
+  {
+    "course": "BUS 368 Intermediate Corporate Finance",
+    "prerequisites": "BUS 366 ; junior or senior standing preferred"
+  },
+  {
+    "course": "BUS 371 International Business",
+    "prerequisites": "BUS 315 and BUS 363 , or permission of instructor."
+  },
+  {
+    "course": "BUS 427 Accounting Theory",
+    "prerequisites": "BUS 130"
+  },
+  {
+    "course": "BUS 437 Introduction to Auditing",
+    "prerequisites": "BUS 327"
+  },
+  {
+    "course": "BUS 475 Strategic Management",
+    "prerequisites": "BUS 315 , 363, and 366"
+  },
+  {
+    "course": "CFS 103 Introduction to Food Studies",
+    "prerequisites": null
+  },
+  {
+    "course": "CFS 115 Principles of Food Preparation",
+    "prerequisites": "Completion or waiver of MAT 012; CFS 103 ; or permission of instructor"
+  },
+  {
+    "course": "CFS 130 Lifespan Human Development",
+    "prerequisites": null
+  },
+  {
+    "course": "CFS 142 Exploring Children's Pic Books",
+    "prerequisites": null
+  },
+  {
+    "course": "CFS 145 Consumer Decision Making",
+    "prerequisites": null
+  },
+  {
+    "course": "CFS 201 Sexualty Everyday Life SOC,WGS",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 ; and one of the following: CFS 130 , HLT 111 , SOC 100, WGS 124"
+  },
+  {
+    "course": "CFS 207 Family Relations (WGS)",
+    "prerequisites": "L&1 100 (or wavier) or GSTR 110 (or waiver)."
+  },
+  {
+    "course": "CFS 209 Appalachian Foodways (APS)",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 or Permission of Instructor"
+  },
+  {
+    "course": "CFS 210 Found of Early Childhood Edu",
+    "prerequisites": "CFS 130 ; L&I 200 (or waiver) or GSTR 210 ; or permission of instructor"
+  },
+  {
+    "course": "CFS 221 Fundamentals of Nutrition",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210"
+  },
+  {
+    "course": "CFS 231 Social Gerontology (PSY)",
+    "prerequisites": "Completion of the Social Science Perspective"
+  },
+  {
+    "course": "CFS 237 Human Environments I",
+    "prerequisites": "Sophomore standing or above"
+  },
+  {
+    "course": "CFS 238 Human Environments II",
+    "prerequisites": "Sophomore standing or above; CFS 237 preferred"
+  },
+  {
+    "course": "CFS 245 Community Resources-Families",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 ; and one CFS course; OR permission of instructor"
+  },
+  {
+    "course": "CFS 248 Nature Ed/Young Children(SENS)",
+    "prerequisites": null
+  },
+  {
+    "course": "CFS 300 Food, Culture & Society (SOC)",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 or permission of instructor"
+  },
+  {
+    "course": "CFS 313 Infancy and Early Childhood",
+    "prerequisites": "CFS 130 , and L&I 200 (or waiver) or GSTR 210 , or permission of instructor"
+  },
+  {
+    "course": "CFS 315 Middle Childhood & Adolescence",
+    "prerequisites": "CFS 130 , and L&I 200 (or waiver) or GSTR 210 , or permission of instructor"
+  },
+  {
+    "course": "CFS 317 Family-Child-Profsnl Interactn",
+    "prerequisites": "L&I 200 or GSTR 210 and sophomore standing or above or permission of instructor"
+  },
+  {
+    "course": "CFS 318 Food Policy (ANR)",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 , or Permission of the Instructor"
+  },
+  {
+    "course": "CFS 334 Culinary Arts & Foodsvc Mgmt.",
+    "prerequisites": "CFS 103 and 115; OR permission of instructor"
+  },
+  {
+    "course": "CFS 350 Family Law and Policy",
+    "prerequisites": "CFS 207 (also WGS), and Junior standing, or permission of instructor"
+  },
+  {
+    "course": "CFS 353 Childhood Guidance",
+    "prerequisites": "CFS 130 , and L&I 200 (or waiver) or GSTR 210 ; or permission of instructor"
+  },
+  {
+    "course": "CFS 356 Variatns Young Children's Devl",
+    "prerequisites": "CFS 130 , and L&I 200 (or wavier) or GSTR 210 , or permission of instructor"
+  },
+  {
+    "course": "CFS 360 E. Child Curr/Methds/Matl",
+    "prerequisites": "CFS 130 , and L&I 200 (or waiver) or GSTR 210 , or permission of instructor"
+  },
+  {
+    "course": "CFS 362 Cont Family Issues & Poverty",
+    "prerequisites": "CFS 207 (also WGS), junior standing, or permission of instructor"
+  },
+  {
+    "course": "CFS 366 Cross-Cultrl Persp-Fam (WGS)",
+    "prerequisites": "CFS 207 or SOC 100 , junior standing, or permission of instructor"
+  },
+  {
+    "course": "CFS 370 Infant Care, Cur., & Interven.",
+    "prerequisites": "CFS 130 or permission of instructor."
+  },
+  {
+    "course": "CFS 441 Family Resource Management",
+    "prerequisites": "CFS 130 , 145, 207 (also WGS), and CFS 221 , and senior standing or permission of instructor"
+  },
+  {
+    "course": "CFS 480 Senior Research Seminar",
+    "prerequisites": "CFS 130 , 145, 207 (also WGS), CFS 221 , and senior standing or permission of instructor"
+  },
+  {
+    "course": "CHI 101 Introduction to Chinese I",
+    "prerequisites": null
+  },
+  {
+    "course": "CHI 102 Introduction to Chinese II",
+    "prerequisites": "CHI 101 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "CHI 103 Introduction to Chinese III",
+    "prerequisites": "CHI 102 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "CHI 210 Intermediate Chinese",
+    "prerequisites": "CHI 103 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "CHM 101 Foundations of Chemistry",
+    "prerequisites": "Completion or waiver of MAT 010 or concurrent enrollment in MAT 011"
+  },
+  {
+    "course": "CHM 113 Allied Health Chemistry",
+    "prerequisites": "Completion or waiver of MAT 012; completion or concurrent enrollment in BIO 101 or BIO 201 ; or permission of instructor"
+  },
+  {
+    "course": "CHM 131 Accelerated General Chemistry",
+    "prerequisites": "Permission of instructor or completion or waiver of both MAT 012 and CHM 101"
+  },
+  {
+    "course": "CHM 221 Organic Chemistry I",
+    "prerequisites": "CHM 131"
+  },
+  {
+    "course": "CHM 222 Organic Chemistry II",
+    "prerequisites": "CHM 221"
+  },
+  {
+    "course": "CHM 311 Analytical Chemistry",
+    "prerequisites": "CHM 131 and completion or waiver of MAT 135 or concurrent enrollment"
+  },
+  {
+    "course": "CHM 340 Biochemistry I",
+    "prerequisites": null
+  },
+  {
+    "course": "CHM 345 Introduction to Biochemistry",
+    "prerequisites": "CHM 222"
+  },
+  {
+    "course": "CHM 361 Thermochemistry",
+    "prerequisites": "CHM 311 ; MAT 225 (or concurrent enrollment); PHY 128 or PHY 222 (or concurrent enrollment); OR permission of instructor"
+  },
+  {
+    "course": "CHM 362 Quantum Chemistry",
+    "prerequisites": "CHM 311 , MAT 225 (or concurrent enrollment), PHY 218 or PHY 222 (or concurrent enrollment), OR permission of instructor"
+  },
+  {
+    "course": "CHM 370 Advanced Lab - Chromatography",
+    "prerequisites": "CHM 311 OR permission of instructor"
+  },
+  {
+    "course": "CHM 371 Advanced Lab - Spectroscopy",
+    "prerequisites": "CHM 370 and one additional CHM course at the 345-or-higher level (which may be taken concurrently); OR permission of instructor"
+  },
+  {
+    "course": "CHM 440 Biochemistry II",
+    "prerequisites": "CHM 340"
+  },
+  {
+    "course": "CHM 451 Inorganic Chemistry",
+    "prerequisites": "CHM 311"
+  },
+  {
+    "course": "CHM 452 Advanced Organic Chemistry",
+    "prerequisites": "CHM 222"
+  },
+  {
+    "course": "CHM 470 Adv Lab–Thermochemical Method",
+    "prerequisites": "CHM 370 (or concurrent enrollment) and one additional CHM course at the 345-or-higher level; OR permission of instructor"
+  },
+  {
+    "course": "CHM 471 Advanced Lab - Synthesis",
+    "prerequisites": "CHM 371 (or concurrent enrollment) and two additional CHM courses at the 345-and-higher-level or permission of instructor"
+  },
+  {
+    "course": "CLS 110 Sport/Spect Greece/Rome (HHP)",
+    "prerequisites": null
+  },
+  {
+    "course": "CLS 117 Classical Etymology",
+    "prerequisites": null
+  },
+  {
+    "course": "CLS 128 Classical Greek Civ (HIS)",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "CLS 129 Classical Roman Civ (HIS)",
+    "prerequisites": "GSTR 110 (or waiver)"
+  },
+  {
+    "course": "CLS 222 Classical Mythology (REL)",
+    "prerequisites": null
+  },
+  {
+    "course": "COM  104 Radio Broadcasting",
+    "prerequisites": null
+  },
+  {
+    "course": "COM  105 Introduction to Film Editing",
+    "prerequisites": null
+  },
+  {
+    "course": "COM 100 Intro to Communication",
+    "prerequisites": null
+  },
+  {
+    "course": "COM 112 Nonviolent Communication (PSJ)",
+    "prerequisites": null
+  },
+  {
+    "course": "COM 113 Conflict and Mediation (PSJ)",
+    "prerequisites": null
+  },
+  {
+    "course": "COM 201 Argumentation and Debate",
+    "prerequisites": null
+  },
+  {
+    "course": "COM 204 Race, Gender and Media (WGS)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "COM 206 Interpersonal Communication",
+    "prerequisites": null
+  },
+  {
+    "course": "COM 207 Intercultural Communication",
+    "prerequisites": null
+  },
+  {
+    "course": "COM 211 Broadcast Journalism I",
+    "prerequisites": null
+  },
+  {
+    "course": "COM 212 Mass Communication",
+    "prerequisites": null
+  },
+  {
+    "course": "COM 220 Theories of Communication",
+    "prerequisites": "COM 100 ; and L&I 200 (or waiver), or GSTR 210 ."
+  },
+  {
+    "course": "COM 221 Civic Engmnt & Social Advocacy",
+    "prerequisites": "GSTR 210"
+  },
+  {
+    "course": "COM 284 Wrkshp-Composition/Rhet (ENG)",
+    "prerequisites": "GSTR 210 or permission of instructor"
+  },
+  {
+    "course": "COM 302 Organizational Communication",
+    "prerequisites": "COM 100"
+  },
+  {
+    "course": "COM 303 Persuasion",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "COM 305 Interracial Communication",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 or permission of instructor"
+  },
+  {
+    "course": "COM 310 Communication and Gender (WGS)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210 or permission of instructor"
+  },
+  {
+    "course": "COM 311 Broadcast Journalism II",
+    "prerequisites": "COM 211"
+  },
+  {
+    "course": "COM 314 Media Analysis & Research",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "COM 315 Public Relations",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210 , or permission of instructor"
+  },
+  {
+    "course": "COM 410 Senior Seminar-Communication",
+    "prerequisites": "COM 220 (formerly 300) and senior standing"
+  },
+  {
+    "course": "CSC 102 Intro Digital Humanities (ENG)",
+    "prerequisites": "MAT012"
+  },
+  {
+    "course": "CSC 110 Craft of Computing",
+    "prerequisites": "MAT012"
+  },
+  {
+    "course": "CSC 111 Storytelling-Comp Animation",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "CSC 114 Business App & Prog (BUS)",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "CSC 121 Introduction to Game Design",
+    "prerequisites": "Completion or waiver of MAT 012."
+  },
+  {
+    "course": "CSC 124 Building Better Apps",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "CSC 126 Intro to Robotics",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "CSC 127 Intro to Web Design",
+    "prerequisites": null
+  },
+  {
+    "course": "CSC 221 Management Info. Systems (BUS)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "CSC 226 Software Design & Implement",
+    "prerequisites": "Completion of MAT 012 (or wavier) AND CSC 110 , CSC 111 , CSC 121 , CSC 124 , CSC 126 , or PHY 221 OR permission of instructor."
+  },
+  {
+    "course": "CSC 236 Data Structures",
+    "prerequisites": "Completion of MAT 012 (or waiver) AND CSC 226 with a grade of C or higher."
+  },
+  {
+    "course": "CSC 246 Scalable Algorithms & Objects",
+    "prerequisites": null
+  },
+  {
+    "course": "CSC 300 Embedded Systems",
+    "prerequisites": "( CSC 226 OR CSC 236 ) AND (ETAD 265 with a grade of C- or higher)."
+  },
+  {
+    "course": "CSC 301 Human-Centered Computing",
+    "prerequisites": null
+  },
+  {
+    "course": "CSC 303 Theory of Computation",
+    "prerequisites": "CSC 226 or CSC 236 and any one of MAT 105, MAT 216, MAT 312, MAT 315 or MAT 415"
+  },
+  {
+    "course": "CSC 328 Data Analytics (BUS)",
+    "prerequisites": "ECO 250"
+  },
+  {
+    "course": "CSC 330 Database Systems",
+    "prerequisites": "CSC 226 or CSC 236 with a grade of C or higher"
+  },
+  {
+    "course": "CSC 335 Computer Organization",
+    "prerequisites": "CSC 226 or CSC 236"
+  },
+  {
+    "course": "CSC 336 E-Commerce (BUS)",
+    "prerequisites": "CSC 226 or CSC 236"
+  },
+  {
+    "course": "CSC 410 Computational Intelligence",
+    "prerequisites": "CSC 236"
+  },
+  {
+    "course": "CSC 412 Networking",
+    "prerequisites": "CSC 236"
+  },
+  {
+    "course": "CSC 420 Programming Languages",
+    "prerequisites": "CSC 236"
+  },
+  {
+    "course": "CSC 425 Operating Systems & VMs",
+    "prerequisites": "CSC 236"
+  },
+  {
+    "course": "CSC 426 Open Source Software Enginrg",
+    "prerequisites": "CSC 236 Data Structures"
+  },
+  {
+    "course": "CSC 433 Numerical Analysis (MAT)",
+    "prerequisites": "MAT 225; one course chosen from CSC 111 , 114, 125, 126, 226; AND one course chosen from MAT 214, 315, or 330"
+  },
+  {
+    "course": "CSC 440 Design & Analysis of Algorithm",
+    "prerequisites": "CSC 236 AND one of the following: MAT 105 or MAT 125 or higher-numbered MAT course"
+  },
+  {
+    "course": "CSC 445 Comp Complexity & Modeling",
+    "prerequisites": "CSC 236 Data Structures"
+  },
+  {
+    "course": "CSC 450 Computer Security",
+    "prerequisites": "CSC 236 or permission of instructor."
+  },
+  {
+    "course": "CSC 493 Computing Design Practicum",
+    "prerequisites": "Permission of Instructor"
+  },
+  {
+    "course": "ECO 101 Principles of Macroeconomics",
+    "prerequisites": "Completion or waiver of MAT 012; first-year or sophomore standing preferred"
+  },
+  {
+    "course": "ECO 102 Principles of Microeconomics",
+    "prerequisites": "Completion or waiver of MAT 012; first-year or sophomore standing preferred"
+  },
+  {
+    "course": "ECO 248 Economics of Immigration",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 , and ECO 101 or ECO 102."
+  },
+  {
+    "course": "ECO 250 Applied Statistics",
+    "prerequisites": "MAT 115 (or waiver); requirement met OR permission of instructor; sophomore or junior standing preferred"
+  },
+  {
+    "course": "ECO 301 Intermediate Macroeconomics",
+    "prerequisites": "ECO 101 or permission of instructor; and MAT 115 (or waiver)"
+  },
+  {
+    "course": "ECO 302 Intermediate Microeconomics",
+    "prerequisites": "MAT 135 (or waiver)."
+  },
+  {
+    "course": "ECO 305 Health Economics",
+    "prerequisites": "ECO 102 and MAT 115 or MAT104 or instructor’s permission."
+  },
+  {
+    "course": "ECO 306 Labor Economics",
+    "prerequisites": "ECO 102 and MAT 135 (or wavier)"
+  },
+  {
+    "course": "ECO 310 Research in Economics I",
+    "prerequisites": "ECO 301 or 302, and junior standing"
+  },
+  {
+    "course": "ECO 311 Game Theory",
+    "prerequisites": "ECO 102 and MAT 135 or waiver or Instructor’s Permission."
+  },
+  {
+    "course": "ECO 332 Money and Banking",
+    "prerequisites": "ECO 101; sophomore or junior standing preferred"
+  },
+  {
+    "course": "ECO 341 Economic Dev:Theory & Appl",
+    "prerequisites": "ECO 101 or 102"
+  },
+  {
+    "course": "ECO 347 International Trade and Policy",
+    "prerequisites": "ECO 102"
+  },
+  {
+    "course": "ECO 350 Econometrics",
+    "prerequisites": "ECO 250"
+  },
+  {
+    "course": "ECO 357 International Finance (BUS)",
+    "prerequisites": "ECO 101"
+  },
+  {
+    "course": "ECO 360 Int'l Political Economy (PSC)",
+    "prerequisites": "ECO 101 or 102"
+  },
+  {
+    "course": "ECO 370 Envr Issue Public Pol (SENS)",
+    "prerequisites": "ECO 101 or 102; or permission of instructor"
+  },
+  {
+    "course": "ECO 401 Panel Data Methods",
+    "prerequisites": "ECO 250 and ECO 350"
+  },
+  {
+    "course": "ECO 402 Time Series Econometrics",
+    "prerequisites": "ECO 250 and ECO 350"
+  },
+  {
+    "course": "ECO 410 Research in Economics II",
+    "prerequisites": "ECO 310 and permission of instructor"
+  },
+  {
+    "course": "EDS 150 Int-Ed:Think About Lrng,Tchg",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)."
+  },
+  {
+    "course": "EDS 160 Inquiry Into Social Studies",
+    "prerequisites": null
+  },
+  {
+    "course": "EDS 203 Classroom Applicatn Technology",
+    "prerequisites": null
+  },
+  {
+    "course": "EDS 204 Foreign Lang Learning/Teaching",
+    "prerequisites": null
+  },
+  {
+    "course": "EDS 207 Black Education (AFR)",
+    "prerequisites": null
+  },
+  {
+    "course": "EDS 215 Science for Teachers",
+    "prerequisites": "EDS 227 or permission of instructor"
+  },
+  {
+    "course": "EDS 227 Child Dev & School Structure",
+    "prerequisites": "EDS 150 with C or better, or permission of instructor."
+  },
+  {
+    "course": "EDS 228 Adolescent Dev & School Struct",
+    "prerequisites": "EDS 150 with C or higher, or permission of instructor."
+  },
+  {
+    "course": "EDS 324 Methds I Teach. Middle Grades",
+    "prerequisites": "EDS 228"
+  },
+  {
+    "course": "EDS 325 Methds I: Gen Methds H. School",
+    "prerequisites": "EDS 228"
+  },
+  {
+    "course": "EDS 330 Extended School Experience",
+    "prerequisites": null
+  },
+  {
+    "course": "EDS 335 Integrated Curr I",
+    "prerequisites": "EDS 227"
+  },
+  {
+    "course": "EDS 338 Methds II STEM Disciplines",
+    "prerequisites": "EDS 324 or EDS 325"
+  },
+  {
+    "course": "EDS 339 Methds II Teachg in Humanities",
+    "prerequisites": "EDS 324 or EDS 325"
+  },
+  {
+    "course": "EDS 340 Found. Special Ed: P–5/Mid",
+    "prerequisites": "EDS 227 or 228"
+  },
+  {
+    "course": "EDS 346 Literacy in the Content Area",
+    "prerequisites": "EDS 227 or 228 or permission of instructor"
+  },
+  {
+    "course": "EDS 347 Literacy: Primary, P-3",
+    "prerequisites": "EDS 346 AND admission to the Teacher Education Program"
+  },
+  {
+    "course": "EDS 349 Education and Culture",
+    "prerequisites": null
+  },
+  {
+    "course": "EDS 355 Ext Field Exp: Enriching World",
+    "prerequisites": "Grade of B- or higher in EDS 349 or permission of instructor"
+  },
+  {
+    "course": "EDS 435 Integrated Curriculum II",
+    "prerequisites": "EDS 335"
+  },
+  {
+    "course": "EDS 440 Integrated Curriculum III",
+    "prerequisites": "EDS 435"
+  },
+  {
+    "course": "EDS 471 Midl Grades Student Tchg Sem",
+    "prerequisites": "Permission of instructor"
+  },
+  {
+    "course": "EDS 472 Midl Grades Student Teaching",
+    "prerequisites": "EDS 479"
+  },
+  {
+    "course": "EDS 479 MethdsIII Learning & Assessmnt",
+    "prerequisites": "EDS 338 or EDS 339"
+  },
+  {
+    "course": "EDS 480 Found. Special Ed: Secondary",
+    "prerequisites": "EDS 325"
+  },
+  {
+    "course": "EDS 481 Stdnt Tchg Sem:P-12,5-12,8-12",
+    "prerequisites": "Admission to Student Teaching"
+  },
+  {
+    "course": "EDS 482 Student Tchg:P-12,5-12,8-12",
+    "prerequisites": "Admission to Student Teaching"
+  },
+  {
+    "course": "EDS 484 Capstone Teaching Practicum",
+    "prerequisites": "EDS 479"
+  },
+  {
+    "course": "EDS 487 Elementary Student Teaching",
+    "prerequisites": "EDS 440"
+  },
+  {
+    "course": "ENG 102 Intro Digital Humanities (CSC)",
+    "prerequisites": "MAT012"
+  },
+  {
+    "course": "ENG 103 ESL and American Culture",
+    "prerequisites": "Permission of instructor"
+  },
+  {
+    "course": "ENG 110 Intro to Literature in English",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 124 Intro to Creative Writing",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 135 Afr-Amer Women Writers (WGS)",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 140 Appalachian Literature (APS)",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 141 African-American Literature",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 200E Studies in Times",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 200L Studies in Times",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 201 Essay Writing",
+    "prerequisites": "GSTR 210 or permission of instructor"
+  },
+  {
+    "course": "ENG 205 Studies in Cultures",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 210 Studies in Authors",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 212 Lit-Caribbean Women (WGS)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "ENG 223 Grammar For Teachers",
+    "prerequisites": "Sophomore standing or above OR permission of instructor"
+  },
+  {
+    "course": "ENG 225 Studies in Genre",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 237 Women And Literature (WGS)",
+    "prerequisites": "Sophomore standing or above"
+  },
+  {
+    "course": "ENG 240 Studies in Questions",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 242 Intro to Non-Western Lit",
+    "prerequisites": "Sophomore standing or above."
+  },
+  {
+    "course": "ENG 270 Intro to Methods in English",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 280 Workshop-Professional Writing",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210 or permission of instructor"
+  },
+  {
+    "course": "ENG 282E Creative Writing, Explorations",
+    "prerequisites": "ENG 124 with a C or better or Permission of Instructor and L&I 200 (or waiver), or GSTR 210 ."
+  },
+  {
+    "course": "ENG 282F Creative Writing, Fiction",
+    "prerequisites": "ENG 124 with a C or better or permission of Instructor, and L&I 200 (or wavier) or GSTR 210 ."
+  },
+  {
+    "course": "ENG 282NF Creative Writing, Nonfiction",
+    "prerequisites": "ENG 124 with a C or better or Permission of Instructor, and L&I 200 (or waiver) or GSTR 210 ."
+  },
+  {
+    "course": "ENG 282P Creative Writing, Poetry",
+    "prerequisites": "ENG 124 with a C or better or Permission of Instructor and L&I 200 (or waiver) or GSTR 210 ."
+  },
+  {
+    "course": "ENG 284 Wrkshp-Composition/Rhet (COM)",
+    "prerequisites": "GSTR 210 or permission of instructor"
+  },
+  {
+    "course": "ENG 300 Seminar in Times",
+    "prerequisites": "One (1) 200-level ENG course"
+  },
+  {
+    "course": "ENG 305 Seminar in Cultures",
+    "prerequisites": "One 200-level ENG course"
+  },
+  {
+    "course": "ENG 310 Seminar in Authors",
+    "prerequisites": "One 200-level ENG course"
+  },
+  {
+    "course": "ENG 325 Seminar in Genre",
+    "prerequisites": "One 200-level ENG course"
+  },
+  {
+    "course": "ENG 330 Seminar in Language",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "ENG 340 Seminar in Questions",
+    "prerequisites": "One 200-level ENG course"
+  },
+  {
+    "course": "ENG 380 Advanced Professional Writing",
+    "prerequisites": "ENG 110 or 124, ENG 280 , or perm. of instructor"
+  },
+  {
+    "course": "ENG 382 Advanced Creative Writing",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 384 Adv Composition/Rhetoric",
+    "prerequisites": "ENG 110 , ENG 281, OR permission of instructor"
+  },
+  {
+    "course": "ENG 387 The Study of Language",
+    "prerequisites": "Sophomore standing or above"
+  },
+  {
+    "course": "ENG 470 Advanced Methods in English",
+    "prerequisites": null
+  },
+  {
+    "course": "ENG 485 Seminar in English",
+    "prerequisites": "ENG 470 , Senior standing only, and permission of the department chair"
+  },
+  {
+    "course": "ETAD 100 Intro to Tec and App Design",
+    "prerequisites": null
+  },
+  {
+    "course": "ETAD 115 Construction Technology",
+    "prerequisites": null
+  },
+  {
+    "course": "ETAD 118 History of Technology",
+    "prerequisites": null
+  },
+  {
+    "course": "ETAD 130 Design and Documentation",
+    "prerequisites": null
+  },
+  {
+    "course": "ETAD 140 Design Production in Woods",
+    "prerequisites": null
+  },
+  {
+    "course": "ETAD 180 Graphic Com and Design",
+    "prerequisites": null
+  },
+  {
+    "course": "ETAD 202 Photography",
+    "prerequisites": "GSTR 110 (or waiver)"
+  },
+  {
+    "course": "ETAD 213 Appalachian Crafts (APS)",
+    "prerequisites": "GSTR 110 (or waiver)"
+  },
+  {
+    "course": "ETAD 245 Materials/Processing/Testing",
+    "prerequisites": null
+  },
+  {
+    "course": "ETAD 265 Electricity and Electronics",
+    "prerequisites": "Completion or waiver of MAT 012; or permission of instructor"
+  },
+  {
+    "course": "ETAD 275 Power and Energy Technology",
+    "prerequisites": "Completion or waiver of MAT 012; or permission of instructor"
+  },
+  {
+    "course": "ETAD 330 Advanced Design & Prototyping",
+    "prerequisites": "ETAD 130 or permission of instructor"
+  },
+  {
+    "course": "ETAD 340 Studio in Woods",
+    "prerequisites": "ETAD 140 or permission of instructor"
+  },
+  {
+    "course": "ETAD 345 Ecological Architecture (SENS)",
+    "prerequisites": "One of the following SENS 340 , ART 246 or ETAD 130"
+  },
+  {
+    "course": "ETAD 352 Quality Control",
+    "prerequisites": "ETAD 130; MAT 105 OR completion or waiver of MAT 115; OR permission of instructor"
+  },
+  {
+    "course": "ETAD 382 Studio in Graphic Design",
+    "prerequisites": "ETAD 180 or permission of instructor"
+  },
+  {
+    "course": "ETAD 455 Comp Integrated Manufacturing",
+    "prerequisites": "ETAD 130; MAT 105 OR completion or waiver of MAT 115; OR permission of instructor"
+  },
+  {
+    "course": "ETAD 460 Electronic System Design",
+    "prerequisites": "ETAD 265 or permission of instructor"
+  },
+  {
+    "course": "ETAD 470 Advanced Power and Energy",
+    "prerequisites": "ETAD 275 or permission of Instructor"
+  },
+  {
+    "course": "ETAD 488 Research in Technology",
+    "prerequisites": "Senior standing or permission of instructor"
+  },
+  {
+    "course": "FRN 101 Introduction to French I",
+    "prerequisites": null
+  },
+  {
+    "course": "FRN 102 Introduction to French II",
+    "prerequisites": "FRN 101 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "FRN 103 Introduction to French III",
+    "prerequisites": "FRN 102 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "FRN 140 French History & Arts in Film",
+    "prerequisites": null
+  },
+  {
+    "course": "FRN 150 Frn Speaking Cultures in Film",
+    "prerequisites": null
+  },
+  {
+    "course": "FRN 160 Art of Film in Frn Spkng World",
+    "prerequisites": null
+  },
+  {
+    "course": "FRN 240 French History/Arts in Film II",
+    "prerequisites": null
+  },
+  {
+    "course": "FRN 250 Frn Spking Cultures in Film II",
+    "prerequisites": null
+  },
+  {
+    "course": "FRN 260 Art of Film Frn Spkng World II",
+    "prerequisites": null
+  },
+  {
+    "course": "FRN 300 Intermediate French IV",
+    "prerequisites": "FRN 103 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "FRN 310 Grammar and Composition",
+    "prerequisites": "FRN 103 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "FRN 311 Songs, Lyrics, & Music Videos",
+    "prerequisites": null
+  },
+  {
+    "course": "FRN 315 Adv French Language Seminar",
+    "prerequisites": "FRN 310 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "FRN 320 Panorama of French Lit I",
+    "prerequisites": "FRN 310 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "FRN 321 Panorama of French Lit II",
+    "prerequisites": "FRN 320 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "FRN 322 Poems & Video Dramatizations",
+    "prerequisites": null
+  },
+  {
+    "course": "FRN 325 Seventeenth Century Frn Lit",
+    "prerequisites": "FRN 320 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "FRN 330 Nineteenth Century French Lit",
+    "prerequisites": "FRN 321 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "FRN 333 Graphic Novels & Film Adapt.",
+    "prerequisites": null
+  },
+  {
+    "course": "FRN 340 Twentieth Century French Lit",
+    "prerequisites": "FRN 321 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "FRN 355 Plays & Film Adaptations",
+    "prerequisites": null
+  },
+  {
+    "course": "FRN 366 Novels to 1913 & Film Adapt.",
+    "prerequisites": null
+  },
+  {
+    "course": "FRN 377 Novels Since 1914 & Film Adapt",
+    "prerequisites": null
+  },
+  {
+    "course": "GEO 101 Intro Geology: Way Earth Works",
+    "prerequisites": "MAT 010"
+  },
+  {
+    "course": "GEO 102 Geology of Kentucky",
+    "prerequisites": "MAT 012"
+  },
+  {
+    "course": "GEO 200 Mineralogy",
+    "prerequisites": "GEO 101 or CHM 101 or CHM 131 or instructor approval"
+  },
+  {
+    "course": "GEO 201 Travel Experiences in Geology",
+    "prerequisites": "GSTR 110 or Waiver"
+  },
+  {
+    "course": "GEO 240 Appal Geo Resources (SENS)",
+    "prerequisites": null
+  },
+  {
+    "course": "GEO 300 Petrology",
+    "prerequisites": "MAT 135 and GEO 200; CHM 131 recommended but not required"
+  },
+  {
+    "course": "GEO 320 Intro-Geographic Info Sys SENS",
+    "prerequisites": "Completion or waiver of MAT 115 or MAT 125; or permission of instructor"
+  },
+  {
+    "course": "GER 101 Introduction to German I",
+    "prerequisites": null
+  },
+  {
+    "course": "GER 102 Introduction to German II",
+    "prerequisites": "GER 101 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "GER 103 Introduction to German III",
+    "prerequisites": "GER 102 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "GER 123 Fairy Tales German Tradition",
+    "prerequisites": null
+  },
+  {
+    "course": "GER 140 German Civilization",
+    "prerequisites": null
+  },
+  {
+    "course": "GER 300 German Conversation",
+    "prerequisites": "GER 103 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "GER 310 Advanced German I",
+    "prerequisites": "GER 103 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "GER 315 Advanced German II",
+    "prerequisites": "GER 103 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "GER 320 German Poetry",
+    "prerequisites": "GER 310 and 315, or permission of instructor"
+  },
+  {
+    "course": "GER 325 German Narrative Prose",
+    "prerequisites": "GER 310 and 315, or permission of instructor"
+  },
+  {
+    "course": "GER 330 German Drama",
+    "prerequisites": "GER 310 and 315, or permission of instructor"
+  },
+  {
+    "course": "GER 340 German Novel",
+    "prerequisites": "GER 310 and 315, or permission of instructor"
+  },
+  {
+    "course": "GRK 201 Introduction to Greek I",
+    "prerequisites": null
+  },
+  {
+    "course": "GRK 202 Introduction to Greek II",
+    "prerequisites": "GRK 201 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "GRK 203 Greek Literature",
+    "prerequisites": "GRK 202 with a grade of C or higher OR permission of instructor"
+  },
+  {
+    "course": "GST 010 Medical Shadowing",
+    "prerequisites": null
+  },
+  {
+    "course": "GST 101 Strategies - Academic Success",
+    "prerequisites": null
+  },
+  {
+    "course": "GST 110A Enhancing Career Readiness",
+    "prerequisites": null
+  },
+  {
+    "course": "GST 110B Financial Literacy",
+    "prerequisites": null
+  },
+  {
+    "course": "GST 110C Integrating Cultures",
+    "prerequisites": null
+  },
+  {
+    "course": "GST 164 Civ., Leadership, & Paradigms",
+    "prerequisites": null
+  },
+  {
+    "course": "GST 167 Latino Masculinities/Coll Life",
+    "prerequisites": null
+  },
+  {
+    "course": "GST 168 Transitioning to Grad School",
+    "prerequisites": null
+  },
+  {
+    "course": "GST 180 Writing Studio",
+    "prerequisites": "Instructor/Administrator Approval"
+  },
+  {
+    "course": "GST 203 Student-Faculty Partnerships",
+    "prerequisites": "Instructor Approval"
+  },
+  {
+    "course": "GST 235 Intro to Behavioral Sciences",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "GST 280 Tutoring/Writing Pedagogy",
+    "prerequisites": "Instructor Approval"
+  },
+  {
+    "course": "GST 300 Entrepreneurial Experience",
+    "prerequisites": null
+  },
+  {
+    "course": "GST 386G Graduate School Preparation",
+    "prerequisites": null
+  },
+  {
+    "course": "GST 425 Sem in Comm & Civic Engagement",
+    "prerequisites": null
+  },
+  {
+    "course": "GSTR 110 Writing Sem I:Critical Think",
+    "prerequisites": null
+  },
+  {
+    "course": "GSTR 210 Writing Sem II:Ident&Diversity",
+    "prerequisites": "GSTR 110 with a final grade of C or higher (or waiver)"
+  },
+  {
+    "course": "GSTR 310 Understandings of Christianity",
+    "prerequisites": "GSTR 210 and sophomore standing"
+  },
+  {
+    "course": "GSTR 332 Scientific Origins",
+    "prerequisites": "Practical Reasoning with Quantitative Emphasis (PRQ) and sophomore standing"
+  },
+  {
+    "course": "GSTR 410 Sem-Contemporary Global Issues",
+    "prerequisites": "GSTR 310 ; GSTR 332 ; senior standing or 6th term junior"
+  },
+  {
+    "course": "HEB 101 Intro to Classical Hebrew",
+    "prerequisites": null
+  },
+  {
+    "course": "HEB 102 Intermediate Classical Hebrew",
+    "prerequisites": "HEB 101"
+  },
+  {
+    "course": "HEB 103 Readings in Biblia Hebraica",
+    "prerequisites": "HEB 102"
+  },
+  {
+    "course": "HEB 210 Hebrew Exegesis",
+    "prerequisites": "HEB 103"
+  },
+  {
+    "course": "HHP 110 Sport/Spect Greece/Rome (CLS)",
+    "prerequisites": null
+  },
+  {
+    "course": "HHP 125 Foundations Human Performance",
+    "prerequisites": null
+  },
+  {
+    "course": "HHP 203 Individualized Phys Education",
+    "prerequisites": "HLT 100 (Formerly PEH 100) or WELL 101 and approval of the Program Coordinator and College Health Service"
+  },
+  {
+    "course": "HHP 233 Dance in Healing & Therapy",
+    "prerequisites": "GSTR 110 (or waiver) and WELL 101"
+  },
+  {
+    "course": "HHP 244 Phys Educ Actv for Elem Child",
+    "prerequisites": null
+  },
+  {
+    "course": "HHP 245 Dance Education",
+    "prerequisites": "HLT 100 (Formerly PEH 100), or WELL 101 , or permission of instructor"
+  },
+  {
+    "course": "HHP 246 Individual & Dual Sports",
+    "prerequisites": "HLT 100 (Formerly PEH 100), or WELL 101 , or permission of instructor"
+  },
+  {
+    "course": "HHP 247 Team Sports",
+    "prerequisites": "HLT 100 (Formerly PEH 100), or WELL 101 , or permission of instructor"
+  },
+  {
+    "course": "HHP 248 World Dance",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210"
+  },
+  {
+    "course": "HHP 249 Dancing Through Space & Time",
+    "prerequisites": "L&I 100 (or wavier) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "HHP 250 Aquatics",
+    "prerequisites": "Successful completion of the swim requirement for graduation (passed either the swim screen or one HHP 200 /209 course)"
+  },
+  {
+    "course": "HHP 254 Prin Coaching & Officiating",
+    "prerequisites": null
+  },
+  {
+    "course": "HHP 260 Care & Prevent Athletic Injury",
+    "prerequisites": "BIO 101 or BIO 201 or permission of instructor"
+  },
+  {
+    "course": "HHP 261 Exercise & Sport Psychology",
+    "prerequisites": null
+  },
+  {
+    "course": "HHP 262 Exercise & Sport Nutrition",
+    "prerequisites": null
+  },
+  {
+    "course": "HHP 263 Personal Training Certificatn",
+    "prerequisites": null
+  },
+  {
+    "course": "HHP 264 Statistics Human Performance",
+    "prerequisites": null
+  },
+  {
+    "course": "HHP 265 Exercise Testing & Prescriptn",
+    "prerequisites": null
+  },
+  {
+    "course": "HHP 280 Adapted Physical Education",
+    "prerequisites": "HLT 100 (Formerly PEH 100), or WELL 101 , or permission of instructor"
+  },
+  {
+    "course": "HHP 305 Improvisation & Choreography",
+    "prerequisites": "Previous dance experience at the beginning/intermediate level is preferred, but not required"
+  },
+  {
+    "course": "HHP 310 Adv Swim - Lifeguard Training",
+    "prerequisites": "HLT 100 (Formerly PEH 100), or WELL 101 , and intermediate swimming proficiency OR permission of instructor"
+  },
+  {
+    "course": "HHP 315 Motor Behavior Across Lifespan",
+    "prerequisites": "BIO 101 or BIO 201"
+  },
+  {
+    "course": "HHP 345 Biomechanics & F Mvmt Analysis",
+    "prerequisites": "Completion or waiver of MAT 012; and BIO 101 or BIO 201"
+  },
+  {
+    "course": "HHP 350 Exercise Physiology",
+    "prerequisites": "Completion or waiver of MAT 012; and BIO 101 or BIO 201"
+  },
+  {
+    "course": "HHP 360 Advanced Athletic Training",
+    "prerequisites": "BIO 101 or BIO 201 and HHP 260 (Formerly PED 260)"
+  },
+  {
+    "course": "HHP 362 Tchg & Eval Hlth & Phys Educ",
+    "prerequisites": null
+  },
+  {
+    "course": "HHP 492 Sr Research Human Performance",
+    "prerequisites": "BIO 101 or BIO 201 ; either HHP 345 (Formerly HHP 335) or HHP 350 (Formally HHP 340); and one additional HHP major course; junior or senior standing (junior preferred)"
+  },
+  {
+    "course": "HIS  249 Black Medicine & Tech (AFR)",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 103 Survey of African His (AFR)",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "HIS 112 The Worlds of the Middle Ages",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 122 History of China (AST)",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 123 History of Japan (AST)",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 124 Medieval Animals",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 125 Holocaust in History & Memory",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "HIS 126 Traces of the Global Past I",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 127 Traces of the Global Past II",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 128 Classical Greek Civ (CLS)",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "HIS 129 Classical Roman Civ (CLS)",
+    "prerequisites": "GSTR 110 (or waiver)"
+  },
+  {
+    "course": "HIS 130 Albion & Eire: British Isles",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 131 Britain & the Emp, 1688 to Pre",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 132 Appalachian America (APS)",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "HIS 133 Hist of Pre-Modern Middle East",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "HIS 134 Recent History of Middle East",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "HIS 135 Wondrous Strange",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 140 History of Spain (SPN)",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 161 American History to 1865",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 162 American History Since 1865",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 165 Intro to Afr Amer His(AFR)",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 166 Survey Black Atlantic (AFR)",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 175 His & Pol of Arab-Isr (PSC)",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 200 Intro to Historical Study",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 201 Amer Political Thought(PSC)",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 229 Contesting Empires (AST)",
+    "prerequisites": "AST 100 or L&I 200 (or GSTR 210 )"
+  },
+  {
+    "course": "HIS 242 African American Cinema (AFR)",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 243 The Silk Road (AST)",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "HIS 244 Medieval Justice",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 245 Black Urban History (AFR)",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 246 Medieval Travel",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 247 Transatlantic Slave Trade(AFR)",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 248 Black & Indig Appal (AFR)",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 250 Patriotic Gore",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 303 The Queer Middle Ages",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "HIS 309 Civil Rights Seminar (AFR)",
+    "prerequisites": null
+  },
+  {
+    "course": "HIS 310 Seminar in U. S. History",
+    "prerequisites": "HIS 161 , or HIS 162 , or Permission of Instructor"
+  },
+  {
+    "course": "HIS 311 Seminar: Medieval History",
+    "prerequisites": "HIS 126 , or L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "HIS 320 Topical Seminar in Global Hist",
+    "prerequisites": "HIS 200 or permission of instructor"
+  },
+  {
+    "course": "HIS 324A Seminar in Asian History (AST)",
+    "prerequisites": "AST/HIS 243 or AST/ HIS 229 or AST/SOC/ WGS 240 or PSC 250 or permission of instructor"
+  },
+  {
+    "course": "HIS 335 Topic Sem-Modern European His",
+    "prerequisites": "HIS 200 or junior standing"
+  },
+  {
+    "course": "HIS 355 Sem in American Rel Hist",
+    "prerequisites": "a HIS 100-level course, or L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "HIS 356 Sem: African-Amer History(AFR)",
+    "prerequisites": "HIS 161 and 162; or HIS/ AFR 165 ; or permission of the instructor"
+  },
+  {
+    "course": "HIS 406 Senior Research Seminar",
+    "prerequisites": "HIS 200 , completion of a 300-level HIS course, and senior standing, or junior standing with permission of instructor"
+  },
+  {
+    "course": "HLT 109 Comprehensive First Aid",
+    "prerequisites": null
+  },
+  {
+    "course": "HLT 111 Human Sexuality (WGS)",
+    "prerequisites": null
+  },
+  {
+    "course": "HLT 200 Foundations of Health Studies",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver) and WELL 150"
+  },
+  {
+    "course": "HLT 202 American Red Cross Instructor",
+    "prerequisites": null
+  },
+  {
+    "course": "HLT 203 Peer Health Educ & Promotion",
+    "prerequisites": null
+  },
+  {
+    "course": "HLT 205 Medical Terminology",
+    "prerequisites": null
+  },
+  {
+    "course": "HLT 210 Health in Appalachia (APS)",
+    "prerequisites": "WELL 150 or permission; and L&I 100 (or wavier) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "HLT 224 Addiction & Violence/Fam",
+    "prerequisites": "WELL 150 (or WELL 101 ), or permission; and L&I 100 (or waiver), or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "HLT 227 Health Psychology (PSY)",
+    "prerequisites": "PSY 100"
+  },
+  {
+    "course": "HLT 236 Women and Health (WGS)",
+    "prerequisites": "HLT 200 OR a college course in Women's Studies OR permission of instructor"
+  },
+  {
+    "course": "HLT 300 HLT Program Planning & Eval",
+    "prerequisites": null
+  },
+  {
+    "course": "HLT 400 Epidemiology",
+    "prerequisites": "MAT 104 or other statistics course approved by instructor"
+  },
+  {
+    "course": "JPN 101 Introduction to Japanese I",
+    "prerequisites": null
+  },
+  {
+    "course": "JPN 102 Introduction to Japanese II",
+    "prerequisites": "JPN 101 with a grade of C or higher or permission of instructor"
+  },
+  {
+    "course": "JPN 103 Introduction to Japanese III",
+    "prerequisites": "JPN 102 with a grade of C or higher or permission of instructor"
+  },
+  {
+    "course": "JPN 210 Intermediate Japanese",
+    "prerequisites": "JPN 103 with a grade of C or higher or permission of instructor"
+  },
+  {
+    "course": "L&amp;I  100 L&I 100",
+    "prerequisites": null
+  },
+  {
+    "course": "L&amp;I 200 L&I: Discoveries",
+    "prerequisites": null
+  },
+  {
+    "course": "L&amp;I 300 L&I: Intersectional Justice",
+    "prerequisites": null
+  },
+  {
+    "course": "L&amp;I 400 L&I: Global Issues",
+    "prerequisites": null
+  },
+  {
+    "course": "LAT 101 Introduction to Latin I",
+    "prerequisites": null
+  },
+  {
+    "course": "LAT 102 Introduction to Latin II",
+    "prerequisites": "LAT 101 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "LAT 103 Introduction to Latin III",
+    "prerequisites": "LAT 102 with a grade of C or higher, or permission of instructor"
+  },
+  {
+    "course": "LES 215 American Law Principles",
+    "prerequisites": "L&I 100 (or waiver), or GSTR 110 (or waiver), or Permission of Instructor"
+  },
+  {
+    "course": "LES 370 Legal Reasoning & Advocacy I",
+    "prerequisites": null
+  },
+  {
+    "course": "LES 371 Legal Reasoning & Advocacy II",
+    "prerequisites": null
+  },
+  {
+    "course": "MAT 010 Pre-Algebra",
+    "prerequisites": null
+  },
+  {
+    "course": "MAT 011 Elementary Algebra I",
+    "prerequisites": "Completion or waiver of MAT 010"
+  },
+  {
+    "course": "MAT 012 Elementary Algebra II",
+    "prerequisites": "Completion or waiver of MAT 011"
+  },
+  {
+    "course": "MAT 101 Math Modeling Using Computer",
+    "prerequisites": null
+  },
+  {
+    "course": "MAT 104 Introduction to Statistics",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "MAT 105 Intro to Discrete Math",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "MAT 108 Environ Issue:Math Model Appr",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "MAT 115 College Algebra with Modeling",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "MAT 125 Trigonometry with Applications",
+    "prerequisites": "Completion or waiver of MAT 115 with a \"C\" or better"
+  },
+  {
+    "course": "MAT 135 Calculus I",
+    "prerequisites": "A knowledge of trigonometry and MAT 110, 112, or 125 with a grade of C or higher, or waiver of same based on placement test"
+  },
+  {
+    "course": "MAT 201 Found/Tchg Elementary Math I",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "MAT 202 Found/Tchg of Elem Math II",
+    "prerequisites": "Completion or waiver of MAT 012; MAT 201 with a grade of C or higher"
+  },
+  {
+    "course": "MAT 203 Geometry-Midl Grades/Elem Tchr",
+    "prerequisites": "A grade of C or higher in MAT 201."
+  },
+  {
+    "course": "MAT 214 Linear Algebra",
+    "prerequisites": "MAT 135 or permission of instructor"
+  },
+  {
+    "course": "MAT 216 Discrete Mathematics",
+    "prerequisites": "Waiver or completion of MAT 012"
+  },
+  {
+    "course": "MAT 225 Calculus II",
+    "prerequisites": "MAT 135 with a grade of C or higher"
+  },
+  {
+    "course": "MAT 308 Teaching of Mathematics",
+    "prerequisites": "Permission of instructor"
+  },
+  {
+    "course": "MAT 311 Probability",
+    "prerequisites": "MAT 135 with a grade of C or higher; MAT 225 or concurrent enrollment; or permission of instructor"
+  },
+  {
+    "course": "MAT 312 Operations Research",
+    "prerequisites": "MAT 135 or permission of instructor"
+  },
+  {
+    "course": "MAT 315 Fundamental Concepts of Math",
+    "prerequisites": "MAT 135"
+  },
+  {
+    "course": "MAT 321 Foundations of Geometry",
+    "prerequisites": "MAT 315"
+  },
+  {
+    "course": "MAT 330 Calculus III",
+    "prerequisites": "MAT 225 with a grade of C or higher"
+  },
+  {
+    "course": "MAT 337 Differential Equations",
+    "prerequisites": "MAT 225"
+  },
+  {
+    "course": "MAT 415 Combinatorics",
+    "prerequisites": null
+  },
+  {
+    "course": "MAT 426 Math Lit: Rdg & Communication",
+    "prerequisites": "Senior standing and permission of instructor"
+  },
+  {
+    "course": "MAT 432 Abstract Algebra",
+    "prerequisites": "MAT 315 and 330 or permission of instructor"
+  },
+  {
+    "course": "MAT 433 Numerical Analysis (CSC)",
+    "prerequisites": "MAT 225; one course chosen from CSC 111 , 114, 125, 126, 226; AND one course chosen from MAT 214, 315, or 330"
+  },
+  {
+    "course": "MAT 434 Real Analysis",
+    "prerequisites": "MAT 315 and 330, or permission of instructor"
+  },
+  {
+    "course": "MAT 435 Complex Analysis",
+    "prerequisites": "MAT 330"
+  },
+  {
+    "course": "MAT 436 Topology",
+    "prerequisites": "MAT 315 and 330, or permission of instructor"
+  },
+  {
+    "course": "MAT 438 Statistics",
+    "prerequisites": "MAT 311 with a grade of C or higher and MAT 330 or concurrent enrollment"
+  },
+  {
+    "course": "MAT 492 Senior Mathematics Seminar",
+    "prerequisites": "Permission of instructor and senior standing"
+  },
+  {
+    "course": "MUS 100 Class Piano",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 103 Class Voice",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 106 World Music",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 115 Intro to Music Literature",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 118 Fundamentals of Music",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 130A Chamber Singers",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 130B Jazz Ensemble",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 130C Bel Canto Treble Singers",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 130F Bluegrass Music Ensemble",
+    "prerequisites": "Students must have previous performance experience before enrolling in the Bluegrass Ensemble. All students must meet with the instructor for an informal audition."
+  },
+  {
+    "course": "MUS 130H African-Latin Percussion Ensmb",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 130I Contemp Percussion Ensemble",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 130K Folk Roots Ensemble",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 130M Mariachi Ensemble",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 131 Concert Choir",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 132 Wind Ensemble",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 135 Black Music Ensemble",
+    "prerequisites": "Permission of instructor *"
+  },
+  {
+    "course": "MUS 200 Survey of Amer Music Thr (THR)",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 220 Materials of Music I",
+    "prerequisites": "MUS 118 or passing Music Theory Placement Exam"
+  },
+  {
+    "course": "MUS 221 Aural Harmony I",
+    "prerequisites": "MUS 118 or passing Music Theory Placement Exam"
+  },
+  {
+    "course": "MUS 222 Materials of Music II",
+    "prerequisites": "MUS 220 (formerly 120)"
+  },
+  {
+    "course": "MUS 223 Aural Harmony II",
+    "prerequisites": "MUS 221"
+  },
+  {
+    "course": "MUS 224 Appalachian Music (APS)",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 232 American Popular Music",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 234 Afri-Amer Mus:Overview",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "MUS 320 Materials of Music III",
+    "prerequisites": "MUS 222"
+  },
+  {
+    "course": "MUS 321 Aural & Keyboard Harmony III",
+    "prerequisites": "MUS 223"
+  },
+  {
+    "course": "MUS 322 Materials of Music IV",
+    "prerequisites": "MUS 320"
+  },
+  {
+    "course": "MUS 323 Aural & Keyboard Harmony IV",
+    "prerequisites": "MUS 321"
+  },
+  {
+    "course": "MUS 324 Music Composition",
+    "prerequisites": null
+  },
+  {
+    "course": "MUS 328 Tchg Brass & Percussion Instru",
+    "prerequisites": "Admission to Music or Music Education major; or permission of instructor"
+  },
+  {
+    "course": "MUS 329 Teaching Woodwind Instruments",
+    "prerequisites": "Admission to Music or Music Education major; OR permission of instructor"
+  },
+  {
+    "course": "MUS 330 Music History I",
+    "prerequisites": "Declared Music or Music Education major or Music minor; and MUS 115, MUS 222; or permission of instructor"
+  },
+  {
+    "course": "MUS 331 Music History II",
+    "prerequisites": "Declared Music or Music Education major or Music minor; and MUS 115, MUS 222; or permission of instructor"
+  },
+  {
+    "course": "MUS 335 Mat & Meth of Elem Music",
+    "prerequisites": "Admission for the Music or Music Education major; or permission of the instructor."
+  },
+  {
+    "course": "MUS 336 Fund Tchg Instrumental Music",
+    "prerequisites": "Music Majors only or by permission of the instructor; EDS 150 and MUS 223"
+  },
+  {
+    "course": "MUS 337 Conducting",
+    "prerequisites": "MUS 223"
+  },
+  {
+    "course": "MUS 340P Piano Pedagogy",
+    "prerequisites": "MUA 221p (piano) or permission of instructor"
+  },
+  {
+    "course": "MUS 342V Voice Pedagogy & Diction",
+    "prerequisites": "MUA 326v (voice) or permission of instructors"
+  },
+  {
+    "course": "MUS 350P Piano Literature",
+    "prerequisites": "MUA 221p (piano) or permission of instructor"
+  },
+  {
+    "course": "MUS 400 Senior Seminar",
+    "prerequisites": "Senior standing and permission of instructor"
+  },
+  {
+    "course": "NUR 110 Foundations Nursing Practice",
+    "prerequisites": null
+  },
+  {
+    "course": "NUR 201 Intro to Nursing Profession",
+    "prerequisites": null
+  },
+  {
+    "course": "NUR 225 Essentials Nursing Practice I",
+    "prerequisites": "BIO 201 , PSY 100, CHM 113 , and NUR 110 with a grade of C or higher. Pre or co-requisite: BIO 202 (with a grade of C or higher)"
+  },
+  {
+    "course": "NUR 226 Essentials Nursing Practice II",
+    "prerequisites": "BIO 201 , BIO 202 , NUR 110 , NUR 201 and NUR 225 with a grade of C or higher. Co-requisites: BIO 207 , CFS 221 , NUR 230"
+  },
+  {
+    "course": "NUR 230 Pharmacology",
+    "prerequisites": "BIO 201 , BIO 202 , NUR 110 , NUR 201 and NUR 225 with grade of C or better Co-requisite: NUR 226"
+  },
+  {
+    "course": "NUR 301 Women's Hlth & Maternity Nurs",
+    "prerequisites": "Admission to the Nursing Major"
+  },
+  {
+    "course": "NUR 350 Adult Health Nursing I",
+    "prerequisites": "NUR 301 and NUR 351 with a C or better Corequisites: NUR 352 and NUR 355"
+  },
+  {
+    "course": "NUR 351 Mental Health Nursing",
+    "prerequisites": "Admission to the Nursing major"
+  },
+  {
+    "course": "NUR 352 Research in Nursing",
+    "prerequisites": "MAT 104, NUR 301 and NUR 351 with C or better."
+  },
+  {
+    "course": "NUR 355 Pediatric Nursing",
+    "prerequisites": "NUR 301 and NUR 351 with a C or better."
+  },
+  {
+    "course": "NUR 400 Adult Health Nursing II",
+    "prerequisites": "NUR 350 and NUR 355 with a C or better"
+  },
+  {
+    "course": "NUR 448 Community Health Nursing",
+    "prerequisites": "NUR 350, NUR 352 and NUR 355 with C or better."
+  },
+  {
+    "course": "NUR 449 Nursing Leadership/Management",
+    "prerequisites": "NUR 400 and NUR 448 with grade of C or better Corequisite: NUR 450"
+  },
+  {
+    "course": "NUR 450 Nurs Synthesis & Complex Care",
+    "prerequisites": "NUR 400 and NUR 448 with a grade of C or better Corequisite: NUR 449"
+  },
+  {
+    "course": "PHI 104 Morality, Law & Philosophy",
+    "prerequisites": null
+  },
+  {
+    "course": "PHI 106 Introductory Reasoning",
+    "prerequisites": null
+  },
+  {
+    "course": "PHI 115 Mind, Language, and World",
+    "prerequisites": null
+  },
+  {
+    "course": "PHI 214 Approaches to Ethics",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 , or sophomore standing"
+  },
+  {
+    "course": "PHI 215 Thinking About God",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210"
+  },
+  {
+    "course": "PHI 218 Symbolic Logic",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "PHI 225 Medical Ethics",
+    "prerequisites": null
+  },
+  {
+    "course": "PHI 230 Reflecting on Nature",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 or sophomore standing"
+  },
+  {
+    "course": "PHI 241 Science, Technology & Ethics",
+    "prerequisites": null
+  },
+  {
+    "course": "PHI 244 Political Philosophy (PSC)",
+    "prerequisites": null
+  },
+  {
+    "course": "PHI 245 Philosophy of Art",
+    "prerequisites": null
+  },
+  {
+    "course": "PHI 250 Minds, Brains & Machines",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "PHI 261 Bodies and Sexuality (WGS)",
+    "prerequisites": null
+  },
+  {
+    "course": "PHI 271 South Asian Phil (AST, REL)",
+    "prerequisites": null
+  },
+  {
+    "course": "PHI 275 Philosophy in World Traditions",
+    "prerequisites": null
+  },
+  {
+    "course": "PHI 281 Islamic Philosophy (REL)",
+    "prerequisites": null
+  },
+  {
+    "course": "PHI 305 Classical Philosophy",
+    "prerequisites": "One PHI course"
+  },
+  {
+    "course": "PHI 310 Philosophy: Descartes to Kant",
+    "prerequisites": "One PHI course"
+  },
+  {
+    "course": "PHI 315 Kant & Philosophical Legacies",
+    "prerequisites": "One PHI course"
+  },
+  {
+    "course": "PHI 380 Philosophy Seminar I",
+    "prerequisites": "One 300-level PHI course or permission of instructor"
+  },
+  {
+    "course": "PHI 480 Philosophy Seminar II",
+    "prerequisites": "PHI 380"
+  },
+  {
+    "course": "PHY 110 History of Cosmology (HIS)",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "PHY 111 Introduction to Astronomy",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "PHY 127 General Physics I",
+    "prerequisites": "Completion or waiver of MAT 115"
+  },
+  {
+    "course": "PHY 128 General Physics II",
+    "prerequisites": "PHY 127; completion or waiver of MAT 125 or permission of Instructor"
+  },
+  {
+    "course": "PHY 130 Introduction to Engineering",
+    "prerequisites": "MAT 125 (or waiver), or concurrent enrollment OR permission of instructor"
+  },
+  {
+    "course": "PHY 221 Intro Physics I with Calculus",
+    "prerequisites": "MAT 135 (or waiver) or concurrent enrollment"
+  },
+  {
+    "course": "PHY 222 Intro Physics II with Calculus",
+    "prerequisites": "PHY 221 and MAT 225, or concurrent enrollment"
+  },
+  {
+    "course": "PHY 320 Modern Physics",
+    "prerequisites": "PHY 222 and MAT 135 (or waiver); OR permission of instructor"
+  },
+  {
+    "course": "PHY 321 Modern Physics II",
+    "prerequisites": "PHY 320; OR permission of instructor"
+  },
+  {
+    "course": "PHY 335 Optics",
+    "prerequisites": "PHY 222 or permission of instructor; AND MAT 225"
+  },
+  {
+    "course": "PHY 340 Biophysics",
+    "prerequisites": "Completion of PHY 128 or PHY 222"
+  },
+  {
+    "course": "PHY 341 Advanced General Laboratory",
+    "prerequisites": "PHY 222"
+  },
+  {
+    "course": "PHY 365 Thermal Physics",
+    "prerequisites": "PHY 221 and MAT 225; OR permission of instructor"
+  },
+  {
+    "course": "PHY 460 Electromagnetic Theory",
+    "prerequisites": "PHY 222 and MAT 330; OR permission of instructor"
+  },
+  {
+    "course": "PHY 481 Classical Mechanics",
+    "prerequisites": "PHY 221 and MAT 330"
+  },
+  {
+    "course": "PHY 482 Quantum Physics",
+    "prerequisites": "PHY 320 and 481; OR permission of instructor"
+  },
+  {
+    "course": "PHY 485 Materials Physics",
+    "prerequisites": "PHY 320 and MAT 225 or permission of instructor"
+  },
+  {
+    "course": "PHY 492 Physics Seminar",
+    "prerequisites": "Senior standing or permission of instructor"
+  },
+  {
+    "course": "PSC 100 Intro to Study of Politics",
+    "prerequisites": null
+  },
+  {
+    "course": "PSC 110 American Government",
+    "prerequisites": null
+  },
+  {
+    "course": "PSC 175 His & Pol of Arab-Isr (HIS)",
+    "prerequisites": null
+  },
+  {
+    "course": "PSC 201 Amer Political Thought(HIS)",
+    "prerequisites": null
+  },
+  {
+    "course": "PSC 202 Women Afr Amer-Pol (PSJ/WGS)",
+    "prerequisites": "GSTR 210"
+  },
+  {
+    "course": "PSC 210 U.S. E. Asian Foreign Pol(AST)",
+    "prerequisites": null
+  },
+  {
+    "course": "PSC 212 Fdn Comm & Civic Eng (PSJ/SOC)",
+    "prerequisites": null
+  },
+  {
+    "course": "PSC 220 Comparative Political Systems",
+    "prerequisites": "PSC 100 or permission of instructor"
+  },
+  {
+    "course": "PSC 235 Research Methods",
+    "prerequisites": "MAT 104 or permission of instructor"
+  },
+  {
+    "course": "PSC 244 Political Philosophy (PHI)",
+    "prerequisites": null
+  },
+  {
+    "course": "PSC 250 International Relations",
+    "prerequisites": "PSC 100 or permission of instructor"
+  },
+  {
+    "course": "PSC 314 American Constitutional Law",
+    "prerequisites": "PSC 110 or permission of instructor"
+  },
+  {
+    "course": "PSC 317 The Judicial Process",
+    "prerequisites": "PSC 110 or permission of instructor"
+  },
+  {
+    "course": "PSC 319 Citizen Politics",
+    "prerequisites": "PSC 110 or permission of instructor"
+  },
+  {
+    "course": "PSC 322 Congress and the Presidency",
+    "prerequisites": "PSC 110 or permission of instructor"
+  },
+  {
+    "course": "PSC 325 Public Admin & Public Policy",
+    "prerequisites": "PSC 110 or permission of instructor"
+  },
+  {
+    "course": "PSC 330 State & Local Govt & Politics",
+    "prerequisites": "PSC 110 or permission of instructor"
+  },
+  {
+    "course": "PSC 351 International Organizations",
+    "prerequisites": "PSC 250 (formerly 350)"
+  },
+  {
+    "course": "PSC 355 Foreign Policy Analysis",
+    "prerequisites": "PSC 250"
+  },
+  {
+    "course": "PSC 360 Int'l Political Economy (ECO)",
+    "prerequisites": "ECO 101 or 102"
+  },
+  {
+    "course": "PSC 460 Problems in Politics",
+    "prerequisites": "Permission of instructor"
+  },
+  {
+    "course": "PSC 480 Senior Research Seminar",
+    "prerequisites": null
+  },
+  {
+    "course": "PSJ 100 Fnd of Peace & Social Justice",
+    "prerequisites": null
+  },
+  {
+    "course": "PSJ 103 Intro Latina/o/x Studies (WGS)",
+    "prerequisites": null
+  },
+  {
+    "course": "PSJ 112 Nonviolent Communication (COM)",
+    "prerequisites": null
+  },
+  {
+    "course": "PSJ 113 Conflict and Mediation (COM)",
+    "prerequisites": null
+  },
+  {
+    "course": "PSJ 200 Latino Migrations to the U.S.",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "PSJ 201 Restorative Justice",
+    "prerequisites": null
+  },
+  {
+    "course": "PSJ 202 Women Afr Amer-Pol(AFR/PSC/WGS",
+    "prerequisites": "GSTR 210"
+  },
+  {
+    "course": "PSJ 205 Movements & Commnty Organizing",
+    "prerequisites": "L&I 100 (or waiver), or GSTR 110 (or waiver), or Permission of Instructor"
+  },
+  {
+    "course": "PSJ 210 Diversity and Social Justice",
+    "prerequisites": null
+  },
+  {
+    "course": "PSJ 212 Fdn Comm & Civic Eng (PSC/SOC)",
+    "prerequisites": null
+  },
+  {
+    "course": "PSJ 218 Voices of Non-violence",
+    "prerequisites": null
+  },
+  {
+    "course": "PSJ 225 Environmental Justice (SENS)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "PSJ 300 Ethnographic Methods",
+    "prerequisites": "junior standing"
+  },
+  {
+    "course": "PSJ 301 Restorative Justice",
+    "prerequisites": "junior standing"
+  },
+  {
+    "course": "PSJ 302 Topics in Peacebuilding",
+    "prerequisites": "junior standing"
+  },
+  {
+    "course": "PSJ 303 Topics Soc, Econ, Env Justice",
+    "prerequisites": "junior standing"
+  },
+  {
+    "course": "PSJ 305 Peacebuilding",
+    "prerequisites": "one 100 or 200 level PSJ course and junior standing"
+  },
+  {
+    "course": "PSJ 450 Sem. in Peace & Social Justice",
+    "prerequisites": "one 100 or 200 level PSJ course and junior standing"
+  },
+  {
+    "course": "PSY 100 General Psychology",
+    "prerequisites": null
+  },
+  {
+    "course": "PSY 200 Readings in Black Psy (AFR)",
+    "prerequisites": "SOC/ AFR 132 Race in America, HIS/ AFR 165 Introduction to African American History, or permission of instructor."
+  },
+  {
+    "course": "PSY 207 Principles of Learning w/ Lab",
+    "prerequisites": "PSY 100"
+  },
+  {
+    "course": "PSY 208 Cognitive Psychology with Lab",
+    "prerequisites": "PSY 100"
+  },
+  {
+    "course": "PSY 209 Social Psychology w/ Lab",
+    "prerequisites": "PSY 100"
+  },
+  {
+    "course": "PSY 210 Ind/Org Psy with Lab",
+    "prerequisites": "Completion of the Social Science Perspective & Practical Reasoning with Quantitative Emphasis (PRQ)"
+  },
+  {
+    "course": "PSY 211 Psychological Disorders",
+    "prerequisites": "Any course that meets the Social Science Perspective (including PSY 100)"
+  },
+  {
+    "course": "PSY 212 Behavioral Neuroscience w/ Lab",
+    "prerequisites": "PSY 100 or permission of instructor"
+  },
+  {
+    "course": "PSY 213 Child Psychopathology",
+    "prerequisites": "PSY 100 or CFS 130 ; OR permission of instructor"
+  },
+  {
+    "course": "PSY 214 Ethology with Lab",
+    "prerequisites": "PSY 100 or BIO 100 or BIO 110"
+  },
+  {
+    "course": "PSY 217 Cross-Cultural Psychology",
+    "prerequisites": "PSY 100"
+  },
+  {
+    "course": "PSY 225 Stats & Rsrch Meth-Behav Sci",
+    "prerequisites": "MAT 012 (or waiver), L&I 100 (or waiver) or GSTR 110 (or waiver), PSY 100 or SOC 100 , AND sophomore standing, or permission."
+  },
+  {
+    "course": "PSY 227 Health Psychology (HLT)",
+    "prerequisites": "PSY 100"
+  },
+  {
+    "course": "PSY 230 Psych of Women & Gender (WGS)",
+    "prerequisites": "PSY 100 or WGS 124"
+  },
+  {
+    "course": "PSY 231 Social Gerontology (CFS)",
+    "prerequisites": "Completion of the Social Science Perspective"
+  },
+  {
+    "course": "PSY 244 Developmental Psych with Lab",
+    "prerequisites": null
+  },
+  {
+    "course": "PSY 257 Consumer Behavior",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210 ; sophomore or junior standing preferred"
+  },
+  {
+    "course": "PSY 321 Personality Theory",
+    "prerequisites": "PSY 211 or instructor permission"
+  },
+  {
+    "course": "PSY 323 Clinical/Counseling Methods",
+    "prerequisites": "PSY 211"
+  },
+  {
+    "course": "PSY 325 Stats & Rsrch Meth-Behav Sc II",
+    "prerequisites": "PSY 225"
+  },
+  {
+    "course": "PSY 326 Preparing for Careers in Psy.",
+    "prerequisites": "Any 200 level PSY course."
+  },
+  {
+    "course": "PSY 420 His & Systems of Psychology",
+    "prerequisites": "PSY 100, PSY 325 and one other PSY course"
+  },
+  {
+    "course": "PSY 424 Senior Research",
+    "prerequisites": "PSY 325"
+  },
+  {
+    "course": "REL 100 Study of Religions",
+    "prerequisites": "GSTR 110 (or waiver)"
+  },
+  {
+    "course": "REL 105 Intro to Old Testament",
+    "prerequisites": "GSTR 110 (or waiver)"
+  },
+  {
+    "course": "REL 107 Intro to New Testament",
+    "prerequisites": null
+  },
+  {
+    "course": "REL 109 Intro to Christian Thought",
+    "prerequisites": null
+  },
+  {
+    "course": "REL 110 Religion and the Arts",
+    "prerequisites": null
+  },
+  {
+    "course": "REL 136 African Trad Religion",
+    "prerequisites": null
+  },
+  {
+    "course": "REL 201 The Study of Ritual",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 , REL 100, or permission of instructor"
+  },
+  {
+    "course": "REL 204 The Study of Spirituality",
+    "prerequisites": null
+  },
+  {
+    "course": "REL 211 Rel, Spirituality, Gender(WGS)",
+    "prerequisites": "L&I 100 (or wavier) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "REL 212 Rel, Rhetorics & Rationalities",
+    "prerequisites": "GSTR 110"
+  },
+  {
+    "course": "REL 222 Classical Mythology (CLS)",
+    "prerequisites": null
+  },
+  {
+    "course": "REL 224 Hinduism",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210 , REL 100, or permission of instructor"
+  },
+  {
+    "course": "REL 225 Images of Jesus",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "REL 228 Archaeology & Christian Script",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or wavier)."
+  },
+  {
+    "course": "REL 235 Christian Ethics",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "REL 238 African Amer Rel Traditions",
+    "prerequisites": "L&I 100 (or waiver), or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "REL 240 Islam",
+    "prerequisites": "Prerequisite: L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "REL 242 Religions and Atheisms",
+    "prerequisites": "GSTR 110"
+  },
+  {
+    "course": "REL 250 Judaism",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "REL 255 Therapeutic Hrsemnshp(ANRHHP)",
+    "prerequisites": "HLT 100 (Formerly PEH 100) or permission of instructor."
+  },
+  {
+    "course": "REL 260 Buddhism (AST)",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "REL 271 South Asian Phil (AST, PHI)",
+    "prerequisites": null
+  },
+  {
+    "course": "REL 281 Islamic Philosophy (PHI)",
+    "prerequisites": null
+  },
+  {
+    "course": "REL 302 Studies in Global Rels & Spirs",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 , REL 100, or permission of instructor"
+  },
+  {
+    "course": "REL 480 Sem Religions & Spiritualities",
+    "prerequisites": "Senior standing or permission of instructor"
+  },
+  {
+    "course": "SENS 100 Intro-Sustainability & Environ",
+    "prerequisites": "Completion or waiver of MAT 012"
+  },
+  {
+    "course": "SENS 215 Sustainable Appal Comm (APS)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "SENS 225 Environmental Justice (PSJ)",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210"
+  },
+  {
+    "course": "SENS 226 Coral Reef Ecosystems",
+    "prerequisites": "GSTR 210 , two terms completed at Berea College, and permission of instructors."
+  },
+  {
+    "course": "SENS 240 Appal Geo Resources (GEO)",
+    "prerequisites": null
+  },
+  {
+    "course": "SENS 248 Nature Ed/Young Children (CFS)",
+    "prerequisites": null
+  },
+  {
+    "course": "SENS 310 Ecology (BIO)",
+    "prerequisites": "A laboratory-science course"
+  },
+  {
+    "course": "SENS 320 Intro-Geographic Info Sys GEO",
+    "prerequisites": "Completion or waiver of MAT 115 or MAT 125; or permission of instructor"
+  },
+  {
+    "course": "SENS 328 Ecological Weed Manage. (ANR)",
+    "prerequisites": null
+  },
+  {
+    "course": "SENS 340 Intro to Ecological Design",
+    "prerequisites": "SENS 100 or GSTR 332 or permission of the instructor"
+  },
+  {
+    "course": "SENS 345 Ecological Architecture (ETAD)",
+    "prerequisites": "One of the following courses - SENS 340 , ART 246, TEC 111 or ETAD 130"
+  },
+  {
+    "course": "SENS 370 Envr Issue Public Pol (ECO)",
+    "prerequisites": "ECO 101 or 102; or permission of instructor"
+  },
+  {
+    "course": "SENS 394 Experiential Learning Proj",
+    "prerequisites": "SENS 100 and approval of the SENS Director"
+  },
+  {
+    "course": "SENS 460 Sustainability Capstone",
+    "prerequisites": "SENS 100"
+  },
+  {
+    "course": "SENS 494 Experiential Learning Proj",
+    "prerequisites": "SENS 100 and approval of the SENS Director"
+  },
+  {
+    "course": "SOC 100 Sociology of Everyday Life",
+    "prerequisites": null
+  },
+  {
+    "course": "SOC 110 Prob of American Institutions",
+    "prerequisites": null
+  },
+  {
+    "course": "SOC 132 Intro to Race in America",
+    "prerequisites": "Completion or waiver of MAT 010"
+  },
+  {
+    "course": "SOC 200 Sociology of Health",
+    "prerequisites": null
+  },
+  {
+    "course": "SOC 201 Sexualty Everyday Life CFS,WGS",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210 , and one of the following: CFS 130 , HLT 111 , SOC 100, WGS 124"
+  },
+  {
+    "course": "SOC 202 Crime and Justice",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210"
+  },
+  {
+    "course": "SOC 212 Fdn Comm & Civic Eng (PSC/PSJ)",
+    "prerequisites": null
+  },
+  {
+    "course": "SOC 215 Juvenile Delinquency",
+    "prerequisites": null
+  },
+  {
+    "course": "SOC 220 Cultural Anthropology",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "SOC 223 Soci Stratification & Inequal",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210 , or permission of instructor"
+  },
+  {
+    "course": "SOC 240 Kinshp/Gen SE Asia (AST/WGS)",
+    "prerequisites": null
+  },
+  {
+    "course": "SOC 300 Food, Culture & Society (CFS)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210 or permission of instructor"
+  },
+  {
+    "course": "SOC 325 Gender and Sex Roles (WGS)",
+    "prerequisites": "SOC 100 or PSY 100 or CFS 130 , AND L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "SOC 330 Comm Analysis:Appal Case(APS)",
+    "prerequisites": "One introductory ECO, HIS, PSC, or SOC course"
+  },
+  {
+    "course": "SOC 335 Methods of Social Research",
+    "prerequisites": "Completion or waiver of MAT 012; and SOC 100 or PSJ 100; or permission of instructor"
+  },
+  {
+    "course": "SOC 340 Social Statistics-Diverse Soc",
+    "prerequisites": "Successful completion of both Practical Reasoning with Quantitative Emphasis (PRQ) and the Social Science Perspective"
+  },
+  {
+    "course": "SOC 341 Soc of Dev & Social Change",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "SOC 348 Work, Organizatns & Occupatns",
+    "prerequisites": "One 100-level SOC or PSC or PSY or ECO or HIS course; and L&I 200 (or waiver) or GSTR 210"
+  },
+  {
+    "course": "SOC 350 Theories Guiding Sociology",
+    "prerequisites": "SOC 100 , and L&I 200 (or waiver) or GSTR 210"
+  },
+  {
+    "course": "SOC 360 Soc Policy Study & Eval Resrch",
+    "prerequisites": "One 100-level course that meets the Social Science requirement or PSJ 100 AND Junior or Senior Standing OR Permission of instructor"
+  },
+  {
+    "course": "SOC 436 Sociological Methods in Action",
+    "prerequisites": "SOC 335"
+  },
+  {
+    "course": "SOC 461 Field Exper-Social Policy Stdy",
+    "prerequisites": "SOC 360 and permission of instructor"
+  },
+  {
+    "course": "SPN 101 Introduction to Spanish I",
+    "prerequisites": "Permission of Program"
+  },
+  {
+    "course": "SPN 102 Introduction to Spanish II",
+    "prerequisites": "SPN 101 with a grade of C or higher OR permission of instructor"
+  },
+  {
+    "course": "SPN 103 Introduction to Spanish III",
+    "prerequisites": "SPN 102 with a grade of C or higher OR permission of instructor"
+  },
+  {
+    "course": "SPN 140 History of Spain (HIS)",
+    "prerequisites": null
+  },
+  {
+    "course": "SPN 310 Advanced Grammar & Composition",
+    "prerequisites": "SPN 103 with a grade of C or higher OR permission of instructor"
+  },
+  {
+    "course": "SPN 312 Conversation",
+    "prerequisites": "SPN 310 with C or higher or Permission of Instructor"
+  },
+  {
+    "course": "SPN 315 Intro to Spanish Literature",
+    "prerequisites": "SPN 310 with a grade of C or higher OR permission of instructor"
+  },
+  {
+    "course": "SPN 320 Peninsular Literature I",
+    "prerequisites": "SPN 310 and 315 with a grade of C or higher in each; OR permission of instructor"
+  },
+  {
+    "course": "SPN 321 Peninsular Literature II",
+    "prerequisites": "SPN 310 and 315 with a grade of C or higher in each; OR permission of instructor"
+  },
+  {
+    "course": "SPN 330 Spanish American Literature I",
+    "prerequisites": "SPN 310 and 315 with a grade of C or higher in each; OR permission of instructor"
+  },
+  {
+    "course": "SPN 331 Spanish American Literature II",
+    "prerequisites": "SPN 310 and 315 with a grade of C or higher in each; OR permission of instructor"
+  },
+  {
+    "course": "SPN 340 The Novel",
+    "prerequisites": "SPN 300, 310, and 315 with a grade of C or higher in each; OR permission of instructor"
+  },
+  {
+    "course": "THR 105 Script Analysis",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 115 Principles of Acting",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 124 Visual Concepts for the Stage",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 128 The Complete Performer",
+    "prerequisites": "Students will be admitted by audition. Previous significant musical/theatrical experience or private applied vocal study is necessary. Class members should consider themselves multi-faceted singing actors/musicians. Audition: Sing one song and present a prepared or assigned monologue."
+  },
+  {
+    "course": "THR 135 Film Production",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 200 Survey of Amer Music Thr (MUS)",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 202 Acting for Film",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 213 First Theatre in Human Culture",
+    "prerequisites": "THR 105"
+  },
+  {
+    "course": "THR 218 Drama & Theatre for Teachers",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 220 Seminar in Design & Production",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 222 Per St:Telling Stories (COM)",
+    "prerequisites": "L&I 200 (or waiver) or GSTR 210"
+  },
+  {
+    "course": "THR 227 Voice and Diction",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 232 Feminist Solo Performance(WGS)",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 233 Queer Theatre (WGS)",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 300 Acting Practicum",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 301 Design Practicum",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 302 Directing Practicum",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 303 Stage Management Practicum",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 304 Technical Theatre Practicum",
+    "prerequisites": null
+  },
+  {
+    "course": "THR 308 Seminar in Theatre History",
+    "prerequisites": "THR 105"
+  },
+  {
+    "course": "THR 317 Principles of Directing",
+    "prerequisites": "THR 105 ; AND THR 115 ; AND THR 213 (preferred) or THR 308"
+  },
+  {
+    "course": "THR 321 Seminar in Theatre Management",
+    "prerequisites": "THR 105 and junior standing or above OR permission of instructor"
+  },
+  {
+    "course": "THR 327 Seminar in Advanced Acting",
+    "prerequisites": "THR 105 and THR 115 and junior standing or above OR permission of the instructor"
+  },
+  {
+    "course": "THR 331 Film Production: Documentary",
+    "prerequisites": "THR 135"
+  },
+  {
+    "course": "THR 332 Film Production: Feature Film",
+    "prerequisites": "THR 135"
+  },
+  {
+    "course": "THR 400 Senior Theatre Practicum",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 101 Principles of Wellness I",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 102 Principles of Wellness II",
+    "prerequisites": "WELL 101 -Principles of Wellness I"
+  },
+  {
+    "course": "WELL 150 Principles of Wellness",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 200 Survival Swimming",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 201 Jog Your First 10k",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 202 Ultimate Frisbee",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 203 Individualized Phys Education",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 204 Yoga (AST)",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 205 Tai Chi (AST)",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 206P Middle Eastern Dance Ensemble",
+    "prerequisites": "Permission of instructor"
+  },
+  {
+    "course": "WELL 206Y Artists in Modern Motion",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 206Z Country Dancers",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 207 Track & Field",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 209 Adv Begin & Intermediate Swim",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 210 Pilates",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 211 Self Defense and Martial Arts",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 213 Golf",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 214 Badminton - Tennis",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 215 Aerobic Dance",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 216 B.A.M.",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 217 Walking for Fitness",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 218 Weight Training",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 220 Stress Management",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 221 Weight Management",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 222 Water Fitness",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 223 Outdoor Adventure Activities",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 224 Modern Dance I",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 226 Racquetball",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 227 Movement for the Stage",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 228 Social and Folk Dance",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 229 Beginning Jazz Dance",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 230 Beginning Ballet",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 231 Self Defense & Martial Arts II",
+    "prerequisites": "WELL 211 (Formerly HHP 211 /PED 211) or equivalent; or permission of instructor"
+  },
+  {
+    "course": "WELL 233 Dance in Healing & Therapy",
+    "prerequisites": "L&I 100 (or waiver) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "WELL 234 Choreography Practicum I",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 235 Middle Eastern Dance & Culture",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 236 Volleyball & Recreation Games",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 237 Hiking & Campcraft",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 238 Fencing",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 242 Scuba",
+    "prerequisites": "medical clearance (PADI) and pass the swim test (swim 200 yards and tread water for 10 minutes), or permission of instructor"
+  },
+  {
+    "course": "WELL 259 Ballroom Dance",
+    "prerequisites": null
+  },
+  {
+    "course": "WELL 310 Adv Swim - Lifeguard Training",
+    "prerequisites": "WELL 150 or WELL 101 and intermediate swimming proficiency OR permission of instructor"
+  },
+  {
+    "course": "WELL 332 Modern Dance II",
+    "prerequisites": "WELL 150 , and one of the following courses, WELL 224 , WELL 229 , WELL 230 or permission of instructor"
+  },
+  {
+    "course": "WELL 334 Choreography Practicum II",
+    "prerequisites": "WELL 234 and HHP 305 or HHP 233, HHP 245, HHP 248 , or HHP 249 ."
+  },
+  {
+    "course": "WELL 434 Choreography Practicum III",
+    "prerequisites": "WELL 334 and HHP 305 or HHP 233, HHP 245, HHP 248 , or HHP 249 ."
+  },
+  {
+    "course": "WGS 103 Intro Latina/o/x Studies (PSJ)",
+    "prerequisites": null
+  },
+  {
+    "course": "WGS 111 Human Sexuality (HLT)",
+    "prerequisites": null
+  },
+  {
+    "course": "WGS 124 Intro: Decolonizing Feminism",
+    "prerequisites": null
+  },
+  {
+    "course": "WGS 135 Afr-Amer Women Writers (ENG)",
+    "prerequisites": null
+  },
+  {
+    "course": "WGS 200 Inst Queer/Transgender Studies",
+    "prerequisites": null
+  },
+  {
+    "course": "WGS 201 Sexualty Everyday Life CFS,SOC",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210 , and one of the following: CFS 130 , HLT 111 , SOC 100, WGS 124"
+  },
+  {
+    "course": "WGS 202 Women Afr Amer-Pol(AFR/PSC/PSJ",
+    "prerequisites": "GSTR 210"
+  },
+  {
+    "course": "WGS 204 Race, Gender and Media (COM)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "WGS 204 Race, Gender and Media (COM)",
+    "prerequisites": "GSTR 210"
+  },
+  {
+    "course": "WGS 206 Feminist&Queer Dis/Ability Std",
+    "prerequisites": null
+  },
+  {
+    "course": "WGS 207 Family Relations (CFS)",
+    "prerequisites": "L&I 100 (or wavier) or GSTR 110 (or waiver)"
+  },
+  {
+    "course": "WGS 208 Black Feminist Theory",
+    "prerequisites": null
+  },
+  {
+    "course": "WGS 211 Rel, Spirituality, Gender(REL)",
+    "prerequisites": "GSTR 110 (or waiver)"
+  },
+  {
+    "course": "WGS 212 Lit-Caribbean Women (ENG)",
+    "prerequisites": "GSTR 210"
+  },
+  {
+    "course": "WGS 220 Gender in Appalachia (APS)",
+    "prerequisites": null
+  },
+  {
+    "course": "WGS 230 Psych of Women & Gender (PSY)",
+    "prerequisites": "PSY 100 or WGS 124"
+  },
+  {
+    "course": "WGS 232 Feminist Solo Performance(THR)",
+    "prerequisites": null
+  },
+  {
+    "course": "WGS 233 Queer Theatre (THR)",
+    "prerequisites": null
+  },
+  {
+    "course": "WGS 236 Women & Health (HLT)",
+    "prerequisites": "HLT 200 OR a college course in Women’s, Gender, and Sexuality Studies OR permission of instructor"
+  },
+  {
+    "course": "WGS 237 Women and Literature (ENG)",
+    "prerequisites": "Sophomore standing or above"
+  },
+  {
+    "course": "WGS 240 Kinshp/Gen SE Asia (AST)",
+    "prerequisites": null
+  },
+  {
+    "course": "WGS 243 Women in Art (ARH)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "WGS 261 Bodies and Sexuality (PHI)",
+    "prerequisites": null
+  },
+  {
+    "course": "WGS 302 Intro to Queer Theory",
+    "prerequisites": "WGS 124 or ENG 110 or permission"
+  },
+  {
+    "course": "WGS 310 Communication and Gender (COM)",
+    "prerequisites": "L&I 200 (or wavier) or GSTR 210 , or permission of instructor"
+  },
+  {
+    "course": "WGS 325 Gender and Sex Roles (SOC)",
+    "prerequisites": "SOC 100 or PSY 100 or CFS 130 ; AND L&I 200 (or wavier) or GSTR 210"
+  },
+  {
+    "course": "WGS 366 Cross-Cultrl Persp-Fam(CFS)",
+    "prerequisites": "CFS 207 or SOC 100 , junior standing, or permission of instructor"
+  },
+  {
+    "course": "WGS 450 Capstone: Intersectionality",
+    "prerequisites": "WGS 124"
+  }
+]

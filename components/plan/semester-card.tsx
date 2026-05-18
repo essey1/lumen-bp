@@ -7,9 +7,11 @@ interface Course {
   code: string
   name: string
   credits: number
+  fulfills?: string[]
   isPlaceholder?: boolean
   placeholderCategory?: string
   category?: string
+  scheduleDisclaimer?: boolean
 }
 
 interface SemesterCardProps {
@@ -73,6 +75,16 @@ export function SemesterCard({
               )}>
                 {course.name}
               </p>
+              {!course.isPlaceholder && course.fulfills && course.fulfills.length > 0 && (
+                <p className="mt-0.5 text-[10px] text-muted-foreground/60 leading-tight">
+                  {course.fulfills.join(" · ")}
+                </p>
+              )}
+              {course.scheduleDisclaimer && (
+                <p className="mt-0.5 text-[10px] text-amber-600/70 leading-tight italic">
+                  ≈ semester may vary — confirm with advisor
+                </p>
+              )}
             </div>
             <Badge 
               variant={course.isPlaceholder ? "outline" : "secondary"} 

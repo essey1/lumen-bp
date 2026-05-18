@@ -1,4 +1,5 @@
 import { generateText } from "ai";
+import { anthropic } from "@ai-sdk/anthropic";
 
 export async function POST(req: Request) {
   try {
@@ -47,7 +48,7 @@ One concrete suggestion for gaining relevant experience (internships, projects, 
 Keep the tone encouraging and practical. Be specific to Berea College's unique work-study culture and their career goals.`;
 
     const result = await generateText({
-      model: "anthropic/claude-sonnet-4",
+      model: anthropic("claude-sonnet-4-5"),
       prompt,
     });
 

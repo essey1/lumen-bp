@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:berea.smartcatalogiq.com)",
+      "Bash(npx tsc *)",
+      "Bash(node --input-type=module)",
+      "Bash(node_modules/.bin/jiti scripts/test-plan.ts)",
+      "Bash(grep -n \"^  [A-Z_]*: {$\\\\|code:\" lib/majors-data.ts)",
+      "Bash(node_modules/.bin/jiti scripts/check-prereqs2.ts)",
+      "Bash(node scripts/update-prereqs.mjs)",
+      "Bash(python3 scripts/fix-catalog.py)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
+    ]
+  }
+}
