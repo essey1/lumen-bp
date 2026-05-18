@@ -12,18 +12,17 @@ import { InterestsStep } from "@/components/planner/interests-step"
 import { CareerStep } from "@/components/planner/career-step"
 import { MathPlacementStep } from "@/components/planner/math-placement-step"
 import { WaivedCoursesStep } from "@/components/planner/waived-courses-step"
-import { CompletedSemestersStep, type CompletedSemesterData } from "@/components/planner/completed-semesters-step"
+import { type CompletedSemesterData } from "@/components/planner/completed-semesters-step"
 import { AVAILABLE_MAJORS } from "@/lib/majors-data"
 import type { MathPlacement } from "@/lib/types"
 
 const STEPS = [
-  { id: 1, title: "Major",              description: "Choose your field of study" },
-  { id: 2, title: "Minor",              description: "Add a minor (optional)" },
-  { id: 3, title: "Interests",          description: "What excites you academically?" },
-  { id: 4, title: "Career Goals",       description: "Where are you headed?" },
-  { id: 5, title: "Math Waiver",        description: "Up to what math level have you waived?" },
-  { id: 6, title: "Other Waivers",      description: "Add any other courses already waived" },
-  { id: 7, title: "Your Progress",      description: "How many semesters have you completed?" },
+  { id: 1, title: "Major",          description: "Choose your field of study" },
+  { id: 2, title: "Minor",          description: "Add a minor (optional)" },
+  { id: 3, title: "Interests",      description: "What excites you academically?" },
+  { id: 4, title: "Career Goals",   description: "Where are you headed?" },
+  { id: 5, title: "Math Waiver",    description: "Up to what math level have you waived?" },
+  { id: 6, title: "Other Waivers",  description: "Add any other courses already waived" },
 ]
 
 export default function PlannerPage() {
@@ -37,21 +36,26 @@ export default function PlannerPage() {
     mathPlacement: "none" as MathPlacement,
     waivedCourses: [] as string[],
   })
-  const [completedCount, setCompletedCount] = useState(0)
   const [completedSemesters, setCompletedSemesters] = useState<CompletedSemesterData[]>([])
 
-  // Pre-populate majors from the user's profile (if logged in)
+  // Pre-populate majors and completed semesters from the user's profile (if logged in)
   useEffect(() => {
     fetch("/api/profile")
       .then(r => r.ok ? r.json() : null)
       .then(profile => {
-        if (!profile?.major) return
-        const names: string[] = profile.major.split(", ").map((s: string) => s.trim()).filter(Boolean)
-        const codes = names
-          .map(name => AVAILABLE_MAJORS.find(m => m.name === name)?.code)
-          .filter((c): c is string => !!c)
-        if (codes.length > 0) {
-          setFormData(prev => ({ ...prev, majors: codes }))
+        if (!profile) return
+        if (profile.major) {
+          const names: string[] = profile.major.split(", ").map((s: string) => s.trim()).filter(Boolean)
+          const codes = names
+            .map((name: string) => AVAILABLE_MAJORS.find(m => m.name === name)?.code)
+            .filter((c): c is string => !!c)
+          if (codes.length > 0) setFormData(prev => ({ ...prev, majors: codes }))
+        }
+        if (profile.completedSemesters) {
+          try {
+            const parsed: CompletedSemesterData[] = JSON.parse(profile.completedSemesters)
+            setCompletedSemesters(parsed)
+          } catch { /* ignore */ }
         }
       })
       .catch(() => {}) // not logged in — skip
@@ -63,7 +67,7 @@ export default function PlannerPage() {
     if (currentStep < STEPS.length) {
       setCurrentStep(currentStep + 1)
     } else {
-      // Store completed semesters in sessionStorage for the plan page
+      // Pass completed semesters (from profile) via sessionStorage to the plan page
       if (completedSemesters.length > 0) {
         sessionStorage.setItem("completedSemesters", JSON.stringify(completedSemesters))
       } else {
@@ -77,7 +81,6 @@ export default function PlannerPage() {
       if (formData.careerGoals.length > 0) params.set("careerGoals", formData.careerGoals.join(","))
       if (formData.mathPlacement !== "none") params.set("mathPlacement", formData.mathPlacement)
       if (formData.waivedCourses.length > 0) params.set("waivedCourses", formData.waivedCourses.join(","))
-      if (completedCount > 0) params.set("completedCount", String(completedCount))
       router.push(`/plan?${params.toString()}`)
     }
   }
@@ -98,7 +101,6 @@ export default function PlannerPage() {
       case 4: return formData.careerGoals.length >= 1
       case 5: return true
       case 6: return true
-      case 7: return true
       default: return true
     }
   }
@@ -198,14 +200,6 @@ export default function PlannerPage() {
               <WaivedCoursesStep
                 selected={formData.waivedCourses}
                 onChange={v => updateFormData("waivedCourses", v)}
-              />
-            )}
-            {currentStep === 7 && (
-              <CompletedSemestersStep
-                completedCount={completedCount}
-                onCountChange={setCompletedCount}
-                semesters={completedSemesters}
-                onSemestersChange={setCompletedSemesters}
               />
             )}
           </div>

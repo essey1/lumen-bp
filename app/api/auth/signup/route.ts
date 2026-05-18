@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password, major, year, bio } = await request.json();
+    const { name, email, password, major, year, bio, completedSemesters } = await request.json();
 
     if (!email || !password || !name) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -34,6 +34,7 @@ export async function POST(request: NextRequest) {
         major: major || null,
         year: year ? parseInt(year) : null,
         bio: bio || null,
+        completedSemesters: completedSemesters ? JSON.stringify(completedSemesters) : null,
       },
     });
 

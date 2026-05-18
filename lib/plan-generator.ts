@@ -71,9 +71,12 @@ function planTypeOffset(planType: "A" | "B" | "C"): number {
 // Sub-100-level and catalog-absent courses are excluded from every group.
 function buildPrereqMap(): Record<string, string[][]> {
   const map: Record<string, string[][]> = {
-    "L&I 200": [["L&I 100"]],
-    "L&I 300": [["L&I 200"]],
-    "L&I 400": [["L&I 300"]],
+    "L&I 200": [["L&I 100", "GSTR 110"]],
+    "L&I 300": [["L&I 200", "GSTR 210"]],
+    "L&I 400": [["L&I 300", "GSTR 310"]],
+    "GSTR 210": [["GSTR 110", "L&I 100"]],
+    "GSTR 310": [["GSTR 210", "L&I 200"]],
+    "GSTR 410": [["GSTR 310", "L&I 300"]],
   };
   for (const [code, course] of Object.entries(COURSE_CATALOG)) {
     if (!course.prerequisites) continue;
@@ -1039,6 +1042,17 @@ function scoreCourseFit(code: string, profile: StudentProfile, planType: "A" | "
   return score;
 }
 
+// How many direct prerequisites of `code` are not yet satisfied (i.e. not in usedCodes).
+// Used to penalise course picks that drag in long prerequisite chains.
+function unmetPrereqCount(code: string, usedCodes: Set<string>): number {
+  const groups = PREREQUISITES[code] ?? [];
+  let unmet = 0;
+  for (const orGroup of groups) {
+    if (!orGroup.some(p => usedCodes.has(p))) unmet++;
+  }
+  return unmet;
+}
+
 // Build cross-requirement bonus: courses appearing in more requirement pools score higher.
 // A course that satisfies both PHY Additional Distribution AND MAT minor gets a bonus.
 function buildCrossReqBonus(profile: StudentProfile): Record<string, number> {
@@ -1300,7 +1314,7 @@ function findInterestElective(
 }
 
 // Returns a descriptive placeholder label based on the student's profile.
-function electivePlaceholderLabel(profile: StudentProfile, preferred: string[]): string {
+function electivePlaceholderLabel(_profile: StudentProfile, preferred: string[]): string {
   for (const dept of preferred) {
     if (DEPT_DISPLAY_NAMES[dept]) return DEPT_DISPLAY_NAMES[dept];
   }
@@ -1513,7 +1527,13 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
         for (const sub of req.selectFromCategories) {
           const candidates = sub.courses
             .filter(c => !collected.has(c) && COURSE_CATALOG[c] && !isInternshipCode(c) && !isOtherMajorCapstone(c, profile.majors))
-            .sort((a, b) => scoreUpperLevelCourse(b, profile, "A") - scoreUpperLevelCourse(a, profile, "A"));
+            .sort((a, b) => {
+              // Interest fit minus prereq-chain penalty: prefer courses the student cares
+              // about AND whose prerequisites are already satisfied or planned.
+              const netA = scoreUpperLevelCourse(a, profile, planType) - unmetPrereqCount(a, collected) * 3;
+              const netB = scoreUpperLevelCourse(b, profile, planType) - unmetPrereqCount(b, collected) * 3;
+              return netB - netA;
+            });
 
           const subOffset = planTypeOffset(planType);
           const code = candidates.length > 0 ? candidates[Math.min(subOffset, candidates.length - 1)] : undefined;
@@ -1747,6 +1767,27 @@ export interface CompletedSemesterInput {
   courses: { code: string; name: string; credits: number }[];
 }
 
+// GSTR and L&I are fully interchangeable at Berea College.
+// If a student completed one, the other is considered satisfied.
+const GSTR_LI_EQUIVALENTS: Record<string, string> = {
+  "GSTR 110": "L&I 100",
+  "GSTR 210": "L&I 200",
+  "GSTR 310": "L&I 300",
+  "GSTR 410": "L&I 400",
+  "L&I 100": "GSTR 110",
+  "L&I 200": "GSTR 210",
+  "L&I 300": "GSTR 310",
+  "L&I 400": "GSTR 410",
+};
+
+function markEquivalents(code: string, usedCodes: Set<string>, placedMap: Map<string, number>) {
+  const eq = GSTR_LI_EQUIVALENTS[code];
+  if (eq && !usedCodes.has(eq)) {
+    usedCodes.add(eq);
+    placedMap.set(eq, -1);
+  }
+}
+
 export function generateAcademicPlan(
   profile: StudentProfile,
   options?: { planType?: "A" | "B" | "C"; completedSemesters?: CompletedSemesterInput[] }
@@ -1766,15 +1807,18 @@ export function generateAcademicPlan(
   // Mark all courses from completed semesters as already taken
   for (const sem of completedSems) {
     for (const c of sem.courses) {
-      if (c.code.trim()) {
-        usedCodes.add(c.code.trim());
-        placedMap.set(c.code.trim(), -1);
+      const code = c.code.trim();
+      if (code) {
+        usedCodes.add(code);
+        placedMap.set(code, -1);
+        markEquivalents(code, usedCodes, placedMap);
       }
     }
   }
 
   for (const code of waivedCourses) {
     placedMap.set(code, -1);
+    markEquivalents(code, usedCodes, placedMap);
   }
 
   for (let year = 1; year <= 4; year++) {
@@ -1925,24 +1969,37 @@ export function generateAcademicPlan(
           (s.item.course.scheduleDisclaimer || isCourseAvailable(s.item.course.code, sem))
         )
         .sort((a, b) => {
+          // Primary: tightest deadline first (most urgent)
+          const urgency = (a.latest - b.latest) || (a.earliest - b.earliest);
+          if (urgency !== 0) return urgency;
+          // Secondary: courses satisfying more requirement pools first (helps double majors)
+          const crossBonus = (crossReqBonus[b.item.course.code] ?? 0) - (crossReqBonus[a.item.course.code] ?? 0);
+          if (crossBonus !== 0) return crossBonus;
+          // Tertiary: interest/career alignment — pick the course the student cares about
+          const interestA = scoreCourseFit(a.item.course.code, profile, planType);
+          const interestB = scoreCourseFit(b.item.course.code, profile, planType);
+          if (interestA !== interestB) return interestB - interestA;
+          // Plan-type variation for diversity
           if (planType === "B") {
             const hashA = a.item.course.code.charCodeAt(0) % 2;
             const hashB = b.item.course.code.charCodeAt(0) % 2;
-            return (a.latest - b.latest) || (a.earliest - b.earliest) || (hashA - hashB);
+            return hashA - hashB;
           }
           if (planType === "C") {
             const hashA = a.item.course.code.split("").reduce((s: number, c: string) => s * 31 + c.charCodeAt(0), 1) % 3;
             const hashB = b.item.course.code.split("").reduce((s: number, c: string) => s * 31 + c.charCodeAt(0), 1) % 3;
-            return (a.latest - b.latest) || (a.earliest - b.earliest) || (hashA - hashB);
+            return hashA - hashB;
           }
-          return a.latest - b.latest || a.earliest - b.earliest;
+          return 0;
         });
     }
 
-    // Major (up to 2)
+    // Double majors get 3 major slots/semester so all requirements can fit.
+    // Single major stays at 2 to preserve room for GEM and electives.
+    const maxMajorSlots = profile.majors.length >= 2 ? 3 : 2;
     let majorPlaced = 0;
     for (const s of readyForSem("Major")) {
-      if (majorPlaced >= 2 || open() <= 0) break;
+      if (majorPlaced >= maxMajorSlots || open() <= 0) break;
       const lvl = parseInt(s.item.course.code.match(/\d+/)?.[0] ?? "0");
       if (sem >= 2 && lvl >= 100 && lvl < 200 && count100Level(semesters[sem].courses) >= 2) continue;
       placeCourse(semesters, s.item.course, sem, placedMap);
@@ -2084,6 +2141,45 @@ export function generateAcademicPlan(
       }));
     const total = courses.reduce((s, c) => s + c.credits, 0);
     semesters[i] = { year: src.year, semester: src.semester, courses, totalCredits: total, isOverloaded: false, isCompleted: true };
+  }
+
+  // Post-replacement rescue: required courses the generator placed inside a completed
+  // semester got wiped when we swapped in actual student data. Find them and re-place
+  // them in the first available future semester (completedCount onward).
+  if (completedCount > 0) {
+    const actualCompletedCodes = new Set(
+      completedSems.flatMap(s => s.courses.map(c => c.code.trim()).filter(Boolean))
+    );
+    const wipedSlots = allSlots.filter(s => {
+      if (s.placed && s.item.course.isPlaceholder) return false;
+      const placedSem = placedMap.get(s.item.course.code);
+      if (placedSem === undefined || placedSem < 0 || placedSem >= completedCount) return false;
+      return !actualCompletedCodes.has(s.item.course.code);
+    });
+
+    for (const s of wipedSlots) {
+      placedMap.delete(s.item.course.code);
+      s.placed = false;
+      let rescued = false;
+      s.item.course.scheduleDisclaimer = true;
+      for (let sem = completedCount; sem < 8 && !rescued; sem++) {
+        if (!prereqsMet(s.item.course.code, sem, placedMap)) continue;
+        if (semesters[sem].totalCredits >= 4) {
+          const idx = semesters[sem].courses.findIndex(c => c.isPlaceholder || c.category === "Elective");
+          if (idx === -1) continue;
+          semesters[sem].totalCredits -= semesters[sem].courses[idx].credits;
+          semesters[sem].courses.splice(idx, 1);
+        }
+        if (semesters[sem].totalCredits >= 4) continue;
+        placeCourse(semesters, s.item.course, sem, placedMap);
+        applyGEM(gemTracker, s.item.course.code);
+        s.placed = true;
+        rescued = true;
+      }
+      if (!s.placed) {
+        unfulfilledRequirements.push(`${s.item.course.name} (${s.item.course.fulfills.join(", ")})`);
+      }
+    }
   }
 
   // Recompute totals with completed semesters included

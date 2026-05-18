@@ -18,9 +18,10 @@ model User {
   password      String?
   image         String?
   otpEnabled    Boolean   @default(true)
-  major         String?
-  year          Int?
-  bio           String?
+  major              String?
+  year               Int?
+  bio                String?
+  completedSemesters String?  // JSON array of CompletedSemesterData
   accounts      Account[]
   sessions      Session[]
   otps          OTP[]

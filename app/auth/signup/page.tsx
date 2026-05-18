@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Sparkles, ChevronRight, ChevronLeft, Check } from "lucide-react";
+import { CompletedSemestersStep, type CompletedSemesterData } from "@/components/planner/completed-semesters-step";
 
 // Groups of majors that share a department (only one allowed per group)
 const DEPT_GROUPS = [
@@ -94,6 +95,7 @@ const STEP_TITLES = [
   "Welcome to Lumen",
   "Your Major",
   "Academic Year",
+  "Your Progress",
   "Your Interests",
   "Create Password",
   "Verify Your Email",
@@ -103,6 +105,7 @@ const STEP_SUBTITLES = [
   "Let's start with your name and email",
   "What are you studying at Berea College?",
   "What year are you currently in?",
+  "Tell us about semesters you've already completed",
   "Tell us about your goals and interests",
   "Secure your Lumen account",
   "Enter the 6-digit code we sent to your email",
@@ -122,11 +125,14 @@ export default function SignupPage() {
   // Step 3
   const [year, setYear] = useState("");
   // Step 4
-  const [bio, setBio] = useState("");
+  const [completedCount, setCompletedCount] = useState(0);
+  const [completedSemesters, setCompletedSemesters] = useState<CompletedSemesterData[]>([]);
   // Step 5
+  const [bio, setBio] = useState("");
+  // Step 6
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // Step 6
+  // Step 7
   const [otp, setOtp] = useState("");
 
   function validateStep(): string | null {
@@ -141,7 +147,7 @@ export default function SignupPage() {
     if (step === 3) {
       if (!year) return "Please select your academic year.";
     }
-    if (step === 5) {
+    if (step === 6) {
       if (password.length < 8) return "Password must be at least 8 characters.";
       if (!/[A-Z]/.test(password)) return "Password must contain at least one uppercase letter.";
       if (!/[a-z]/.test(password)) return "Password must contain at least one lowercase letter.";
@@ -157,7 +163,7 @@ export default function SignupPage() {
     const err = validateStep();
     if (err) { setError(err); return; }
 
-    if (step === 5) {
+    if (step === 6) {
       await createAccount();
       return;
     }
@@ -171,7 +177,7 @@ export default function SignupPage() {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), email: email.trim().toLowerCase(), password, major: majors.join(", "), year: parseInt(year), bio }),
+        body: JSON.stringify({ name: name.trim(), email: email.trim().toLowerCase(), password, major: majors.join(", "), year: parseInt(year), bio, completedSemesters: completedSemesters.length > 0 ? completedSemesters : null }),
       });
 
       if (!res.ok) {
@@ -193,7 +199,7 @@ export default function SignupPage() {
         return;
       }
 
-      setStep(6);
+      setStep(7);
     } catch {
       setError("An error occurred. Please try again.");
     } finally {
@@ -278,7 +284,7 @@ export default function SignupPage() {
       <div className="h-1 bg-muted">
         <div
           className="h-full bg-primary transition-all duration-500"
-          style={{ width: `${(step / 6) * 100}%` }}
+          style={{ width: `${(step / 7) * 100}%` }}
         />
       </div>
 
@@ -286,7 +292,7 @@ export default function SignupPage() {
         <div className="w-full max-w-md">
           {/* Step indicator */}
           <div className="mb-2 flex items-center gap-1.5">
-            {Array.from({ length: 6 }, (_, i) => (
+            {Array.from({ length: 7 }, (_, i) => (
               <div
                 key={i}
                 className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
@@ -296,7 +302,7 @@ export default function SignupPage() {
             ))}
           </div>
 
-          <p className="mb-1 text-xs text-muted-foreground">Step {step} of 6</p>
+          <p className="mb-1 text-xs text-muted-foreground">Step {step} of 7</p>
           <h1 className="mb-1 text-2xl font-bold text-foreground">{STEP_TITLES[step - 1]}</h1>
           <p className="mb-8 text-sm text-muted-foreground">{STEP_SUBTITLES[step - 1]}</p>
 
@@ -421,8 +427,18 @@ export default function SignupPage() {
             </div>
           )}
 
-          {/* Step 4: Interests */}
+          {/* Step 4: Your Progress (completed semesters) */}
           {step === 4 && (
+            <CompletedSemestersStep
+              completedCount={completedCount}
+              onCountChange={setCompletedCount}
+              semesters={completedSemesters}
+              onSemestersChange={setCompletedSemesters}
+            />
+          )}
+
+          {/* Step 5: Interests */}
+          {step === 5 && (
             <div className="space-y-4">
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-foreground">
@@ -441,8 +457,8 @@ export default function SignupPage() {
             </div>
           )}
 
-          {/* Step 5: Password */}
-          {step === 5 && (
+          {/* Step 6: Password */}
+          {step === 6 && (
             <div className="space-y-4">
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-foreground">Password</label>
@@ -491,8 +507,8 @@ export default function SignupPage() {
             </div>
           )}
 
-          {/* Step 6: OTP */}
-          {step === 6 && (
+          {/* Step 7: OTP */}
+          {step === 7 && (
             <div className="space-y-6">
                       <div className="rounded-lg border border-border bg-muted/30 px-4 py-4 text-center text-sm text-muted-foreground">
                 We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>
@@ -524,7 +540,7 @@ export default function SignupPage() {
 
           {/* Navigation buttons */}
           <div className="mt-8 flex gap-3">
-            {step > 1 && step < 6 && (
+            {step > 1 && step < 7 && (
               <Button
                 variant="outline"
                 onClick={() => { setError(""); setStep((s) => s - 1); }}
@@ -534,17 +550,17 @@ export default function SignupPage() {
                 <ChevronLeft className="h-4 w-4" /> Back
               </Button>
             )}
-            {step < 6 && (
+            {step < 7 && (
               <Button
                 onClick={handleNext}
                 disabled={loading}
                 className="flex-1 gap-1"
               >
-                {loading ? "Creating account..." : step === 5 ? "Create Account" : "Continue"}
-                {!loading && step < 5 && <ChevronRight className="h-4 w-4" />}
+                {loading ? "Creating account..." : step === 6 ? "Create Account" : "Continue"}
+                {!loading && step < 6 && <ChevronRight className="h-4 w-4" />}
               </Button>
             )}
-            {step === 6 && (
+            {step === 7 && (
               <Button
                 onClick={verifyOtp}
                 disabled={loading || otp.length !== 6}
@@ -556,11 +572,11 @@ export default function SignupPage() {
           </div>
 
           {/* Skip interests step */}
-          {step === 4 && (
+          {step === 5 && (
             <div className="mt-3 text-center">
               <button
                 type="button"
-                onClick={() => { setError(""); setStep(5); }}
+                onClick={() => { setError(""); setStep(6); }}
                 className="text-sm text-muted-foreground hover:text-foreground"
               >
                 Skip for now

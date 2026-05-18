@@ -1707,9 +1707,10 @@ export const MAJORS: Record<string, Major> = {
       },
       {
         category: "Design Distribution",
-        description: "Design courses (choose one pair)",
+        description: "Choose ONE track — Design: ETAD 130 + ETAD 330, OR Electronics: ETAD 265 + ETAD 460. Plan defaults to Design track. If on Electronics track, edit the plan to replace ETAD 130→ETAD 265 and ETAD 330→ETAD 460.",
         coursesRequired: 2,
-        courses: ["ETAD 130", "ETAD 330", "ETAD 265", "ETAD 460"],
+        courses: ["ETAD 130", "ETAD 330"],
+        mustInclude: ["ETAD 130", "ETAD 330"],
       },
       {
         category: "Additional Distribution",
