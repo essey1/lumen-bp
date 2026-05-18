@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
+import { useEffect, useState, useCallback, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -299,7 +299,7 @@ function PlanView({
 
 // ── Page root ──────────────────────────────────────────────────────────────
 
-export default function PlanPage() {
+function PlanPageInner() {
   const searchParams = useSearchParams()
   const [ready, setReady] = useState(false)
   const [profile, setProfile] = useState<StudentProfileType | null>(null)
@@ -414,5 +414,17 @@ export default function PlanPage() {
         </div>
       </footer>
     </div>
+  )
+}
+
+export default function PlanPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center">
+        <Sparkles className="mx-auto mb-3 h-8 w-8 animate-spin text-primary" />
+      </div>
+    }>
+      <PlanPageInner />
+    </Suspense>
   )
 }
