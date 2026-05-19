@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
-    const otp = await prisma.otp.findFirst({
+    const otp = await prisma.oTP.findFirst({
       where: {
         userId: user.id,
         expiresAt: { gt: new Date() }
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
 
     if (!isValid) {
       // Increment attempts
-      const updatedOTP = await prisma.otp.update({
+      const updatedOTP = await prisma.oTP.update({
         where: { id: otp.id },
         data: { attempts: otp.attempts + 1 }
       })
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Delete OTP after successful verification
-    await prisma.otp.delete({ where: { id: otp.id } })
+    await prisma.oTP.delete({ where: { id: otp.id } })
 
     const response = NextResponse.json({ success: true, userId: user.id })
     

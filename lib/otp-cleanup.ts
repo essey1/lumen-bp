@@ -16,7 +16,7 @@ import { prisma } from "@/lib/prisma"
 
 export async function cleanupExpiredOTPsCron(): Promise<{ deleted: number }> {
   try {
-    const result = await prisma.otp.deleteMany({
+    const result = await prisma.oTP.deleteMany({
       where: {
         expiresAt: { lt: new Date() }
       }

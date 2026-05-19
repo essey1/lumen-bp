@@ -1,27 +1,37 @@
 "use client";
+
 import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { signIn } from "next-auth/react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Sparkles } from "lucide-react";
 
 function VerifyOtpForm() {
   const [otp, setOtp] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
 
   useEffect(() => {
-    if (!email) {
-      router.push("/auth/login"); // Redirect if no email is provided
-    }
+    if (!email) router.push("/auth/login");
   }, [email, router]);
 
-  const handleSubmit = async (e) => {
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const t = setTimeout(() => setResendCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [resendCooldown]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-    const backendUrl = process.env.NEXT_PUBLIC_AUTH_BACKEND_URL || "http://localhost:4000";
 
     if (!email) {
       setError("Email not found. Please go back to login.");
@@ -30,83 +40,130 @@ function VerifyOtpForm() {
     }
 
     try {
-      // Step 1: Verify OTP with your Express backend
-      const res = await fetch(`${backendUrl}/api/auth/verify-otp`, {
+      const res = await fetch("/api/auth/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
+        body: JSON.stringify({ code: otp }),
       });
 
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setError(data.message || "Invalid OTP. Please try again.");
+        setError(data.error || "Invalid code. Please try again.");
       } else {
-        // Step 2: If OTP is valid, use NextAuth's signIn to establish the session
-        // We pass a special flag 'otpVerified' to tell our NextAuth authorize function
-        // that this user has already passed the OTP step.
-        const nextAuthSignInResult = await signIn("credentials", {
+        const result = await signIn("credentials", {
           email,
-          otpVerified: true, // Custom flag
-          token: data.token, // Pass the session token from Express backend
+          otpVerified: true,
+          token: data.userId,
           redirect: false,
         });
 
-        if (nextAuthSignInResult?.error) {
-          setError(nextAuthSignInResult.error || "Failed to establish session.");
+        if (result?.error) {
+          setError("Failed to establish session. Please try again.");
         } else {
-          router.push("/planner"); // Redirect to protected page
+          router.push("/profile");
           router.refresh();
         }
       }
-    } catch (err) {
-      console.error("OTP verification error:", err);
-      setError("An unexpected error occurred during OTP verification.");
+    } catch {
+      setError("An unexpected error occurred.");
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleResend = async () => {
+    if (!email || resendCooldown > 0) return;
+    setError("");
+    try {
+      const res = await fetch("/api/auth/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Failed to resend code.");
+      } else {
+        setResendCooldown(60);
+      }
+    } catch {
+      setError("Failed to resend code.");
+    }
+  };
+
   if (!email) {
-    return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
+    return <div className="flex min-h-screen items-center justify-center">Redirecting...</div>;
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md space-y-8 rounded-xl border bg-white p-10 shadow-lg">
-        <div className="text-center">
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Verify your login</h2>
-          <p className="mt-2 text-sm text-gray-600">A verification code has been sent to {email}</p>
-        </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="rounded-md bg-red-50 p-4 text-sm text-red-700 border border-red-200">
-              {error}
+    <div className="min-h-screen flex flex-col bg-background">
+      <header className="border-b border-border bg-card px-4 py-4">
+        <div className="container mx-auto">
+          <Link href="/" className="flex items-center gap-2 w-fit">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
+              <Sparkles className="h-4 w-4 text-primary-foreground" />
             </div>
-          )}
-          <div className="space-y-4">
+            <span className="text-lg font-semibold text-foreground">Lumen</span>
+          </Link>
+        </div>
+      </header>
+
+      <div className="flex flex-1 items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          <h1 className="mb-1 text-2xl font-bold text-foreground">Check your email</h1>
+          <p className="mb-2 text-sm text-muted-foreground">
+            We sent a 6-digit code to
+          </p>
+          <p className="mb-8 text-sm font-medium text-foreground">{email}</p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
+            )}
+
             <div>
-              <label htmlFor="otp" className="block text-sm font-medium text-gray-700">Verification Code</label>
-              <input
-                id="otp"
-                name="otp"
+              <label className="mb-1.5 block text-sm font-medium text-foreground">Verification Code</label>
+              <Input
                 type="text"
-                required
+                inputMode="numeric"
                 value={otp}
-                onChange={(e) => setOtp(e.target.value)}
-                className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                placeholder="000000"
                 maxLength={6}
+                required
+                autoFocus
+                className="text-center text-2xl tracking-[0.5em] font-mono"
               />
             </div>
+
+            <Button type="submit" className="w-full" disabled={isLoading || otp.length !== 6}>
+              {isLoading ? "Verifying..." : "Verify & Sign In"}
+            </Button>
+          </form>
+
+          <div className="mt-4 text-center">
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resendCooldown > 0}
+              className="text-sm text-muted-foreground hover:text-foreground disabled:opacity-50"
+            >
+              {"Didn't"} receive it?{" "}
+              <span className="text-primary font-medium">
+                {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : "Resend code"}
+              </span>
+            </button>
           </div>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="flex w-full justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            {isLoading ? "Verifying..." : "Verify Code"}
-          </button>
-        </form>
+
+          <div className="mt-6 text-center">
+            <Link href="/auth/login" className="text-sm text-muted-foreground hover:text-foreground">
+              ← Back to sign in
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
