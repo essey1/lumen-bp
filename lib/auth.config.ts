@@ -22,8 +22,12 @@ export const authConfig = {
       }
 
       if (pathname === "/") return true;
-      if (pathname.startsWith("/planner")) return true;
-      if (pathname.startsWith("/plan") && !pathname.startsWith("/plan/")) return true;
+
+      // Gate planner and plan pages — redirect to signup instead of login
+      if (pathname.startsWith("/planner") || pathname.startsWith("/plan")) {
+        if (!isLoggedIn) return Response.redirect(new URL("/auth/signup", nextUrl));
+        return true;
+      }
 
       return isLoggedIn;
     },

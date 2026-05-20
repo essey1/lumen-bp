@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\arayae\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-arayae-OneDrive---Berea-College-Documents-Educational-CV-Portfolio-lumen-bp\\\\dcbcc53e-bbc5-42ca-a41a-e8edc8ca7d4d\\\\tasks\\\\b3jd0eebe.output' -Tail 5\")",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\arayae\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-arayae-OneDrive---Berea-College-Documents-Educational-CV-Portfolio-lumen-bp\\\\dcbcc53e-bbc5-42ca-a41a-e8edc8ca7d4d\\\\tasks\\\\by7vgy52y.output' -Tail 6\")",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\arayae\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-arayae-OneDrive---Berea-College-Documents-Educational-CV-Portfolio-lumen-bp\\\\dcbcc53e-bbc5-42ca-a41a-e8edc8ca7d4d\\\\tasks\\\\bfej6bv45.output' -Tail 4\")",
+      "Bash(powershell -Command \"Get-Content 'C:\\\\Users\\\\arayae\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-arayae-OneDrive---Berea-College-Documents-Educational-CV-Portfolio-lumen-bp\\\\dcbcc53e-bbc5-42ca-a41a-e8edc8ca7d4d\\\\tasks\\\\b0va5w2kv.output' -Tail 5\")",
+      "Bash(git stash *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}

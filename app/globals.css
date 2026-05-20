@@ -126,7 +126,8 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: #071410;
   }
 }
 
@@ -294,54 +295,134 @@
   }
 }
 
-@media print {
-  header,
-  footer,
-  .no-print {
-    display: none !important;
+@keyframes lumenFireflyDrift {
+  0%, 100% {
+    opacity: 0.45;
+    transform: translate3d(0, 0, 0) scale(0.75);
   }
+  20% {
+    opacity: 1;
+    transform: translate3d(18px, -22px, 0) scale(1.18);
+  }
+  45% {
+    opacity: 0.72;
+    transform: translate3d(-14px, -38px, 0) scale(0.92);
+  }
+  70% {
+    opacity: 1;
+    transform: translate3d(24px, -12px, 0) scale(1.28);
+  }
+}
 
-  body {
-    background: white !important;
-    color: black !important;
-    font-size: 11px;
-  }
+.lumen-firefly {
+  animation: lumenFireflyDrift 5.8s ease-in-out infinite;
+  will-change: opacity, transform;
+}
 
-  main {
-    padding: 0 !important;
+@keyframes lumenBearWalk {
+  0%, 100% {
+    transform: translateY(0) rotate(-1deg);
   }
+  25% {
+    transform: translateX(-10px) translateY(-7px) rotate(1.5deg);
+  }
+  50% {
+    transform: translateY(2px) rotate(0deg);
+  }
+  75% {
+    transform: translateX(10px) translateY(-7px) rotate(-1.5deg);
+  }
+}
 
-  .grid {
-    display: grid !important;
+@keyframes lumenLanternSwing {
+  0%, 100% {
+    transform: rotate(-5deg);
+    filter: drop-shadow(0 0 18px rgba(255, 196, 74, 0.75));
   }
+  50% {
+    transform: rotate(6deg);
+    filter: drop-shadow(0 0 32px rgba(255, 218, 112, 0.95));
+  }
+}
 
-  /* Semester grid: 4 columns on print */
-  .lg\:grid-cols-4 {
-    grid-template-columns: repeat(4, 1fr) !important;
-  }
+.lumen-guide-bear {
+  animation: lumenBearWalk 7s ease-in-out infinite;
+  transform-origin: 50% 100%;
+  will-change: transform;
+}
 
-  /* Force light colors for cards */
-  [class*="bg-card"],
-  [class*="bg-muted"] {
-    background: #f8f8f8 !important;
-    color: black !important;
-  }
+.lumen-lantern {
+  animation: lumenLanternSwing 2.8s ease-in-out infinite;
+  transform-origin: 50% 0%;
+  will-change: transform, filter;
+}
 
-  [class*="text-primary"] {
-    color: #1a1a2e !important;
+@keyframes lumenFloatFly {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(1);
   }
+  20% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.5;
+    transform: translate(var(--dx, 20px), var(--dy, -30px)) scale(1.2);
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx2, -10px), var(--dy2, -60px)) scale(0.8);
+  }
+}
 
-  [class*="text-muted-foreground"] {
-    color: #555 !important;
+@keyframes lumenFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
-  a {
-    text-decoration: none !important;
-    color: inherit !important;
+@keyframes lumenBearBob {
+  0%, 100% {
+    transform: translateY(0);
   }
+  50% {
+    transform: translateY(-8px);
+  }
+}
 
-  @page {
-    margin: 1cm;
-    size: A4 landscape;
+@keyframes lumenGlowPulse {
+  0%, 100% {
+    opacity: 0.85;
   }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 12px rgba(245, 166, 35, 0.8));
+  }
+}
+
+.lumen-float-fly {
+  animation: lumenFloatFly var(--dur, 8s) ease-in-out infinite;
+  animation-delay: var(--delay, 0s);
+}
+
+.lumen-fade-up,
+.lumen-float-card {
+  animation: lumenFadeUp 1s ease both;
+}
+
+.lumen-bear-bob {
+  animation: lumenBearBob 3s ease-in-out infinite;
+  transform-origin: center bottom;
+}
+
+.lumen-lantern-glow {
+  animation: lumenGlowPulse 2.5s ease-in-out infinite;
 }

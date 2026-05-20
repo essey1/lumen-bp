@@ -4,12 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Sparkles, ChevronRight, ChevronLeft, Check } from "lucide-react";
+import { ChevronRight, ChevronLeft, Check } from "lucide-react";
 import { CompletedSemestersStep, type CompletedSemesterData } from "@/components/planner/completed-semesters-step";
+import { ForestNav } from "@/components/forest-nav";
 
 // Groups of majors that share a department (only one allowed per group)
 const DEPT_GROUPS = [
@@ -263,163 +263,109 @@ export default function SignupPage() {
     }
   }
 
+  const inputCls = "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-[#e2ede8] placeholder-[#4a7a72] outline-none transition focus:border-[#f5a623]/50 focus:bg-white/8"
+  const labelCls = "mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-[#7aada0]"
+
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card px-4 py-4">
-        <div className="container mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <Sparkles className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <span className="text-lg font-semibold text-foreground">Lumen</span>
-          </Link>
-          <Link href="/auth/login" className="text-sm text-muted-foreground hover:text-foreground">
-            Already have an account? <span className="text-primary font-medium">Sign in</span>
-          </Link>
-        </div>
-      </header>
+    <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(180deg,#050e0b 0%,#071410 40%,#0b1f18 100%)", fontFamily: "var(--font-lora),Georgia,serif" }}>
+      <ForestNav actions={
+        <Link href="/auth/login" className="text-sm text-[#7aada0] transition hover:text-[#e2ede8]">
+          Have an account? <span style={{ color: "#f5a623" }}>Sign in</span>
+        </Link>
+      } />
 
       {/* Progress bar */}
-      <div className="h-1 bg-muted">
-        <div
-          className="h-full bg-primary transition-all duration-500"
-          style={{ width: `${(step / 7) * 100}%` }}
-        />
+      <div className="fixed left-0 right-0 top-[57px] z-40 h-[3px] bg-white/5">
+        <div className="h-full transition-all duration-500" style={{ width: `${(step / 7) * 100}%`, background: "#f5a623" }} />
       </div>
 
-      <div className="flex flex-1 items-center justify-center px-4 py-12">
+      <div className="flex flex-1 items-center justify-center px-4 py-12 pt-24">
         <div className="w-full max-w-md">
-          {/* Step indicator */}
-          <div className="mb-2 flex items-center gap-1.5">
+          {/* Step dots */}
+          <div className="mb-4 flex items-center gap-1.5">
             {Array.from({ length: 7 }, (_, i) => (
-              <div
-                key={i}
-                className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
-                  i + 1 <= step ? "bg-primary" : "bg-muted"
-                }`}
-              />
+              <div key={i} className="h-1 flex-1 rounded-full transition-all duration-300"
+                style={{ background: i + 1 <= step ? "#f5a623" : "rgba(255,255,255,0.08)" }} />
             ))}
           </div>
 
-          <p className="mb-1 text-xs text-muted-foreground">Step {step} of 7</p>
-          <h1 className="mb-1 text-2xl font-bold text-foreground">{STEP_TITLES[step - 1]}</h1>
-          <p className="mb-8 text-sm text-muted-foreground">{STEP_SUBTITLES[step - 1]}</p>
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#4a7a72]">Step {step} of 7</p>
+          <h1 className="mb-1 text-2xl font-bold text-[#f0ede0]" style={{ fontFamily: "var(--font-cinzel)" }}>{STEP_TITLES[step - 1]}</h1>
+          <p className="mb-8 text-sm italic text-[#7aada0]">{STEP_SUBTITLES[step - 1]}</p>
 
           {error && (
-            <Alert variant="destructive" className="mb-6">
+            <Alert variant="destructive" className="mb-6 border-red-500/30 bg-red-500/10 text-red-300">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
 
-          {/* Step 1: Name & Email */}
+          {/* Step 1 */}
           {step === 1 && (
             <div className="space-y-4">
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">Full Name</label>
-                <Input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Jane Doe"
-                  autoFocus
-                  onKeyDown={(e) => e.key === "Enter" && handleNext()}
-                />
+                <label className={labelCls}>Full Name</label>
+                <Input type="text" value={name} onChange={e => setName(e.target.value)}
+                  placeholder="Jane Doe" autoFocus onKeyDown={e => e.key === "Enter" && handleNext()}
+                  className="forest-input" />
               </div>
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">
-                  Berea College Email
-                  <span className="ml-1.5 text-xs font-normal text-muted-foreground">(@berea.edu only)</span>
-                </label>
-                <Input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="janedoe@berea.edu"
-                  onKeyDown={(e) => e.key === "Enter" && handleNext()}
-                />
+                <label className={labelCls}>Berea College Email <span className="normal-case font-normal text-[#4a7a72]">(@berea.edu only)</span></label>
+                <Input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                  placeholder="janedoe@berea.edu" onKeyDown={e => e.key === "Enter" && handleNext()}
+                  className="forest-input" />
               </div>
             </div>
           )}
 
-          {/* Step 2: Major (multi-select) */}
+          {/* Step 2 */}
           {step === 2 && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-foreground">Select your major(s)</label>
-                <span className="text-xs text-muted-foreground">
-                  {majors.length === 0 ? "Select at least one" : `${majors.length} selected`}
-                </span>
+                <label className={labelCls}>Major(s)</label>
+                <span className="text-xs text-[#4a7a72]">{majors.length === 0 ? "Select at least one" : `${majors.length} selected`}</span>
               </div>
-
-              {/* Selected pills */}
               {majors.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
-                  {majors.map((m) => (
-                    <span
-                      key={m}
-                      className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary"
-                    >
+                  {majors.map(m => (
+                    <span key={m} className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium"
+                      style={{ background: "rgba(245,166,35,0.15)", color: "#f5a623" }}>
                       {m}
-                      <button
-                        type="button"
-                        onClick={() => setMajors((prev) => prev.filter((x) => x !== m))}
-                        className="ml-0.5 hover:text-primary/60"
-                      >
-                        ×
-                      </button>
+                      <button type="button" onClick={() => setMajors(prev => prev.filter(x => x !== m))} className="ml-0.5 opacity-70 hover:opacity-100">×</button>
                     </span>
                   ))}
                 </div>
               )}
-
-              <div className="max-h-64 overflow-y-auto rounded-lg border border-border">
-                {MAJORS.map((m) => {
-                  const isSelected = majors.includes(m);
-                  const blocked = !isSelected && isMajorNameBlocked(m, majors);
+              <div className="max-h-64 overflow-y-auto rounded-xl border border-white/10" style={{ background: "rgba(255,255,255,0.03)" }}>
+                {MAJORS.map(m => {
+                  const isSelected = majors.includes(m)
+                  const blocked = !isSelected && isMajorNameBlocked(m, majors)
                   return (
-                    <button
-                      key={m}
-                      type="button"
-                      disabled={blocked}
+                    <button key={m} type="button" disabled={blocked}
                       title={blocked ? "You already selected a major from this department" : undefined}
-                      onClick={() =>
-                        setMajors((prev) =>
-                          isSelected ? prev.filter((x) => x !== m) : blocked ? prev : [...prev, m]
-                        )
-                      }
-                      className={`flex w-full items-center justify-between px-4 py-2.5 text-sm text-left transition-colors border-b border-border last:border-0 ${
-                        isSelected
-                          ? "bg-primary/10 text-primary font-medium"
-                          : blocked
-                            ? "opacity-40 line-through text-muted-foreground cursor-not-allowed"
-                            : "text-foreground hover:bg-muted/50"
-                      }`}
-                    >
+                      onClick={() => setMajors(prev => isSelected ? prev.filter(x => x !== m) : blocked ? prev : [...prev, m])}
+                      className={`flex w-full items-center justify-between border-b border-white/6 px-4 py-2.5 text-left text-sm last:border-0 transition-colors ${isSelected ? "font-medium" : blocked ? "cursor-not-allowed opacity-30 line-through" : "hover:bg-white/5"}`}
+                      style={{ color: isSelected ? "#f5a623" : "#c8e0d8" }}>
                       {m}
-                      {isSelected && <Check className="h-4 w-4 shrink-0 ml-2" />}
-                      {blocked && <span className="text-[10px] text-muted-foreground ml-2 no-underline">same dept</span>}
+                      {isSelected && <Check className="ml-2 h-4 w-4 shrink-0" />}
+                      {blocked && <span className="ml-2 text-[10px] text-[#4a7a72] no-underline">same dept</span>}
                     </button>
-                  );
+                  )
                 })}
               </div>
             </div>
           )}
 
-          {/* Step 3: Year */}
+          {/* Step 3 */}
           {step === 3 && (
             <div className="space-y-3">
-              {YEARS.map((y) => (
-                <button
-                  key={y.value}
-                  type="button"
-                  onClick={() => setYear(y.value)}
-                  className={`flex w-full items-center justify-between rounded-lg border px-4 py-4 text-sm font-medium transition-all ${
-                    year === y.value
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border bg-card text-foreground hover:bg-muted/50"
-                  }`}
-                >
+              {YEARS.map(y => (
+                <button key={y.value} type="button" onClick={() => setYear(y.value)}
+                  className="flex w-full items-center justify-between rounded-xl border px-4 py-4 text-sm font-medium transition-all"
+                  style={{
+                    borderColor: year === y.value ? "rgba(245,166,35,0.5)" : "rgba(255,255,255,0.08)",
+                    background:  year === y.value ? "rgba(245,166,35,0.10)" : "rgba(255,255,255,0.03)",
+                    color:       year === y.value ? "#f5a623" : "#c8e0d8",
+                  }}>
                   {y.label}
                   {year === y.value && <Check className="h-4 w-4" />}
                 </button>
@@ -427,62 +373,46 @@ export default function SignupPage() {
             </div>
           )}
 
-          {/* Step 4: Your Progress (completed semesters) */}
+          {/* Step 4 */}
           {step === 4 && (
-            <CompletedSemestersStep
-              completedCount={completedCount}
-              onCountChange={setCompletedCount}
-              semesters={completedSemesters}
-              onSemestersChange={setCompletedSemesters}
-            />
+            <CompletedSemestersStep completedCount={completedCount} onCountChange={setCompletedCount}
+              semesters={completedSemesters} onSemestersChange={setCompletedSemesters} />
           )}
 
-          {/* Step 5: Interests */}
+          {/* Step 5 */}
           {step === 5 && (
             <div className="space-y-4">
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">
-                  About you <span className="text-muted-foreground font-normal">(optional)</span>
-                </label>
-                <Textarea
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
+                <label className={labelCls}>About you <span className="normal-case font-normal text-[#4a7a72]">(optional)</span></label>
+                <Textarea value={bio} onChange={e => setBio(e.target.value)}
                   placeholder="Share your career goals, interests, clubs you're in, or anything that helps us personalize your plan..."
-                  className="min-h-[140px] resize-none"
-                  maxLength={500}
-                  autoFocus
-                />
-                <p className="mt-1.5 text-right text-xs text-muted-foreground">{bio.length}/500</p>
+                  className="min-h-[140px] resize-none rounded-xl border border-white/10 bg-white/5 text-[#e2ede8] placeholder-[#4a7a72] focus:border-[#f5a623]/40"
+                  maxLength={500} autoFocus />
+                <p className="mt-1.5 text-right text-xs text-[#4a7a72]">{bio.length}/500</p>
               </div>
             </div>
           )}
 
-          {/* Step 6: Password */}
+          {/* Step 6 */}
           {step === 6 && (
             <div className="space-y-4">
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">Password</label>
-                <Input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Create a strong password"
-                  autoFocus
-                />
+                <label className={labelCls}>Password</label>
+                <Input type="password" value={password} onChange={e => setPassword(e.target.value)}
+                  placeholder="Create a strong password" autoFocus className="forest-input" />
               </div>
-
-              {/* Live requirements */}
               {password.length > 0 && (
-                <ul className="space-y-1.5 rounded-lg border border-border bg-muted/30 px-4 py-3">
+                <ul className="space-y-1.5 rounded-xl border border-white/8 bg-white/3 px-4 py-3">
                   {[
-                    { label: "At least 8 characters",      ok: password.length >= 8 },
-                    { label: "One uppercase letter (A–Z)",  ok: /[A-Z]/.test(password) },
-                    { label: "One lowercase letter (a–z)",  ok: /[a-z]/.test(password) },
-                    { label: "One number (0–9)",            ok: /[0-9]/.test(password) },
+                    { label: "At least 8 characters",       ok: password.length >= 8 },
+                    { label: "One uppercase letter (A–Z)",   ok: /[A-Z]/.test(password) },
+                    { label: "One lowercase letter (a–z)",   ok: /[a-z]/.test(password) },
+                    { label: "One number (0–9)",             ok: /[0-9]/.test(password) },
                     { label: "One special character (!@#…)", ok: /[^A-Za-z0-9]/.test(password) },
                   ].map(({ label, ok }) => (
-                    <li key={label} className={`flex items-center gap-2 text-xs ${ok ? "text-green-600" : "text-muted-foreground"}`}>
-                      <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] font-bold ${ok ? "bg-green-100 text-green-600" : "bg-muted text-muted-foreground"}`}>
+                    <li key={label} className="flex items-center gap-2 text-xs" style={{ color: ok ? "#6fcf97" : "#4a7a72" }}>
+                      <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] font-bold"
+                        style={{ background: ok ? "rgba(111,207,151,0.15)" : "rgba(255,255,255,0.05)", color: ok ? "#6fcf97" : "#4a7a72" }}>
                         {ok ? "✓" : "·"}
                       </span>
                       {label}
@@ -490,95 +420,68 @@ export default function SignupPage() {
                   ))}
                 </ul>
               )}
-
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">Confirm Password</label>
-                <Input
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Re-enter your password"
-                  onKeyDown={(e) => e.key === "Enter" && handleNext()}
-                />
+                <label className={labelCls}>Confirm Password</label>
+                <Input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
+                  placeholder="Re-enter your password" onKeyDown={e => e.key === "Enter" && handleNext()}
+                  className="forest-input" />
                 {confirmPassword.length > 0 && password !== confirmPassword && (
-                  <p className="mt-1.5 text-xs text-destructive">Passwords do not match.</p>
+                  <p className="mt-1.5 text-xs text-red-400">Passwords do not match.</p>
                 )}
               </div>
             </div>
           )}
 
-          {/* Step 7: OTP */}
+          {/* Step 7 */}
           {step === 7 && (
             <div className="space-y-6">
-                      <div className="rounded-lg border border-border bg-muted/30 px-4 py-4 text-center text-sm text-muted-foreground">
-                We sent a 6-digit code to <span className="font-medium text-foreground">{email}</span>
+              <div className="rounded-xl border border-white/8 bg-white/4 px-4 py-4 text-center text-sm text-[#7aada0]">
+                We sent a 6-digit code to <span className="font-semibold text-[#e2ede8]">{email}</span>
               </div>
               <div>
-                <label className="mb-1.5 block text-sm font-medium text-foreground">Verification Code</label>
-                <Input
-                  type="text"
-                  inputMode="numeric"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                  placeholder="000000"
-                  maxLength={6}
-                  className="text-center text-2xl tracking-[0.5em] font-mono"
-                  autoFocus
-                  onKeyDown={(e) => e.key === "Enter" && verifyOtp()}
-                />
+                <label className={labelCls}>Verification Code</label>
+                <Input type="text" inputMode="numeric" value={otp}
+                  onChange={e => setOtp(e.target.value.replace(/\D/g,"").slice(0,6))}
+                  placeholder="000000" maxLength={6}
+                  className="text-center text-2xl tracking-[0.5em] font-mono forest-input"
+                  autoFocus onKeyDown={e => e.key === "Enter" && verifyOtp()} />
               </div>
-              <button
-                type="button"
-                onClick={resendOtp}
-                disabled={loading}
-                className="w-full text-center text-sm text-muted-foreground hover:text-foreground disabled:opacity-50"
-              >
-                {"Didn't"} receive it? <span className="text-primary font-medium">Resend code</span>
+              <button type="button" onClick={resendOtp} disabled={loading}
+                className="w-full text-center text-sm text-[#4a7a72] transition hover:text-[#e2ede8] disabled:opacity-50">
+                {"Didn't"} receive it? <span style={{ color: "#f5a623" }}>Resend code</span>
               </button>
             </div>
           )}
 
-          {/* Navigation buttons */}
+          {/* Navigation */}
           <div className="mt-8 flex gap-3">
             {step > 1 && step < 7 && (
-              <Button
-                variant="outline"
-                onClick={() => { setError(""); setStep((s) => s - 1); }}
-                disabled={loading}
-                className="gap-1"
-              >
+              <button onClick={() => { setError(""); setStep(s => s - 1); }} disabled={loading}
+                className="flex items-center gap-1 rounded-xl border border-white/15 px-4 py-3 text-sm text-[#c8e0d8] transition hover:border-white/30 disabled:opacity-50">
                 <ChevronLeft className="h-4 w-4" /> Back
-              </Button>
+              </button>
             )}
             {step < 7 && (
-              <Button
-                onClick={handleNext}
-                disabled={loading}
-                className="flex-1 gap-1"
-              >
-                {loading ? "Creating account..." : step === 6 ? "Create Account" : "Continue"}
+              <button onClick={handleNext} disabled={loading}
+                className="flex flex-1 items-center justify-center gap-1 rounded-xl py-3 text-sm font-bold tracking-wide text-[#071410] transition hover:-translate-y-0.5 disabled:opacity-60"
+                style={{ fontFamily: "var(--font-cinzel)", background: "#f5a623", boxShadow: "0 8px 24px rgba(245,166,35,0.22)" }}>
+                {loading ? "Creating account…" : step === 6 ? "Create Account" : "Continue"}
                 {!loading && step < 6 && <ChevronRight className="h-4 w-4" />}
-              </Button>
+              </button>
             )}
             {step === 7 && (
-              <Button
-                onClick={verifyOtp}
-                disabled={loading || otp.length !== 6}
-                className="flex-1"
-              >
-                {loading ? "Verifying..." : "Verify & Sign In"}
-              </Button>
+              <button onClick={verifyOtp} disabled={loading || otp.length !== 6}
+                className="flex-1 rounded-xl py-3 text-sm font-bold tracking-wide text-[#071410] transition hover:-translate-y-0.5 disabled:opacity-50"
+                style={{ fontFamily: "var(--font-cinzel)", background: "#f5a623", boxShadow: "0 8px 24px rgba(245,166,35,0.22)" }}>
+                {loading ? "Verifying…" : "Verify & Sign In"}
+              </button>
             )}
           </div>
 
-          {/* Skip interests step */}
           {step === 5 && (
             <div className="mt-3 text-center">
-              <button
-                type="button"
-                onClick={() => { setError(""); setStep(6); }}
-                className="text-sm text-muted-foreground hover:text-foreground"
-              >
+              <button type="button" onClick={() => { setError(""); setStep(6); }}
+                className="text-sm text-[#4a7a72] transition hover:text-[#e2ede8]">
                 Skip for now
               </button>
             </div>
@@ -586,5 +489,5 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

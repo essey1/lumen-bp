@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
+import { Geist, Geist_Mono, Fraunces, Crimson_Pro } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { AuthSessionShell } from '@/components/auth-session-shell'
 import './globals.css'
@@ -7,24 +7,33 @@ import './globals.css'
 const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
+// Forest display font — rustic, hand-carved, organic
+export const cinzel = Fraunces({
+  subsets: ["latin"],
+  axes: ["SOFT", "WONK", "opsz"],
+  style: ["normal", "italic"],
+  variable: "--font-cinzel",
+  display: "swap",
+})
+
+// Forest body font — warm, literary, reads like a nature journal
+export const lora = Crimson_Pro({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-lora",
+  display: "swap",
+})
+
 export const metadata: Metadata = {
   title: 'Lumen - Academic Planner for Berea College',
   description: 'Plan your 4-year academic journey at Berea College with Lumen',
   generator: 'v0.app',
-  icons: {  
+  icons: {
     icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
+      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
+      { url: '/icon-dark-32x32.png',  media: '(prefers-color-scheme: dark)'  },
+      { url: '/icon.svg', type: 'image/svg+xml' },
     ],
     apple: '/apple-icon.png',
   },
@@ -32,11 +41,9 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`dark ${cinzel.variable} ${lora.variable}`}>
       <body className="font-sans antialiased">
         <AuthSessionShell>{children}</AuthSessionShell>
         {process.env.NODE_ENV === 'production' && <Analytics />}

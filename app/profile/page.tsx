@@ -13,6 +13,7 @@ import {
   Sparkles, LogOut, Save, User, BookOpen, Trash2, ArrowRight, PlusCircle, Loader2,
   LayoutDashboard, Settings,
 } from "lucide-react";
+import { ForestNav } from "@/components/forest-nav";
 
 const MAJORS = [
   "Computer and Information Science",
@@ -173,34 +174,17 @@ export default function ProfilePage() {
 
   if (!profile) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center" style={{ background: "#071410" }}>
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" style={{ borderColor: "rgba(245,166,35,0.3)", borderTopColor: "#f5a623" }} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              <Sparkles className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-semibold text-foreground">Lumen</span>
-          </Link>
-          <button
-            onClick={() => signOut({ callbackUrl: "/auth/login" })}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <LogOut className="h-4 w-4" />
-            Sign out
-          </button>
-        </div>
-      </header>
+    <div className="min-h-screen" style={{ background: "linear-gradient(180deg,#050e0b 0%,#071410 40%,#0b1f18 100%)", fontFamily: "var(--font-lora),Georgia,serif" }}>
+      <ForestNav />
 
-      <main className="container mx-auto max-w-3xl px-4 py-8">
+      <main className="container mx-auto max-w-3xl px-4 py-8 pt-24">
         {/* User identity strip */}
         <div className="mb-6 flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 shrink-0">

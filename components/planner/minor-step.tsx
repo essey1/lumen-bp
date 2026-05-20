@@ -119,36 +119,6 @@ export function MinorStep({ selected, onChange, selectedMajors = [] }: MinorStep
         </PopoverContent>
       </Popover>
 
-      {/* Quick select grid */}
-      <div>
-        <p className="mb-3 text-center text-sm text-muted-foreground">Or choose from available minors:</p>
-        <div className="flex flex-wrap justify-center gap-2">
-          {MINORS.map(m => {
-            const blocked = isMinorBlocked(m.code)
-            const atMax = !selected.includes(m.code) && selected.length >= MAX_SELECTIONS
-            return (
-              <button
-                key={m.code}
-                onClick={() => toggle(m.code)}
-                disabled={blocked || atMax}
-                title={blocked ? "You're already studying this as a major" : undefined}
-                className={cn(
-                  "rounded-full border px-3 py-1.5 text-sm font-medium transition-all",
-                  selected.includes(m.code)
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : blocked
-                      ? "cursor-not-allowed border-border bg-background text-muted-foreground opacity-40 line-through"
-                      : "border-border bg-background text-foreground hover:border-primary hover:bg-primary/5",
-                  atMax && !blocked && "cursor-not-allowed opacity-50"
-                )}
-              >
-                {m.label}
-              </button>
-            )
-          })}
-        </div>
-      </div>
-
       <p className="text-center text-sm text-muted-foreground">
         No minor in mind? Skip this step — you can always add one later with your advisor.
       </p>

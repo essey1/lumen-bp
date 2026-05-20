@@ -148,37 +148,6 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
         </PopoverContent>
       </Popover>
 
-      {/* Quick Select Grid */}
-      <div>
-        <p className="mb-3 text-center text-sm text-muted-foreground">
-          Or choose from available options:
-        </p>
-        <div className="flex flex-wrap justify-center gap-2">
-          {MAJORS.map((major) => {
-            const dis = isDisabled(major.code)
-            const blocked = isMajorBlockedByDept(major.code, selected)
-            return (
-              <button
-                key={major.code}
-                onClick={() => toggleMajor(major.code)}
-                disabled={dis}
-                title={dis ? disabledReason(major.code) : undefined}
-                className={cn(
-                  "rounded-full border px-4 py-2 text-sm font-medium transition-all",
-                  selected.includes(major.code)
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : blocked
-                      ? "cursor-not-allowed border-border bg-background text-muted-foreground opacity-40 line-through"
-                      : "border-border bg-background text-foreground hover:border-primary hover:bg-primary/5",
-                  dis && !blocked && "cursor-not-allowed opacity-50"
-                )}
-              >
-                {major.label}
-              </button>
-            )
-          })}
-        </div>
-      </div>
     </div>
   )
 }
