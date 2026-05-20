@@ -5,12 +5,9 @@ export const dynamic = "force-dynamic"
 import { useEffect, useState, useCallback, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  ArrowLeft, GraduationCap, Sparkles, Pencil, X, Plus, Trash2, Check, Lock,
-} from "lucide-react"
+import { ArrowLeft, Pencil, X, Plus, Trash2, Check, Lock, Sparkles } from "lucide-react"
+import { ForestNav } from "@/components/forest-nav"
 import { StudentProfile } from "@/components/plan/student-profile"
 import { OverflowWarning } from "@/components/plan/overflow-warning"
 import { CareerAdvice } from "@/components/plan/career-advice"
@@ -22,40 +19,44 @@ import type { StudentProfile as StudentProfileType, SemesterPlan, PlannedCourse 
 import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types"
 import type { MathPlacement } from "@/lib/types"
 
-// ── Inline course editor ────────────────────────────────────────────────────
-
-const CATEGORY_COLORS: Record<string, string> = {
-  Major:   "bg-blue-50 border-blue-200 text-blue-800",
-  Minor:   "bg-purple-50 border-purple-200 text-purple-800",
-  GEM:     "bg-green-50 border-green-200 text-green-800",
-  Elective:"bg-gray-50 border-gray-200 text-gray-700",
+// ── Category theme (forest palette) ─────────────────────────────────────────
+const CAT: Record<string, { border: string; bg: string; code: string; codeText: string; tag: string; tagText: string }> = {
+  Major:    { border: "#5ba8c7", bg: "rgba(91,168,199,0.13)",   code: "#5ba8c7", codeText: "#a8dff5", tag: "rgba(91,168,199,0.22)",   tagText: "#a8dff5" },
+  Minor:    { border: "#b07fe8", bg: "rgba(176,127,232,0.13)",  code: "#b07fe8", codeText: "#d4b8f8", tag: "rgba(176,127,232,0.22)",  tagText: "#d4b8f8" },
+  GEM:      { border: "#6fcf97", bg: "rgba(111,207,151,0.13)",  code: "#6fcf97", codeText: "#a8eccc", tag: "rgba(111,207,151,0.22)",  tagText: "#a8eccc" },
+  Elective: { border: "#f5a623", bg: "rgba(245,166,35,0.11)",   code: "#f5a623", codeText: "#ffd080", tag: "rgba(245,166,35,0.20)",   tagText: "#ffd080" },
 }
+const getTheme = (cat: string) => CAT[cat] ?? CAT.Elective
 
+// ── Single course row ─────────────────────────────────────────────────────────
 function EditableCourseRow({
-  course,
-  editMode,
-  onChange,
-  onRemove,
+  course, editMode, onChange, onRemove,
 }: {
-  course: PlannedCourse
-  editMode: boolean
-  onChange: (c: PlannedCourse) => void
-  onRemove: () => void
+  course: PlannedCourse; editMode: boolean
+  onChange: (c: PlannedCourse) => void; onRemove: () => void
 }) {
-  const color = CATEGORY_COLORS[course.category] ?? CATEGORY_COLORS.Elective
+  const t = getTheme(course.category)
 
   if (!editMode) {
     return (
-      <div className={`rounded-md border px-2.5 py-2 text-xs ${color}`}>
-        <div className="flex items-start gap-1.5">
-          <span className="font-mono font-semibold shrink-0">{course.isPlaceholder ? "TBD" : course.code}</span>
-          <span className="flex-1 leading-tight">{course.name}</span>
-          <span className="shrink-0 text-[10px] opacity-60">{course.credits}cr</span>
+      <div className="group relative flex flex-col gap-1.5 rounded-lg px-3 py-2.5 transition-all hover:brightness-110"
+        style={{ background: t.bg, borderLeft: `3px solid ${t.border}` }}>
+        <div className="flex items-start justify-between gap-2">
+          <span className="font-mono text-[11px] font-bold shrink-0" style={{ color: t.codeText }}>
+            {course.isPlaceholder ? "TBD" : course.code}
+          </span>
+          <span className="text-[10px] font-semibold shrink-0" style={{ color: "rgba(255,255,255,0.50)" }}>
+            {course.credits}cr
+          </span>
         </div>
+        <span className="text-[12px] font-medium leading-snug" style={{ color: "#ecf6f2" }}>{course.name}</span>
         {course.fulfills.length > 0 && (
-          <div className="mt-1 flex flex-wrap gap-1">
+          <div className="mt-0.5 flex flex-wrap gap-1">
             {course.fulfills.slice(0, 2).map(f => (
-              <span key={f} className="rounded bg-black/5 px-1 py-0.5 text-[10px]">{f}</span>
+              <span key={f} className="rounded-full px-2 py-0.5 text-[11px] font-semibold leading-tight"
+                style={{ background: t.tag, color: t.tagText }}>
+                {f}
+              </span>
             ))}
           </div>
         )}
@@ -64,62 +65,76 @@ function EditableCourseRow({
   }
 
   return (
-    <div className={`rounded-md border px-2 py-1.5 text-xs ${color}`}>
-      <div className="flex items-center gap-1.5">
+    <div className="flex items-center gap-1.5 rounded-lg px-2 py-1.5"
+      style={{ background: t.bg, borderLeft: `3px solid ${t.border}` }}>
+      <div className="flex-1 min-w-0">
         <PlanCourseCombobox course={course} onChange={onChange} />
-        <button type="button" onClick={onRemove} className="shrink-0 opacity-50 hover:opacity-100">
-          <Trash2 className="h-3 w-3" />
-        </button>
       </div>
+      <button type="button" onClick={onRemove}
+        className="shrink-0 rounded p-1 transition-colors hover:bg-red-500/20"
+        style={{ color: "rgba(255,255,255,0.4)" }}>
+        <Trash2 className="h-3 w-3" />
+      </button>
     </div>
   )
 }
 
+// ── Semester card ─────────────────────────────────────────────────────────────
 function EditableSemesterCard({
-  title,
-  semester,
-  editMode,
-  onCourseChange,
-  onAddCourse,
-  onRemoveCourse,
+  title, semester, editMode, onCourseChange, onAddCourse, onRemoveCourse,
 }: {
-  title: string
-  semester: SemesterPlan
-  editMode: boolean
+  title: string; semester: SemesterPlan; editMode: boolean
   onCourseChange: (idx: number, c: PlannedCourse) => void
-  onAddCourse: () => void
-  onRemoveCourse: (idx: number) => void
+  onAddCourse: () => void; onRemoveCourse: (idx: number) => void
 }) {
-  const isCompleted = semester.isCompleted
+  const isFall   = title.toLowerCase().includes("fall")
+  const isDone   = semester.isCompleted
+  const termLabel = isFall ? "Fall" : "Spring"
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-          {title}
-          {isCompleted && <Lock className="h-3 w-3 text-muted-foreground" />}
-        </h3>
-        <span className="text-xs text-muted-foreground">{semester.totalCredits}cr</span>
+    <div className="flex flex-col gap-1">
+      {/* Semester header */}
+      <div className="flex items-center justify-between px-1 mb-1">
+        <div className="flex items-center gap-1.5">
+          <span className="text-xs font-semibold tracking-wide" style={{ color: isFall ? "#f5a623" : "#6fcf97", fontFamily: "var(--font-cinzel)" }}>
+            {termLabel}
+          </span>
+          {isDone && <Lock className="h-3 w-3" style={{ color: "rgba(255,255,255,0.25)" }} />}
+        </div>
+        <span className="text-[11px] font-mono font-semibold" style={{ color: "rgba(255,255,255,0.55)" }}>
+          {semester.totalCredits}cr
+        </span>
       </div>
-      <div className={`rounded-lg border p-2 space-y-1.5 ${isCompleted ? "bg-muted/30 border-dashed" : "bg-card border-border"}`}>
-        {isCompleted && (
-          <p className="text-[10px] text-muted-foreground italic px-1 pb-1 border-b border-border">Completed</p>
+
+      {/* Course list */}
+      <div className="flex flex-col gap-1.5 rounded-xl p-2"
+        style={{
+          background: isDone ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.07)",
+          border: `1px solid ${isDone ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.13)"}`,
+          borderStyle: isDone ? "dashed" : "solid",
+        }}>
+        {isDone && (
+          <p className="text-[10px] italic px-1 pb-1 mb-0.5" style={{ color: "rgba(255,255,255,0.45)", borderBottom: "1px solid rgba(255,255,255,0.10)" }}>
+            Completed semester
+          </p>
         )}
         {semester.courses.map((c, i) => (
           <EditableCourseRow
-            key={`${c.code}-${i}`}
-            course={c}
-            editMode={editMode && !isCompleted}
-            onChange={updated => onCourseChange(i, updated)}
+            key={`${c.code}-${i}`} course={c}
+            editMode={editMode && !isDone}
+            onChange={u => onCourseChange(i, u)}
             onRemove={() => onRemoveCourse(i)}
           />
         ))}
-        {editMode && !isCompleted && (
-          <button
-            type="button"
-            onClick={onAddCourse}
-            className="flex w-full items-center justify-center gap-1 rounded border border-dashed border-border py-1.5 text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
-          >
+        {editMode && !isDone && (
+          <button type="button" onClick={onAddCourse}
+            className="flex w-full items-center justify-center gap-1 rounded-lg py-1.5 text-[11px] transition-colors"
+            style={{
+              border: "1px dashed rgba(245,166,35,0.25)",
+              color: "rgba(245,166,35,0.5)",
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(245,166,35,0.5)"; (e.currentTarget as HTMLButtonElement).style.color = "#f5a623" }}
+            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(245,166,35,0.25)"; (e.currentTarget as HTMLButtonElement).style.color = "rgba(245,166,35,0.5)" }}>
             <Plus className="h-3 w-3" /> Add course
           </button>
         )}
@@ -128,102 +143,104 @@ function EditableSemesterCard({
   )
 }
 
-// ── Main plan view (per plan type A/B/C) ───────────────────────────────────
-
-function PlanView({
-  initialPlan,
-  profile,
-}: {
+// ── Full plan view ────────────────────────────────────────────────────────────
+function PlanView({ initialPlan, profile }: {
   initialPlan: ReturnType<typeof generateAcademicPlan>
   profile: StudentProfileType
 }) {
   const [semesters, setSemesters] = useState<SemesterPlan[]>(initialPlan.semesters)
   const [editMode, setEditMode] = useState(false)
-
   const stats = getPlanStats({ ...initialPlan, semesters })
 
-  const YEAR_LABELS = [
-    { label: "Year 1", fallTitle: "Fall – Year 1", springTitle: "Spring – Year 1", fallIdx: 0, springIdx: 1 },
-    { label: "Year 2", fallTitle: "Fall – Year 2", springTitle: "Spring – Year 2", fallIdx: 2, springIdx: 3 },
-    { label: "Year 3", fallTitle: "Fall – Year 3", springTitle: "Spring – Year 3", fallIdx: 4, springIdx: 5 },
-    { label: "Year 4", fallTitle: "Fall – Year 4", springTitle: "Spring – Year 4", fallIdx: 6, springIdx: 7 },
+  const YEARS = [
+    { label: "Year 1", num: "I",   fallIdx: 0, springIdx: 1 },
+    { label: "Year 2", num: "II",  fallIdx: 2, springIdx: 3 },
+    { label: "Year 3", num: "III", fallIdx: 4, springIdx: 5 },
+    { label: "Year 4", num: "IV",  fallIdx: 6, springIdx: 7 },
   ]
 
-  const updateCourse = useCallback((semIdx: number, courseIdx: number, updated: PlannedCourse) => {
-    setSemesters(prev => prev.map((sem, si) =>
-      si !== semIdx ? sem : {
-        ...sem,
-        courses: sem.courses.map((c, ci) => ci === courseIdx ? updated : c),
-        totalCredits: sem.courses.map((c, ci) => ci === courseIdx ? updated : c).reduce((s, c) => s + c.credits, 0),
-      }
-    ))
-  }, [])
-
-  const addCourse = useCallback((semIdx: number) => {
-    setSemesters(prev => prev.map((sem, si) => {
-      if (si !== semIdx) return sem
-      const newCourse: PlannedCourse = { code: "NEW", name: "New Course", credits: 1, fulfills: [], category: "Elective" }
-      const courses = [...sem.courses, newCourse]
-      return { ...sem, courses, totalCredits: courses.reduce((s, c) => s + c.credits, 0) }
+  const updateCourse = useCallback((si: number, ci: number, u: PlannedCourse) => {
+    setSemesters(prev => prev.map((s, i) => i !== si ? s : {
+      ...s,
+      courses: s.courses.map((c, j) => j === ci ? u : c),
+      totalCredits: s.courses.map((c, j) => j === ci ? u : c).reduce((a, c) => a + c.credits, 0),
     }))
   }, [])
 
-  const removeCourse = useCallback((semIdx: number, courseIdx: number) => {
-    setSemesters(prev => prev.map((sem, si) => {
-      if (si !== semIdx) return sem
-      const courses = sem.courses.filter((_, ci) => ci !== courseIdx)
-      return { ...sem, courses, totalCredits: courses.reduce((s, c) => s + c.credits, 0) }
+  const addCourse = useCallback((si: number) => {
+    setSemesters(prev => prev.map((s, i) => {
+      if (i !== si) return s
+      const courses = [...s.courses, { code: "NEW", name: "New Course", credits: 1, fulfills: [], category: "Elective" } as PlannedCourse]
+      return { ...s, courses, totalCredits: courses.reduce((a, c) => a + c.credits, 0) }
     }))
   }, [])
 
-  const unfulfilledCourses = initialPlan.unfulfilledRequirements.map((req, i) => ({
-    code: `REQ ${i + 1}`,
-    name: req,
-    credits: 1,
-  }))
+  const removeCourse = useCallback((si: number, ci: number) => {
+    setSemesters(prev => prev.map((s, i) => {
+      if (i !== si) return s
+      const courses = s.courses.filter((_, j) => j !== ci)
+      return { ...s, courses, totalCredits: courses.reduce((a, c) => a + c.credits, 0) }
+    }))
+  }, [])
+
+  const unfulfilledCourses = initialPlan.unfulfilledRequirements.map((req, i) => ({ code: `REQ ${i + 1}`, name: req, credits: 1 }))
 
   return (
-    <>
-      {/* Edit toggle */}
-      <div className="mb-4 flex justify-end">
+    <div>
+      {/* Edit controls */}
+      <div className="mb-6 flex justify-end gap-2">
         {editMode ? (
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded px-2 py-1">
-              Edit mode: change any course below
+          <>
+            <span className="flex items-center rounded-full px-3 py-1.5 text-xs"
+              style={{ background: "rgba(245,166,35,0.12)", color: "#f5a623", border: "1px solid rgba(245,166,35,0.25)" }}>
+              Editing — click any course to change it
             </span>
-            <Button size="sm" variant="outline" onClick={() => setEditMode(false)} className="gap-1.5">
-              <Check className="h-3.5 w-3.5" /> Done Editing
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => { setSemesters(initialPlan.semesters); setEditMode(false) }} className="gap-1.5">
-              <X className="h-3.5 w-3.5" /> Reset
-            </Button>
-          </div>
+            <button onClick={() => setEditMode(false)}
+              className="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-medium transition"
+              style={{ background: "rgba(111,207,151,0.12)", color: "#6fcf97", border: "1px solid rgba(111,207,151,0.25)" }}>
+              <Check className="h-3.5 w-3.5" /> Done
+            </button>
+            <button onClick={() => { setSemesters(initialPlan.semesters); setEditMode(false) }}
+              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition"
+              style={{ color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.1)" }}>
+              <X className="h-3 w-3" /> Reset
+            </button>
+          </>
         ) : (
-          <Button size="sm" variant="outline" onClick={() => setEditMode(true)} className="gap-1.5">
+          <button onClick={() => setEditMode(true)}
+            className="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-medium transition hover:border-white/25"
+            style={{ color: "#c8e0d8", border: "1px solid rgba(255,255,255,0.12)" }}>
             <Pencil className="h-3.5 w-3.5" /> Edit Plan
-          </Button>
+          </button>
         )}
       </div>
 
-      {/* 4-Year Grid */}
-      <div className="mb-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {YEAR_LABELS.map(({ label, fallTitle, springTitle, fallIdx, springIdx }) => (
-          <div key={label} className="space-y-4">
-            <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
-              <GraduationCap className="h-5 w-5 text-primary" />
-              {label}
-            </h2>
+      {/* Year columns */}
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {YEARS.map(({ label, num, fallIdx, springIdx }) => (
+          <div key={label} className="flex flex-col gap-4">
+            {/* Year header */}
+            <div className="flex items-baseline gap-2 border-b pb-2"
+              style={{ borderColor: "rgba(255,255,255,0.08)" }}>
+              <span className="text-2xl font-black" style={{ fontFamily: "var(--font-cinzel)", color: "#f5a623" }}>
+                {num}
+              </span>
+              <span className="text-sm" style={{ color: "rgba(255,255,255,0.35)", fontFamily: "var(--font-cinzel)" }}>
+                {label}
+              </span>
+            </div>
+
+            {/* Fall */}
             <EditableSemesterCard
-              title={fallTitle}
-              semester={semesters[fallIdx]}
+              title={`Fall – ${label}`} semester={semesters[fallIdx]}
               editMode={editMode}
               onCourseChange={(ci, c) => updateCourse(fallIdx, ci, c)}
               onAddCourse={() => addCourse(fallIdx)}
               onRemoveCourse={ci => removeCourse(fallIdx, ci)}
             />
+            {/* Spring */}
             <EditableSemesterCard
-              title={springTitle}
-              semester={semesters[springIdx]}
+              title={`Spring – ${label}`} semester={semesters[springIdx]}
               editMode={editMode}
               onCourseChange={(ci, c) => updateCourse(springIdx, ci, c)}
               onAddCourse={() => addCourse(springIdx)}
@@ -233,52 +250,46 @@ function PlanView({
         ))}
       </div>
 
-      {/* Overflow Warning */}
+      {/* Overflow warning */}
       {(initialPlan.warnings.length > 0 || unfulfilledCourses.length > 0) && (
-        <OverflowWarning courses={unfulfilledCourses} warnings={initialPlan.warnings} />
+        <div className="mt-8">
+          <OverflowWarning courses={unfulfilledCourses} warnings={initialPlan.warnings} />
+        </div>
       )}
 
-      {/* Summary Stats */}
-      <Card className="mt-8 border-border bg-card">
-        <CardContent className="py-6">
-          <div className="grid gap-6 text-center md:grid-cols-3 lg:grid-cols-6">
-            <div>
-              <p className="text-3xl font-bold text-primary">{stats.totalCredits}</p>
-              <p className="text-sm text-muted-foreground">Total Credits</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-primary">{stats.totalCourses}</p>
-              <p className="text-sm text-muted-foreground">Courses</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-primary">{stats.majorCourses}</p>
-              <p className="text-sm text-muted-foreground">Major Courses</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-primary">{stats.creditsOutsideMajor}</p>
-              <p className="text-sm text-muted-foreground">Outside Major</p>
-            </div>
-            <div>
-              <p className="text-3xl font-bold text-muted-foreground">{stats.placeholderCourses}</p>
-              <p className="text-sm text-muted-foreground">TBD Courses</p>
-            </div>
-            <div>
-              <p className={`text-3xl font-bold ${stats.overloadedSemesters > 0 ? "text-warning" : "text-primary"}`}>
-                {stats.overloadedSemesters}
-              </p>
-              <p className="text-sm text-muted-foreground">Overloaded</p>
-            </div>
+      {/* Stats strip */}
+      <div className="mt-8 grid grid-cols-3 gap-3 rounded-2xl p-5 md:grid-cols-6"
+        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
+        {[
+          { v: stats.totalCredits,         l: "Credits"       },
+          { v: stats.totalCourses,         l: "Courses"       },
+          { v: stats.majorCourses,         l: "Major"         },
+          { v: stats.creditsOutsideMajor,  l: "Outside Major" },
+          { v: stats.placeholderCourses,   l: "TBD"           },
+          { v: stats.overloadedSemesters,  l: "Overloaded", warn: stats.overloadedSemesters > 0 },
+        ].map(({ v, l, warn }) => (
+          <div key={l} className="text-center">
+            <p className="text-2xl font-black" style={{ fontFamily: "var(--font-cinzel)", color: warn ? "#f5a623" : "#5ba8c7" }}>{v}</p>
+            <p className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>{l}</p>
           </div>
-        </CardContent>
-      </Card>
+        ))}
+      </div>
 
-      {/* Save button */}
-      <div className="mt-6 flex justify-center">
+      {/* Legend */}
+      <div className="mt-4 flex flex-wrap items-center justify-center gap-4">
+        {Object.entries(CAT).map(([cat, t]) => (
+          <div key={cat} className="flex items-center gap-1.5">
+            <span className="h-2.5 w-2.5 rounded-full" style={{ background: t.border }} />
+            <span className="text-[11px] font-medium" style={{ color: "rgba(255,255,255,0.65)" }}>{cat}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Save */}
+      <div className="mt-8 flex justify-center">
         <SavePlanButton
-          majors={profile.majors}
-          minors={profile.minors}
-          interests={profile.interests}
-          careerGoals={profile.careerGoals}
+          majors={profile.majors} minors={profile.minors}
+          interests={profile.interests} careerGoals={profile.careerGoals}
           mathPlacement={profile.mathPlacement ?? "none"}
           waivedCourses={profile.waivedCourses ?? []}
           planType={initialPlan.student.majors[0] ?? "Custom"}
@@ -287,20 +298,18 @@ function PlanView({
       </div>
 
       {/* Career advice */}
-      <div className="mt-8">
+      <div className="mt-10">
         <CareerAdvice
-          careerGoals={profile.careerGoals}
-          majors={profile.majors}
+          careerGoals={profile.careerGoals} majors={profile.majors}
           courses={semesters.flatMap(s => s.courses.map(c => ({ code: c.code, name: c.name })))}
           interests={profile.interests}
         />
       </div>
-    </>
+    </div>
   )
 }
 
-// ── Page root ──────────────────────────────────────────────────────────────
-
+// ── Page root ─────────────────────────────────────────────────────────────────
 function PlanPageInner() {
   const searchParams = useSearchParams()
   const [ready, setReady] = useState(false)
@@ -313,19 +322,18 @@ function PlanPageInner() {
 
   useEffect(() => {
     const p: StudentProfileType = {
-      majors: searchParams.get("majors")?.split(",") ?? ["CSC"],
-      minors: searchParams.get("minors")?.split(",").filter(Boolean) ?? [],
-      interests: searchParams.get("interests")?.split(",") ?? ["Technology"],
-      hobbies: [],
-      careerGoals: searchParams.get("careerGoals")?.split(",") ?? ["Software Engineer"],
+      majors:        searchParams.get("majors")?.split(",")               ?? ["CSC"],
+      minors:        searchParams.get("minors")?.split(",").filter(Boolean) ?? [],
+      interests:     searchParams.get("interests")?.split(",")            ?? ["Technology"],
+      hobbies:       [],
+      careerGoals:   searchParams.get("careerGoals")?.split(",")          ?? ["Software Engineer"],
       mathPlacement: (searchParams.get("mathPlacement") ?? "none") as MathPlacement,
       waivedCourses: searchParams.get("waivedCourses")?.split(",").filter(Boolean) ?? [],
     }
-
     let completedSemesters: CompletedSemesterInput[] = []
     try {
-      const stored = sessionStorage.getItem("completedSemesters")
-      if (stored) completedSemesters = JSON.parse(stored)
+      const s = sessionStorage.getItem("completedSemesters")
+      if (s) completedSemesters = JSON.parse(s)
     } catch { /* ignore */ }
 
     setProfile(p)
@@ -339,81 +347,76 @@ function PlanPageInner() {
 
   if (!ready || !profile || !plans) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center" style={{ background: "#071410" }}>
         <div className="text-center">
-          <Sparkles className="mx-auto mb-3 h-8 w-8 animate-spin text-primary" />
-          <p className="text-sm text-muted-foreground">Generating your plan…</p>
+          <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-t-transparent" style={{ borderColor: "rgba(245,166,35,0.3)", borderTopColor: "#f5a623" }} />
+          <p className="text-sm" style={{ color: "#7aada0", fontStyle: "italic" }}>Charting your path…</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              <Sparkles className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-semibold text-foreground">Lumen</span>
+    <div className="min-h-screen" style={{
+        fontFamily: "var(--font-lora),Georgia,serif",
+        background: [
+          /* deep golden glow from top — like canopy light */
+          "radial-gradient(ellipse 90% 55% at 50% -5%, rgba(245,166,35,0.18) 0%, transparent 65%)",
+          /* side warmth */
+          "radial-gradient(ellipse 50% 40% at 15% 50%, rgba(245,166,35,0.07) 0%, transparent 60%)",
+          "radial-gradient(ellipse 50% 40% at 85% 50%, rgba(245,166,35,0.07) 0%, transparent 60%)",
+          /* base — lighter than planner, feel of dawn breaking */
+          "linear-gradient(180deg,#122418 0%,#1a3020 40%,#203828 75%,#274030 100%)",
+        ].join(","),
+      }}>
+      <ForestNav actions={
+        <div className="flex items-center gap-3">
+          <Link href="/planner" className="flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm text-[#c8e0d8] transition hover:border-white/30">
+            <ArrowLeft className="h-4 w-4" /> Edit Preferences
           </Link>
-          <div className="flex items-center gap-3">
-            <Link href="/planner">
-              <Button variant="outline" size="sm" className="gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Edit Preferences
-              </Button>
-            </Link>
-            <ExportButton />
-          </div>
+          <ExportButton />
         </div>
-      </header>
+      } />
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8 text-center">
-          <h1 className="mb-2 text-3xl font-bold text-foreground md:text-4xl">Your Academic Plan</h1>
-          <p className="text-muted-foreground">A personalized course roadmap — edit any course before saving</p>
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-sm">
-            <span className="text-muted-foreground">Minimum {MINIMUM_TOTAL_CREDITS} credits required</span>
-            <span className="text-muted-foreground">|</span>
-            <span className="text-muted-foreground">{MINIMUM_CREDITS_OUTSIDE_MAJOR} credits outside major</span>
-          </div>
+      <main className="mx-auto max-w-[1400px] px-4 py-8 pt-24">
+
+        {/* Page title */}
+        <div className="mb-10 text-center">
+          <h1 className="mb-2 text-3xl font-black tracking-tight md:text-4xl" style={{ fontFamily: "var(--font-cinzel)", color: "#f0ede0" }}>
+            Your Academic Journey
+          </h1>
+          <p className="text-sm italic" style={{ color: "#9abfb8" }}>
+            Edit any course, then save — min {MINIMUM_TOTAL_CREDITS} credits · {MINIMUM_CREDITS_OUTSIDE_MAJOR} outside your major
+          </p>
         </div>
 
-        <StudentProfile profile={{
-          majors: profile.majors,
-          minors: profile.minors,
-          interests: profile.interests,
-          careerGoals: profile.careerGoals,
-        }} />
+        <StudentProfile profile={{ majors: profile.majors, minors: profile.minors, interests: profile.interests, careerGoals: profile.careerGoals }} />
 
-        <Tabs defaultValue="A" className="mt-8">
-          <div className="flex justify-center mb-8">
-            <TabsList>
-              <TabsTrigger value="A">Plan A</TabsTrigger>
-              <TabsTrigger value="B">Plan B</TabsTrigger>
-              <TabsTrigger value="C">Plan C</TabsTrigger>
+        {/* Plan tabs */}
+        <Tabs defaultValue="A" className="mt-10">
+          <div className="mb-8 flex justify-center">
+            <TabsList className="rounded-full p-1" style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" }}>
+              {["A","B","C"].map(p => (
+                <TabsTrigger key={p} value={p}
+                  className="rounded-full px-6 py-1.5 text-sm font-semibold data-[state=active]:text-[#071410] transition-all"
+                  style={{ fontFamily: "var(--font-cinzel)" }}>
+                  Plan {p}
+                </TabsTrigger>
+              ))}
             </TabsList>
           </div>
-
-          <TabsContent value="A">
-            <PlanView initialPlan={plans.A} profile={profile} />
-          </TabsContent>
-          <TabsContent value="B">
-            <PlanView initialPlan={plans.B} profile={profile} />
-          </TabsContent>
-          <TabsContent value="C">
-            <PlanView initialPlan={plans.C} profile={profile} />
-          </TabsContent>
+          {(["A","B","C"] as const).map(p => (
+            <TabsContent key={p} value={p}>
+              <PlanView initialPlan={plans[p]} profile={profile} />
+            </TabsContent>
+          ))}
         </Tabs>
       </main>
 
-      <footer className="mt-12 border-t border-border bg-card py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>Sample plan based on your preferences. Consult your academic advisor for official course registration.</p>
-        </div>
+      <footer className="mt-16 border-t py-8 text-center" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
+        <p className="text-xs italic" style={{ color: "#4a7a72" }}>
+          Sample plan based on your preferences. Consult your academic advisor for official course registration.
+        </p>
       </footer>
     </div>
   )
@@ -422,8 +425,8 @@ function PlanPageInner() {
 export default function PlanPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center">
-        <Sparkles className="mx-auto mb-3 h-8 w-8 animate-spin text-primary" />
+      <div className="flex min-h-screen items-center justify-center" style={{ background: "#071410" }}>
+        <Sparkles className="h-8 w-8 animate-spin" style={{ color: "#f5a623" }} />
       </div>
     }>
       <PlanPageInner />

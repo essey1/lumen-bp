@@ -127,13 +127,13 @@ const INTERESTS = [
   "Writing",
 ]
 
-const QUICK_PICKS = [
-  "Technology", "Healthcare", "Business", "Arts", "Research",
-  "Environment", "Psychology", "Writing", "Social Justice", "Teaching",
-  "Engineering", "Mathematics", "Music Performance", "Film Studies",
-  "Political Science", "Economics", "Biology", "Data Science",
-  "Philosophy", "Communication", "Nursing", "Child Development",
-  "Agriculture", "Theatre", "History",
+// A small curated showcase — just examples to spark ideas
+const EXAMPLE_PICKS = [
+  "Data Science", "Biology", "Psychology",
+  "Creative Writing", "Political Science", "Music Performance",
+  "Business", "Environmental Science", "Nursing",
+  "Engineering", "Film Studies", "Agriculture",
+  "Philosophy", "Theatre", "History",
 ]
 
 const MAX_SELECTIONS = 5
@@ -212,9 +212,11 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
       </Popover>
 
       <div>
-        <p className="mb-3 text-center text-sm text-muted-foreground">Popular interests:</p>
+        <p className="mb-3 text-center text-xs font-medium uppercase tracking-widest text-muted-foreground">
+          A few examples — or search above for hundreds more
+        </p>
         <div className="flex flex-wrap justify-center gap-2">
-          {QUICK_PICKS.map(id => (
+          {EXAMPLE_PICKS.map(id => (
             <button
               key={id}
               onClick={() => toggle(id)}
@@ -224,7 +226,7 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
                 selected.includes(id)
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-background text-foreground hover:border-primary hover:bg-primary/5",
-                !selected.includes(id) && selected.length >= MAX_SELECTIONS && "cursor-not-allowed opacity-50"
+                !selected.includes(id) && selected.length >= MAX_SELECTIONS && "cursor-not-allowed opacity-40"
               )}
             >
               {id}
@@ -232,16 +234,6 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
           ))}
         </div>
       </div>
-
-      <div className="flex justify-center gap-1.5">
-        {Array.from({ length: MAX_SELECTIONS }).map((_, i) => (
-          <div key={i} className={cn("h-2 w-8 rounded-full transition-colors", i < selected.length ? "bg-primary" : "bg-muted")} />
-        ))}
-      </div>
-
-      <p className="text-center text-sm text-muted-foreground">
-        {"We'll"} tailor your course plan around what you love.
-      </p>
     </div>
   )
 }

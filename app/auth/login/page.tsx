@@ -1,100 +1,89 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { signIn } from "next-auth/react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Sparkles } from "lucide-react";
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { signIn } from "next-auth/react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { ForestNav } from "@/components/forest-nav"
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter()
+  const [email, setEmail]       = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError]       = useState("")
+  const [loading, setLoading]   = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
-
+    e.preventDefault()
+    setLoading(true)
+    setError("")
     const result = await signIn("credentials", {
       email: email.trim().toLowerCase(),
       password,
       redirect: false,
-    });
-
+    })
     if (result?.error) {
-      setError("Invalid email or password.");
-      setIsLoading(false);
+      setError("Invalid email or password.")
+      setLoading(false)
     } else {
-      window.location.href = "/profile";
+      window.location.href = "/profile"
     }
-  };
+  }
+
+  const inputCls = "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-[#e2ede8] placeholder-[#4a7a72] outline-none transition focus:border-[#f5a623]/50 focus:bg-white/8 focus:ring-0"
+  const labelCls = "mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-[#7aada0]"
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <header className="border-b border-border bg-card px-4 py-4">
-        <div className="container mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <Sparkles className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <span className="text-lg font-semibold text-foreground">Lumen</span>
-          </Link>
-          <Link href="/auth/signup" className="text-sm text-muted-foreground hover:text-foreground">
-            {"Don't"} have an account?{" "}
-            <span className="text-primary font-medium">Sign up</span>
-          </Link>
-        </div>
-      </header>
+    <div className="min-h-screen" style={{ background: "linear-gradient(180deg,#050e0b 0%,#071410 40%,#0b1f18 100%)", fontFamily: "var(--font-lora),Georgia,serif" }}>
+      <ForestNav actions={
+        <Link href="/auth/signup" className="text-sm text-[#7aada0] transition hover:text-[#e2ede8]">
+          No account? <span style={{ color: "#f5a623" }}>Sign up</span>
+        </Link>
+      } />
 
-      <div className="flex flex-1 items-center justify-center px-4 py-12">
-        <div className="w-full max-w-md">
-          <h1 className="mb-1 text-2xl font-bold text-foreground">Welcome back</h1>
-          <p className="mb-8 text-sm text-muted-foreground">Sign in to your Lumen account</p>
+      <div className="flex min-h-screen items-center justify-center px-4 pt-20">
+        <div className="w-full max-w-sm">
+
+          <h1 className="mb-1 text-3xl font-bold text-[#f0ede0]" style={{ fontFamily: "var(--font-cinzel)" }}>
+            Welcome back.
+          </h1>
+          <p className="mb-8 text-sm italic text-[#7aada0]">Sign in to continue your journey.</p>
+
+          {error && (
+            <Alert variant="destructive" className="mb-5 border-red-500/30 bg-red-500/10 text-red-300">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <Alert variant="destructive">
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
-
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">Email</label>
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="janedoe@berea.edu"
-                required
-                disabled={isLoading}
-                autoFocus
-              />
+              <label className={labelCls}>Email</label>
+              <input type="email" value={email} onChange={e => setEmail(e.target.value)}
+                placeholder="janedoe@berea.edu" required disabled={loading} autoFocus
+                className={inputCls} />
             </div>
-
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-foreground">Password</label>
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-                disabled={isLoading}
-              />
+              <label className={labelCls}>Password</label>
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)}
+                placeholder="••••••••" required disabled={loading}
+                className={inputCls} />
             </div>
-
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
-            </Button>
+            <button type="submit" disabled={loading}
+              className="mt-2 w-full rounded-xl py-3 text-sm font-bold tracking-wide text-[#071410] transition hover:-translate-y-0.5 disabled:opacity-60"
+              style={{ fontFamily: "var(--font-cinzel)", background: "#f5a623", boxShadow: "0 8px 24px rgba(245,166,35,0.24)" }}>
+              {loading ? "Signing in…" : "Sign In"}
+            </button>
           </form>
+
+          <p className="mt-6 text-center text-sm text-[#4a7a72]">
+            No account?{" "}
+            <Link href="/auth/signup" className="font-medium transition hover:text-[#e2ede8]" style={{ color: "#f5a623" }}>
+              Sign up free
+            </Link>
+          </p>
         </div>
       </div>
     </div>
-  );
+  )
 }

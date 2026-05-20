@@ -193,14 +193,13 @@ const CAREER_GOALS = [
   "Construction Manager", "Landscape Architect",
 ]
 
-const QUICK_PICKS = [
-  "Software Engineer", "Registered Nurse", "Elementary Teacher", "Data Scientist",
-  "Psychologist", "Social Worker", "Lawyer", "Business Analyst",
-  "Environmental Scientist", "Journalist", "Marketing Manager", "AI Engineer",
-  "Medical School", "Graduate School", "Policy Analyst", "Music Teacher",
-  "Nonprofit Manager", "College Professor", "Financial Analyst", "Filmmaker",
-  "Community Organizer", "Agronomist", "Music Therapist", "Drama Teacher",
-  "Foreign Service Officer", "Health Educator",
+// Small curated showcase — just a sample to show what's searchable
+const EXAMPLE_PICKS = [
+  "Software Engineer", "Registered Nurse", "Elementary Teacher",
+  "Data Scientist", "Psychologist", "Social Worker",
+  "Lawyer", "Entrepreneur", "Environmental Scientist",
+  "Journalist", "Financial Analyst", "Medical School",
+  "Graduate School", "Filmmaker", "Agronomist",
 ]
 
 const MAX_SELECTIONS = 3
@@ -279,9 +278,11 @@ export function CareerStep({ selected, onChange }: CareerStepProps) {
       </Popover>
 
       <div>
-        <p className="mb-3 text-center text-sm text-muted-foreground">Popular career goals:</p>
+        <p className="mb-3 text-center text-xs font-medium uppercase tracking-widest text-muted-foreground">
+          A few examples — or search above for hundreds more
+        </p>
         <div className="flex flex-wrap justify-center gap-2">
-          {QUICK_PICKS.map(id => (
+          {EXAMPLE_PICKS.map(id => (
             <button
               key={id}
               onClick={() => toggle(id)}
@@ -291,7 +292,7 @@ export function CareerStep({ selected, onChange }: CareerStepProps) {
                 selected.includes(id)
                   ? "border-primary bg-primary text-primary-foreground"
                   : "border-border bg-background text-foreground hover:border-primary hover:bg-primary/5",
-                !selected.includes(id) && selected.length >= MAX_SELECTIONS && "cursor-not-allowed opacity-50"
+                !selected.includes(id) && selected.length >= MAX_SELECTIONS && "cursor-not-allowed opacity-40"
               )}
             >
               {id}
@@ -299,16 +300,6 @@ export function CareerStep({ selected, onChange }: CareerStepProps) {
           ))}
         </div>
       </div>
-
-      <div className="flex justify-center gap-1.5">
-        {Array.from({ length: MAX_SELECTIONS }).map((_, i) => (
-          <div key={i} className={cn("h-2 w-8 rounded-full transition-colors", i < selected.length ? "bg-primary" : "bg-muted")} />
-        ))}
-      </div>
-
-      <p className="text-center text-sm text-muted-foreground">
-        {"We'll"} tailor your course plan to help you reach these goals.
-      </p>
     </div>
   )
 }

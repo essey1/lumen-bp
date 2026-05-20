@@ -1,172 +1,285 @@
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { BookOpen, Calendar, Compass, GraduationCap, Sparkles, Target } from "lucide-react"
+import { Leaf, Map, CheckCircle2 } from "lucide-react"
+import { LumenFireflies, LumenGuideBear } from "@/components/lumen-ambience"
+
+/* ── tiny inline bear SVG (same design as the guide bear, used in nav) ── */
+function BearMark({ size = 28 }: { size?: number }) {
+  const h = Math.round(size * 1.54)
+  return (
+    <svg width={size} height={h} viewBox="0 0 130 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="65" cy="145" rx="40" ry="48" fill="#5ba8c7" />
+      <ellipse cx="65" cy="90"  rx="34" ry="32" fill="#5ba8c7" />
+      <circle  cx="38" cy="65" r="13" fill="#5ba8c7" />
+      <circle  cx="92" cy="65" r="13" fill="#5ba8c7" />
+      <circle  cx="38" cy="65" r="7"  fill="#7dc1dd" />
+      <circle  cx="92" cy="65" r="7"  fill="#7dc1dd" />
+      <ellipse cx="65" cy="100" rx="18" ry="14" fill="#f0f8ff" opacity="0.7" />
+      <circle  cx="55" cy="86" r="4" fill="#2a4a5a" />
+      <circle  cx="75" cy="86" r="4" fill="#2a4a5a" />
+      <ellipse cx="65" cy="104" rx="6" ry="4" fill="#2a4a5a" />
+      <ellipse cx="28" cy="148" rx="13" ry="30" fill="#5ba8c7" transform="rotate(-15 28 148)" />
+      <ellipse cx="102" cy="148" rx="13" ry="30" fill="#5ba8c7" transform="rotate(15 102 148)" />
+      <ellipse cx="48" cy="187" rx="14" ry="12" fill="#4a95b5" />
+      <ellipse cx="82" cy="187" rx="14" ry="12" fill="#4a95b5" />
+      <rect x="24" y="158" width="20" height="24" rx="4" fill="#c97d1a" />
+      <rect x="26" y="160" width="16" height="20" rx="3" fill="#f5a623" />
+      <circle cx="34" cy="170" r="7" fill="#fff3c4" opacity="0.9" />
+      <circle cx="34" cy="170" r="4" fill="#f5a623" opacity="0.6" />
+    </svg>
+  )
+}
+
+const steps = [
+  { num: "01", icon: Leaf,         title: "Tell us who you are"   },
+  { num: "02", icon: Map,          title: "Map your semesters"    },
+  { num: "03", icon: CheckCircle2, title: "Follow the light"      },
+]
+
+const features = [
+  { tag: "Roadmap",  title: "Full 4-year view"             },
+  { tag: "Berea",    title: "Requirements-aware"           },
+  { tag: "Goals",    title: "Shaped by your direction"     },
+  { tag: "Progress", title: "Revisit as you grow"          },
+]
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              <Sparkles className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-semibold text-foreground">Lumen</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Link href="/planner">
-              <Button variant="ghost" size="sm">Create a Plan</Button>
-            </Link>
-            <Link href="/auth/login">
-              <Button variant="outline" size="sm">Sign In</Button>
-            </Link>
-            <Link href="/auth/signup">
-              <Button size="sm">Sign Up</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
+    <main
+      className="min-h-screen overflow-x-hidden bg-[#071410] text-[#e2ede8]"
+      style={{ fontFamily: "var(--font-lora), Georgia, serif" }}
+    >
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden min-h-[90vh] flex items-center">
-        {/* Background image with dramatic Ken Burns */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat animate-[kenburns_30s_ease-in-out_infinite]"
-          style={{ backgroundImage: "url('/images/campus.png')" }}
-        />
-        {/* Breathing overlay that pulses between more and less transparent */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/40 to-background/60 animate-[breatheOverlay_6s_ease-in-out_infinite]" />
-        {/* Static gradient for text readability at bottom */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent" />
-        
-        {/* Floating decorative orbs with dramatic movement */}
-        <div className="absolute top-20 left-[10%] h-32 w-32 rounded-full bg-primary/30 blur-3xl animate-[orbFloat1_10s_ease-in-out_infinite]" />
-        <div className="absolute bottom-32 right-[15%] h-48 w-48 rounded-full bg-primary/25 blur-3xl animate-[orbFloat2_12s_ease-in-out_infinite]" />
-        <div className="absolute top-1/3 right-[5%] h-24 w-24 rounded-full bg-accent/30 blur-2xl animate-[orbFloat3_8s_ease-in-out_infinite]" />
-        <div className="absolute bottom-1/4 left-[20%] h-40 w-40 rounded-full bg-primary/20 blur-3xl animate-[orbFloat2_14s_ease-in-out_infinite_2s]" />
-        <div className="absolute top-[15%] right-[30%] h-20 w-20 rounded-full bg-accent/25 blur-2xl animate-[orbFloat1_9s_ease-in-out_infinite_1s]" />
-        
-        <div className="container relative mx-auto px-4 py-24 md:py-32">
-          <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border-2 bg-card/95 backdrop-blur-md px-5 py-2 text-sm font-medium text-primary animate-[fadeInDown_1s_cubic-bezier(0.16,1,0.3,1),borderGlow_3s_ease-in-out_infinite] shadow-xl">
-              <GraduationCap className="h-5 w-5 animate-[floatRotate_4s_ease-in-out_infinite]" />
-              For Berea College Students
-            </div>
-            <h1 className="mb-6 text-balance text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl animate-[fadeInUp_1s_cubic-bezier(0.16,1,0.3,1)_0.3s_both]">
-              Your 4-year journey,{" "}
-              <span className="text-primary relative inline-block animate-[textGlow_4s_ease-in-out_infinite]">
-                planned from day one
-                <span className="absolute -inset-2 bg-primary/15 blur-xl rounded-lg animate-[pulse-glow_3s_ease-in-out_infinite]" />
-              </span>
-            </h1>
-            <div className="flex flex-col items-center gap-5 sm:flex-row sm:justify-center animate-[fadeInUp_1s_cubic-bezier(0.16,1,0.3,1)_0.5s_both] mt-10">
-              <Link href="/planner">
-                <Button size="lg" className="gap-2 text-base px-8 py-6 text-lg shadow-xl hover:shadow-2xl hover:scale-110 transition-all duration-500 animate-[pulse-glow_3s_ease-in-out_infinite]">
-                  <Compass className="h-6 w-6 animate-[spin_6s_linear_infinite]" />
-                  Create a Plan
-                </Button>
-              </Link>
-              <Link href="/auth/login">
-                <Button variant="outline" size="lg" className="gap-2 text-base px-8 py-6 text-lg bg-card/95 backdrop-blur-md hover:bg-card hover:scale-110 transition-all duration-500 shadow-xl animate-[borderGlow_4s_ease-in-out_infinite]">
-                  Sign In
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-        
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="h-14 w-8 rounded-full border-2 bg-card/70 backdrop-blur-sm flex items-start justify-center p-2 shadow-xl animate-[borderGlow_2s_ease-in-out_infinite]">
-            <div className="h-4 w-2 rounded-full bg-primary animate-[scrollDown_1.5s_ease-in-out_infinite]" />
-          </div>
-        </div>
-      </section>
+      {/* ── Nav ──────────────────────────────────────────────────────────── */}
+      <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-sm md:px-10"
+           style={{ background: "linear-gradient(to bottom, rgba(7,20,16,0.92) 0%, transparent 100%)" }}>
 
-      {/* Features Section */}
-      <section className="border-t border-border bg-card py-20">
-        <div className="container mx-auto px-4">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4 text-3xl font-bold text-foreground">
-              How Lumen Works
-            </h2>
-            <p className="mx-auto max-w-2xl text-muted-foreground">
-              A simple, guided process to create your personalized academic roadmap
-            </p>
-          </div>
-          <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
-            <Card className="border-border bg-background">
-              <CardContent className="pt-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                  <Target className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="mb-2 text-lg font-semibold text-foreground">
-                  1. Share Your Goals
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  Tell us about your majors, minors, interests, and career aspirations 
-                  through our friendly step-by-step form.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="border-border bg-background">
-              <CardContent className="pt-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                  <BookOpen className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="mb-2 text-lg font-semibold text-foreground">
-                  2. Get Your Plan
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  We generate a customized 4-year course plan that aligns with 
-                  your academic goals and Berea College requirements.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="border-border bg-background">
-              <CardContent className="pt-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                  <Calendar className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="mb-2 text-lg font-semibold text-foreground">
-                  3. Visualize & Adjust
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  See your entire academic journey laid out semester by semester, 
-                  and make adjustments as needed.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
+        <Link href="/" className="flex items-center gap-2.5" style={{ color: "#f5a623" }}>
+          <BearMark size={26} />
+          <span className="text-lg font-bold tracking-wide" style={{ fontFamily: "var(--font-cinzel)" }}>
+            Lumen
+          </span>
+        </Link>
 
-      {/* CTA Section */}
-      <section className="border-t border-border py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="mb-4 text-3xl font-bold text-foreground">
-            Ready to plan your future?
-          </h2>
-          <p className="mb-8 text-muted-foreground">
-            Join hundreds of Berea College students who have mapped their academic journey with Lumen.
-          </p>
-          <Link href="/auth/signup">
-            <Button size="lg" className="gap-2">
-              <Sparkles className="h-5 w-5" />
-              Get Started — {"It's"} Free
-            </Button>
+        <div className="flex items-center gap-3">
+          <Link href="/auth/login"
+            className="rounded-full border border-white/20 px-4 py-1.5 text-sm text-[#c8e0d8] transition hover:border-white/40 hover:text-white">
+            Sign In
+          </Link>
+          <Link href="/auth/signup"
+            className="rounded-full px-4 py-1.5 text-sm font-semibold text-[#071410] transition hover:-translate-y-0.5"
+            style={{ background: "#f5a623", boxShadow: "0 6px 20px rgba(245,166,35,0.28)" }}>
+            Sign Up
           </Link>
         </div>
+      </nav>
+
+      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pt-16">
+
+        {/* Sky-to-earth gradient */}
+        <div className="absolute inset-0"
+          style={{ background: "linear-gradient(180deg, #050e0b 0%, #071410 25%, #0b1f18 55%, #0f2a1f 80%, #122e22 100%)" }} />
+
+        {/* Moon glow top */}
+        <div className="absolute right-[18%] top-[8%] h-24 w-24 rounded-full opacity-30"
+          style={{ background: "radial-gradient(circle, #fffde0 0%, rgba(245,220,100,0.3) 50%, transparent 70%)", filter: "blur(2px)" }} />
+        <div className="absolute right-[18%] top-[8%] h-14 w-14 translate-x-5 translate-y-5 rounded-full bg-[#fffbea] opacity-15" style={{ filter: "blur(1px)" }} />
+
+        {/* Ground lantern glow */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2"
+          style={{ width: 360, height: 260, background: "radial-gradient(ellipse 100% 55% at 50% 85%, rgba(245,166,35,0.20) 0%, transparent 70%)" }} />
+
+        {/* Fireflies */}
+        <LumenFireflies className="absolute" />
+
+        {/* ── Dense forest silhouettes ── */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          {/* Far-back layer (tallest, slightly lighter dark) */}
+          <div className="absolute bottom-0 left-[-2%] h-[90vh] w-[70px] bg-[#040d0a] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 left-[4%]  h-[72vh] w-[52px] bg-[#040d0a] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 left-[9%]  h-[84vh] w-[60px] bg-[#040d0a] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 right-[0%]  h-[88vh] w-[66px] bg-[#040d0a] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 right-[5%]  h-[70vh] w-[50px] bg-[#040d0a] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 right-[11%] h-[80vh] w-[58px] bg-[#040d0a] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+
+          {/* Mid layer */}
+          <div className="absolute bottom-0 left-[14%] h-[52vh] w-[44px] bg-[#060e0b] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 left-[20%] h-[38vh] w-[34px] bg-[#060e0b] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 left-[26%] h-[46vh] w-[40px] bg-[#060e0b] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 right-[17%] h-[48vh] w-[42px] bg-[#060e0b] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 right-[23%] h-[34vh] w-[30px] bg-[#060e0b] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 right-[29%] h-[42vh] w-[36px] bg-[#060e0b] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+
+          {/* Front layer (darkest) */}
+          <div className="absolute bottom-0 left-[0%]   h-[26vh] w-[60px]  bg-[#030808] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 left-[30%]  h-[22vh] w-[40px]  bg-[#030808] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 right-[30%] h-[24vh] w-[44px]  bg-[#030808] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+          <div className="absolute bottom-0 right-[0%]  h-[28vh] w-[62px]  bg-[#030808] [clip-path:polygon(50%_0%,0%_100%,100%_100%)]" />
+
+          {/* Ground fog strip */}
+          <div className="absolute bottom-0 left-0 right-0 h-[12vh]"
+            style={{ background: "linear-gradient(to top, rgba(11,31,24,0.85) 0%, transparent 100%)" }} />
+        </div>
+
+        {/* Hero text */}
+        <div className="lumen-fade-up relative z-10 mx-auto max-w-3xl px-2 text-center">
+
+          <h1 className="leading-[1.06] tracking-tight text-[#f0ede0]"
+            style={{ fontFamily: "var(--font-cinzel)", fontSize: "clamp(2.6rem, 7vw, 5.2rem)", fontWeight: 900 }}>
+            Let the light
+            <br />
+            <em className="not-italic" style={{ color: "#f5a623", textShadow: "0 0 60px rgba(245,166,35,0.4)" }}>
+              guide your path.
+            </em>
+          </h1>
+
+          <p className="mx-auto mt-6 max-w-md text-base leading-7"
+            style={{ color: "#7aada0", fontStyle: "italic" }}>
+            Your personalized 4-year academic roadmap,<br />
+            built for Berea College.
+          </p>
+
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+            <Link href="/auth/signup"
+              className="rounded-full px-8 py-3.5 text-sm font-bold tracking-wide transition hover:-translate-y-0.5"
+              style={{
+                background: "#f5a623",
+                color: "#071410",
+                fontFamily: "var(--font-cinzel)",
+                boxShadow: "0 12px 32px rgba(245,166,35,0.28)",
+              }}>
+              Begin Your Journey
+            </Link>
+            <a href="#how"
+              className="rounded-full border border-white/20 px-8 py-3.5 text-sm text-[#c8e0d8] transition hover:border-white/40 hover:bg-white/5">
+              How it works
+            </a>
+          </div>
+        </div>
+
+        {/* Fixed bear guide — stays on screen while scrolling */}
+        <LumenGuideBear fixed={true} />
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border bg-card py-8">
-        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>Made with care for Berea College students</p>
+      {/* ── How it works ─────────────────────────────────────────────────── */}
+      <section id="how" className="mx-auto max-w-5xl px-6 py-28">
+        <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.22em]"
+          style={{ color: "#f5a623", fontFamily: "var(--font-cinzel)" }}>
+          The path
+        </p>
+        <h2 className="mb-14 text-3xl font-bold tracking-tight text-[#f0ede0] md:text-4xl"
+          style={{ fontFamily: "var(--font-cinzel)" }}>
+          Three steps through the forest.
+        </h2>
+
+        <div className="grid gap-5 sm:grid-cols-3">
+          {steps.map((step) => {
+            const Icon = step.icon
+            return (
+              <article key={step.num}
+                className="group relative overflow-hidden rounded-2xl border border-white/8 p-7 transition duration-300 hover:-translate-y-1 hover:border-[#f5a623]/25"
+                style={{ background: "rgba(255,255,255,0.03)" }}>
+                <div className="absolute inset-0 opacity-0 transition group-hover:opacity-100"
+                  style={{ background: "radial-gradient(circle at 30% 20%, rgba(245,166,35,0.06) 0%, transparent 65%)" }} />
+                <div className="relative">
+                  <p className="mb-5 select-none text-5xl font-black leading-none"
+                    style={{ fontFamily: "var(--font-cinzel)", color: "rgba(245,166,35,0.12)" }}>
+                    {step.num}
+                  </p>
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border"
+                    style={{ borderColor: "rgba(245,166,35,0.2)", background: "rgba(245,166,35,0.08)" }}>
+                    <Icon className="h-4 w-4" style={{ color: "#f5a623" }} />
+                  </div>
+                  <h3 className="text-sm font-semibold text-[#e2ede8]"
+                    style={{ fontFamily: "var(--font-cinzel)", letterSpacing: "0.04em" }}>
+                    {step.title}
+                  </h3>
+                </div>
+              </article>
+            )
+          })}
+        </div>
+      </section>
+
+      {/* ── Features ─────────────────────────────────────────────────────── */}
+      <section id="features" className="px-6 py-24"
+        style={{ background: "rgba(255,255,255,0.015)" }}>
+        <div className="mx-auto max-w-5xl">
+          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.22em]"
+            style={{ color: "#f5a623", fontFamily: "var(--font-cinzel)" }}>
+            What Lumen offers
+          </p>
+          <h2 className="mb-14 text-3xl font-bold tracking-tight text-[#f0ede0] md:text-4xl"
+            style={{ fontFamily: "var(--font-cinzel)" }}>
+            Every tree, every trail — mapped.
+          </h2>
+
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {features.map((f) => (
+              <article key={f.title}
+                className="rounded-2xl border border-white/8 p-6 transition hover:-translate-y-1 hover:border-[#f5a623]/20"
+                style={{ background: "rgba(255,255,255,0.03)" }}>
+                <span className="mb-3 inline-block rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest"
+                  style={{ background: "rgba(245,166,35,0.10)", color: "#f5a623", fontFamily: "var(--font-cinzel)" }}>
+                  {f.tag}
+                </span>
+                <h3 className="text-sm font-semibold text-[#e2ede8]"
+                  style={{ fontFamily: "var(--font-cinzel)", letterSpacing: "0.03em" }}>
+                  {f.title}
+                </h3>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ──────────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden px-6 py-36 text-center">
+        <div className="absolute inset-0"
+          style={{ background: "radial-gradient(ellipse 60% 70% at 50% 50%, rgba(245,166,35,0.06) 0%, transparent 70%)" }} />
+        <LumenFireflies className="absolute opacity-50" />
+        <div className="relative z-10">
+          <h2 className="font-black tracking-tight text-[#f0ede0]"
+            style={{ fontFamily: "var(--font-cinzel)", fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>
+            Ready to{" "}
+            <span style={{ color: "#f5a623", textShadow: "0 0 40px rgba(245,166,35,0.35)" }}>begin?</span>
+          </h2>
+          <p className="mx-auto mt-4 max-w-sm text-[#7aada0]" style={{ fontStyle: "italic" }}>
+            Your guide is already waiting in the forest.
+          </p>
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+            <Link href="/auth/signup"
+              className="rounded-full px-8 py-3.5 text-sm font-bold tracking-wide transition hover:-translate-y-0.5"
+              style={{
+                background: "#f5a623",
+                color: "#071410",
+                fontFamily: "var(--font-cinzel)",
+                boxShadow: "0 12px 32px rgba(245,166,35,0.26)",
+              }}>
+              Get Started — Free
+            </Link>
+            <Link href="/auth/login"
+              className="rounded-full border border-white/20 px-8 py-3.5 text-sm text-[#c8e0d8] transition hover:bg-white/6">
+              Sign In
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Footer ───────────────────────────────────────────────────────── */}
+      <footer className="flex flex-col items-center justify-between gap-4 border-t border-white/6 px-6 py-8 text-center md:flex-row md:px-12 md:text-left">
+        <div className="flex items-center gap-2" style={{ color: "#f5a623" }}>
+          <BearMark size={22} />
+          <span className="text-base font-bold" style={{ fontFamily: "var(--font-cinzel)" }}>Lumen</span>
+        </div>
+        <p className="text-xs" style={{ color: "#4a7a72" }}>Made with care for Berea College students.</p>
+        <div className="flex gap-5 text-xs" style={{ color: "#4a7a72" }}>
+          <Link href="/planner" className="transition hover:text-[#e2ede8]">Plan</Link>
+          <Link href="/auth/login" className="transition hover:text-[#e2ede8]">Sign In</Link>
+          <Link href="/auth/signup" className="transition hover:text-[#e2ede8]">Sign Up</Link>
         </div>
       </footer>
-    </div>
+
+    </main>
   )
 }

@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { ArrowLeft, ArrowRight, Check, Sparkles, User } from "lucide-react"
+import { ForestNav } from "@/components/forest-nav"
 import { MajorStep } from "@/components/planner/major-step"
 import { MinorStep } from "@/components/planner/minor-step"
 import { InterestsStep } from "@/components/planner/interests-step"
@@ -106,75 +107,60 @@ export default function PlannerPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              <Sparkles className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-semibold text-foreground">Lumen</span>
+    <div className="min-h-screen" style={{ background: "linear-gradient(180deg,#0a1c14 0%,#0e2418 45%,#152d1e 80%,#1a3522 100%)" }}>
+      <ForestNav actions={
+        <div className="flex items-center gap-4">
+          <span className="hidden text-sm text-[#7aada0] sm:block">Step {currentStep} of {STEPS.length}</span>
+          <Link href="/profile" className="flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm text-[#c8e0d8] transition hover:border-white/30">
+            <User className="h-4 w-4" /> Profile
           </Link>
-          <div className="flex items-center gap-4">
-            <div className="hidden text-sm text-muted-foreground sm:block">
-              Step {currentStep} of {STEPS.length}
-            </div>
-            <Link href="/profile" className="flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm text-foreground hover:bg-muted transition-colors">
-              <User className="h-4 w-4" />
-              Profile
-            </Link>
-          </div>
         </div>
-      </header>
+      } />
 
       {/* Progress */}
-      <div className="border-b border-border bg-card">
+      <div className="border-b pt-[57px]" style={{ borderColor: "rgba(245,166,35,0.12)", background: "rgba(245,166,35,0.03)" }}>
         <div className="container mx-auto px-4 py-6">
-          <Progress value={progress} className="mb-4 h-2" />
+          <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full" style={{ background: "rgba(255,255,255,0.06)" }}>
+            <div className="h-full rounded-full transition-all duration-500" style={{ width: `${progress}%`, background: "#f5a623" }} />
+          </div>
           <div className="flex justify-between">
             {STEPS.map(step => (
-              <div
-                key={step.id}
-                className={`hidden flex-col items-center md:flex ${
-                  step.id === currentStep
-                    ? "text-primary"
-                    : step.id < currentStep
-                      ? "text-primary/60"
-                      : "text-muted-foreground"
-                }`}
-              >
-                <div
-                  className={`mb-2 flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium ${
-                    step.id < currentStep
-                      ? "bg-primary text-primary-foreground"
-                      : step.id === currentStep
-                        ? "border-2 border-primary bg-background text-primary"
-                        : "border border-border bg-background text-muted-foreground"
-                  }`}
-                >
+              <div key={step.id} className={`hidden flex-col items-center md:flex`}
+                style={{ color: step.id === currentStep ? "#f5a623" : step.id < currentStep ? "rgba(245,166,35,0.5)" : "#4a7a72" }}>
+                <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium"
+                  style={{
+                    background: step.id < currentStep ? "#f5a623" : step.id === currentStep ? "rgba(245,166,35,0.12)" : "rgba(255,255,255,0.05)",
+                    border: step.id === currentStep ? "2px solid #f5a623" : step.id < currentStep ? "none" : "1px solid rgba(255,255,255,0.1)",
+                    color: step.id < currentStep ? "#071410" : step.id === currentStep ? "#f5a623" : "#4a7a72",
+                  }}>
                   {step.id < currentStep ? <Check className="h-4 w-4" /> : step.id}
                 </div>
-                <span className="text-xs font-medium">{step.title}</span>
+                <span className="text-xs font-medium" style={{ fontFamily: "var(--font-cinzel)" }}>{step.title}</span>
               </div>
             ))}
           </div>
-          {/* Mobile indicator */}
           <div className="flex items-center justify-center gap-2 md:hidden">
-            <span className="text-lg font-semibold text-primary">{STEPS[currentStep - 1].title}</span>
-            <span className="text-muted-foreground">({currentStep}/{STEPS.length})</span>
+            <span className="text-lg font-semibold" style={{ color: "#f5a623", fontFamily: "var(--font-cinzel)" }}>{STEPS[currentStep - 1].title}</span>
+            <span style={{ color: "#4a7a72" }}>({currentStep}/{STEPS.length})</span>
           </div>
         </div>
       </div>
 
+      {/* Glow layer — brightens as steps complete */}
+      <div className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-700"
+        style={{
+          background: `radial-gradient(ellipse 80% 60% at 50% 40%, rgba(245,166,35,${(currentStep - 1) * 0.025}) 0%, transparent 70%)`,
+        }}
+      />
+
       {/* Form Content */}
-      <main className="container mx-auto px-4 py-8 md:py-12">
+      <main className="container relative z-10 mx-auto px-4 py-8 md:py-12">
         <div className="mx-auto max-w-2xl">
           <div className="mb-8 text-center">
-            <h1 className="mb-2 text-2xl font-bold text-foreground md:text-3xl">
+            <h1 className="mb-2 text-2xl font-bold md:text-3xl" style={{ fontFamily: "var(--font-cinzel)", color: "#f0ede0" }}>
               {STEPS[currentStep - 1].title}
             </h1>
-            <p className="text-muted-foreground">{STEPS[currentStep - 1].description}</p>
+            <p className="italic" style={{ color: "#7aada0" }}>{STEPS[currentStep - 1].description}</p>
           </div>
 
           <div className="mb-8">
