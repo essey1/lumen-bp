@@ -33,6 +33,14 @@ pnpm add next-auth @auth/core @auth/prisma-adapter prisma @prisma/client bcryptj
 createdb lumen_bp
 ```
 
+For Vercel deployments, attach a writable Postgres database such as Vercel Postgres, Neon, or Supabase, then set the deployment environment variable:
+
+```
+DATABASE_URL=postgresql://...
+```
+
+The production build runs `prisma migrate deploy`, so the database must be reachable during deployment.
+
 ### 3. Configure Environment Variables
 Copy `.env.local.example` to `.env.local`:
 ```bash

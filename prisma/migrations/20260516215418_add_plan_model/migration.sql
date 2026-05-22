@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE "Plan" (
-    "id" TEXT NOT NULL PRIMARY KEY,
+    "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "name" TEXT NOT NULL DEFAULT 'My Plan',
     "majors" TEXT NOT NULL,
@@ -11,7 +11,9 @@ CREATE TABLE "Plan" (
     "waivedCourses" TEXT NOT NULL,
     "planType" TEXT NOT NULL DEFAULT 'A',
     "semesters" TEXT NOT NULL,
-    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Plan_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "Plan_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
