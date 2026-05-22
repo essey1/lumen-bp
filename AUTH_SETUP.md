@@ -41,10 +41,13 @@ cp .env.local.example .env.local
 
 Edit `.env.local` with your values:
 ```
-NEXTAUTH_URL=http://localhost:3000
+AUTH_TRUST_HOST=true
+AUTH_SECRET=<generate-with-openssl-rand-base64-32>
 NEXTAUTH_SECRET=<generate-with-openssl-rand-base64-32>
 DATABASE_URL=postgresql://user:password@localhost:5432/lumen_bp
 ```
+
+Leave `AUTH_URL`/`NEXTAUTH_URL` unset for localhost, Vercel, and forwarded/global dev links so Auth.js can use the current request host.
 
 To generate a secret:
 ```bash
@@ -152,7 +155,7 @@ pnpm install
 Check your `DATABASE_URL` in `.env.local` and ensure PostgreSQL is running.
 
 ### "NextAuth secret is not set"
-Generate and set `NEXTAUTH_SECRET` in `.env.local`:
+Generate and set `AUTH_SECRET` in `.env.local`:
 ```bash
 openssl rand -base64 32
 ```
@@ -228,7 +231,8 @@ Edit `lib/email.ts` and implement email sending. Options:
 ### 3. Add Environment Variables
 ```bash
 # .env.local
-NEXTAUTH_URL=http://localhost:3000
+AUTH_TRUST_HOST=true
+AUTH_SECRET=<your-secret>
 NEXTAUTH_SECRET=<your-secret>
 DATABASE_URL=<your-database-url>
 
