@@ -256,7 +256,7 @@ export default function SavedPlanPage() {
             </div>
             <span className="text-xl font-semibold text-foreground">Lumen</span>
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap justify-end">
             {editMode ? (
               <>
                 <Button size="sm" onClick={handleSaveChanges} disabled={saveStatus === "saving"} className="gap-1.5">

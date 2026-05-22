@@ -27,15 +27,35 @@ export const lora = Crimson_Pro({
 
 export const metadata: Metadata = {
   title: 'Lumen - Academic Planner for Berea College',
-  description: 'Plan your 4-year academic journey at Berea College with Lumen',
+  description: 'Plan your 4-year academic journey at Berea College with Lumen. Organize your courses, track prerequisites, and map out your complete degree path.',
   generator: 'v0.app',
   icons: {
     icon: [
-      { url: '/icon-light-32x32.png', media: '(prefers-color-scheme: light)' },
-      { url: '/icon-dark-32x32.png',  media: '(prefers-color-scheme: dark)'  },
+      { url: '/berea-bear-head.png' },
       { url: '/icon.svg', type: 'image/svg+xml' },
     ],
-    apple: '/apple-icon.png',
+    apple: '/berea-bear-head.png',
+  },
+  openGraph: {
+    title: 'Lumen - Academic Planner for Berea College',
+    description: 'Plan your 4-year academic journey at Berea College with Lumen. Organize your courses, track prerequisites, and map out your complete degree path.',
+    type: 'website',
+    url: 'https://lumen.berea.edu',
+    siteName: 'Lumen',
+    images: [
+      {
+        url: '/berea-bear-head.png',
+        width: 200,
+        height: 200,
+        alt: 'Berea College Bear - Lumen Academic Planner',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Lumen - Academic Planner for Berea College',
+    description: 'Plan your academic journey at Berea College with Lumen',
+    images: ['/berea-bear-head.png'],
   },
 }
 
