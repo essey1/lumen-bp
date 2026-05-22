@@ -42,40 +42,40 @@
 }
 
 .dark {
-  --background: oklch(0.15 0.03 250);
-  --foreground: oklch(0.95 0.01 250);
-  --card: oklch(0.2 0.03 250);
-  --card-foreground: oklch(0.95 0.01 250);
-  --popover: oklch(0.2 0.03 250);
-  --popover-foreground: oklch(0.95 0.01 250);
-  --primary: oklch(0.6 0.15 250);
-  --primary-foreground: oklch(0.15 0.03 250);
-  --secondary: oklch(0.25 0.04 250);
-  --secondary-foreground: oklch(0.9 0.01 250);
-  --muted: oklch(0.25 0.03 250);
-  --muted-foreground: oklch(0.65 0.03 250);
-  --accent: oklch(0.5 0.12 250);
-  --accent-foreground: oklch(0.95 0.01 250);
+  --background: oklch(0.25 0.045 157);
+  --foreground: oklch(0.96 0.018 103);
+  --card: oklch(0.32 0.045 155);
+  --card-foreground: oklch(0.97 0.018 103);
+  --popover: oklch(0.34 0.045 155);
+  --popover-foreground: oklch(0.97 0.018 103);
+  --primary: oklch(0.76 0.16 75);
+  --primary-foreground: oklch(0.18 0.035 155);
+  --secondary: oklch(0.39 0.055 163);
+  --secondary-foreground: oklch(0.96 0.02 103);
+  --muted: oklch(0.37 0.04 156);
+  --muted-foreground: oklch(0.79 0.045 145);
+  --accent: oklch(0.68 0.12 175);
+  --accent-foreground: oklch(0.14 0.035 155);
   --destructive: oklch(0.45 0.18 25);
   --destructive-foreground: oklch(0.95 0 0);
-  --border: oklch(0.3 0.03 250);
-  --input: oklch(0.25 0.03 250);
-  --ring: oklch(0.6 0.15 250);
-  --chart-1: oklch(0.6 0.15 250);
-  --chart-2: oklch(0.7 0.12 250);
-  --chart-3: oklch(0.8 0.08 250);
-  --chart-4: oklch(0.5 0.12 250);
-  --chart-5: oklch(0.4 0.1 250);
-  --sidebar: oklch(0.18 0.03 250);
-  --sidebar-foreground: oklch(0.95 0.01 250);
-  --sidebar-primary: oklch(0.6 0.15 250);
-  --sidebar-primary-foreground: oklch(0.15 0.03 250);
-  --sidebar-accent: oklch(0.25 0.04 250);
-  --sidebar-accent-foreground: oklch(0.9 0.01 250);
-  --sidebar-border: oklch(0.3 0.03 250);
-  --sidebar-ring: oklch(0.6 0.15 250);
-  --warning: oklch(0.7 0.15 70);
-  --warning-foreground: oklch(0.95 0.02 70);
+  --border: oklch(0.48 0.045 150);
+  --input: oklch(0.36 0.045 155);
+  --ring: oklch(0.76 0.16 75);
+  --chart-1: oklch(0.76 0.16 75);
+  --chart-2: oklch(0.68 0.12 175);
+  --chart-3: oklch(0.75 0.12 145);
+  --chart-4: oklch(0.67 0.12 250);
+  --chart-5: oklch(0.72 0.11 35);
+  --sidebar: oklch(0.3 0.045 155);
+  --sidebar-foreground: oklch(0.96 0.018 103);
+  --sidebar-primary: oklch(0.76 0.16 75);
+  --sidebar-primary-foreground: oklch(0.18 0.035 155);
+  --sidebar-accent: oklch(0.39 0.055 163);
+  --sidebar-accent-foreground: oklch(0.96 0.02 103);
+  --sidebar-border: oklch(0.48 0.045 150);
+  --sidebar-ring: oklch(0.76 0.16 75);
+  --warning: oklch(0.78 0.15 75);
+  --warning-foreground: oklch(0.22 0.08 70);
 }
 
 @theme inline {
@@ -127,7 +127,7 @@
   }
   body {
     @apply text-foreground;
-    background-color: #071410;
+    background-color: #173222;
   }
 }
 
@@ -425,4 +425,63 @@
 
 .lumen-lantern-glow {
   animation: lumenGlowPulse 2.5s ease-in-out infinite;
+}
+
+.lumen-app-shell {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    linear-gradient(115deg, rgba(255, 229, 156, 0.14) 0%, rgba(255, 229, 156, 0) 34%),
+    linear-gradient(245deg, rgba(125, 193, 221, 0.16) 0%, rgba(125, 193, 221, 0) 38%),
+    linear-gradient(180deg, #234b31 0%, #2e5b3b 42%, #356646 72%, #406f51 100%);
+}
+
+.lumen-app-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(100deg, transparent 0 12%, rgba(255, 234, 176, 0.10) 18%, transparent 28% 100%),
+    linear-gradient(78deg, transparent 0 42%, rgba(166, 224, 199, 0.12) 49%, transparent 58% 100%),
+    linear-gradient(180deg, rgba(255, 246, 209, 0.16) 0%, transparent 36%);
+  mix-blend-mode: screen;
+  opacity: 0.78;
+  animation: lumenMorningShift 14s ease-in-out infinite;
+}
+
+.lumen-app-shell::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: linear-gradient(to bottom, transparent, black 16%, black 80%, transparent);
+  opacity: 0.22;
+}
+
+.lumen-app-content {
+  position: relative;
+  z-index: 1;
+}
+
+.lumen-surface {
+  background: rgba(255, 255, 255, 0.105);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 18px 55px rgba(5, 30, 19, 0.20);
+}
+
+@keyframes lumenMorningShift {
+  0%, 100% {
+    opacity: 0.68;
+    transform: translateX(0);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translateX(18px);
+  }
 }

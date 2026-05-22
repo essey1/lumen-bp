@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlanCourseCombobox } from "@/components/plan/course-combobox";
+import { LumenFireflies } from "@/components/lumen-ambience";
 import type { SemesterPlan, PlannedCourse } from "@/lib/types";
 
 interface SavedPlan {
@@ -237,15 +238,17 @@ export default function SavedPlanPage() {
 
   if (!plan) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="lumen-app-shell flex min-h-screen items-center justify-center">
+        <LumenFireflies className="fixed opacity-80" />
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card">
+    <div className="lumen-app-shell">
+      <LumenFireflies className="fixed opacity-85" />
+      <header className="lumen-app-content border-b border-white/15 bg-white/10 backdrop-blur-md">
         <div className="container mx-auto flex items-center justify-between px-4 py-4">
           <Link href="/" className="flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
@@ -283,7 +286,7 @@ export default function SavedPlanPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="lumen-app-content container mx-auto px-4 py-8">
         <Link href="/profile" className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back to Dashboard
         </Link>
@@ -348,7 +351,7 @@ export default function SavedPlanPage() {
           )}
         </div>
 
-        <Card className="mt-8 border-border bg-card">
+        <Card className="lumen-surface mt-8">
           <CardContent className="py-6">
             <div className="grid gap-6 text-center md:grid-cols-3">
               <div>

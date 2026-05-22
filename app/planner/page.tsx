@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { ArrowLeft, ArrowRight, Check, Sparkles, User } from "lucide-react"
 import { ForestNav } from "@/components/forest-nav"
+import { LumenFireflies } from "@/components/lumen-ambience"
 import { MajorStep } from "@/components/planner/major-step"
 import { MinorStep } from "@/components/planner/minor-step"
 import { InterestsStep } from "@/components/planner/interests-step"
@@ -107,7 +108,8 @@ export default function PlannerPage() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(180deg,#0a1c14 0%,#0e2418 45%,#152d1e 80%,#1a3522 100%)" }}>
+    <div className="lumen-app-shell">
+      <LumenFireflies className="fixed opacity-90" />
       <ForestNav actions={
         <div className="flex items-center gap-4">
           <span className="hidden text-sm text-[#7aada0] sm:block">Step {currentStep} of {STEPS.length}</span>
@@ -154,7 +156,7 @@ export default function PlannerPage() {
       />
 
       {/* Form Content */}
-      <main className="container relative z-10 mx-auto px-4 py-8 md:py-12">
+      <main className="lumen-app-content container mx-auto px-4 py-8 md:py-12">
         <div className="mx-auto max-w-2xl">
           <div className="mb-8 text-center">
             <h1 className="mb-2 text-2xl font-bold md:text-3xl" style={{ fontFamily: "var(--font-cinzel)", color: "#f0ede0" }}>

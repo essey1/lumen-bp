@@ -8,6 +8,7 @@ import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowLeft, Pencil, X, Plus, Trash2, Check, Lock, Sparkles } from "lucide-react"
 import { ForestNav } from "@/components/forest-nav"
+import { LumenFireflies } from "@/components/lumen-ambience"
 import { StudentProfile } from "@/components/plan/student-profile"
 import { OverflowWarning } from "@/components/plan/overflow-warning"
 import { CareerAdvice } from "@/components/plan/career-advice"
@@ -347,7 +348,8 @@ function PlanPageInner() {
 
   if (!ready || !profile || !plans) {
     return (
-      <div className="flex min-h-screen items-center justify-center" style={{ background: "#071410" }}>
+      <div className="lumen-app-shell flex min-h-screen items-center justify-center">
+        <LumenFireflies className="fixed opacity-80" />
         <div className="text-center">
           <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-2 border-t-transparent" style={{ borderColor: "rgba(245,166,35,0.3)", borderTopColor: "#f5a623" }} />
           <p className="text-sm" style={{ color: "#7aada0", fontStyle: "italic" }}>Charting your path…</p>
@@ -357,7 +359,7 @@ function PlanPageInner() {
   }
 
   return (
-    <div className="min-h-screen" style={{
+    <div className="lumen-app-shell" style={{
         fontFamily: "var(--font-lora),Georgia,serif",
         background: [
           /* deep golden glow from top — like canopy light */
@@ -369,6 +371,7 @@ function PlanPageInner() {
           "linear-gradient(180deg,#122418 0%,#1a3020 40%,#203828 75%,#274030 100%)",
         ].join(","),
       }}>
+      <LumenFireflies className="fixed opacity-85" />
       <ForestNav actions={
         <div className="flex items-center gap-3">
           <Link href="/planner" className="flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm text-[#c8e0d8] transition hover:border-white/30">
@@ -378,7 +381,7 @@ function PlanPageInner() {
         </div>
       } />
 
-      <main className="mx-auto max-w-[1400px] px-4 py-8 pt-24">
+      <main className="lumen-app-content mx-auto max-w-[1400px] px-4 py-8 pt-24">
 
         {/* Page title */}
         <div className="mb-10 text-center">
@@ -425,7 +428,8 @@ function PlanPageInner() {
 export default function PlanPage() {
   return (
     <Suspense fallback={
-      <div className="flex min-h-screen items-center justify-center" style={{ background: "#071410" }}>
+      <div className="lumen-app-shell flex min-h-screen items-center justify-center">
+        <LumenFireflies className="fixed opacity-80" />
         <Sparkles className="h-8 w-8 animate-spin" style={{ color: "#f5a623" }} />
       </div>
     }>

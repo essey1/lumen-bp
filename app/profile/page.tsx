@@ -14,6 +14,8 @@ import {
   LayoutDashboard, Settings,
 } from "lucide-react";
 import { ForestNav } from "@/components/forest-nav";
+import { CompletedSemestersStep, type CompletedSemesterData } from "@/components/planner/completed-semesters-step";
+import { LumenFireflies } from "@/components/lumen-ambience";
 
 const MAJORS = [
   "Computer and Information Science",
@@ -77,6 +79,7 @@ type Profile = {
   major: string | null;
   year: number | null;
   bio: string | null;
+  completedSemesters: string | null;
 };
 
 type SavedPlanSummary = {
@@ -93,6 +96,8 @@ export default function ProfilePage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [form, setForm] = useState({ name: "", major: "", year: "", bio: "" });
+  const [completedCount, setCompletedCount] = useState(0);
+  const [completedSemesters, setCompletedSemesters] = useState<CompletedSemesterData[]>([]);
   const [profileStatus, setProfileStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [profileError, setProfileError] = useState("");
 
@@ -115,6 +120,19 @@ export default function ProfilePage() {
           year: data.year?.toString() ?? "",
           bio: data.bio ?? "",
         });
+        if (data.completedSemesters) {
+          try {
+            const parsed = JSON.parse(data.completedSemesters) as CompletedSemesterData[];
+            setCompletedSemesters(Array.isArray(parsed) ? parsed : []);
+            setCompletedCount(Array.isArray(parsed) ? parsed.length : 0);
+          } catch {
+            setCompletedSemesters([]);
+            setCompletedCount(0);
+          }
+        } else {
+          setCompletedSemesters([]);
+          setCompletedCount(0);
+        }
       })
       .catch(() => router.push("/auth/login"));
   }, [router]);
@@ -145,6 +163,7 @@ export default function ProfilePage() {
         major: form.major || null,
         year: form.year ? parseInt(form.year) : null,
         bio: form.bio || null,
+        completedSemesters: completedSemesters.length > 0 ? completedSemesters : null,
       }),
     });
 
@@ -174,17 +193,19 @@ export default function ProfilePage() {
 
   if (!profile) {
     return (
-      <div className="flex min-h-screen items-center justify-center" style={{ background: "#071410" }}>
+      <div className="lumen-app-shell flex min-h-screen items-center justify-center">
+        <LumenFireflies className="fixed opacity-80" />
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-t-transparent" style={{ borderColor: "rgba(245,166,35,0.3)", borderTopColor: "#f5a623" }} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen" style={{ background: "linear-gradient(180deg,#050e0b 0%,#071410 40%,#0b1f18 100%)", fontFamily: "var(--font-lora),Georgia,serif" }}>
+    <div className="lumen-app-shell" style={{ fontFamily: "var(--font-lora),Georgia,serif" }}>
+      <LumenFireflies className="fixed opacity-80" />
       <ForestNav />
 
-      <main className="container mx-auto max-w-3xl px-4 py-8 pt-24">
+      <main className="lumen-app-content container mx-auto max-w-3xl px-4 py-8 pt-24">
         {/* User identity strip */}
         <div className="mb-6 flex items-center gap-4">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 shrink-0">
@@ -323,7 +344,7 @@ export default function ProfilePage() {
 
           {/* ── Settings tab ── */}
           <TabsContent value="settings">
-            <Card className="border-border">
+            <Card className="lumen-surface">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <User className="h-4 w-4" />
@@ -382,6 +403,21 @@ export default function ProfilePage() {
                       maxLength={500}
                     />
                     <p className="text-xs text-muted-foreground text-right">{form.bio.length}/500</p>
+                  </div>
+
+                  <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground">Completed Courses</h3>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Add or update the courses you already took so future plans can account for them.
+                      </p>
+                    </div>
+                    <CompletedSemestersStep
+                      completedCount={completedCount}
+                      onCountChange={setCompletedCount}
+                      semesters={completedSemesters}
+                      onSemestersChange={setCompletedSemesters}
+                    />
                   </div>
 
                   {profileStatus === "error" && (

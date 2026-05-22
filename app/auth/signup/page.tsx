@@ -486,6 +486,22 @@ export default function SignupPage() {
               </button>
             </div>
           )}
+          {step === 4 && (
+            <div className="mt-3 text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setError("");
+                  setCompletedCount(0);
+                  setCompletedSemesters([]);
+                  setStep(5);
+                }}
+                className="text-sm text-[#4a7a72] transition hover:text-[#e2ede8]"
+              >
+                Skip for now
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
