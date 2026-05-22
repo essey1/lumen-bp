@@ -33,10 +33,11 @@ pnpm add next-auth @auth/core @auth/prisma-adapter prisma @prisma/client bcryptj
 createdb lumen_bp
 ```
 
-For Vercel deployments, attach a writable Postgres database such as Vercel Postgres, Neon, or Supabase, then set the deployment environment variable:
+For Vercel deployments, attach a writable Postgres database such as Vercel Postgres, Neon, or Supabase, then set the deployment environment variables:
 
 ```
-DATABASE_URL=postgresql://...
+DATABASE_POSTGRES_PRISMA_URL=postgresql://...
+DATABASE_POSTGRES_URL_NON_POOLING=postgresql://...
 ```
 
 The production build runs `prisma migrate deploy`, so the database must be reachable during deployment.
@@ -52,7 +53,8 @@ Edit `.env.local` with your values:
 AUTH_TRUST_HOST=true
 AUTH_SECRET=<generate-with-openssl-rand-base64-32>
 NEXTAUTH_SECRET=<generate-with-openssl-rand-base64-32>
-DATABASE_URL=postgresql://user:password@localhost:5432/lumen_bp
+DATABASE_POSTGRES_PRISMA_URL=postgresql://user:password@localhost:5432/lumen_bp
+DATABASE_POSTGRES_URL_NON_POOLING=postgresql://user:password@localhost:5432/lumen_bp
 ```
 
 Leave `AUTH_URL`/`NEXTAUTH_URL` unset for localhost, Vercel, and forwarded/global dev links so Auth.js can use the current request host.
@@ -160,7 +162,7 @@ pnpm install
 ```
 
 ### Database connection error
-Check your `DATABASE_URL` in `.env.local` and ensure PostgreSQL is running.
+Check your `DATABASE_POSTGRES_PRISMA_URL` in `.env.local` and ensure PostgreSQL is running.
 
 ### "NextAuth secret is not set"
 Generate and set `AUTH_SECRET` in `.env.local`:
@@ -242,7 +244,8 @@ Edit `lib/email.ts` and implement email sending. Options:
 AUTH_TRUST_HOST=true
 AUTH_SECRET=<your-secret>
 NEXTAUTH_SECRET=<your-secret>
-DATABASE_URL=<your-database-url>
+DATABASE_POSTGRES_PRISMA_URL=<your-pooled-database-url>
+DATABASE_POSTGRES_URL_NON_POOLING=<your-direct-database-url>
 
 # Optional: For email sending (e.g., Resend)
 RESEND_API_KEY=<your-resend-key>
