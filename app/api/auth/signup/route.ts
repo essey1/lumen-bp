@@ -14,6 +14,18 @@ function isSchemaMismatchError(error: unknown) {
   );
 }
 
+function isReadOnlyDatabaseError(error: unknown) {
+  if (typeof error !== "object" || error === null) return false;
+  const message = "message" in error && typeof error.message === "string" ? error.message.toLowerCase() : "";
+
+  return (
+    message.includes("readonly database") ||
+    message.includes("read-only database") ||
+    message.includes("attempt to write a readonly database") ||
+    message.includes("unable to open database file")
+  );
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { name, email, password, major, year, bio, completedSemesters } = await request.json();
@@ -75,6 +87,12 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error("Signup error:", error);
+    if (isReadOnlyDatabaseError(error)) {
+      return NextResponse.json(
+        { error: "Signup needs a writable production database. The current deployment cannot write to its SQLite database." },
+        { status: 503 }
+      );
+    }
     return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
