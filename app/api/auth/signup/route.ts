@@ -30,7 +30,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Password does not meet the required strength criteria." }, { status: 400 });
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true },
+    });
     if (existingUser) {
       return NextResponse.json({ error: "Email already in use" }, { status: 400 });
     }
@@ -54,6 +57,7 @@ export async function POST(request: NextRequest) {
           bio: bio || null,
           completedSemesters: completedSemesters ? JSON.stringify(completedSemesters) : null,
         },
+        select: { id: true, name: true, email: true },
       });
     } catch (error) {
       if (!isSchemaMismatchError(error)) throw error;
@@ -61,6 +65,7 @@ export async function POST(request: NextRequest) {
       console.warn("Signup profile fields are not available in the current database schema. Creating account without onboarding profile fields.");
       user = await prisma.user.create({
         data: baseUserData,
+        select: { id: true, name: true, email: true },
       });
     }
 

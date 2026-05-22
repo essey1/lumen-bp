@@ -13,7 +13,10 @@ export async function POST(req: Request) {
 
     await cleanupExpiredOTPs()
 
-    const user = await prisma.user.findUnique({ where: { email } })
+    const user = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true },
+    })
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
