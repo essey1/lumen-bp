@@ -31,9 +31,9 @@ export const metadata: Metadata = {
   generator: 'v0.app',
   icons: {
     icon: [
-      { url: '/lumen-bear-favicon.svg', type: 'image/svg+xml' },
+      { url: '/lumen-bear-favicon.png', type: 'image/png' },
     ],
-    apple: '/lumen-bear-favicon.svg',
+    apple: '/lumen-bear-favicon.png',
   },
   openGraph: {
     title: 'Lumen - Academic Planner for Berea College',
@@ -43,9 +43,7 @@ export const metadata: Metadata = {
     siteName: 'Lumen',
     images: [
       {
-        url: '/lumen-bear-favicon.svg',
-        width: 200,
-        height: 308,
+        url: '/lumen-bear-favicon.png',
         alt: 'Lumen Bear - Academic Planner Logo',
       },
     ],
@@ -54,7 +52,7 @@ export const metadata: Metadata = {
     card: 'summary',
     title: 'Lumen - Academic Planner for Berea College',
     description: 'Plan your academic journey at Berea College with Lumen',
-    images: ['/lumen-bear-favicon.svg'],
+    images: ['/lumen-bear-favicon.png'],
   },
 }
 
