@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "set PORT=3000&& set NEXT_PUBLIC_AUTH_BACKEND_URL=http://localhost:4000&& next dev",
     "postinstall": "prisma generate",
-    "build": "prisma generate && next build",
+    "build": "prisma migrate deploy && prisma generate && next build",
     "start": "next start",
     "lint": "eslint .",
     "auth": "cd backend&& set PORT=4000&& npx prisma generate --schema=../prisma/schema.prisma&& npx nodemon server.js",

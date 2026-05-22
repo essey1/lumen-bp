@@ -2,6 +2,18 @@ import { hash } from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+function isSchemaMismatchError(error: unknown) {
+  if (typeof error !== "object" || error === null) return false;
+  const message = "message" in error && typeof error.message === "string" ? error.message : "";
+  const code = "code" in error && typeof error.code === "string" ? error.code : "";
+
+  return (
+    code === "P2022" ||
+    message.includes("Unknown argument") ||
+    message.includes("does not exist in the current database")
+  );
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { name, email, password, major, year, bio, completedSemesters } = await request.json();
@@ -25,18 +37,32 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await hash(password, 10);
 
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password: hashedPassword,
-        otpEnabled: true,
-        major: major || null,
-        year: year ? parseInt(year) : null,
-        bio: bio || null,
-        completedSemesters: completedSemesters ? JSON.stringify(completedSemesters) : null,
-      },
-    });
+    const baseUserData = {
+      name,
+      email,
+      password: hashedPassword,
+      otpEnabled: true,
+    };
+
+    let user;
+    try {
+      user = await prisma.user.create({
+        data: {
+          ...baseUserData,
+          major: major || null,
+          year: year ? parseInt(year) : null,
+          bio: bio || null,
+          completedSemesters: completedSemesters ? JSON.stringify(completedSemesters) : null,
+        },
+      });
+    } catch (error) {
+      if (!isSchemaMismatchError(error)) throw error;
+
+      console.warn("Signup profile fields are not available in the current database schema. Creating account without onboarding profile fields.");
+      user = await prisma.user.create({
+        data: baseUserData,
+      });
+    }
 
     return NextResponse.json(
       { user: { id: user.id, name: user.name, email: user.email } },
