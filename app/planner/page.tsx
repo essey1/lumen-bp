@@ -16,7 +16,7 @@ import { MathPlacementStep } from "@/components/planner/math-placement-step"
 import { WaivedCoursesStep } from "@/components/planner/waived-courses-step"
 import { type CompletedSemesterData } from "@/components/planner/completed-semesters-step"
 import { AVAILABLE_MAJORS } from "@/lib/majors-data"
-import type { MathPlacement } from "@/lib/types"
+import type { CustomCourseEntry, MathPlacement } from "@/lib/types"
 
 const STEPS = [
   { id: 1, title: "Major",          description: "Choose your field of study" },
@@ -39,6 +39,7 @@ export default function PlannerPage() {
     waivedCourses: [] as string[],
   })
   const [completedSemesters, setCompletedSemesters] = useState<CompletedSemesterData[]>([])
+  const [customCourses, setCustomCourses] = useState<Record<string, CustomCourseEntry>>({})
 
   // Pre-populate majors and completed semesters from the user's profile (if logged in)
   useEffect(() => {
@@ -74,6 +75,14 @@ export default function PlannerPage() {
         sessionStorage.setItem("completedSemesters", JSON.stringify(completedSemesters))
       } else {
         sessionStorage.removeItem("completedSemesters")
+      }
+
+      // Pass any custom course details to the plan generator
+      const customEntries = Object.values(customCourses)
+      if (customEntries.length > 0) {
+        sessionStorage.setItem("customCourses", JSON.stringify(customEntries))
+      } else {
+        sessionStorage.removeItem("customCourses")
       }
 
       const params = new URLSearchParams()
@@ -188,6 +197,8 @@ export default function PlannerPage() {
               <WaivedCoursesStep
                 selected={formData.waivedCourses}
                 onChange={v => updateFormData("waivedCourses", v)}
+                customCourses={customCourses}
+                onCustomCoursesChange={setCustomCourses}
               />
             )}
           </div>

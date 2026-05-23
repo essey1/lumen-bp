@@ -16,7 +16,7 @@ import { SavePlanButton } from "@/components/plan/save-plan-button"
 import { ExportButton } from "@/components/plan/export-button"
 import { PlanCourseCombobox } from "@/components/plan/course-combobox"
 import { generateAcademicPlan, getPlanStats, type CompletedSemesterInput } from "@/lib/plan-generator"
-import type { StudentProfile as StudentProfileType, SemesterPlan, PlannedCourse } from "@/lib/types"
+import type { CustomCourseEntry, StudentProfile as StudentProfileType, SemesterPlan, PlannedCourse } from "@/lib/types"
 import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types"
 import type { MathPlacement } from "@/lib/types"
 
@@ -337,11 +337,17 @@ function PlanPageInner() {
       if (s) completedSemesters = JSON.parse(s)
     } catch { /* ignore */ }
 
+    let customCourses: CustomCourseEntry[] = []
+    try {
+      const c = sessionStorage.getItem("customCourses")
+      if (c) customCourses = JSON.parse(c)
+    } catch { /* ignore */ }
+
     setProfile(p)
     setPlans({
-      A: generateAcademicPlan(p, { planType: "A", completedSemesters }),
-      B: generateAcademicPlan(p, { planType: "B", completedSemesters }),
-      C: generateAcademicPlan(p, { planType: "C", completedSemesters }),
+      A: generateAcademicPlan(p, { planType: "A", completedSemesters, customCourses }),
+      B: generateAcademicPlan(p, { planType: "B", completedSemesters, customCourses }),
+      C: generateAcademicPlan(p, { planType: "C", completedSemesters, customCourses }),
     })
     setReady(true)
   }, [searchParams])
