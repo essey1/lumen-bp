@@ -178,6 +178,24 @@ export interface PlannedCourse {
   scheduleDisclaimer?: boolean; // True when exact semester offering is uncertain (e.g. rotating upper-level)
 }
 
+/**
+ * A course the student has taken but that isn't yet in Lumen's catalog.
+ * The student fills in the details so the plan generator can properly credit
+ * GEM requirements and respect the course's prerequisites.
+ */
+export interface CustomCourseEntry {
+  code: string;
+  name: string;
+  credits: number;
+  /** Comma-separated raw text, e.g. "PHY 115, MAT 115" */
+  prerequisites: string;
+  wayOfKnowing: WayOfKnowing | "";
+  richnesses: Richness[];
+  /** Only one Value can apply to a given course (Berea GEM rule) */
+  value: Value | "";
+  additional: Array<"ALE" | "ALES" | "Physical Activity">;
+}
+
 export interface AcademicPlan {
   student: StudentProfile;
   semesters: SemesterPlan[];

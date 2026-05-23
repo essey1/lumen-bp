@@ -1,5 +1,6 @@
 import type {
   AcademicPlan,
+  CustomCourseEntry,
   PlannedCourse,
   PrereqNode,
   SemesterPlan,
@@ -1790,8 +1791,41 @@ function markEquivalents(code: string, usedCodes: Set<string>, placedMap: Map<st
 
 export function generateAcademicPlan(
   profile: StudentProfile,
-  options?: { planType?: "A" | "B" | "C"; completedSemesters?: CompletedSemesterInput[] }
+  options?: {
+    planType?: "A" | "B" | "C";
+    completedSemesters?: CompletedSemesterInput[];
+    /** Custom courses entered by the student that aren't yet in the catalog. */
+    customCourses?: CustomCourseEntry[];
+  }
 ): AcademicPlan {
+  // Merge any student-submitted custom courses into a local copy of the catalog
+  // so GEM credit, prerequisite unlocking, and scheduling all work correctly.
+  const customEntries = options?.customCourses ?? [];
+  if (customEntries.length > 0) {
+    for (const entry of customEntries) {
+      if (COURSE_CATALOG[entry.code]) continue; // don't overwrite real catalog data
+      // Build a synthetic Course object from the student's answers
+      const prereqCodes = entry.prerequisites
+        .split(",")
+        .map(s => s.trim().toUpperCase())
+        .filter(s => /^[A-Z&]{2,5}\s*\d{3}[A-Z]?$/.test(s));
+
+      COURSE_CATALOG[entry.code] = {
+        code: entry.code,
+        name: entry.name || entry.code,
+        credits: entry.credits,
+        ...(prereqCodes.length > 0 && {
+          prerequisites: prereqCodes.length === 1
+            ? prereqCodes[0]
+            : { type: "AND" as const, courses: prereqCodes },
+        }),
+        ...(entry.wayOfKnowing && { waysOfKnowing: [entry.wayOfKnowing] }),
+        ...(entry.richnesses.length > 0 && { richnesses: entry.richnesses }),
+        ...(entry.value && { values: [entry.value] }),
+        ...(entry.additional.length > 0 && { additional: entry.additional }),
+      };
+    }
+  }
   const semesters: SemesterPlan[] = [];
   const warnings: string[] = [];
   const unfulfilledRequirements: string[] = [];
