@@ -17,6 +17,48 @@ import { ForestNav } from "@/components/forest-nav";
 import { CompletedSemestersStep, type CompletedSemesterData } from "@/components/planner/completed-semesters-step";
 import { LumenFireflies } from "@/components/lumen-ambience";
 
+const MINORS_LIST = [
+  "African and African American Studies",
+  "Agriculture and Natural Resources",
+  "Appalachian Studies",
+  "Art History",
+  "Art: Studio",
+  "Asian Studies",
+  "Biology",
+  "Business Journalism",
+  "Child and Family Studies",
+  "Coaching and Civic Engagement",
+  "Communication Studies",
+  "Computer Science",
+  "Creative Writing",
+  "Dance",
+  "Digital Media",
+  "Economics",
+  "English",
+  "Environmental Science",
+  "Film Studies",
+  "French",
+  "Geology",
+  "German",
+  "Health Studies",
+  "History",
+  "Labor and Employment Studies",
+  "Latin American and Latino Studies",
+  "Mathematics",
+  "Music",
+  "Peace and Social Justice Studies",
+  "Philosophy",
+  "Physics",
+  "Political Science",
+  "Psychology",
+  "Religion and Spirituality",
+  "Sociology",
+  "Spanish",
+  "Sustainability Studies",
+  "Theatre",
+  "Women's, Gender, and Sexuality Studies",
+];
+
 const MAJORS = [
   "Computer and Information Science",
   "Computer and Information Science: Computer Science Concentration",
@@ -77,6 +119,7 @@ type Profile = {
   name: string;
   email: string;
   major: string | null;
+  minor: string | null;
   year: number | null;
   bio: string | null;
   completedSemesters: string | null;
@@ -95,7 +138,7 @@ type SavedPlanSummary = {
 export default function ProfilePage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [form, setForm] = useState({ name: "", major: "", year: "", bio: "" });
+  const [form, setForm] = useState({ name: "", major: "", minor: "", year: "", bio: "" });
   const [completedCount, setCompletedCount] = useState(0);
   const [completedSemesters, setCompletedSemesters] = useState<CompletedSemesterData[]>([]);
   const [profileStatus, setProfileStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
@@ -117,6 +160,7 @@ export default function ProfilePage() {
         setForm({
           name: data.name ?? "",
           major: data.major ?? "",
+          minor: data.minor ?? "",
           year: data.year?.toString() ?? "",
           bio: data.bio ?? "",
         });
@@ -161,6 +205,7 @@ export default function ProfilePage() {
       body: JSON.stringify({
         name: form.name,
         major: form.major || null,
+        minor: form.minor || null,
         year: form.year ? parseInt(form.year) : null,
         bio: form.bio || null,
         completedSemesters: completedSemesters.length > 0 ? completedSemesters : null,
@@ -217,7 +262,11 @@ export default function ProfilePage() {
             </h1>
             <p className="text-sm text-muted-foreground">{profile.email}</p>
             {profile.major && (
-              <p className="text-xs text-muted-foreground mt-0.5">{profile.major}{profile.year ? ` · Year ${profile.year}` : ""}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {profile.major}
+                {profile.minor ? ` · Minor: ${profile.minor}` : ""}
+                {profile.year ? ` · Year ${profile.year}` : ""}
+              </p>
             )}
           </div>
         </div>
@@ -372,6 +421,22 @@ export default function ProfilePage() {
                     >
                       <option value="">Select your major</option>
                       {MAJORS.map((m) => (
+                        <option key={m} value={m}>{m}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-sm font-medium text-foreground">
+                      Minor <span className="text-muted-foreground font-normal">(optional)</span>
+                    </label>
+                    <select
+                      value={form.minor}
+                      onChange={(e) => setForm((f) => ({ ...f, minor: e.target.value }))}
+                      className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                    >
+                      <option value="">No minor / not sure yet</option>
+                      {MINORS_LIST.map((m) => (
                         <option key={m} value={m}>{m}</option>
                       ))}
                     </select>

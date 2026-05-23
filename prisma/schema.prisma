@@ -20,6 +20,7 @@ model User {
   image         String?
   otpEnabled    Boolean   @default(true)
   major              String?
+  minor              String?  // minor program name (free text)
   year               Int?
   bio                String?
   completedSemesters String?  // JSON array of CompletedSemesterData

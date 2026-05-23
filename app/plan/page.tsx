@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowLeft, Pencil, X, Plus, Trash2, Check, Lock, Sparkles } from "lucide-react"
+import { ArrowLeft, Pencil, X, Plus, Trash2, Check, Lock, Sparkles, User } from "lucide-react"
 import { ForestNav } from "@/components/forest-nav"
 import { LumenFireflies } from "@/components/lumen-ambience"
 import { StudentProfile } from "@/components/plan/student-profile"
@@ -188,6 +188,18 @@ function PlanView({ initialPlan, profile }: {
 
   return (
     <div>
+      {/* Save plan — shown at the top so it's impossible to miss */}
+      <div className="mb-8 flex justify-center">
+        <SavePlanButton
+          majors={profile.majors} minors={profile.minors}
+          interests={profile.interests} careerGoals={profile.careerGoals}
+          mathPlacement={profile.mathPlacement ?? "none"}
+          waivedCourses={profile.waivedCourses ?? []}
+          planType={initialPlan.student.majors[0] ?? "Custom"}
+          semesters={semesters}
+        />
+      </div>
+
       {/* Edit controls */}
       <div className="mb-6 flex justify-end gap-2">
         {editMode ? (
@@ -286,18 +298,6 @@ function PlanView({ initialPlan, profile }: {
         ))}
       </div>
 
-      {/* Save */}
-      <div className="mt-8 flex justify-center">
-        <SavePlanButton
-          majors={profile.majors} minors={profile.minors}
-          interests={profile.interests} careerGoals={profile.careerGoals}
-          mathPlacement={profile.mathPlacement ?? "none"}
-          waivedCourses={profile.waivedCourses ?? []}
-          planType={initialPlan.student.majors[0] ?? "Custom"}
-          semesters={semesters}
-        />
-      </div>
-
       {/* Career advice */}
       <div className="mt-10">
         <CareerAdvice
@@ -376,6 +376,9 @@ function PlanPageInner() {
         <div className="flex items-center gap-3">
           <Link href="/planner" className="flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm text-[#c8e0d8] transition hover:border-white/30">
             <ArrowLeft className="h-4 w-4" /> Edit Preferences
+          </Link>
+          <Link href="/profile" className="flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm text-[#c8e0d8] transition hover:border-white/30">
+            <User className="h-4 w-4" /> Profile
           </Link>
           <ExportButton />
         </div>

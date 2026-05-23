@@ -151,7 +151,8 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
       onChange(selected.filter(c => c !== id))
     } else if (selected.length < MAX_SELECTIONS) {
       onChange([...selected, id])
-      setOpen(false)
+      // Do NOT close the popover — let the user keep picking more interests
+      // without having to reopen the dropdown (also prevents scroll-to-top).
     }
   }
 
@@ -171,7 +172,11 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
           {selected.map(id => (
             <Badge key={id} variant="secondary" className="gap-1 px-3 py-1.5 text-sm">
               {id}
-              <button onClick={() => toggle(id)} className="ml-1 rounded-full hover:bg-muted">
+              <button
+                type="button"
+                onClick={() => toggle(id)}
+                className="ml-1 rounded-full hover:bg-muted"
+              >
                 <X className="h-3 w-3" />
                 <span className="sr-only">Remove {id}</span>
               </button>
@@ -189,18 +194,28 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
             className="w-full justify-between"
             disabled={selected.length >= MAX_SELECTIONS}
           >
-            {selected.length >= MAX_SELECTIONS ? "Maximum selections reached" : "Search all interests..."}
+            {selected.length >= MAX_SELECTIONS
+              ? "Maximum selections reached"
+              : selected.length > 0
+                ? `${selected.length} selected — search to add more…`
+                : "Search all interests…"}
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-full p-0" align="start">
           <Command>
-            <CommandInput placeholder="Type to search..." />
+            <CommandInput placeholder="Type to search interests…" autoFocus />
             <CommandList>
               <CommandEmpty>No interest found.</CommandEmpty>
               <CommandGroup>
                 {INTERESTS.map(id => (
-                  <CommandItem key={id} value={id} onSelect={() => toggle(id)}>
+                  <CommandItem
+                    key={id}
+                    value={id}
+                    onSelect={() => toggle(id)}
+                    // Disable (but still show) when at max and this item isn't already selected
+                    className={cn(!selected.includes(id) && selected.length >= MAX_SELECTIONS && "opacity-40 pointer-events-none")}
+                  >
                     <Check className={cn("mr-2 h-4 w-4", selected.includes(id) ? "opacity-100" : "opacity-0")} />
                     {id}
                   </CommandItem>
@@ -213,12 +228,13 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
 
       <div>
         <p className="mb-3 text-center text-xs font-medium uppercase tracking-widest text-muted-foreground">
-          A few examples — or search above for hundreds more
+          Quick picks — or search above for hundreds more
         </p>
         <div className="flex flex-wrap justify-center gap-2">
           {EXAMPLE_PICKS.map(id => (
             <button
               key={id}
+              type="button"
               onClick={() => toggle(id)}
               disabled={!selected.includes(id) && selected.length >= MAX_SELECTIONS}
               className={cn(
