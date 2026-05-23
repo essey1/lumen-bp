@@ -1998,14 +1998,29 @@ export function generateAcademicPlan(
     // Single major stays at 2 to preserve room for GEM and electives.
     const maxMajorSlots = profile.majors.length >= 2 ? 3 : 2;
     let majorPlaced = 0;
+
+    // Track how many courses per department are already in this semester
+    // (counts existing courses before we start placing majors this pass).
+    const deptCountThisSem: Record<string, number> = {};
+    for (const c of semesters[sem].courses) {
+      if (c.isPlaceholder) continue;
+      const d = c.code.split(" ")[0];
+      deptCountThisSem[d] = (deptCountThisSem[d] ?? 0) + 1;
+    }
+
     for (const s of readyForSem("Major")) {
       if (majorPlaced >= maxMajorSlots || open() <= 0) break;
       const lvl = parseInt(s.item.course.code.match(/\d+/)?.[0] ?? "0");
       if (sem >= 2 && lvl >= 100 && lvl < 200 && count100Level(semesters[sem].courses) >= 2) continue;
+      // Limit to 2 courses from the same department per semester so that e.g.
+      // a PSY major doesn't end up with 4 PSY courses in one term.
+      const dept = s.item.course.code.split(" ")[0];
+      if ((deptCountThisSem[dept] ?? 0) >= 2) continue;
       placeCourse(semesters, s.item.course, sem, placedMap);
       applyGEM(gemTracker, s.item.course.code);
       s.placed = true;
       majorPlaced++;
+      deptCountThisSem[dept] = (deptCountThisSem[dept] ?? 0) + 1;
     }
 
     // Minor (up to 1, from semester 2 onward so year-1 is major-focused)
@@ -2060,9 +2075,13 @@ export function generateAcademicPlan(
     s.item.course.scheduleDisclaimer = true; // bypass isCourseAvailable only
     let placed = false;
     const rescueLvl = parseInt(s.item.course.code.match(/\d+/)?.[0] ?? "0");
+    const rescueDept = s.item.course.code.split(" ")[0];
     for (let sem = s.earliest; sem < 8 && !placed; sem++) {
       if (!s.item.course.isPlaceholder && !prereqsMet(s.item.course.code, sem, placedMap)) continue;
       if (sem >= 2 && rescueLvl >= 100 && rescueLvl < 200 && count100Level(semesters[sem].courses) >= 2) continue;
+      // Enforce per-department limit in the rescue pass too (but allow override in last-resort semester 7).
+      const deptCountRescue = semesters[sem].courses.filter(c => !c.isPlaceholder && c.code.split(" ")[0] === rescueDept).length;
+      if (sem < 7 && deptCountRescue >= 2) continue;
       if (semesters[sem].totalCredits >= 4) {
         const idx = semesters[sem].courses.findIndex(c => c.isPlaceholder || c.category === "Elective");
         if (idx === -1) continue;

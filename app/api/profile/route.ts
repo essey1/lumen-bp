@@ -2,7 +2,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-const SELECT = { name: true, email: true, major: true, year: true, bio: true, completedSemesters: true } as const;
+const SELECT = { name: true, email: true, major: true, minor: true, year: true, bio: true, completedSemesters: true } as const;
 
 export async function GET() {
   const session = await auth();
@@ -22,7 +22,7 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { name, major, year, bio, completedSemesters } = await request.json();
+  const { name, major, minor, year, bio, completedSemesters } = await request.json();
 
   if (name !== undefined && (typeof name !== "string" || name.trim().length === 0)) {
     return NextResponse.json({ error: "Name cannot be empty" }, { status: 400 });
@@ -36,6 +36,7 @@ export async function PUT(request: Request) {
     data: {
       ...(name !== undefined && { name: name.trim() }),
       ...(major !== undefined && { major: major || null }),
+      ...(minor !== undefined && { minor: minor || null }),
       ...(year !== undefined && { year: year || null }),
       ...(bio !== undefined && { bio: bio || null }),
       ...(completedSemesters !== undefined && { completedSemesters: completedSemesters ? JSON.stringify(completedSemesters) : null }),
