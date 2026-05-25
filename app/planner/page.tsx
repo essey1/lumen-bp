@@ -4,49 +4,56 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Progress } from "@/components/ui/progress"
-import { ArrowLeft, ArrowRight, Check, Sparkles, User } from "lucide-react"
+import { ArrowLeft, ArrowRight, Check, Sparkles, User, Loader2 } from "lucide-react"
 import { ForestNav } from "@/components/forest-nav"
 import { LumenFireflies } from "@/components/lumen-ambience"
 import { MajorStep } from "@/components/planner/major-step"
 import { MinorStep } from "@/components/planner/minor-step"
 import { InterestsStep } from "@/components/planner/interests-step"
 import { CareerStep } from "@/components/planner/career-step"
-import { MathPlacementStep } from "@/components/planner/math-placement-step"
-import { WaivedCoursesStep } from "@/components/planner/waived-courses-step"
+import { PlanNameStep } from "@/components/planner/plan-name-step"
 import { type CompletedSemesterData } from "@/components/planner/completed-semesters-step"
 import { AVAILABLE_MAJORS } from "@/lib/majors-data"
+import { generateAcademicPlan, type CompletedSemesterInput } from "@/lib/plan-generator"
 import type { CustomCourseEntry, MathPlacement } from "@/lib/types"
 
 const STEPS = [
-  { id: 1, title: "Major",          description: "Choose your field of study" },
-  { id: 2, title: "Minor",          description: "Add a minor (optional)" },
-  { id: 3, title: "Interests",      description: "What excites you academically?" },
-  { id: 4, title: "Career Goals",   description: "Where are you headed?" },
-  { id: 5, title: "Math Waiver",    description: "Up to what math level have you waived?" },
-  { id: 6, title: "Other Waivers",  description: "Add any other courses already waived" },
+  { id: 1, title: "Major",        description: "Choose your field of study" },
+  { id: 2, title: "Minor",        description: "Add a minor (optional)" },
+  { id: 3, title: "Interests",    description: "What excites you academically?" },
+  { id: 4, title: "Career Goals", description: "Where are you headed?" },
+  { id: 5, title: "Plan Name",    description: "Name your academic journey" },
 ]
 
 export default function PlannerPage() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState({
-    majors: [] as string[],
-    minors: [] as string[],
-    interests: [] as string[],
+    majors:      [] as string[],
+    minors:      [] as string[],
+    interests:   [] as string[],
     careerGoals: [] as string[],
-    mathPlacement: "none" as MathPlacement,
-    waivedCourses: [] as string[],
+    planName:    "",
   })
-  const [completedSemesters, setCompletedSemesters] = useState<CompletedSemesterData[]>([])
-  const [customCourses, setCustomCourses] = useState<Record<string, CustomCourseEntry>>({})
 
-  // Pre-populate majors and completed semesters from the user's profile (if logged in)
+  // Loaded from profile (if logged in) — used automatically at generation time
+  const [profileMathPlacement, setProfileMathPlacement] = useState<MathPlacement>("none")
+  const [profileWaivedCourses, setProfileWaivedCourses] = useState<string[]>([])
+  const [completedSemesters, setCompletedSemesters] = useState<CompletedSemesterData[]>([])
+  const [customCourses] = useState<Record<string, CustomCourseEntry>>({})
+
+  // Auto-save state
+  const [generating, setGenerating] = useState(false)
+  const [generateError, setGenerateError] = useState("")
+
+  // Pre-populate from user profile (logged-in users)
   useEffect(() => {
     fetch("/api/profile")
       .then(r => r.ok ? r.json() : null)
       .then(profile => {
         if (!profile) return
+
+        // Major
         if (profile.major) {
           const names: string[] = profile.major.split(", ").map((s: string) => s.trim()).filter(Boolean)
           const codes = names
@@ -54,45 +61,112 @@ export default function PlannerPage() {
             .filter((c): c is string => !!c)
           if (codes.length > 0) setFormData(prev => ({ ...prev, majors: codes }))
         }
+
+        // Waivers — collected at signup, used automatically
+        if (profile.mathPlacement) setProfileMathPlacement(profile.mathPlacement as MathPlacement)
+        if (profile.waivedCourses) {
+          try { setProfileWaivedCourses(JSON.parse(profile.waivedCourses)) } catch { /* ignore */ }
+        }
+
+        // Completed semesters
         if (profile.completedSemesters) {
-          try {
-            const parsed: CompletedSemesterData[] = JSON.parse(profile.completedSemesters)
-            setCompletedSemesters(parsed)
-          } catch { /* ignore */ }
+          try { setCompletedSemesters(JSON.parse(profile.completedSemesters)) } catch { /* ignore */ }
         }
       })
-      .catch(() => {}) // not logged in — skip
+      .catch(() => {}) // not logged in — proceed with defaults
   }, [])
+
+  // Auto-fill plan name once we have a major
+  useEffect(() => {
+    if (formData.planName) return // user already typed something
+    if (formData.majors.length === 0) return
+    const majorName = AVAILABLE_MAJORS.find(m => m.code === formData.majors[0])?.name ?? formData.majors[0]
+    setFormData(prev => ({
+      ...prev,
+      planName: prev.planName || `${majorName} — 4-Year Plan`,
+    }))
+  }, [formData.majors, formData.planName])
 
   const progress = (currentStep / STEPS.length) * 100
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (currentStep < STEPS.length) {
       setCurrentStep(currentStep + 1)
-    } else {
-      // Pass completed semesters (from profile) via sessionStorage to the plan page
+      return
+    }
+
+    // ── Final step: generate Plan A and auto-save ─────────────────────────────
+    setGenerating(true)
+    setGenerateError("")
+
+    try {
+      const profile = {
+        majors:        formData.majors,
+        minors:        formData.minors,
+        interests:     formData.interests,
+        hobbies:       [],
+        careerGoals:   formData.careerGoals,
+        mathPlacement: profileMathPlacement,
+        waivedCourses: profileWaivedCourses,
+      }
+
+      const completedSemesterInputs: CompletedSemesterInput[] = completedSemesters
+      const customCourseEntries: CustomCourseEntry[] = Object.values(customCourses)
+
+      const plan = generateAcademicPlan(profile, {
+        planType: "A",
+        completedSemesters: completedSemesterInputs,
+        customCourses: customCourseEntries,
+      })
+
+      const res = await fetch("/api/plans", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name:          formData.planName.trim() || `${formData.majors[0] ?? "My"} Plan`,
+          majors:        formData.majors,
+          minors:        formData.minors,
+          interests:     formData.interests,
+          careerGoals:   formData.careerGoals,
+          mathPlacement: profileMathPlacement,
+          waivedCourses: profileWaivedCourses,
+          planType:      "A",
+          semesters:     plan.semesters,
+        }),
+      })
+
+      if (res.ok) {
+        const { id } = await res.json()
+        router.push(`/plan/${id}`)
+        return
+      }
+
+      // Not logged in or save failed — fall back to the preview page
+      const params = new URLSearchParams()
+      if (formData.majors.length > 0)      params.set("majors",      formData.majors.join(","))
+      if (formData.minors.length > 0)      params.set("minors",      formData.minors.join(","))
+      if (formData.interests.length > 0)   params.set("interests",   formData.interests.join(","))
+      if (formData.careerGoals.length > 0) params.set("careerGoals", formData.careerGoals.join(","))
+      if (profileMathPlacement !== "none") params.set("mathPlacement", profileMathPlacement)
+      if (profileWaivedCourses.length > 0) params.set("waivedCourses", profileWaivedCourses.join(","))
+
+      // Store sessionStorage data for the plan page
       if (completedSemesters.length > 0) {
         sessionStorage.setItem("completedSemesters", JSON.stringify(completedSemesters))
       } else {
         sessionStorage.removeItem("completedSemesters")
       }
-
-      // Pass any custom course details to the plan generator
-      const customEntries = Object.values(customCourses)
-      if (customEntries.length > 0) {
-        sessionStorage.setItem("customCourses", JSON.stringify(customEntries))
+      if (customCourseEntries.length > 0) {
+        sessionStorage.setItem("customCourses", JSON.stringify(customCourseEntries))
       } else {
         sessionStorage.removeItem("customCourses")
       }
 
-      const params = new URLSearchParams()
-      if (formData.majors.length > 0) params.set("majors", formData.majors.join(","))
-      if (formData.minors.length > 0) params.set("minors", formData.minors.join(","))
-      if (formData.interests.length > 0) params.set("interests", formData.interests.join(","))
-      if (formData.careerGoals.length > 0) params.set("careerGoals", formData.careerGoals.join(","))
-      if (formData.mathPlacement !== "none") params.set("mathPlacement", formData.mathPlacement)
-      if (formData.waivedCourses.length > 0) params.set("waivedCourses", formData.waivedCourses.join(","))
       router.push(`/plan?${params.toString()}`)
+    } catch {
+      setGenerateError("Something went wrong. Please try again.")
+    } finally {
+      setGenerating(false)
     }
   }
 
@@ -100,21 +174,25 @@ export default function PlannerPage() {
     if (currentStep > 1) setCurrentStep(currentStep - 1)
   }
 
-  const updateFormData = (key: keyof typeof formData, value: string[] | MathPlacement) => {
+  const updateFormData = <K extends keyof typeof formData>(key: K, value: typeof formData[K]) => {
     setFormData(prev => ({ ...prev, [key]: value }))
   }
 
   const canProceed = () => {
+    if (generating) return false
     switch (currentStep) {
       case 1: return formData.majors.length >= 1
       case 2: return true
       case 3: return formData.interests.length >= 1
       case 4: return formData.careerGoals.length >= 1
-      case 5: return true
-      case 6: return true
+      case 5: return formData.planName.trim().length >= 1
       default: return true
     }
   }
+
+  const majorName = formData.majors.length > 0
+    ? (AVAILABLE_MAJORS.find(m => m.code === formData.majors[0])?.name ?? formData.majors[0])
+    : undefined
 
   return (
     <div className="lumen-app-shell">
@@ -136,13 +214,13 @@ export default function PlannerPage() {
           </div>
           <div className="flex justify-between">
             {STEPS.map(step => (
-              <div key={step.id} className={`hidden flex-col items-center md:flex`}
+              <div key={step.id} className="hidden flex-col items-center md:flex"
                 style={{ color: step.id === currentStep ? "#f5a623" : step.id < currentStep ? "rgba(245,166,35,0.5)" : "#4a7a72" }}>
                 <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium"
                   style={{
-                    background: step.id < currentStep ? "#f5a623" : step.id === currentStep ? "rgba(245,166,35,0.12)" : "rgba(255,255,255,0.05)",
-                    border: step.id === currentStep ? "2px solid #f5a623" : step.id < currentStep ? "none" : "1px solid rgba(255,255,255,0.1)",
-                    color: step.id < currentStep ? "#071410" : step.id === currentStep ? "#f5a623" : "#4a7a72",
+                    background:  step.id < currentStep ? "#f5a623" : step.id === currentStep ? "rgba(245,166,35,0.12)" : "rgba(255,255,255,0.05)",
+                    border:      step.id === currentStep ? "2px solid #f5a623" : step.id < currentStep ? "none" : "1px solid rgba(255,255,255,0.1)",
+                    color:       step.id < currentStep ? "#071410" : step.id === currentStep ? "#f5a623" : "#4a7a72",
                   }}>
                   {step.id < currentStep ? <Check className="h-4 w-4" /> : step.id}
                 </div>
@@ -157,11 +235,9 @@ export default function PlannerPage() {
         </div>
       </div>
 
-      {/* Glow layer — brightens as steps complete */}
+      {/* Glow layer */}
       <div className="pointer-events-none fixed inset-0 z-0 transition-opacity duration-700"
-        style={{
-          background: `radial-gradient(ellipse 80% 60% at 50% 40%, rgba(245,166,35,${(currentStep - 1) * 0.025}) 0%, transparent 70%)`,
-        }}
+        style={{ background: `radial-gradient(ellipse 80% 60% at 50% 40%, rgba(245,166,35,${(currentStep - 1) * 0.025}) 0%, transparent 70%)` }}
       />
 
       {/* Form Content */}
@@ -188,33 +264,33 @@ export default function PlannerPage() {
               <CareerStep selected={formData.careerGoals} onChange={v => updateFormData("careerGoals", v)} />
             )}
             {currentStep === 5 && (
-              <MathPlacementStep
-                selected={formData.mathPlacement}
-                onChange={v => updateFormData("mathPlacement", v)}
-              />
-            )}
-            {currentStep === 6 && (
-              <WaivedCoursesStep
-                selected={formData.waivedCourses}
-                onChange={v => updateFormData("waivedCourses", v)}
-                customCourses={customCourses}
-                onCustomCoursesChange={setCustomCourses}
+              <PlanNameStep
+                value={formData.planName}
+                onChange={v => updateFormData("planName", v)}
+                majorName={majorName}
               />
             )}
           </div>
 
+          {/* Error message */}
+          {generateError && (
+            <p className="mb-4 text-center text-sm text-red-400">{generateError}</p>
+          )}
+
           {/* Navigation */}
           <div className="flex items-center justify-between">
-            <Button variant="outline" onClick={handleBack} disabled={currentStep === 1} className="gap-2">
+            <Button variant="outline" onClick={handleBack} disabled={currentStep === 1 || generating} className="gap-2">
               <ArrowLeft className="h-4 w-4" />
               Back
             </Button>
             <Button onClick={handleNext} disabled={!canProceed()} className="gap-2">
-              {currentStep === STEPS.length ? (
-                <>Generate Plan<Sparkles className="h-4 w-4" /></>
+              {generating ? (
+                <><Loader2 className="h-4 w-4 animate-spin" /> Generating…</>
+              ) : currentStep === STEPS.length ? (
+                <><Sparkles className="h-4 w-4" /> Generate Plan</>
               ) : (
                 <>
-                  {currentStep === 2 && formData.minors.length === 0 ? "Skip" : "Next" }
+                  {currentStep === 2 && formData.minors.length === 0 ? "Skip" : "Next"}
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}

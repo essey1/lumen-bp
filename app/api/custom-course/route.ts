@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
   await transporter.sendMail({
     from: `"Lumen" <${gmailUser}>`,
-    to: "esseytester@gmail.com",
+    to: "lumen.berea@gmail.com",
     subject: `[Lumen] New course submitted: ${entry.code}${entry.name ? ` – ${entry.name}` : ""}`,
     html,
   });
