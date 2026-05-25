@@ -15,7 +15,7 @@ import { CareerStep } from "@/components/planner/career-step"
 import { PlanNameStep } from "@/components/planner/plan-name-step"
 import { type CompletedSemesterData } from "@/components/planner/completed-semesters-step"
 import { AVAILABLE_MAJORS } from "@/lib/majors-data"
-import { generateAcademicPlan, type CompletedSemesterInput } from "@/lib/plan-generator"
+import { generateAcademicPlan, validateCompletedSemesters, type CompletedSemesterInput } from "@/lib/plan-generator"
 import type { CustomCourseEntry, MathPlacement } from "@/lib/types"
 
 const STEPS = [
@@ -101,6 +101,16 @@ export default function PlannerPage() {
     setGenerateError("")
 
     try {
+      // Validate completed semesters before generating
+      const completedSemesterInputs: CompletedSemesterInput[] = completedSemesters
+      const semErrors = validateCompletedSemesters(completedSemesterInputs)
+      if (semErrors.length > 0) {
+        setGenerateError(
+          `${semErrors[0].message} Please update your completed semesters in your profile before generating.`
+        )
+        return
+      }
+
       const profile = {
         majors:        formData.majors,
         minors:        formData.minors,
@@ -111,7 +121,6 @@ export default function PlannerPage() {
         waivedCourses: profileWaivedCourses,
       }
 
-      const completedSemesterInputs: CompletedSemesterInput[] = completedSemesters
       const customCourseEntries: CustomCourseEntry[] = Object.values(customCourses)
 
       const plan = generateAcademicPlan(profile, {
