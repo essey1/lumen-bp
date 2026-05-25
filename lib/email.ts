@@ -34,6 +34,47 @@ export async function sendOTP(email: string, code: string): Promise<void> {
   });
 }
 
+export async function sendPasswordResetOTP(email: string, code: string, name?: string): Promise<void> {
+  const gmailUser = process.env.GMAIL_USER;
+  const gmailPass = process.env.GMAIL_APP_PASSWORD;
+
+  if (!gmailUser || !gmailPass) {
+    throw new Error("GMAIL_USER and GMAIL_APP_PASSWORD must be set in .env");
+  }
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: gmailUser, pass: gmailPass },
+  });
+
+  const greeting = name ? `Hi ${name},` : "Hi there,";
+
+  await transporter.sendMail({
+    from: `"Lumen" <${gmailUser}>`,
+    to: email,
+    subject: "Reset your Lumen password",
+    html: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 480px; margin: 0 auto; padding: 40px 24px; background: #fff;">
+        <div style="margin-bottom: 32px;">
+          <span style="font-size: 20px; font-weight: 600; color: #000;">✦ Lumen</span>
+        </div>
+        <h2 style="font-size: 22px; font-weight: 700; color: #111; margin: 0 0 8px;">Reset your password</h2>
+        <p style="font-size: 15px; color: #666; margin: 0 0 8px;">${greeting}</p>
+        <p style="font-size: 15px; color: #666; margin: 0 0 28px;">
+          Use this code to reset your Lumen password. It expires in <strong>10 minutes</strong>.
+          If you didn't request a reset, you can safely ignore this email.
+        </p>
+        <div style="background: #f4f4f5; border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 28px;">
+          <span style="font-size: 40px; font-weight: 800; letter-spacing: 12px; color: #111; font-family: monospace;">${code}</span>
+        </div>
+        <p style="font-size: 13px; color: #999; margin: 0;">
+          This code is single-use and will expire after one successful reset.
+        </p>
+      </div>
+    `,
+  });
+}
+
 export async function cleanupExpiredOTPs(): Promise<void> {
   try {
     await prisma.oTP.deleteMany({
