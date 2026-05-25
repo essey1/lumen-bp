@@ -3,12 +3,15 @@
 
 generator client {
   provider = "prisma-client-js"
+  output   = "../.prisma-seed"
 }
 
+// ── Local dev uses SQLite; production (Vercel) uses PostgreSQL ─────────────
+// Switch provider + url when deploying. The .prisma-seed output is regenerated
+// by `prisma generate` in both environments so lib/prisma.ts always works.
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_POSTGRES_PRISMA_URL")
-  directUrl = env("DATABASE_POSTGRES_URL_NON_POOLING")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 model User {
