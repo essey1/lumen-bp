@@ -2,7 +2,7 @@
 // (SQLite) and production (PostgreSQL on Vercel) environments.  By importing
 // from here instead of "@prisma/client" we avoid the stale locked DLL that
 // VS Code's Prisma extension holds open during development.
-import { PrismaClient } from "../.prisma-seed";
+import { PrismaClient } from "prisma-client-local";
 
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 

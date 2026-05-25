@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../.prisma-seed"
+  output   = "../node_modules/prisma-client-local"
 }
 
 // ── Local dev uses SQLite; production (Vercel) uses PostgreSQL ─────────────

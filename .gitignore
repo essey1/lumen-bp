@@ -18,3 +18,4 @@ node_modules
 
 # Generated Prisma client (recreated by `prisma generate` on every install/build)
 .prisma-seed/
+/node_modules/prisma-client-local/
