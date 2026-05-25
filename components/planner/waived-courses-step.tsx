@@ -94,7 +94,7 @@ function WaivedCourseCombobox({ onSelect, excluded }: ComboboxProps) {
         </div>
 
         {open && (
-          <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-56 overflow-y-auto rounded-xl shadow-xl"
+          <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-52 overflow-y-auto rounded-xl shadow-xl"
             style={{ background: "#0d1f18", border: "1px solid rgba(255,255,255,0.12)" }}>
             {filtered.length === 0 && (
               <p className="px-4 py-3 text-center text-sm" style={{ color: "#4a7a72" }}>

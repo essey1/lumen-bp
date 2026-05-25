@@ -119,11 +119,11 @@ export function NewCourseModal({ open, onClose, onCreated, initialCode = "" }: P
 
   return (
     /* Backdrop */
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4"
+    <div className="fixed inset-0 z-[200] flex items-end justify-center sm:items-center sm:p-4"
       style={{ background: "rgba(0,0,0,0.65)", backdropFilter: "blur(4px)" }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}>
 
-      <div className="relative w-full max-w-lg overflow-hidden rounded-2xl shadow-2xl"
+      <div className="relative w-full max-w-lg overflow-hidden rounded-t-2xl shadow-2xl sm:rounded-2xl"
         style={{ background: "#0d1f18", border: "1px solid rgba(245,166,35,0.25)" }}>
 
         {/* Header */}
@@ -143,7 +143,7 @@ export function NewCourseModal({ open, onClose, onCreated, initialCode = "" }: P
         </div>
 
         {/* Body */}
-        <div className="max-h-[70vh] space-y-5 overflow-y-auto px-6 py-5">
+        <div className="max-h-[80vh] space-y-5 overflow-y-auto px-6 py-5 sm:max-h-[70vh]">
           <p className="text-sm" style={{ color: "#7aada0" }}>
             This course isn&apos;t in our catalog yet. Fill in what you know — anything helps.
             We&apos;ll add it so future students benefit too.

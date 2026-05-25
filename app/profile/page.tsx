@@ -338,8 +338,8 @@ export default function ProfilePage() {
                     return (
                       <Card key={plan.id} className="border-border hover:shadow-sm transition-shadow">
                         <CardContent className="py-4">
-                          <div className="flex items-center justify-between gap-4">
-                            <div className="min-w-0 flex-1">
+                          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                            <div className="min-w-0">
                               <p className="font-semibold text-foreground truncate">{plan.name}</p>
                               <p className="mt-0.5 text-xs text-muted-foreground truncate">
                                 Plan {plan.planType}
@@ -350,36 +350,36 @@ export default function ProfilePage() {
                                 Updated {new Date(plan.updatedAt).toLocaleDateString()}
                               </p>
                             </div>
-                            <div className="flex items-center gap-2 shrink-0">
+                            <div className="flex items-center gap-2">
+                              <Link href={`/plan/${plan.id}`} className="flex-1 sm:flex-none">
+                                <Button size="sm" className="w-full gap-1.5 sm:w-auto">
+                                  View <ArrowRight className="h-3.5 w-3.5" />
+                                </Button>
+                              </Link>
                               <Button
                                 size="sm"
                                 variant={confirmDeleteId === plan.id ? "destructive" : "ghost"}
                                 onClick={() => handleDeletePlan(plan.id)}
                                 disabled={deletingId === plan.id}
-                                className="gap-1"
+                                className="gap-1 shrink-0"
                               >
                                 {deletingId === plan.id ? (
                                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
                                 ) : (
                                   <Trash2 className="h-3.5 w-3.5" />
                                 )}
-                                {confirmDeleteId === plan.id ? "Confirm" : ""}
+                                {confirmDeleteId === plan.id ? "Confirm?" : ""}
                               </Button>
                               {confirmDeleteId === plan.id && (
                                 <Button
                                   size="sm"
                                   variant="ghost"
                                   onClick={() => setConfirmDeleteId(null)}
-                                  className="text-xs"
+                                  className="shrink-0 text-xs"
                                 >
                                   Cancel
                                 </Button>
                               )}
-                              <Link href={`/plan/${plan.id}`}>
-                                <Button size="sm" className="gap-1.5">
-                                  View <ArrowRight className="h-3.5 w-3.5" />
-                                </Button>
-                              </Link>
                             </div>
                           </div>
                         </CardContent>

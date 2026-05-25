@@ -154,6 +154,7 @@ export default function SavedPlanPage() {
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [deleteStatus, setDeleteStatus] = useState<"idle" | "confirming" | "deleting">("idle");
   const [error, setError] = useState("");
+  const [activeYear, setActiveYear] = useState(0); // mobile tab index
 
   useEffect(() => {
     fetch(`/api/plans/${id}`)
@@ -248,81 +249,135 @@ export default function SavedPlanPage() {
   return (
     <div className="lumen-app-shell">
       <LumenFireflies className="fixed opacity-85" />
+
+      {/* ── Header ── */}
       <header className="lumen-app-content border-b border-white/15 bg-white/10 backdrop-blur-md">
-        <div className="container mx-auto flex items-center justify-between px-4 py-4">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-              <Sparkles className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-semibold text-foreground">Lumen</span>
-          </Link>
-          <div className="flex items-center gap-2 flex-wrap justify-end">
-            {editMode ? (
-              <>
-                <Button size="sm" onClick={handleSaveChanges} disabled={saveStatus === "saving"} className="gap-1.5">
-                  {saveStatus === "saving" ? <Loader2 className="h-4 w-4 animate-spin" /> : saveStatus === "saved" ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
-                  {saveStatus === "saving" ? "Saving..." : saveStatus === "saved" ? "Saved!" : "Save Changes"}
+        <div className="container mx-auto px-4 py-3">
+          {/* Top row: logo + actions */}
+          <div className="flex items-center justify-between gap-2">
+            <Link href="/" className="flex items-center gap-2">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary shrink-0">
+                <Sparkles className="h-4 w-4 text-primary-foreground" />
+              </div>
+              <span className="text-lg font-semibold text-foreground hidden sm:inline">Lumen</span>
+            </Link>
+
+            {/* Action buttons — icon-only on mobile, labelled on sm+ */}
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              {editMode ? (
+                <>
+                  <Button size="sm" onClick={handleSaveChanges} disabled={saveStatus === "saving"} className="gap-1.5 min-h-[36px]">
+                    {saveStatus === "saving" ? <Loader2 className="h-4 w-4 animate-spin" /> : saveStatus === "saved" ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+                    <span className="hidden sm:inline">{saveStatus === "saving" ? "Saving…" : saveStatus === "saved" ? "Saved!" : "Save"}</span>
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => { setSemesters(plan.semesters); setEditMode(false); }} className="min-h-[36px]">
+                    <X className="h-4 w-4" />
+                    <span className="hidden sm:inline ml-1">Cancel</span>
+                  </Button>
+                </>
+              ) : (
+                <Button size="sm" variant="outline" onClick={() => setEditMode(true)} className="gap-1.5 min-h-[36px]">
+                  <Pencil className="h-4 w-4" />
+                  <span className="hidden sm:inline">Edit</span>
                 </Button>
-                <Button size="sm" variant="outline" onClick={() => { setSemesters(plan.semesters); setEditMode(false); }}>
-                  <X className="h-4 w-4 mr-1" /> Cancel
-                </Button>
-              </>
-            ) : (
-              <Button size="sm" variant="outline" onClick={() => setEditMode(true)} className="gap-1.5">
-                <Pencil className="h-4 w-4" /> Edit Plan
+              )}
+              <Button
+                size="sm"
+                variant={deleteStatus === "confirming" ? "destructive" : "ghost"}
+                onClick={handleDelete}
+                disabled={deleteStatus === "deleting"}
+                className="gap-1.5 min-h-[36px]"
+              >
+                {deleteStatus === "deleting" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                <span className="hidden sm:inline">
+                  {deleteStatus === "confirming" ? "Confirm" : deleteStatus === "deleting" ? "Deleting…" : "Delete"}
+                </span>
               </Button>
-            )}
-            <Button
-              size="sm"
-              variant={deleteStatus === "confirming" ? "destructive" : "ghost"}
-              onClick={handleDelete}
-              disabled={deleteStatus === "deleting"}
-              className="gap-1.5"
-            >
-              {deleteStatus === "deleting" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-              {deleteStatus === "confirming" ? "Confirm Delete" : deleteStatus === "deleting" ? "Deleting…" : "Delete"}
-            </Button>
+            </div>
           </div>
         </div>
       </header>
 
-      <main className="lumen-app-content container mx-auto px-4 py-8">
-        <Link href="/profile" className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
+      <main className="lumen-app-content container mx-auto px-4 py-6">
+        <Link href="/profile" className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back to Dashboard
         </Link>
 
-        <div className="mb-6">
+        {/* Plan title + meta */}
+        <div className="mb-5">
           {editingName ? (
-            <div className="flex items-center gap-2">
-              <input
-                className="text-2xl font-bold bg-transparent border-b-2 border-primary focus:outline-none"
-                value={planName}
-                onChange={e => setPlanName(e.target.value)}
-                onBlur={() => setEditingName(false)}
-                onKeyDown={e => e.key === "Enter" && setEditingName(false)}
-                autoFocus
-              />
-            </div>
+            <input
+              className="w-full bg-transparent border-b-2 border-primary text-xl font-bold focus:outline-none sm:text-2xl"
+              value={planName}
+              onChange={e => setPlanName(e.target.value)}
+              onBlur={() => setEditingName(false)}
+              onKeyDown={e => e.key === "Enter" && setEditingName(false)}
+              autoFocus
+            />
           ) : (
-            <button onClick={() => setEditingName(true)} className="group flex items-center gap-2 text-left">
-              <h1 className="text-2xl font-bold text-foreground">{planName}</h1>
-              <Pencil className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+            <button onClick={() => setEditingName(true)} className="group flex items-center gap-2 text-left w-full">
+              <h1 className="text-xl font-bold text-foreground sm:text-2xl">{planName}</h1>
+              <Pencil className="h-4 w-4 shrink-0 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
             </button>
           )}
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 text-xs text-muted-foreground sm:text-sm line-clamp-2">
             {plan.majors.join(", ")}
             {plan.minors.length > 0 && ` · Minor: ${plan.minors.join(", ")}`}
-            {" · "}Last updated {new Date(plan.updatedAt).toLocaleDateString()}
+            {" · "}Updated {new Date(plan.updatedAt).toLocaleDateString()}
           </p>
           {editMode && (
-            <p className="mt-2 rounded-md bg-amber-50 border border-amber-200 px-3 py-2 text-sm text-amber-800">
-              Edit mode: change course code, name, credits, or category. Use + to add courses, trash to remove them. Locked semesters are already-completed terms.
+            <p className="mt-2 rounded-md bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-800 sm:text-sm">
+              Edit mode: tap a course to change it. Use + to add, trash to remove. Locked semesters are completed.
             </p>
           )}
           {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {/* ── Mobile: year tabs + semester pair ── */}
+        <div className="md:hidden">
+          {/* Year tab strip */}
+          <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
+            {years.map(({ label }, i) => (
+              <button
+                key={label}
+                onClick={() => setActiveYear(i)}
+                className="shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition-all"
+                style={{
+                  borderColor: activeYear === i ? "rgba(245,166,35,0.5)" : "rgba(255,255,255,0.10)",
+                  background:  activeYear === i ? "rgba(245,166,35,0.10)" : "transparent",
+                  color:       activeYear === i ? "#f5a623" : "#7aada0",
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Active year semesters side-by-side */}
+          {years[activeYear] && semesters[years[activeYear].fallIdx] && semesters[years[activeYear].springIdx] && (
+            <div className="grid grid-cols-2 gap-3">
+              <SemesterColumn
+                title={years[activeYear].fallTitle.replace(" – ", "\n")}
+                semester={semesters[years[activeYear].fallIdx]}
+                editMode={editMode}
+                onCourseChange={(ci, c) => updateCourse(years[activeYear].fallIdx, ci, c)}
+                onAddCourse={() => addCourse(years[activeYear].fallIdx)}
+                onRemoveCourse={ci => removeCourse(years[activeYear].fallIdx, ci)}
+              />
+              <SemesterColumn
+                title={years[activeYear].springTitle.replace(" – ", "\n")}
+                semester={semesters[years[activeYear].springIdx]}
+                editMode={editMode}
+                onCourseChange={(ci, c) => updateCourse(years[activeYear].springIdx, ci, c)}
+                onAddCourse={() => addCourse(years[activeYear].springIdx)}
+                onRemoveCourse={ci => removeCourse(years[activeYear].springIdx, ci)}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* ── Desktop: all 4 years in a grid ── */}
+        <div className="hidden md:grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {years.map(({ label, fallTitle, springTitle, fallIdx, springIdx }) =>
             semesters[fallIdx] && semesters[springIdx] ? (
               <div key={label} className="space-y-4">
