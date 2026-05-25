@@ -45,10 +45,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60,
+    maxAge: 60 * 60, // 1 hour — matches client-side idle timeout
   },
   jwt: {
-    maxAge: 30 * 24 * 60 * 60,
+    maxAge: 60 * 60, // 1 hour
   },
   trustHost: true,
   secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,

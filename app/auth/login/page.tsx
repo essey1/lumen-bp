@@ -64,7 +64,14 @@ export default function LoginPage() {
                 className={inputCls} />
             </div>
             <div>
-              <label className={labelCls}>Password</label>
+              <div className="mb-1.5 flex items-center justify-between">
+                <label className={labelCls} style={{ marginBottom: 0 }}>Password</label>
+                <Link href="/auth/forgot-password"
+                  className="text-xs transition hover:text-[#e2ede8]"
+                  style={{ color: "#f5a623" }}>
+                  Forgot password?
+                </Link>
+              </div>
               <input type="password" value={password} onChange={e => setPassword(e.target.value)}
                 placeholder="••••••••" required disabled={loading}
                 className={inputCls} />
