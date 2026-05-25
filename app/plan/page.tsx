@@ -12,7 +12,6 @@ import { LumenFireflies } from "@/components/lumen-ambience"
 import { StudentProfile } from "@/components/plan/student-profile"
 import { OverflowWarning } from "@/components/plan/overflow-warning"
 import { CareerAdvice } from "@/components/plan/career-advice"
-import { SavePlanButton } from "@/components/plan/save-plan-button"
 import { ExportButton } from "@/components/plan/export-button"
 import { PlanCourseCombobox } from "@/components/plan/course-combobox"
 import { generateAcademicPlan, getPlanStats, type CompletedSemesterInput } from "@/lib/plan-generator"
@@ -188,18 +187,6 @@ function PlanView({ initialPlan, profile }: {
 
   return (
     <div>
-      {/* Save plan — shown at the top so it's impossible to miss */}
-      <div className="mb-8 flex justify-center">
-        <SavePlanButton
-          majors={profile.majors} minors={profile.minors}
-          interests={profile.interests} careerGoals={profile.careerGoals}
-          mathPlacement={profile.mathPlacement ?? "none"}
-          waivedCourses={profile.waivedCourses ?? []}
-          planType={initialPlan.student.majors[0] ?? "Custom"}
-          semesters={semesters}
-        />
-      </div>
-
       {/* Edit controls */}
       <div className="mb-6 flex justify-end gap-2">
         {editMode ? (
@@ -368,12 +355,9 @@ function PlanPageInner() {
     <div className="lumen-app-shell" style={{
         fontFamily: "var(--font-lora),Georgia,serif",
         background: [
-          /* deep golden glow from top — like canopy light */
           "radial-gradient(ellipse 90% 55% at 50% -5%, rgba(245,166,35,0.18) 0%, transparent 65%)",
-          /* side warmth */
           "radial-gradient(ellipse 50% 40% at 15% 50%, rgba(245,166,35,0.07) 0%, transparent 60%)",
           "radial-gradient(ellipse 50% 40% at 85% 50%, rgba(245,166,35,0.07) 0%, transparent 60%)",
-          /* base — lighter than planner, feel of dawn breaking */
           "linear-gradient(180deg,#122418 0%,#1a3020 40%,#203828 75%,#274030 100%)",
         ].join(","),
       }}>
@@ -398,7 +382,7 @@ function PlanPageInner() {
             Your Academic Journey
           </h1>
           <p className="text-sm italic" style={{ color: "#9abfb8" }}>
-            Edit any course, then save — min {MINIMUM_TOTAL_CREDITS} credits · {MINIMUM_CREDITS_OUTSIDE_MAJOR} outside your major
+            Preview and compare plans — sign in to save · min {MINIMUM_TOTAL_CREDITS} credits · {MINIMUM_CREDITS_OUTSIDE_MAJOR} outside your major
           </p>
         </div>
 

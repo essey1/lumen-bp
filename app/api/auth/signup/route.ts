@@ -28,7 +28,7 @@ function isReadOnlyDatabaseError(error: unknown) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { name, email, password, major, year, bio, completedSemesters } = await request.json();
+    const { name, email, password, major, year, bio, completedSemesters, mathPlacement, waivedCourses } = await request.json();
 
     if (!email || !password || !name) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -61,13 +61,16 @@ export async function POST(request: NextRequest) {
 
     let user;
     try {
-      user = await prisma.user.create({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      user = await (prisma.user as any).create({
         data: {
           ...baseUserData,
           major: major || null,
           year: year ? parseInt(year) : null,
           bio: bio || null,
           completedSemesters: completedSemesters ? JSON.stringify(completedSemesters) : null,
+          mathPlacement: mathPlacement || "none",
+          waivedCourses: waivedCourses && waivedCourses.length > 0 ? JSON.stringify(waivedCourses) : null,
         },
         select: { id: true, name: true, email: true },
       });

@@ -24,6 +24,8 @@ model User {
   year               Int?
   bio                String?
   completedSemesters String?  // JSON array of CompletedSemesterData
+  mathPlacement      String?  @default("none") // highest math level completed/waived
+  waivedCourses      String?  // JSON array of course codes the student has waived
   accounts      Account[]
   sessions      Session[]
   otps          OTP[]

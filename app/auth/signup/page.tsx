@@ -9,7 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ChevronRight, ChevronLeft, Check } from "lucide-react";
 import { CompletedSemestersStep, type CompletedSemesterData } from "@/components/planner/completed-semesters-step";
+import { MathPlacementStep } from "@/components/planner/math-placement-step";
+import { WaivedCoursesStep } from "@/components/planner/waived-courses-step";
 import { ForestNav } from "@/components/forest-nav";
+import type { MathPlacement } from "@/lib/types";
 
 // Groups of majors that share a department (only one allowed per group)
 const DEPT_GROUPS = [
@@ -91,14 +94,19 @@ const YEARS = [
   { value: "4", label: "4th Year (Senior)" },
 ];
 
+// ── 9-step signup ────────────────────────────────────────────────────────────
+const TOTAL_STEPS = 9;
+
 const STEP_TITLES = [
-  "Welcome to Lumen",
-  "Your Major",
-  "Academic Year",
-  "Your Progress",
-  "Your Interests",
-  "Create Password",
-  "Verify Your Email",
+  "Welcome to Lumen",       // 1
+  "Your Major",             // 2
+  "Academic Year",          // 3
+  "Your Progress",          // 4
+  "Math Placement",         // 5 (new)
+  "Waived Courses",         // 6 (new)
+  "Your Interests",         // 7
+  "Create Password",        // 8
+  "Verify Your Email",      // 9
 ];
 
 const STEP_SUBTITLES = [
@@ -106,6 +114,8 @@ const STEP_SUBTITLES = [
   "What are you studying at Berea College?",
   "What year are you currently in?",
   "Tell us about semesters you've already completed",
+  "Up to what level of developmental math have you waived?",
+  "Add any courses you have already been waived from",
   "Tell us about your goals and interests",
   "Secure your Lumen account",
   "Enter the 6-digit code we sent to your email",
@@ -127,12 +137,16 @@ export default function SignupPage() {
   // Step 4
   const [completedCount, setCompletedCount] = useState(0);
   const [completedSemesters, setCompletedSemesters] = useState<CompletedSemesterData[]>([]);
-  // Step 5
+  // Step 5 — Math placement waiver
+  const [mathPlacement, setMathPlacement] = useState<MathPlacement>("none");
+  // Step 6 — Other waived courses
+  const [waivedCourses, setWaivedCourses] = useState<string[]>([]);
+  // Step 7
   const [bio, setBio] = useState("");
-  // Step 6
+  // Step 8
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  // Step 7
+  // Step 9
   const [otp, setOtp] = useState("");
 
   function validateStep(): string | null {
@@ -147,7 +161,7 @@ export default function SignupPage() {
     if (step === 3) {
       if (!year) return "Please select your academic year.";
     }
-    if (step === 6) {
+    if (step === 8) {
       if (password.length < 8) return "Password must be at least 8 characters.";
       if (!/[A-Z]/.test(password)) return "Password must contain at least one uppercase letter.";
       if (!/[a-z]/.test(password)) return "Password must contain at least one lowercase letter.";
@@ -163,7 +177,7 @@ export default function SignupPage() {
     const err = validateStep();
     if (err) { setError(err); return; }
 
-    if (step === 6) {
+    if (step === 8) {
       await createAccount();
       return;
     }
@@ -177,7 +191,17 @@ export default function SignupPage() {
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: name.trim(), email: email.trim().toLowerCase(), password, major: majors.join(", "), year: parseInt(year), bio, completedSemesters: completedSemesters.length > 0 ? completedSemesters : null }),
+        body: JSON.stringify({
+          name:              name.trim(),
+          email:             email.trim().toLowerCase(),
+          password,
+          major:             majors.join(", "),
+          year:              parseInt(year),
+          bio,
+          completedSemesters: completedSemesters.length > 0 ? completedSemesters : null,
+          mathPlacement,
+          waivedCourses:     waivedCourses.length > 0 ? waivedCourses : null,
+        }),
       });
 
       if (!res.ok) {
@@ -199,7 +223,7 @@ export default function SignupPage() {
         return;
       }
 
-      setStep(7);
+      setStep(9);
     } catch {
       setError("An error occurred. Please try again.");
     } finally {
@@ -266,6 +290,16 @@ export default function SignupPage() {
   const inputCls = "w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-[#e2ede8] placeholder-[#4a7a72] outline-none transition focus:border-[#f5a623]/50 focus:bg-white/8"
   const labelCls = "mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-[#7aada0]"
 
+  const isSkippable = step === 4 || step === 5 || step === 6 || step === 7;
+
+  function skip() {
+    setError("");
+    if (step === 4) { setCompletedCount(0); setCompletedSemesters([]); }
+    if (step === 5) { setMathPlacement("none"); }
+    if (step === 6) { setWaivedCourses([]); }
+    setStep(s => s + 1);
+  }
+
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "linear-gradient(180deg,#050e0b 0%,#071410 40%,#0b1f18 100%)", fontFamily: "var(--font-lora),Georgia,serif" }}>
       <ForestNav actions={
@@ -276,20 +310,20 @@ export default function SignupPage() {
 
       {/* Progress bar */}
       <div className="fixed left-0 right-0 top-[57px] z-40 h-[3px] bg-white/5">
-        <div className="h-full transition-all duration-500" style={{ width: `${(step / 7) * 100}%`, background: "#f5a623" }} />
+        <div className="h-full transition-all duration-500" style={{ width: `${(step / TOTAL_STEPS) * 100}%`, background: "#f5a623" }} />
       </div>
 
       <div className="flex flex-1 items-center justify-center px-4 py-12 pt-24">
         <div className="w-full max-w-md">
           {/* Step dots */}
           <div className="mb-4 flex items-center gap-1.5">
-            {Array.from({ length: 7 }, (_, i) => (
+            {Array.from({ length: TOTAL_STEPS }, (_, i) => (
               <div key={i} className="h-1 flex-1 rounded-full transition-all duration-300"
                 style={{ background: i + 1 <= step ? "#f5a623" : "rgba(255,255,255,0.08)" }} />
             ))}
           </div>
 
-          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#4a7a72]">Step {step} of 7</p>
+          <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#4a7a72]">Step {step} of {TOTAL_STEPS}</p>
           <h1 className="mb-1 text-2xl font-bold text-[#f0ede0]" style={{ fontFamily: "var(--font-cinzel)" }}>{STEP_TITLES[step - 1]}</h1>
           <p className="mb-8 text-sm italic text-[#7aada0]">{STEP_SUBTITLES[step - 1]}</p>
 
@@ -299,7 +333,7 @@ export default function SignupPage() {
             </Alert>
           )}
 
-          {/* Step 1 */}
+          {/* ── Step 1: Name & Email ── */}
           {step === 1 && (
             <div className="space-y-4">
               <div>
@@ -317,7 +351,7 @@ export default function SignupPage() {
             </div>
           )}
 
-          {/* Step 2 */}
+          {/* ── Step 2: Major ── */}
           {step === 2 && (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -355,7 +389,7 @@ export default function SignupPage() {
             </div>
           )}
 
-          {/* Step 3 */}
+          {/* ── Step 3: Academic Year ── */}
           {step === 3 && (
             <div className="space-y-3">
               {YEARS.map(y => (
@@ -373,14 +407,30 @@ export default function SignupPage() {
             </div>
           )}
 
-          {/* Step 4 */}
+          {/* ── Step 4: Completed Semesters ── */}
           {step === 4 && (
             <CompletedSemestersStep completedCount={completedCount} onCountChange={setCompletedCount}
               semesters={completedSemesters} onSemestersChange={setCompletedSemesters} />
           )}
 
-          {/* Step 5 */}
+          {/* ── Step 5: Math Placement ── */}
           {step === 5 && (
+            <MathPlacementStep
+              selected={mathPlacement}
+              onChange={setMathPlacement}
+            />
+          )}
+
+          {/* ── Step 6: Waived Courses ── */}
+          {step === 6 && (
+            <WaivedCoursesStep
+              selected={waivedCourses}
+              onChange={setWaivedCourses}
+            />
+          )}
+
+          {/* ── Step 7: Interests / Bio ── */}
+          {step === 7 && (
             <div className="space-y-4">
               <div>
                 <label className={labelCls}>About you <span className="normal-case font-normal text-[#4a7a72]">(optional)</span></label>
@@ -393,8 +443,8 @@ export default function SignupPage() {
             </div>
           )}
 
-          {/* Step 6 */}
-          {step === 6 && (
+          {/* ── Step 8: Password ── */}
+          {step === 8 && (
             <div className="space-y-4">
               <div>
                 <label className={labelCls}>Password</label>
@@ -432,8 +482,8 @@ export default function SignupPage() {
             </div>
           )}
 
-          {/* Step 7 */}
-          {step === 7 && (
+          {/* ── Step 9: OTP ── */}
+          {step === 9 && (
             <div className="space-y-6">
               <div className="rounded-xl border border-white/8 bg-white/4 px-4 py-4 text-center text-sm text-[#7aada0]">
                 We sent a 6-digit code to <span className="font-semibold text-[#e2ede8]">{email}</span>
@@ -455,21 +505,21 @@ export default function SignupPage() {
 
           {/* Navigation */}
           <div className="mt-8 flex gap-3">
-            {step > 1 && step < 7 && (
+            {step > 1 && step < 9 && (
               <button onClick={() => { setError(""); setStep(s => s - 1); }} disabled={loading}
                 className="flex items-center gap-1 rounded-xl border border-white/15 px-4 py-3 text-sm text-[#c8e0d8] transition hover:border-white/30 disabled:opacity-50">
                 <ChevronLeft className="h-4 w-4" /> Back
               </button>
             )}
-            {step < 7 && (
+            {step < 9 && (
               <button onClick={handleNext} disabled={loading}
                 className="flex flex-1 items-center justify-center gap-1 rounded-xl py-3 text-sm font-bold tracking-wide text-[#071410] transition hover:-translate-y-0.5 disabled:opacity-60"
                 style={{ fontFamily: "var(--font-cinzel)", background: "#f5a623", boxShadow: "0 8px 24px rgba(245,166,35,0.22)" }}>
-                {loading ? "Creating account…" : step === 6 ? "Create Account" : "Continue"}
-                {!loading && step < 6 && <ChevronRight className="h-4 w-4" />}
+                {loading ? "Creating account…" : step === 8 ? "Create Account" : "Continue"}
+                {!loading && step < 8 && <ChevronRight className="h-4 w-4" />}
               </button>
             )}
-            {step === 7 && (
+            {step === 9 && (
               <button onClick={verifyOtp} disabled={loading || otp.length !== 6}
                 className="flex-1 rounded-xl py-3 text-sm font-bold tracking-wide text-[#071410] transition hover:-translate-y-0.5 disabled:opacity-50"
                 style={{ fontFamily: "var(--font-cinzel)", background: "#f5a623", boxShadow: "0 8px 24px rgba(245,166,35,0.22)" }}>
@@ -478,26 +528,11 @@ export default function SignupPage() {
             )}
           </div>
 
-          {step === 5 && (
+          {/* Skip links for optional steps */}
+          {isSkippable && (
             <div className="mt-3 text-center">
-              <button type="button" onClick={() => { setError(""); setStep(6); }}
+              <button type="button" onClick={skip}
                 className="text-sm text-[#4a7a72] transition hover:text-[#e2ede8]">
-                Skip for now
-              </button>
-            </div>
-          )}
-          {step === 4 && (
-            <div className="mt-3 text-center">
-              <button
-                type="button"
-                onClick={() => {
-                  setError("");
-                  setCompletedCount(0);
-                  setCompletedSemesters([]);
-                  setStep(5);
-                }}
-                className="text-sm text-[#4a7a72] transition hover:text-[#e2ede8]"
-              >
                 Skip for now
               </button>
             </div>
