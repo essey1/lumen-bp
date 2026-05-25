@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, ArrowRight, Check, Sparkles, User, Loader2 } from "lucide-react"
+import { ArrowLeft, ArrowRight, Check, Sparkles, User, Loader2, LogOut } from "lucide-react"
 import { ForestNav } from "@/components/forest-nav"
 import { LumenFireflies } from "@/components/lumen-ambience"
 import { MajorStep } from "@/components/planner/major-step"
@@ -198,11 +199,17 @@ export default function PlannerPage() {
     <div className="lumen-app-shell">
       <LumenFireflies className="fixed opacity-90" />
       <ForestNav actions={
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-3">
           <span className="hidden text-sm text-[#7aada0] sm:block">Step {currentStep} of {STEPS.length}</span>
           <Link href="/profile" className="flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm text-[#c8e0d8] transition hover:border-white/30">
-            <User className="h-4 w-4" /> Profile
+            <User className="h-4 w-4" />
+            <span className="hidden sm:inline">Profile</span>
           </Link>
+          <button onClick={() => signOut({ callbackUrl: "/" })}
+            className="flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm text-[#7aada0] transition hover:border-white/30 hover:text-[#c8e0d8]">
+            <LogOut className="h-4 w-4" />
+            <span className="hidden sm:inline">Sign Out</span>
+          </button>
         </div>
       } />
 
@@ -278,12 +285,15 @@ export default function PlannerPage() {
           )}
 
           {/* Navigation */}
-          <div className="flex items-center justify-between">
-            <Button variant="outline" onClick={handleBack} disabled={currentStep === 1 || generating} className="gap-2">
+          <div className="flex items-center justify-between gap-3">
+            <Button variant="outline" onClick={handleBack}
+              disabled={currentStep === 1 || generating}
+              className="min-h-[44px] gap-2 px-5">
               <ArrowLeft className="h-4 w-4" />
               Back
             </Button>
-            <Button onClick={handleNext} disabled={!canProceed()} className="gap-2">
+            <Button onClick={handleNext} disabled={!canProceed()}
+              className="min-h-[44px] gap-2 px-6">
               {generating ? (
                 <><Loader2 className="h-4 w-4 animate-spin" /> Generating…</>
               ) : currentStep === STEPS.length ? (

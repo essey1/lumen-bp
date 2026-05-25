@@ -139,9 +139,9 @@ export default function LandingPage() {
             built for Berea College.
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:justify-center sm:gap-4">
             <Link href="/auth/signup"
-              className="rounded-full px-8 py-3.5 text-sm font-bold tracking-wide transition hover:-translate-y-0.5"
+              className="w-full rounded-full px-8 py-4 text-center text-sm font-bold tracking-wide transition hover:-translate-y-0.5 sm:w-auto sm:py-3.5"
               style={{
                 background: "#f5a623",
                 color: "#071410",
@@ -151,7 +151,7 @@ export default function LandingPage() {
               Begin Your Journey
             </Link>
             <a href="#how"
-              className="rounded-full border border-white/20 px-8 py-3.5 text-sm text-[#c8e0d8] transition hover:border-white/40 hover:bg-white/5">
+              className="w-full rounded-full border border-white/20 px-8 py-4 text-center text-sm text-[#c8e0d8] transition hover:border-white/40 hover:bg-white/5 sm:w-auto sm:py-3.5">
               How it works
             </a>
           </div>
@@ -162,7 +162,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── How it works ─────────────────────────────────────────────────── */}
-      <section id="how" className="mx-auto max-w-5xl px-6 py-28">
+      <section id="how" className="mx-auto max-w-5xl px-6 py-16 sm:py-28">
         <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.22em]"
           style={{ color: "#f5a623", fontFamily: "var(--font-cinzel)" }}>
           The path
@@ -202,7 +202,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Features ─────────────────────────────────────────────────────── */}
-      <section id="features" className="px-6 py-24"
+      <section id="features" className="px-6 py-14 sm:py-24"
         style={{ background: "rgba(255,255,255,0.015)" }}>
         <div className="mx-auto max-w-5xl">
           <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.22em]"
@@ -234,7 +234,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden px-6 py-36 text-center">
+      <section className="relative overflow-hidden px-6 py-20 text-center sm:py-36">
         <div className="absolute inset-0"
           style={{ background: "radial-gradient(ellipse 60% 70% at 50% 50%, rgba(245,166,35,0.06) 0%, transparent 70%)" }} />
         <LumenFireflies className="absolute opacity-50" />
@@ -247,9 +247,9 @@ export default function LandingPage() {
           <p className="mx-auto mt-4 max-w-sm text-[#7aada0]" style={{ fontStyle: "italic" }}>
             Your guide is already waiting in the forest.
           </p>
-          <div className="mt-10 flex flex-wrap justify-center gap-4">
+          <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:justify-center sm:gap-4">
             <Link href="/auth/signup"
-              className="rounded-full px-8 py-3.5 text-sm font-bold tracking-wide transition hover:-translate-y-0.5"
+              className="w-full rounded-full px-8 py-4 text-center text-sm font-bold tracking-wide transition hover:-translate-y-0.5 sm:w-auto sm:py-3.5"
               style={{
                 background: "#f5a623",
                 color: "#071410",
@@ -259,7 +259,7 @@ export default function LandingPage() {
               Get Started — Free
             </Link>
             <Link href="/auth/login"
-              className="rounded-full border border-white/20 px-8 py-3.5 text-sm text-[#c8e0d8] transition hover:bg-white/6">
+              className="w-full rounded-full border border-white/20 px-8 py-4 text-center text-sm text-[#c8e0d8] transition hover:bg-white/6 sm:w-auto sm:py-3.5">
               Sign In
             </Link>
           </div>
