@@ -190,7 +190,7 @@ export function NewCourseModal({ open, onClose, onCreated, initialCode = "" }: P
               Credits
             </label>
             <div className="flex gap-2">
-              {([0.5, 1] as const).map(cr => (
+              {([0.25, 0.5, 1] as const).map(cr => (
                 <Pill key={cr} label={`${cr} cr`}
                   active={entry.credits === cr}
                   onClick={() => upd({ credits: cr })} />
