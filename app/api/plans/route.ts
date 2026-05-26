@@ -41,21 +41,30 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Plan data is required" }, { status: 400 });
   }
 
-  const plan = await prisma.plan.create({
-    data: {
-      userId: user.id,
-      name: name || "My Plan",
-      majors: JSON.stringify(majors ?? []),
-      minors: JSON.stringify(minors ?? []),
-      interests: JSON.stringify(interests ?? []),
-      careerGoals: JSON.stringify(careerGoals ?? []),
-      mathPlacement: mathPlacement ?? "none",
-      waivedCourses: JSON.stringify(waivedCourses ?? []),
-      planType: planType ?? "A",
-      groupId: groupId ?? null,
-      semesters: JSON.stringify(semesters),
-    },
-  });
+  const baseData = {
+    userId: user.id,
+    name: name || "My Plan",
+    majors: JSON.stringify(majors ?? []),
+    minors: JSON.stringify(minors ?? []),
+    interests: JSON.stringify(interests ?? []),
+    careerGoals: JSON.stringify(careerGoals ?? []),
+    mathPlacement: mathPlacement ?? "none",
+    waivedCourses: JSON.stringify(waivedCourses ?? []),
+    planType: planType ?? "A",
+    semesters: JSON.stringify(semesters),
+  };
+
+  let plan;
+  try {
+    // Try to save with groupId (links A/B/C plans together).
+    // If the groupId column doesn't exist in the database yet, this throws —
+    // we fall back to saving without it so the plan is NEVER silently lost.
+    plan = await prisma.plan.create({
+      data: groupId ? { ...baseData, groupId } : baseData,
+    });
+  } catch {
+    plan = await prisma.plan.create({ data: baseData });
+  }
 
   return NextResponse.json({ id: plan.id }, { status: 201 });
 }

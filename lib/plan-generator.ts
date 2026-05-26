@@ -2176,12 +2176,13 @@ export function generateAcademicPlan(
     for (let sem = s.earliest; sem < 8 && !placed; sem++) {
       if (!s.item.course.isPlaceholder && !prereqsMet(s.item.course.code, sem, placedMap)) continue;
       if (sem >= 2 && rescueLvl >= 100 && rescueLvl < 200 && count100Level(semesters[sem].courses) >= 2) continue;
-      // Enforce per-department credit limit in the rescue pass too (but allow override in last-resort semester 7).
+      // Enforce per-department credit limit in the rescue pass — no exceptions.
+      // Hard constraint: no more than 2.5 credits from the same department per semester.
       const deptCreditsRescue = semesters[sem].courses
         .filter(c => !c.isPlaceholder && c.code.split(" ")[0] === rescueDept)
         .reduce((sum, c) => sum + (c.credits ?? 1), 0);
       const rescueCourseCredits = s.item.course.credits ?? 1;
-      if (sem < 7 && deptCreditsRescue + rescueCourseCredits > 2.5) continue;
+      if (deptCreditsRescue + rescueCourseCredits > 2.5) continue;
       if (semesters[sem].totalCredits >= 4) {
         const idx = semesters[sem].courses.findIndex(c => c.isPlaceholder || c.category === "Elective");
         if (idx === -1) continue;
@@ -2281,8 +2282,15 @@ export function generateAcademicPlan(
       s.placed = false;
       let rescued = false;
       s.item.course.scheduleDisclaimer = true;
+      const wipedDept = s.item.course.code.split(" ")[0];
+      const wipedCredits = s.item.course.credits ?? 1;
       for (let sem = completedCount; sem < 8 && !rescued; sem++) {
         if (!prereqsMet(s.item.course.code, sem, placedMap)) continue;
+        // Enforce dept cap: no more than 2.5 credits from same dept per semester
+        const deptAlready = semesters[sem].courses
+          .filter(c => !c.isPlaceholder && c.code.split(" ")[0] === wipedDept)
+          .reduce((sum, c) => sum + (c.credits ?? 1), 0);
+        if (deptAlready + wipedCredits > 2.5) continue;
         if (semesters[sem].totalCredits >= 4) {
           const idx = semesters[sem].courses.findIndex(c => c.isPlaceholder || c.category === "Elective");
           if (idx === -1) continue;

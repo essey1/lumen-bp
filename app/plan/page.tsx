@@ -423,18 +423,22 @@ function PlanPageInner() {
 
         <StudentProfile profile={{ majors: profile.majors, minors: profile.minors, interests: profile.interests, careerGoals: profile.careerGoals }} />
 
-        {/* Saved banner — shown when arriving from the planner after a successful save */}
+        {/* Saved toast — fixed to top of viewport so it can't be missed */}
         {wasSaved && (
-          <div className="mb-8 flex items-center gap-4 rounded-2xl p-5"
-            style={{ background: "rgba(111,207,151,0.10)", border: "1px solid rgba(111,207,151,0.25)" }}>
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+          <div className="fixed left-1/2 top-20 z-50 -translate-x-1/2 w-[min(92vw,480px)]
+            flex items-center gap-3 rounded-2xl px-5 py-4 shadow-2xl"
+            style={{ background: "rgba(15,40,25,0.97)", border: "1.5px solid rgba(111,207,151,0.45)", backdropFilter: "blur(12px)" }}>
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
               style={{ background: "rgba(111,207,151,0.20)" }}>
-              <Save className="h-5 w-5" style={{ color: "#6fcf97" }} />
+              <Save className="h-4 w-4" style={{ color: "#6fcf97" }} />
             </div>
-            <div>
-              <p className="text-base font-bold" style={{ color: "#6fcf97" }}>All three plans saved to your account!</p>
-              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
-                Browse Plans A, B, and C below. Head to <Link href="/profile" className="underline" style={{ color: "#f5a623" }}>Dashboard</Link> to access them anytime.
+            <div className="min-w-0">
+              <p className="text-sm font-bold leading-snug" style={{ color: "#6fcf97" }}>
+                ✓ All 3 plans saved to your account
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.55)" }}>
+                Plans A, B &amp; C are in your{" "}
+                <Link href="/profile" className="underline" style={{ color: "#f5a623" }}>Dashboard</Link>
               </p>
             </div>
           </div>
