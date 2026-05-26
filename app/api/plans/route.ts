@@ -8,25 +8,38 @@ async function getAuthUser() {
   return prisma.user.findUnique({ where: { email: session.user.email } });
 }
 
+type PlanListRow = {
+  id: string;
+  name: string;
+  majors: string;
+  minors: string;
+  planType: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
 export async function GET() {
   const user = await getAuthUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const plans = await prisma.plan.findMany({
-    where: { userId: user.id },
-    orderBy: { updatedAt: "desc" },
-    select: {
-      id: true,
-      name: true,
-      majors: true,
-      minors: true,
-      planType: true,
-      groupId: true,
-      createdAt: true,
-      updatedAt: true,
-    },
-  });
+  // Raw SQL — never references groupId so it works regardless of DB migration state
+  const basePlans = await prisma.$queryRaw<PlanListRow[]>`
+    SELECT "id", "name", "majors", "minors", "planType", "createdAt", "updatedAt"
+    FROM "Plan"
+    WHERE "userId" = ${user.id}
+    ORDER BY "updatedAt" DESC
+  `;
 
+  // Best-effort: fetch groupId for A/B/C grouping. Fails silently if column missing.
+  const groupMap = new Map<string, string | null>();
+  try {
+    const groups = await prisma.$queryRaw<{ id: string; groupId: string | null }[]>`
+      SELECT "id", "groupId" FROM "Plan" WHERE "userId" = ${user.id}
+    `;
+    for (const g of groups) groupMap.set(g.id, g.groupId);
+  } catch { /* groupId column not in DB yet — plans still load, just not grouped */ }
+
+  const plans = basePlans.map(p => ({ ...p, groupId: groupMap.get(p.id) ?? null }));
   return NextResponse.json(plans);
 }
 
@@ -41,48 +54,42 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Plan data is required" }, { status: 400 });
   }
 
-  // Use raw SQL for the INSERT so we have full control over which columns are
-  // referenced. Prisma's typed API always includes every schema column in both
-  // the INSERT and RETURNING clauses — if groupId doesn't exist in the DB yet
-  // that causes a hard error. Raw SQL lets us omit groupId entirely from the
-  // main INSERT and add it later via a separate UPDATE (which fails silently
-  // if the column doesn't exist yet, so the plan is never lost).
   const { randomUUID } = await import("crypto");
   const planId = randomUUID();
 
-  const planName    = name || "My Plan";
-  const majorsJson  = JSON.stringify(majors ?? []);
-  const minorsJson  = JSON.stringify(minors ?? []);
+  const planName        = name || "My Plan";
+  const majorsJson      = JSON.stringify(majors ?? []);
+  const minorsJson      = JSON.stringify(minors ?? []);
   const interestsJson   = JSON.stringify(interests ?? []);
   const careerGoalsJson = JSON.stringify(careerGoals ?? []);
-  const mathPlacementVal = mathPlacement ?? "none";
-  const waivedJson  = JSON.stringify(waivedCourses ?? []);
-  const planTypeVal = planType ?? "A";
-  const semestersJson = JSON.stringify(semesters);
+  const mathVal         = mathPlacement ?? "none";
+  const waivedJson      = JSON.stringify(waivedCourses ?? []);
+  const planTypeVal     = planType ?? "A";
+  const semestersJson   = JSON.stringify(semesters);
+  const userId          = user.id;
 
+  // Raw INSERT — zero reference to groupId so it never fails on missing column
   await prisma.$executeRaw`
     INSERT INTO "Plan" (
       "id", "userId", "name", "majors", "minors", "interests",
       "careerGoals", "mathPlacement", "waivedCourses", "planType",
       "semesters", "createdAt", "updatedAt"
     ) VALUES (
-      ${planId}, ${user.id}, ${planName},
+      ${planId}, ${userId}, ${planName},
       ${majorsJson}, ${minorsJson}, ${interestsJson},
-      ${careerGoalsJson}, ${mathPlacementVal}, ${waivedJson},
+      ${careerGoalsJson}, ${mathVal}, ${waivedJson},
       ${planTypeVal}, ${semestersJson},
       NOW(), NOW()
     )
   `;
 
-  // Best-effort: set groupId so A/B/C plans can be linked.
-  // If the column doesn't exist yet this UPDATE fails silently — the plan
-  // is already saved above and will work fine without groupId.
+  // Best-effort: set groupId to link A/B/C plans. Fails silently if column missing.
   if (groupId) {
     try {
       await prisma.$executeRaw`
         UPDATE "Plan" SET "groupId" = ${groupId} WHERE "id" = ${planId}
       `;
-    } catch { /* groupId column not in DB yet — plan saved, just not grouped */ }
+    } catch { /* groupId column not in DB yet */ }
   }
 
   return NextResponse.json({ id: planId }, { status: 201 });
