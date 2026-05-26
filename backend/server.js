@@ -1,21 +1,27 @@
 // ============================================================
 //  Lumen BP — Auth Server
-//  Stack: Node.js + Express + Resend (email OTP)
+//  Stack: Node.js + Express + Nodemailer/Gmail (email OTP)
 //  Run:   node server.js   (or: nodemon server.js)
 // ============================================================
 
 require('dotenv').config();
-const express    = require('express');
-const cors       = require('cors');
-const helmet     = require('helmet');
-const rateLimit  = require('express-rate-limit');
-const { Resend } = require('resend');
+const express      = require('express');
+const cors         = require('cors');
+const helmet       = require('helmet');
+const rateLimit    = require('express-rate-limit');
+const nodemailer   = require('nodemailer');
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 
 const app    = express();
 const prisma = new PrismaClient();
-const resend = new Resend(process.env.RESEND_API_KEY);
+
+function getMailer() {
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD },
+  });
+}
 
 // ── Middleware ────────────────────────────────────────────────
 app.use(express.json());
@@ -115,16 +121,17 @@ app.post('/api/auth/login', authLimiter, async (req, res) => {
     });
     console.log(`[OTP] Generated for ${user.email}: ${otp}`);
 
-    // Send email via Resend
+    // Send email via Gmail
     try {
-      await resend.emails.send({
-        from:    process.env.FROM_EMAIL || 'Lumen BP <noreply@yourdomain.com>',
+      const mailer = getMailer();
+      await mailer.sendMail({
+        from:    `"Lumen" <${process.env.GMAIL_USER}>`,
         to:      user.email,
-        subject: 'Your Lumen BP verification code',
+        subject: 'Your Lumen verification code',
         html:    buildEmailHtml(otp, user.name || user.email.split('@')[0]),
       });
     } catch (err) {
-      console.error('[Resend error]', err);
+      console.error('[Mail error]', err);
       return res.status(500).json({ success: false, message: 'Failed to send verification email.' });
     }
 
@@ -212,14 +219,15 @@ app.post('/api/auth/resend-otp', authLimiter, async (req, res) => {
   });
 
   try {
-    await resend.emails.send({
-      from:    process.env.FROM_EMAIL || 'Lumen BP <noreply@yourdomain.com>',
+    const mailer = getMailer();
+    await mailer.sendMail({
+      from:    `"Lumen" <${process.env.GMAIL_USER}>`,
       to:      email,
-      subject: 'Your new Lumen BP verification code',
+      subject: 'Your new Lumen verification code',
       html:    buildEmailHtml(otp, email.split('@')[0]),
     });
   } catch (err) {
-    console.error('[Resend error]', err);
+    console.error('[Mail error]', err);
     return res.status(500).json({ success: false, message: 'Failed to resend email.' });
   }
 
