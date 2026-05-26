@@ -19,14 +19,24 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: "Plan not found" }, { status: 404 });
   }
 
+  // Fetch sibling plans (same groupId, same user, different plan) for A/B/C tabs
+  const siblings = plan.groupId
+    ? await prisma.plan.findMany({
+        where: { groupId: plan.groupId, userId: user.id, id: { not: id } },
+        select: { id: true, planType: true, name: true },
+        orderBy: { planType: "asc" },
+      })
+    : [];
+
   return NextResponse.json({
     ...plan,
-    majors: JSON.parse(plan.majors),
-    minors: JSON.parse(plan.minors),
-    interests: JSON.parse(plan.interests),
-    careerGoals: JSON.parse(plan.careerGoals),
+    majors:       JSON.parse(plan.majors),
+    minors:       JSON.parse(plan.minors),
+    interests:    JSON.parse(plan.interests),
+    careerGoals:  JSON.parse(plan.careerGoals),
     waivedCourses: JSON.parse(plan.waivedCourses),
-    semesters: JSON.parse(plan.semesters),
+    semesters:    JSON.parse(plan.semesters),
+    siblings,
   });
 }
 

@@ -21,6 +21,7 @@ export async function GET() {
       majors: true,
       minors: true,
       planType: true,
+      groupId: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
   const user = await getAuthUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { name, majors, minors, interests, careerGoals, mathPlacement, waivedCourses, planType, semesters } =
+  const { name, majors, minors, interests, careerGoals, mathPlacement, waivedCourses, planType, groupId, semesters } =
     await req.json();
 
   if (!semesters) {
@@ -51,6 +52,7 @@ export async function POST(req: Request) {
       mathPlacement: mathPlacement ?? "none",
       waivedCourses: JSON.stringify(waivedCourses ?? []),
       planType: planType ?? "A",
+      groupId: groupId ?? null,
       semesters: JSON.stringify(semesters),
     },
   });

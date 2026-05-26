@@ -91,6 +91,7 @@ model Plan {
   mathPlacement String   @default("none")
   waivedCourses String
   planType      String   @default("A")
+  groupId       String?  // links A/B/C plans generated in the same session
   semesters     String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

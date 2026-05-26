@@ -131,6 +131,7 @@ type SavedPlanSummary = {
   majors: string;
   minors: string;
   planType: string;
+  groupId: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -332,60 +333,109 @@ export default function ProfilePage() {
                 </Card>
               ) : (
                 <div className="space-y-3">
-                  {plans.map((plan) => {
-                    const majors = (() => { try { return JSON.parse(plan.majors) as string[]; } catch { return []; } })();
-                    const minors = (() => { try { return JSON.parse(plan.minors) as string[]; } catch { return []; } })();
-                    return (
-                      <Card key={plan.id} className="border-border hover:shadow-sm transition-shadow">
-                        <CardContent className="py-4">
-                          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-                            <div className="min-w-0">
-                              <p className="font-semibold text-foreground truncate">{plan.name}</p>
-                              <p className="mt-0.5 text-xs text-muted-foreground truncate">
-                                Plan {plan.planType}
-                                {majors.length > 0 && ` · ${majors[0]}`}
-                                {minors.length > 0 && ` · Minor: ${minors[0]}`}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                Updated {new Date(plan.updatedAt).toLocaleDateString()}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Link href={`/plan/${plan.id}`} className="flex-1 sm:flex-none">
-                                <Button size="sm" className="w-full gap-1.5 sm:w-auto">
-                                  View <ArrowRight className="h-3.5 w-3.5" />
-                                </Button>
-                              </Link>
-                              <Button
-                                size="sm"
-                                variant={confirmDeleteId === plan.id ? "destructive" : "ghost"}
-                                onClick={() => handleDeletePlan(plan.id)}
-                                disabled={deletingId === plan.id}
-                                className="gap-1 shrink-0"
-                              >
-                                {deletingId === plan.id ? (
-                                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                                ) : (
-                                  <Trash2 className="h-3.5 w-3.5" />
-                                )}
-                                {confirmDeleteId === plan.id ? "Confirm?" : ""}
-                              </Button>
-                              {confirmDeleteId === plan.id && (
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  onClick={() => setConfirmDeleteId(null)}
-                                  className="shrink-0 text-xs"
-                                >
-                                  Cancel
-                                </Button>
+                  {(() => {
+                    // Group plans by groupId; ungrouped plans get their own singleton group
+                    const groups: SavedPlanSummary[][] = [];
+                    const seen = new Set<string>();
+                    for (const plan of plans) {
+                      if (seen.has(plan.id)) continue;
+                      if (plan.groupId) {
+                        const siblings = plans.filter(p => p.groupId === plan.groupId);
+                        siblings.forEach(p => seen.add(p.id));
+                        groups.push(siblings.sort((a, b) => a.planType.localeCompare(b.planType)));
+                      } else {
+                        seen.add(plan.id);
+                        groups.push([plan]);
+                      }
+                    }
+                    return groups.map((group) => {
+                      const rep = group[0]; // representative plan (Plan A or first)
+                      const majors = (() => { try { return JSON.parse(rep.majors) as string[]; } catch { return []; } })();
+                      const minors = (() => { try { return JSON.parse(rep.minors) as string[]; } catch { return []; } })();
+                      const isGroup = group.length > 1;
+                      const latestUpdate = group.reduce((latest, p) =>
+                        new Date(p.updatedAt) > new Date(latest) ? p.updatedAt : latest, rep.updatedAt);
+
+                      return (
+                        <Card key={rep.groupId ?? rep.id} className="border-border hover:shadow-sm transition-shadow">
+                          <CardContent className="py-4">
+                            {/* Title row */}
+                            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                              <div className="min-w-0">
+                                {/* Strip the " – A / – B / – C" suffix for the group title */}
+                                <p className="font-semibold text-foreground truncate">
+                                  {isGroup ? rep.name.replace(/ – [ABC]$/, "") : rep.name}
+                                </p>
+                                <p className="mt-0.5 text-xs text-muted-foreground truncate">
+                                  {majors.length > 0 && majors[0]}
+                                  {minors.length > 0 && ` · Minor: ${minors[0]}`}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  Updated {new Date(latestUpdate).toLocaleDateString()}
+                                </p>
+                              </div>
+                              {/* Delete (only shown for ungrouped plans or the whole group) */}
+                              {!isGroup && (
+                                <div className="flex items-center gap-2 shrink-0">
+                                  <Link href={`/plan/${rep.id}`}>
+                                    <Button size="sm" className="gap-1.5">
+                                      View <ArrowRight className="h-3.5 w-3.5" />
+                                    </Button>
+                                  </Link>
+                                  <Button
+                                    size="sm"
+                                    variant={confirmDeleteId === rep.id ? "destructive" : "ghost"}
+                                    onClick={() => handleDeletePlan(rep.id)}
+                                    disabled={deletingId === rep.id}
+                                    className="gap-1 shrink-0"
+                                  >
+                                    {deletingId === rep.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+                                    {confirmDeleteId === rep.id ? "Confirm?" : ""}
+                                  </Button>
+                                  {confirmDeleteId === rep.id && (
+                                    <Button size="sm" variant="ghost" onClick={() => setConfirmDeleteId(null)} className="shrink-0 text-xs">
+                                      Cancel
+                                    </Button>
+                                  )}
+                                </div>
                               )}
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
+
+                            {/* A / B / C plan pills for grouped plans */}
+                            {isGroup && (
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                {group.map(p => (
+                                  <div key={p.id} className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/30 px-3 py-2">
+                                    <span className="text-xs font-bold text-primary">Plan {p.planType}</span>
+                                    <Link href={`/plan/${p.id}`}>
+                                      <Button size="sm" variant="ghost" className="h-6 gap-1 px-2 text-xs">
+                                        View <ArrowRight className="h-3 w-3" />
+                                      </Button>
+                                    </Link>
+                                    <Button
+                                      size="sm"
+                                      variant={confirmDeleteId === p.id ? "destructive" : "ghost"}
+                                      onClick={() => handleDeletePlan(p.id)}
+                                      disabled={deletingId === p.id}
+                                      className="h-6 gap-1 px-2"
+                                    >
+                                      {deletingId === p.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />}
+                                      {confirmDeleteId === p.id ? "Confirm?" : ""}
+                                    </Button>
+                                    {confirmDeleteId === p.id && (
+                                      <Button size="sm" variant="ghost" onClick={() => setConfirmDeleteId(null)} className="h-6 px-2 text-xs">
+                                        Cancel
+                                      </Button>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      );
+                    });
+                  })()}
                 </div>
               )}
             </section>

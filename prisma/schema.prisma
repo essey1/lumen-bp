@@ -92,6 +92,7 @@ model Plan {
   mathPlacement String   @default("none")
   waivedCourses String   // JSON array of course codes
   planType      String   @default("A")
+  groupId       String?  // links A/B/C plans generated in the same session
   semesters     String   // JSON - SemesterPlan[] with any manual edits applied
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

@@ -16,6 +16,12 @@ import { generateAcademicPlan } from "@/lib/plan-generator";
 import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types";
 import type { SemesterPlan, PlannedCourse, MathPlacement } from "@/lib/types";
 
+interface SiblingPlan {
+  id: string;
+  planType: string;
+  name: string;
+}
+
 interface SavedPlan {
   id: string;
   name: string;
@@ -26,7 +32,9 @@ interface SavedPlan {
   mathPlacement: string;
   waivedCourses: string[];
   planType: string;
+  groupId: string | null;
   semesters: SemesterPlan[];
+  siblings: SiblingPlan[];
   createdAt: string;
   updatedAt: string;
 }
@@ -389,6 +397,44 @@ export default function SavedPlanPage() {
           )}
           {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
         </div>
+
+        {/* ── Plan A / B / C switcher ── */}
+        {plan.siblings.length > 0 && (() => {
+          // Build the full ordered list: current plan + siblings, sorted A → B → C
+          const allPlans = [
+            { id: plan.id, planType: plan.planType, name: plan.name },
+            ...plan.siblings,
+          ].sort((a, b) => a.planType.localeCompare(b.planType))
+
+          return (
+            <div className="mb-5 flex items-center gap-2">
+              <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
+                Plan
+              </span>
+              <div className="flex gap-2">
+                {allPlans.map(p => {
+                  const isCurrent = p.id === plan.id
+                  return (
+                    <Link key={p.id} href={`/plan/${p.id}`}
+                      className="flex items-center justify-center rounded-full px-4 py-1.5 text-sm font-bold transition-all"
+                      style={{
+                        fontFamily:  "var(--font-cinzel)",
+                        background:  isCurrent ? "#f5a623" : "rgba(245,166,35,0.10)",
+                        color:       isCurrent ? "#071410" : "#f5a623",
+                        border:      isCurrent ? "none" : "1px solid rgba(245,166,35,0.30)",
+                        pointerEvents: isCurrent ? "none" : undefined,
+                      }}>
+                      {p.planType}
+                    </Link>
+                  )
+                })}
+              </div>
+              <span className="text-xs italic" style={{ color: "rgba(255,255,255,0.35)" }}>
+                — switch between your saved plans
+              </span>
+            </div>
+          )
+        })()}
 
         {/* Student profile summary */}
         <StudentProfile profile={{

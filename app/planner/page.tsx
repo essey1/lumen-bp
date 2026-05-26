@@ -150,6 +150,7 @@ export default function PlannerPage() {
       }
 
       const baseName = formData.planName.trim() || `${formData.majors[0] ?? "My"} Plan`
+      const groupId = crypto.randomUUID() // links the 3 plans so they can be toggled
       const commonFields = {
         majors:        formData.majors,
         minors:        formData.minors,
@@ -157,6 +158,7 @@ export default function PlannerPage() {
         careerGoals:   formData.careerGoals,
         mathPlacement: profileMathPlacement,
         waivedCourses: profileWaivedCourses,
+        groupId,
       }
 
       // Save all three plans in parallel
