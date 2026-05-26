@@ -85,7 +85,7 @@ const MAJORS = [
   "Studies of Religion and Spirituality",
   "Theatre",
   "Women's, Gender, and Sexuality Studies",
-];
+].sort((a, b) => a.localeCompare(b));
 
 const YEARS = [
   { value: "1", label: "1st Year (Freshman)" },

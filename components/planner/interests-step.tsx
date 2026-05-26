@@ -125,7 +125,7 @@ const INTERESTS = [
   "Wildlife Biology", "Wildlife Management", "Women's History",
   "Women's Leadership", "Woodworking", "World History", "World Religions",
   "Writing",
-]
+].sort((a, b) => a.localeCompare(b))
 
 // A small curated showcase — just examples to spark ideas
 const EXAMPLE_PICKS = [

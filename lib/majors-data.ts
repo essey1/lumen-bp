@@ -3020,7 +3020,7 @@ export const AVAILABLE_MAJORS = [
   { code: "SENS", name: "Environmental Science", degree: "B.A." },
   { code: "THR", name: "Theatre", degree: "B.A." },
   { code: "WGS", name: "Women's, Gender, and Sexuality Studies", degree: "B.A." },
-];
+].sort((a, b) => a.name.localeCompare(b.name));
 
 // Majors that share a department — only one per group may be selected.
 export const MAJOR_DEPARTMENT_GROUPS: string[][] = [
