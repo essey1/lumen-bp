@@ -131,7 +131,6 @@ type SavedPlanSummary = {
   majors: string;
   minors: string;
   planType: string;
-  groupId: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -333,106 +332,49 @@ export default function ProfilePage() {
                 </Card>
               ) : (
                 <div className="space-y-3">
-                  {(() => {
-                    // Group plans by groupId; ungrouped plans get their own singleton group
-                    const groups: SavedPlanSummary[][] = [];
-                    const seen = new Set<string>();
-                    for (const plan of plans) {
-                      if (seen.has(plan.id)) continue;
-                      if (plan.groupId) {
-                        const siblings = plans.filter(p => p.groupId === plan.groupId);
-                        siblings.forEach(p => seen.add(p.id));
-                        groups.push(siblings.sort((a, b) => a.planType.localeCompare(b.planType)));
-                      } else {
-                        seen.add(plan.id);
-                        groups.push([plan]);
-                      }
-                    }
-                    return groups.map((group) => {
-                      const rep = group[0]; // representative plan (Plan A or first)
-                      const majors = (() => { try { return JSON.parse(rep.majors) as string[]; } catch { return []; } })();
-                      const minors = (() => { try { return JSON.parse(rep.minors) as string[]; } catch { return []; } })();
-                      const isGroup = group.length > 1;
-                      const latestUpdate = group.reduce((latest, p) =>
-                        new Date(p.updatedAt) > new Date(latest) ? p.updatedAt : latest, rep.updatedAt);
-
-                      return (
-                        <Card key={rep.groupId ?? rep.id} className="border-border transition-shadow hover:shadow-md">
-                          <CardContent className="py-5">
-                            {/* Title */}
-                            <div className="mb-1 flex min-w-0 items-start justify-between gap-2">
-                              <p className="text-base font-bold text-foreground leading-snug">
-                                {isGroup ? rep.name.replace(/ – [ABC]$/, "") : rep.name}
-                              </p>
-                              <p className="shrink-0 text-xs text-muted-foreground">
-                                {new Date(latestUpdate).toLocaleDateString()}
-                              </p>
-                            </div>
-                            {(majors.length > 0 || minors.length > 0) && (
-                              <p className="mb-4 text-sm text-muted-foreground">
-                                {majors.join(", ")}
-                                {minors.length > 0 && ` · Minor: ${minors.join(", ")}`}
-                              </p>
+                  {plans.map((plan) => {
+                    const majors = (() => { try { return JSON.parse(plan.majors) as string[]; } catch { return []; } })();
+                    const minors = (() => { try { return JSON.parse(plan.minors) as string[]; } catch { return []; } })();
+                    return (
+                      <Card key={plan.id} className="border-border transition-shadow hover:shadow-md">
+                        <CardContent className="py-5">
+                          <div className="mb-1 flex min-w-0 items-start justify-between gap-2">
+                            <p className="text-base font-bold text-foreground leading-snug">{plan.name}</p>
+                            <p className="shrink-0 text-xs text-muted-foreground">
+                              {new Date(plan.updatedAt).toLocaleDateString()}
+                            </p>
+                          </div>
+                          {(majors.length > 0 || minors.length > 0) && (
+                            <p className="mb-4 text-sm text-muted-foreground">
+                              {majors.join(", ")}
+                              {minors.length > 0 && ` · Minor: ${minors.join(", ")}`}
+                            </p>
+                          )}
+                          <div className="flex items-center gap-2">
+                            <Link href={`/plan/${plan.id}`} className="flex-1 sm:flex-none">
+                              <Button className="w-full gap-1.5 sm:w-auto">
+                                View Plan <ArrowRight className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                            <Button
+                              variant={confirmDeleteId === plan.id ? "destructive" : "ghost"}
+                              onClick={() => handleDeletePlan(plan.id)}
+                              disabled={deletingId === plan.id}
+                              className="shrink-0"
+                            >
+                              {deletingId === plan.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                              {confirmDeleteId === plan.id ? "Confirm?" : ""}
+                            </Button>
+                            {confirmDeleteId === plan.id && (
+                              <Button variant="ghost" onClick={() => setConfirmDeleteId(null)} className="text-sm">
+                                Cancel
+                              </Button>
                             )}
-
-                            {/* Plan A/B/C buttons — full-width stack on mobile, row on sm+ */}
-                            {isGroup ? (
-                              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-                                {group.map(p => (
-                                  <div key={p.id} className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-border bg-muted/30 px-4 py-3">
-                                    <span className="text-sm font-bold text-primary shrink-0">Plan {p.planType}</span>
-                                    <div className="ml-auto flex items-center gap-1.5 shrink-0">
-                                      <Link href={`/plan/${p.id}`}>
-                                        <Button size="sm" className="h-8 gap-1.5 text-sm">
-                                          View <ArrowRight className="h-3.5 w-3.5" />
-                                        </Button>
-                                      </Link>
-                                      <Button
-                                        size="sm"
-                                        variant={confirmDeleteId === p.id ? "destructive" : "ghost"}
-                                        onClick={() => handleDeletePlan(p.id)}
-                                        disabled={deletingId === p.id}
-                                        className="h-8 w-8 p-0"
-                                      >
-                                        {deletingId === p.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-                                      </Button>
-                                      {confirmDeleteId === p.id && (
-                                        <Button size="sm" variant="ghost" onClick={() => setConfirmDeleteId(null)} className="h-8 px-2 text-xs">
-                                          Cancel
-                                        </Button>
-                                      )}
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-2">
-                                <Link href={`/plan/${rep.id}`} className="flex-1 sm:flex-none">
-                                  <Button className="w-full gap-1.5 sm:w-auto">
-                                    View Plan <ArrowRight className="h-4 w-4" />
-                                  </Button>
-                                </Link>
-                                <Button
-                                  variant={confirmDeleteId === rep.id ? "destructive" : "ghost"}
-                                  onClick={() => handleDeletePlan(rep.id)}
-                                  disabled={deletingId === rep.id}
-                                  className="shrink-0"
-                                >
-                                  {deletingId === rep.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-                                  {confirmDeleteId === rep.id ? "Confirm?" : ""}
-                                </Button>
-                                {confirmDeleteId === rep.id && (
-                                  <Button variant="ghost" onClick={() => setConfirmDeleteId(null)} className="text-sm">
-                                    Cancel
-                                  </Button>
-                                )}
-                              </div>
-                            )}
-                          </CardContent>
-                        </Card>
-                      );
-                    });
-                  })()}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               )}
             </section>

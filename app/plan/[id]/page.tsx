@@ -16,11 +16,9 @@ import { generateAcademicPlan } from "@/lib/plan-generator";
 import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types";
 import type { SemesterPlan, PlannedCourse, MathPlacement } from "@/lib/types";
 
-interface SiblingPlan {
-  id: string;
-  planType: string;
-  name: string;
-}
+// ── Types ───────────────────────────────────────────────────────────────────
+
+type MultiVariantSemesters = { A: SemesterPlan[]; B: SemesterPlan[]; C: SemesterPlan[] };
 
 interface SavedPlan {
   id: string;
@@ -32,25 +30,28 @@ interface SavedPlan {
   mathPlacement: string;
   waivedCourses: string[];
   planType: string;
-  groupId: string | null;
-  semesters: SemesterPlan[];
-  siblings: SiblingPlan[];
+  semesters: SemesterPlan[] | MultiVariantSemesters;
   createdAt: string;
   updatedAt: string;
 }
 
+// ── Helpers ──────────────────────────────────────────────────────────────────
+
+function isMultiVariantSemesters(s: SemesterPlan[] | MultiVariantSemesters): s is MultiVariantSemesters {
+  return !Array.isArray(s) && "A" in s && "B" in s && "C" in s;
+}
+
 const CATEGORY_COLORS: Record<string, string> = {
-  Major:   "bg-blue-50 border-blue-200 text-blue-800",
-  Minor:   "bg-purple-50 border-purple-200 text-purple-800",
-  GEM:     "bg-green-50 border-green-200 text-green-800",
-  Elective:"bg-gray-50 border-gray-200 text-gray-700",
+  Major:    "bg-blue-50 border-blue-200 text-blue-800",
+  Minor:    "bg-purple-50 border-purple-200 text-purple-800",
+  GEM:      "bg-green-50 border-green-200 text-green-800",
+  Elective: "bg-gray-50 border-gray-200 text-gray-700",
 };
 
+// ── Sub-components ────────────────────────────────────────────────────────────
+
 function CourseCard({
-  course,
-  editMode,
-  onChange,
-  onRemove,
+  course, editMode, onChange, onRemove,
 }: {
   course: PlannedCourse;
   editMode: boolean;
@@ -101,12 +102,7 @@ function CourseCard({
 }
 
 function SemesterColumn({
-  title,
-  semester,
-  editMode,
-  onCourseChange,
-  onAddCourse,
-  onRemoveCourse,
+  title, semester, editMode, onCourseChange, onAddCourse, onRemoveCourse,
 }: {
   title: string;
   semester: SemesterPlan;
@@ -153,6 +149,8 @@ function SemesterColumn({
   );
 }
 
+// ── Main page ─────────────────────────────────────────────────────────────────
+
 export default function SavedPlanPage() {
   const params = useParams();
   const router = useRouter();
@@ -160,18 +158,30 @@ export default function SavedPlanPage() {
   const id = params.id as string;
 
   const [plan, setPlan] = useState<SavedPlan | null>(null);
-  const [semesters, setSemesters] = useState<SemesterPlan[]>([]);
   const [planName, setPlanName] = useState("");
   const [editMode, setEditMode] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [deleteStatus, setDeleteStatus] = useState<"idle" | "confirming" | "deleting">("idle");
   const [error, setError] = useState("");
-  const [activeYear, setActiveYear] = useState(0); // mobile tab index
+  const [activeYear, setActiveYear] = useState(0);
   const [showSavedBanner, setShowSavedBanner] = useState(false);
   const [generatedPlan, setGeneratedPlan] = useState<{ unfulfilledRequirements: string[]; warnings: string[] } | null>(null);
 
-  // Show "plan saved" banner when arriving fresh from the planner
+  // Multi-variant support (new plans: semesters = { A, B, C })
+  const [isMultiVariant, setIsMultiVariant] = useState(false);
+  const [activeVariant, setActiveVariant] = useState<"A" | "B" | "C">("A");
+  const [variantSemesters, setVariantSemesters] = useState<MultiVariantSemesters>({ A: [], B: [], C: [] });
+
+  // Legacy single-variant (old plans: semesters = SemesterPlan[])
+  const [singleSemesters, setSingleSemesters] = useState<SemesterPlan[]>([]);
+
+  // Derived: what renders in the grid
+  const currentSemesters: SemesterPlan[] = isMultiVariant
+    ? (variantSemesters[activeVariant] ?? [])
+    : singleSemesters;
+
+  // ── Banner ──────────────────────────────────────────────────────────────────
   useEffect(() => {
     if (searchParams.get("saved") === "1") {
       setShowSavedBanner(true);
@@ -180,6 +190,7 @@ export default function SavedPlanPage() {
     }
   }, [searchParams]);
 
+  // ── Load plan ───────────────────────────────────────────────────────────────
   useEffect(() => {
     fetch(`/api/plans/${id}`)
       .then(r => {
@@ -188,38 +199,66 @@ export default function SavedPlanPage() {
       })
       .then((data: SavedPlan) => {
         setPlan(data);
-        setSemesters(data.semesters);
         setPlanName(data.name);
-        // Regenerate to get unfulfilled requirements + warnings
-        const gen = generateAcademicPlan(
-          {
-            majors:        data.majors,
-            minors:        data.minors,
-            interests:     data.interests,
-            hobbies:       [],
-            careerGoals:   data.careerGoals,
-            mathPlacement: data.mathPlacement as MathPlacement,
-            waivedCourses: data.waivedCourses,
-          },
-          { planType: (data.planType ?? "A") as "A" | "B" | "C" }
-        );
-        setGeneratedPlan({ unfulfilledRequirements: gen.unfulfilledRequirements, warnings: gen.warnings });
+        if (isMultiVariantSemesters(data.semesters)) {
+          setIsMultiVariant(true);
+          setVariantSemesters(data.semesters);
+        } else {
+          setIsMultiVariant(false);
+          setSingleSemesters(data.semesters as SemesterPlan[]);
+        }
       })
       .catch(() => router.push("/profile"));
   }, [id, router]);
 
+  // ── Requirements check (re-runs when plan loads or variant changes) ──────────
+  useEffect(() => {
+    if (!plan) return;
+    const planType = isMultiVariant
+      ? activeVariant
+      : ((["A", "B", "C"].includes(plan.planType) ? plan.planType : "A") as "A" | "B" | "C");
+    const gen = generateAcademicPlan(
+      {
+        majors:        plan.majors,
+        minors:        plan.minors,
+        interests:     plan.interests,
+        hobbies:       [],
+        careerGoals:   plan.careerGoals,
+        mathPlacement: plan.mathPlacement as MathPlacement,
+        waivedCourses: plan.waivedCourses,
+      },
+      { planType }
+    );
+    setGeneratedPlan({ unfulfilledRequirements: gen.unfulfilledRequirements, warnings: gen.warnings });
+  }, [plan, isMultiVariant, activeVariant]);
+
+  // ── Edit helpers ─────────────────────────────────────────────────────────────
+  const updateCurrentSemesters = useCallback(
+    (updater: (prev: SemesterPlan[]) => SemesterPlan[]) => {
+      if (isMultiVariant) {
+        setVariantSemesters(prev => ({
+          ...prev,
+          [activeVariant]: updater(prev[activeVariant] ?? []),
+        }));
+      } else {
+        setSingleSemesters(prev => updater(prev));
+      }
+    },
+    [isMultiVariant, activeVariant]
+  );
+
   const updateCourse = useCallback((semIdx: number, courseIdx: number, updated: PlannedCourse) => {
-    setSemesters(prev =>
+    updateCurrentSemesters(prev =>
       prev.map((sem, si) => {
         if (si !== semIdx) return sem;
         const courses = sem.courses.map((c, ci) => ci === courseIdx ? updated : c);
         return { ...sem, courses, totalCredits: courses.reduce((s, c) => s + c.credits, 0) };
       })
     );
-  }, []);
+  }, [updateCurrentSemesters]);
 
   const addCourse = useCallback((semIdx: number) => {
-    setSemesters(prev =>
+    updateCurrentSemesters(prev =>
       prev.map((sem, si) => {
         if (si !== semIdx) return sem;
         const newCourse: PlannedCourse = { code: "NEW", name: "New Course", credits: 1, fulfills: [], category: "Elective" };
@@ -227,28 +266,28 @@ export default function SavedPlanPage() {
         return { ...sem, courses, totalCredits: courses.reduce((s, c) => s + c.credits, 0) };
       })
     );
-  }, []);
+  }, [updateCurrentSemesters]);
 
   const removeCourse = useCallback((semIdx: number, courseIdx: number) => {
-    setSemesters(prev =>
+    updateCurrentSemesters(prev =>
       prev.map((sem, si) => {
         if (si !== semIdx) return sem;
         const courses = sem.courses.filter((_, ci) => ci !== courseIdx);
         return { ...sem, courses, totalCredits: courses.reduce((s, c) => s + c.credits, 0) };
       })
     );
-  }, []);
+  }, [updateCurrentSemesters]);
 
+  // ── Save / delete ─────────────────────────────────────────────────────────────
   async function handleSaveChanges() {
     setSaveStatus("saving");
     setError("");
-
+    const semestersPayload = isMultiVariant ? variantSemesters : singleSemesters;
     const res = await fetch(`/api/plans/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: planName, semesters }),
+      body: JSON.stringify({ name: planName, semesters: semestersPayload }),
     });
-
     if (res.ok) {
       setSaveStatus("saved");
       setEditMode(false);
@@ -259,6 +298,17 @@ export default function SavedPlanPage() {
     }
   }
 
+  function handleCancelEdit() {
+    if (plan) {
+      if (isMultiVariantSemesters(plan.semesters)) {
+        setVariantSemesters(plan.semesters);
+      } else {
+        setSingleSemesters(plan.semesters as SemesterPlan[]);
+      }
+    }
+    setEditMode(false);
+  }
+
   async function handleDelete() {
     if (deleteStatus === "idle") { setDeleteStatus("confirming"); return; }
     setDeleteStatus("deleting");
@@ -266,32 +316,30 @@ export default function SavedPlanPage() {
     router.push("/profile");
   }
 
+  // ── Stats ─────────────────────────────────────────────────────────────────────
   const stats = useMemo(() => {
-    if (semesters.length === 0) return null;
-    // Use code-prefix matching — NOT category — so that:
-    //   • MAT courses required by CSC major (category "Major") count as OUTSIDE major
-    //   • CSC courses in completed semesters (category forced to "Elective") count as INSIDE major
+    if (currentSemesters.length === 0) return null;
     const majorPrefixList = (plan?.majors ?? []).map(code => code.split("_")[0]);
     const isInsideMajor = (courseCode: string) =>
       majorPrefixList.some(p => courseCode.startsWith(p + " ") || courseCode === p);
-    const totalCredits        = semesters.reduce((s, sem) => s + sem.totalCredits, 0);
-    const totalCourses        = semesters.reduce((s, sem) => s + sem.courses.length, 0);
-    const majorCourses        = semesters.reduce((s, sem) => s + sem.courses.filter(c => c.category === "Major").length, 0);
-    const creditsOutsideMajor = semesters.reduce((s, sem) => s + sem.courses.filter(c => !isInsideMajor(c.code)).reduce((a, c) => a + c.credits, 0), 0);
-    const placeholderCourses  = semesters.reduce((s, sem) => s + sem.courses.filter(c => c.isPlaceholder).length, 0);
-    const overloadedSemesters = semesters.filter(s => s.isOverloaded).length;
+    const totalCredits        = currentSemesters.reduce((s, sem) => s + sem.totalCredits, 0);
+    const totalCourses        = currentSemesters.reduce((s, sem) => s + sem.courses.length, 0);
+    const majorCourses        = currentSemesters.reduce((s, sem) => s + sem.courses.filter(c => c.category === "Major").length, 0);
+    const creditsOutsideMajor = currentSemesters.reduce((s, sem) =>
+      s + sem.courses.filter(c => !isInsideMajor(c.code)).reduce((a, c) => a + c.credits, 0), 0);
+    const placeholderCourses  = currentSemesters.reduce((s, sem) => s + sem.courses.filter(c => c.isPlaceholder).length, 0);
+    const overloadedSemesters = currentSemesters.filter(s => s.isOverloaded).length;
     return { totalCredits, totalCourses, majorCourses, creditsOutsideMajor, placeholderCourses, overloadedSemesters };
-  }, [semesters, plan]);
+  }, [currentSemesters, plan]);
 
-  const years = plan
-    ? [
-        { label: "Year 1", fallTitle: "Fall – Year 1", springTitle: "Spring – Year 1", fallIdx: 0, springIdx: 1 },
-        { label: "Year 2", fallTitle: "Fall – Year 2", springTitle: "Spring – Year 2", fallIdx: 2, springIdx: 3 },
-        { label: "Year 3", fallTitle: "Fall – Year 3", springTitle: "Spring – Year 3", fallIdx: 4, springIdx: 5 },
-        { label: "Year 4", fallTitle: "Fall – Year 4", springTitle: "Spring – Year 4", fallIdx: 6, springIdx: 7 },
-      ]
-    : [];
+  const years = plan ? [
+    { label: "Year 1", fallTitle: "Fall – Year 1", springTitle: "Spring – Year 1", fallIdx: 0, springIdx: 1 },
+    { label: "Year 2", fallTitle: "Fall – Year 2", springTitle: "Spring – Year 2", fallIdx: 2, springIdx: 3 },
+    { label: "Year 3", fallTitle: "Fall – Year 3", springTitle: "Spring – Year 3", fallIdx: 4, springIdx: 5 },
+    { label: "Year 4", fallTitle: "Fall – Year 4", springTitle: "Spring – Year 4", fallIdx: 6, springIdx: 7 },
+  ] : [];
 
+  // ── Loading state ──────────────────────────────────────────────────────────────
   if (!plan) {
     return (
       <div className="lumen-app-shell flex min-h-screen items-center justify-center">
@@ -301,6 +349,7 @@ export default function SavedPlanPage() {
     );
   }
 
+  // ── Render ────────────────────────────────────────────────────────────────────
   return (
     <div className="lumen-app-shell">
       <LumenFireflies className="fixed opacity-85" />
@@ -308,7 +357,6 @@ export default function SavedPlanPage() {
       {/* ── Header ── */}
       <header className="lumen-app-content border-b border-white/15 bg-white/10 backdrop-blur-md">
         <div className="container mx-auto px-4 py-3">
-          {/* Top row: logo + actions */}
           <div className="flex items-center justify-between gap-2">
             <Link href="/" className="flex items-center gap-2">
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary shrink-0">
@@ -317,7 +365,6 @@ export default function SavedPlanPage() {
               <span className="text-lg font-semibold text-foreground hidden sm:inline">Lumen</span>
             </Link>
 
-            {/* Action buttons — icon-only on mobile, labelled on sm+ */}
             <div className="flex items-center gap-1.5 sm:gap-2">
               {editMode ? (
                 <>
@@ -325,7 +372,7 @@ export default function SavedPlanPage() {
                     {saveStatus === "saving" ? <Loader2 className="h-4 w-4 animate-spin" /> : saveStatus === "saved" ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
                     <span className="hidden sm:inline">{saveStatus === "saving" ? "Saving…" : saveStatus === "saved" ? "Saved!" : "Save"}</span>
                   </Button>
-                  <Button size="sm" variant="outline" onClick={() => { setSemesters(plan.semesters); setEditMode(false); }} className="min-h-[36px]">
+                  <Button size="sm" variant="outline" onClick={handleCancelEdit} className="min-h-[36px]">
                     <X className="h-4 w-4" />
                     <span className="hidden sm:inline ml-1">Cancel</span>
                   </Button>
@@ -358,12 +405,8 @@ export default function SavedPlanPage() {
         {/* ── "Plan saved" banner ── */}
         {showSavedBanner && (
           <div
-            className="mb-5 flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-all"
-            style={{
-              borderColor: "rgba(111,207,151,0.4)",
-              background:  "rgba(111,207,151,0.12)",
-              color:       "#6fcf97",
-            }}
+            className="mb-5 flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium"
+            style={{ borderColor: "rgba(111,207,151,0.4)", background: "rgba(111,207,151,0.12)", color: "#6fcf97" }}
           >
             <Check className="h-4 w-4 shrink-0" />
             Your plan has been saved! Scroll down to see your AI-powered career recommendations.
@@ -404,43 +447,34 @@ export default function SavedPlanPage() {
           {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
         </div>
 
-        {/* ── Plan A / B / C switcher ── */}
-        {plan.siblings.length > 0 && (() => {
-          // Build the full ordered list: current plan + siblings, sorted A → B → C
-          const allPlans = [
-            { id: plan.id, planType: plan.planType, name: plan.name },
-            ...plan.siblings,
-          ].sort((a, b) => a.planType.localeCompare(b.planType))
-
-          return (
-            <div className="mb-5 flex items-center gap-2">
-              <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
-                Plan
-              </span>
-              <div className="flex gap-2">
-                {allPlans.map(p => {
-                  const isCurrent = p.id === plan.id
-                  return (
-                    <Link key={p.id} href={`/plan/${p.id}`}
-                      className="flex items-center justify-center rounded-full px-4 py-1.5 text-sm font-bold transition-all"
-                      style={{
-                        fontFamily:  "var(--font-cinzel)",
-                        background:  isCurrent ? "#f5a623" : "rgba(245,166,35,0.10)",
-                        color:       isCurrent ? "#071410" : "#f5a623",
-                        border:      isCurrent ? "none" : "1px solid rgba(245,166,35,0.30)",
-                        pointerEvents: isCurrent ? "none" : undefined,
-                      }}>
-                      {p.planType}
-                    </Link>
-                  )
-                })}
-              </div>
-              <span className="text-xs italic" style={{ color: "rgba(255,255,255,0.35)" }}>
-                — switch between your saved plans
-              </span>
+        {/* ── Plan A / B / C variant switcher (multi-variant plans only) ── */}
+        {isMultiVariant && (
+          <div className="mb-5 flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
+              Plan
+            </span>
+            <div className="flex gap-2">
+              {(["A", "B", "C"] as const).map(v => (
+                <button
+                  key={v}
+                  onClick={() => setActiveVariant(v)}
+                  className="flex items-center justify-center rounded-full px-4 py-1.5 text-sm font-bold transition-all"
+                  style={{
+                    fontFamily: "var(--font-cinzel)",
+                    background: activeVariant === v ? "#f5a623" : "rgba(245,166,35,0.10)",
+                    color:      activeVariant === v ? "#071410" : "#f5a623",
+                    border:     activeVariant === v ? "none" : "1px solid rgba(245,166,35,0.30)",
+                  }}
+                >
+                  {v}
+                </button>
+              ))}
             </div>
-          )
-        })()}
+            <span className="text-xs italic" style={{ color: "rgba(255,255,255,0.35)" }}>
+              — switch between plan variants
+            </span>
+          </div>
+        )}
 
         {/* Student profile summary */}
         <StudentProfile profile={{
@@ -450,83 +484,78 @@ export default function SavedPlanPage() {
           careerGoals: plan.careerGoals,
         }} />
 
-        {/* ── Plan grid — white panel for contrast ── */}
+        {/* ── Plan grid — white panel ── */}
         <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5 md:p-6">
 
-        {/* ── Mobile: year tabs + semester pair ── */}
-        <div className="md:hidden">
-          {/* Year tab strip */}
-          <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
-            {years.map(({ label }, i) => (
-              <button
-                key={label}
-                onClick={() => setActiveYear(i)}
-                className="shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition-all"
-                style={{
-                  borderColor: activeYear === i ? "rgba(245,166,35,0.6)" : "rgba(0,0,0,0.12)",
-                  background:  activeYear === i ? "rgba(245,166,35,0.12)" : "transparent",
-                  color:       activeYear === i ? "#b87a00" : "#6b7280",
-                }}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {/* Active year semesters side-by-side */}
-          {years[activeYear] && semesters[years[activeYear].fallIdx] && semesters[years[activeYear].springIdx] && (
-            <div className="grid grid-cols-2 gap-3">
-              <SemesterColumn
-                title={years[activeYear].fallTitle.replace(" – ", "\n")}
-                semester={semesters[years[activeYear].fallIdx]}
-                editMode={editMode}
-                onCourseChange={(ci, c) => updateCourse(years[activeYear].fallIdx, ci, c)}
-                onAddCourse={() => addCourse(years[activeYear].fallIdx)}
-                onRemoveCourse={ci => removeCourse(years[activeYear].fallIdx, ci)}
-              />
-              <SemesterColumn
-                title={years[activeYear].springTitle.replace(" – ", "\n")}
-                semester={semesters[years[activeYear].springIdx]}
-                editMode={editMode}
-                onCourseChange={(ci, c) => updateCourse(years[activeYear].springIdx, ci, c)}
-                onAddCourse={() => addCourse(years[activeYear].springIdx)}
-                onRemoveCourse={ci => removeCourse(years[activeYear].springIdx, ci)}
-              />
-            </div>
-          )}
-        </div>
-
-        {/* ── Desktop: all 4 years in a grid ── */}
-        <div className="hidden md:grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {years.map(({ label, fallTitle, springTitle, fallIdx, springIdx }) =>
-            semesters[fallIdx] && semesters[springIdx] ? (
-              <div key={label} className="space-y-4">
-                <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-                  <GraduationCap className="h-5 w-5 text-primary" />
+          {/* Mobile: year tabs */}
+          <div className="md:hidden">
+            <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
+              {years.map(({ label }, i) => (
+                <button
+                  key={label}
+                  onClick={() => setActiveYear(i)}
+                  className="shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition-all"
+                  style={{
+                    borderColor: activeYear === i ? "rgba(245,166,35,0.6)" : "rgba(0,0,0,0.12)",
+                    background:  activeYear === i ? "rgba(245,166,35,0.12)" : "transparent",
+                    color:       activeYear === i ? "#b87a00" : "#6b7280",
+                  }}
+                >
                   {label}
-                </h2>
+                </button>
+              ))}
+            </div>
+            {years[activeYear] && currentSemesters[years[activeYear].fallIdx] && currentSemesters[years[activeYear].springIdx] && (
+              <div className="grid grid-cols-2 gap-3">
                 <SemesterColumn
-                  title={fallTitle}
-                  semester={semesters[fallIdx]}
+                  title={years[activeYear].fallTitle.replace(" – ", "\n")}
+                  semester={currentSemesters[years[activeYear].fallIdx]}
                   editMode={editMode}
-                  onCourseChange={(ci, c) => updateCourse(fallIdx, ci, c)}
-                  onAddCourse={() => addCourse(fallIdx)}
-                  onRemoveCourse={ci => removeCourse(fallIdx, ci)}
+                  onCourseChange={(ci, c) => updateCourse(years[activeYear].fallIdx, ci, c)}
+                  onAddCourse={() => addCourse(years[activeYear].fallIdx)}
+                  onRemoveCourse={ci => removeCourse(years[activeYear].fallIdx, ci)}
                 />
                 <SemesterColumn
-                  title={springTitle}
-                  semester={semesters[springIdx]}
+                  title={years[activeYear].springTitle.replace(" – ", "\n")}
+                  semester={currentSemesters[years[activeYear].springIdx]}
                   editMode={editMode}
-                  onCourseChange={(ci, c) => updateCourse(springIdx, ci, c)}
-                  onAddCourse={() => addCourse(springIdx)}
-                  onRemoveCourse={ci => removeCourse(springIdx, ci)}
+                  onCourseChange={(ci, c) => updateCourse(years[activeYear].springIdx, ci, c)}
+                  onAddCourse={() => addCourse(years[activeYear].springIdx)}
+                  onRemoveCourse={ci => removeCourse(years[activeYear].springIdx, ci)}
                 />
               </div>
-            ) : null
-          )}
-        </div>
+            )}
+          </div>
 
-        {/* close white panel */}
+          {/* Desktop: all 4 years */}
+          <div className="hidden md:grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {years.map(({ label, fallTitle, springTitle, fallIdx, springIdx }) =>
+              currentSemesters[fallIdx] && currentSemesters[springIdx] ? (
+                <div key={label} className="space-y-4">
+                  <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
+                    <GraduationCap className="h-5 w-5 text-primary" />
+                    {label}
+                  </h2>
+                  <SemesterColumn
+                    title={fallTitle}
+                    semester={currentSemesters[fallIdx]}
+                    editMode={editMode}
+                    onCourseChange={(ci, c) => updateCourse(fallIdx, ci, c)}
+                    onAddCourse={() => addCourse(fallIdx)}
+                    onRemoveCourse={ci => removeCourse(fallIdx, ci)}
+                  />
+                  <SemesterColumn
+                    title={springTitle}
+                    semester={currentSemesters[springIdx]}
+                    editMode={editMode}
+                    onCourseChange={(ci, c) => updateCourse(springIdx, ci, c)}
+                    onAddCourse={() => addCourse(springIdx)}
+                    onRemoveCourse={ci => removeCourse(springIdx, ci)}
+                  />
+                </div>
+              ) : null
+            )}
+          </div>
         </div>
 
         {/* ── Plan Analysis ── */}
@@ -536,12 +565,12 @@ export default function SavedPlanPage() {
             <div className="mt-8 grid grid-cols-3 gap-3 rounded-2xl p-5 sm:grid-cols-6"
               style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
               {([
-                { v: stats.totalCredits,         l: "Credits",       ok: stats.totalCredits >= MINIMUM_TOTAL_CREDITS },
-                { v: stats.totalCourses,         l: "Courses" },
-                { v: stats.majorCourses,         l: "Major" },
-                { v: stats.creditsOutsideMajor,  l: "Outside Major", ok: stats.creditsOutsideMajor >= MINIMUM_CREDITS_OUTSIDE_MAJOR },
-                { v: stats.placeholderCourses,   l: "TBD",           warn: stats.placeholderCourses > 0 },
-                { v: stats.overloadedSemesters,  l: "Overloaded",    warn: stats.overloadedSemesters > 0 },
+                { v: stats.totalCredits,        l: "Credits",       ok: stats.totalCredits >= MINIMUM_TOTAL_CREDITS },
+                { v: stats.totalCourses,        l: "Courses" },
+                { v: stats.majorCourses,        l: "Major" },
+                { v: stats.creditsOutsideMajor, l: "Outside Major", ok: stats.creditsOutsideMajor >= MINIMUM_CREDITS_OUTSIDE_MAJOR },
+                { v: stats.placeholderCourses,  l: "TBD",           warn: stats.placeholderCourses > 0 },
+                { v: stats.overloadedSemesters, l: "Overloaded",    warn: stats.overloadedSemesters > 0 },
               ] as { v: number; l: string; ok?: boolean; warn?: boolean }[]).map(({ v, l, ok, warn }) => (
                 <div key={l} className="text-center">
                   <p className="text-2xl font-black" style={{
@@ -553,7 +582,7 @@ export default function SavedPlanPage() {
               ))}
             </div>
 
-            {/* Requirements check */}
+            {/* Requirements check cards */}
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
               {[
                 {
@@ -630,7 +659,7 @@ export default function SavedPlanPage() {
               careerGoals={plan.careerGoals}
               majors={plan.majors}
               interests={plan.interests}
-              courses={semesters
+              courses={currentSemesters
                 .flatMap(sem => sem.courses)
                 .filter(c => !c.isPlaceholder)
                 .map(c => ({ code: c.code, name: c.name }))}

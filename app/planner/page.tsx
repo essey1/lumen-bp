@@ -150,38 +150,34 @@ export default function PlannerPage() {
       }
 
       const baseName = formData.planName.trim() || `${formData.majors[0] ?? "My"} Plan`
-      const groupId = crypto.randomUUID() // links the 3 plans so they can be toggled
-      const commonFields = {
-        majors:        formData.majors,
-        minors:        formData.minors,
-        interests:     formData.interests,
-        careerGoals:   formData.careerGoals,
-        mathPlacement: profileMathPlacement,
-        waivedCourses: profileWaivedCourses,
-        groupId,
+
+      // Save all three variants as a single plan record
+      const res = await fetch("/api/plans", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name:          baseName,
+          majors:        formData.majors,
+          minors:        formData.minors,
+          interests:     formData.interests,
+          careerGoals:   formData.careerGoals,
+          mathPlacement: profileMathPlacement,
+          waivedCourses: profileWaivedCourses,
+          semesters: {
+            A: planA.semesters,
+            B: planB.semesters,
+            C: planC.semesters,
+          },
+        }),
+      })
+
+      if (res.ok) {
+        const { id } = await res.json()
+        router.push(`/plan/${id}?saved=1`)
+      } else {
+        // Fallback: go to preview page without saving
+        router.push(`/plan?${params.toString()}`)
       }
-
-      // Save all three plans in parallel
-      const [resA, resB, resC] = await Promise.all([
-        fetch("/api/plans", { method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...commonFields, name: `${baseName} – A`, planType: "A", semesters: planA.semesters }) }),
-        fetch("/api/plans", { method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...commonFields, name: `${baseName} – B`, planType: "B", semesters: planB.semesters }) }),
-        fetch("/api/plans", { method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...commonFields, name: `${baseName} – C`, planType: "C", semesters: planC.semesters }) }),
-      ])
-
-      // Drain response bodies (required before the responses are GC'd)
-      await Promise.all([
-        resA.ok ? resA.json() : null,
-        resB.ok ? resB.json() : null,
-        resC.ok ? resC.json() : null,
-      ])
-
-      // Always go to the full A/B/C preview page (shows all 3 plans + analysis).
-      // Add saved=1 when at least Plan A was saved so the page shows the banner.
-      if (resA.ok) params.set("saved", "1")
-      router.push(`/plan?${params.toString()}`)
     } catch {
       setGenerateError("Something went wrong. Please try again.")
     } finally {

@@ -16,8 +16,6 @@ type FullPlanRow = {
   createdAt: Date; updatedAt: Date;
 };
 
-type SiblingRow = { id: string; planType: string; name: string };
-
 export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const user = await getAuthUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -37,36 +35,14 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: "Plan not found" }, { status: 404 });
   }
 
-  // Best-effort: fetch groupId and siblings. Fails silently if column missing.
-  let groupId: string | null = null;
-  let siblings: SiblingRow[] = [];
-  try {
-    const gRows = await prisma.$queryRaw<{ groupId: string | null }[]>`
-      SELECT "groupId" FROM "Plan" WHERE "id" = ${id}
-    `;
-    groupId = gRows[0]?.groupId ?? null;
-
-    if (groupId) {
-      siblings = await prisma.$queryRaw<SiblingRow[]>`
-        SELECT "id", "planType", "name" FROM "Plan"
-        WHERE "groupId" = ${groupId}
-          AND "userId" = ${user.id}
-          AND "id" != ${id}
-        ORDER BY "planType" ASC
-      `;
-    }
-  } catch { /* groupId column not in DB yet */ }
-
   return NextResponse.json({
     ...plan,
-    groupId,
     majors:        JSON.parse(plan.majors),
     minors:        JSON.parse(plan.minors),
     interests:     JSON.parse(plan.interests),
     careerGoals:   JSON.parse(plan.careerGoals),
     waivedCourses: JSON.parse(plan.waivedCourses),
     semesters:     JSON.parse(plan.semesters),
-    siblings,
   });
 }
 

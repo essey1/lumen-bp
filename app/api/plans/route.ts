@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   const user = await getAuthUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { name, majors, minors, interests, careerGoals, mathPlacement, waivedCourses, planType, groupId, semesters } =
+  const { name, majors, minors, interests, careerGoals, mathPlacement, waivedCourses, semesters } =
     await req.json();
 
   if (!semesters) {
@@ -64,7 +64,8 @@ export async function POST(req: Request) {
   const careerGoalsJson = JSON.stringify(careerGoals ?? []);
   const mathVal         = mathPlacement ?? "none";
   const waivedJson      = JSON.stringify(waivedCourses ?? []);
-  const planTypeVal     = planType ?? "A";
+  // "ABC" marks this as a multi-variant plan (semesters is { A, B, C })
+  const planTypeVal     = "ABC";
   const semestersJson   = JSON.stringify(semesters);
   const userId          = user.id;
 
@@ -82,15 +83,6 @@ export async function POST(req: Request) {
       NOW(), NOW()
     )
   `;
-
-  // Best-effort: set groupId to link A/B/C plans. Fails silently if column missing.
-  if (groupId) {
-    try {
-      await prisma.$executeRaw`
-        UPDATE "Plan" SET "groupId" = ${groupId} WHERE "id" = ${planId}
-      `;
-    } catch { /* groupId column not in DB yet */ }
-  }
 
   return NextResponse.json({ id: planId }, { status: 201 });
 }
