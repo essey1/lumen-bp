@@ -54,16 +54,21 @@ export async function POST(req: Request) {
     semesters: JSON.stringify(semesters),
   };
 
-  let plan;
+  // Always select only `id`.
+  // This keeps the RETURNING clause as `RETURNING "id"` — no other column
+  // is referenced after INSERT, so a missing `groupId` column can't break saves.
+  let plan: { id: string };
   try {
-    // Try to save with groupId (links A/B/C plans together).
-    // If the groupId column doesn't exist in the database yet, this throws —
-    // we fall back to saving without it so the plan is NEVER silently lost.
     plan = await prisma.plan.create({
       data: groupId ? { ...baseData, groupId } : baseData,
+      select: { id: true },
     });
   } catch {
-    plan = await prisma.plan.create({ data: baseData });
+    // groupId column might not exist in production yet — save without it.
+    plan = await prisma.plan.create({
+      data: baseData,
+      select: { id: true },
+    });
   }
 
   return NextResponse.json({ id: plan.id }, { status: 201 });

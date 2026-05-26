@@ -1835,11 +1835,25 @@ const GSTR_LI_EQUIVALENTS: Record<string, string> = {
   "L&I 400": "GSTR 410",
 };
 
+// Cross-listed courses — taking one satisfies both.
+// E.g. MAT/CSC 433 Numerical Analysis is the same course offered under two prefixes.
+const CROSS_LISTED: Record<string, string> = {
+  "CSC 433": "MAT 433",
+  "MAT 433": "CSC 433",
+};
+
 function markEquivalents(code: string, usedCodes: Set<string>, placedMap: Map<string, number>) {
+  // GSTR ↔ L&I
   const eq = GSTR_LI_EQUIVALENTS[code];
   if (eq && !usedCodes.has(eq)) {
     usedCodes.add(eq);
     placedMap.set(eq, -1);
+  }
+  // Cross-listed courses
+  const xl = CROSS_LISTED[code];
+  if (xl && !usedCodes.has(xl)) {
+    usedCodes.add(xl);
+    placedMap.set(xl, placedMap.get(code) ?? -1);
   }
 }
 
@@ -2121,8 +2135,15 @@ export function generateAcademicPlan(
       const courseCredits = s.item.course.credits ?? 1;
       if ((deptCreditsThisSem[dept] ?? 0) + courseCredits > 2.5) continue;
       placeCourse(semesters, s.item.course, sem, placedMap);
+      markEquivalents(s.item.course.code, usedCodes, placedMap);
       applyGEM(gemTracker, s.item.course.code);
       s.placed = true;
+      // Also mark the cross-listed sibling slot as placed so it isn't scheduled again
+      const xlCode = CROSS_LISTED[s.item.course.code];
+      if (xlCode) {
+        const xlSlot = allSlots.find(sl => sl.item.course.code === xlCode);
+        if (xlSlot) xlSlot.placed = true;
+      }
       majorPlaced++;
       deptCreditsThisSem[dept] = (deptCreditsThisSem[dept] ?? 0) + courseCredits;
     }
@@ -2134,6 +2155,7 @@ export function generateAcademicPlan(
         const lvl = parseInt(s.item.course.code.match(/\d+/)?.[0] ?? "0");
         if (lvl >= 100 && lvl < 200 && count100Level(semesters[sem].courses) >= 2) continue;
         placeCourse(semesters, s.item.course, sem, placedMap);
+        markEquivalents(s.item.course.code, usedCodes, placedMap);
         applyGEM(gemTracker, s.item.course.code);
         s.placed = true;
         break;

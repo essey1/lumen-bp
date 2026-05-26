@@ -2604,6 +2604,7 @@ export const COURSE_CATALOG: Record<string, Course> = {
     code: "CSC 246",
     name: "Scalable Algorithms & Objects",
     credits: 1,
+    prerequisites: "CSC 236",
     waysOfKnowing: ["Applied Studies"],
     values: [],
     richnesses: [],
@@ -2740,7 +2741,7 @@ export const COURSE_CATALOG: Record<string, Course> = {
   },
   "CSC 433": {
     code: "CSC 433",
-    name: "Numerical Analysis (MAT)",
+    name: "Numerical Analysis (MAT/CSC 433)",
     credits: 1,
     prerequisites: { type: "AND", courses: ["MAT 225", { type: "OR", courses: ["CSC 111", "CSC 114", "CSC 125", "CSC 126", "CSC 226"] }, { type: "OR", courses: ["MAT 214", "MAT 315", "MAT 330"] }] },
     waysOfKnowing: [],
@@ -5190,7 +5191,7 @@ export const COURSE_CATALOG: Record<string, Course> = {
   },
   "MAT 433": {
     code: "MAT 433",
-    name: "Numerical Analysis (CSC)",
+    name: "Numerical Analysis (MAT/CSC 433)",
     credits: 1,
     prerequisites: { type: "AND", courses: ["MAT 225", { type: "OR", courses: ["CSC 111", "CSC 114", "CSC 125", "CSC 126", "CSC 226"] }, { type: "OR", courses: ["MAT 214", "MAT 315", "MAT 330"] }] },
     waysOfKnowing: [],
