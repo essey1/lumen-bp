@@ -486,7 +486,10 @@ export default function SignupPage() {
           {step === 9 && (
             <div className="space-y-6">
               <div className="rounded-xl border border-white/8 bg-white/4 px-4 py-4 text-center text-sm text-[#7aada0]">
-                We sent a 6-digit code to <span className="font-semibold text-[#e2ede8]">{email}</span>
+                <p>We sent a 6-digit code to <span className="font-semibold text-[#e2ede8]">{email}</span></p>
+                <p className="mt-2 text-xs" style={{ color: "#f5a623" }}>
+                  {"Don't see it? Check your"} <strong>Junk</strong> {" or "} <strong>Spam</strong> {" folder."}
+                </p>
               </div>
               <div>
                 <label className={labelCls}>Verification Code</label>

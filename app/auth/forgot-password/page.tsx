@@ -89,6 +89,9 @@ export default function ForgotPasswordPage() {
                 If <span className="font-medium text-[#e2ede8]">{email}</span> is registered,
                 we&apos;ve sent a 6-digit reset code. Redirecting you now…
               </p>
+              <p className="mt-3 text-xs" style={{ color: "#f5a623" }}>
+                {"Don't see it? Check your"} <strong>Junk</strong> {" or "} <strong>Spam</strong> {" folder."}
+              </p>
             </div>
           ) : (
             /* Email form */
