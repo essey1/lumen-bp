@@ -102,8 +102,8 @@ const STEP_TITLES = [
   "Your Major",             // 2
   "Academic Year",          // 3
   "Your Progress",          // 4
-  "Math Placement",         // 5 (new)
-  "Waived Courses",         // 6 (new)
+  "Math Placement",         // 5
+  "Waived Courses",         // 6
   "Your Interests",         // 7
   "Create Password",        // 8
   "Verify Your Email",      // 9

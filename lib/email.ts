@@ -5,18 +5,29 @@ function getTransporter() {
   const user = process.env.GMAIL_USER;
   const pass = process.env.GMAIL_APP_PASSWORD;
   if (!user || !pass) throw new Error("GMAIL_USER and GMAIL_APP_PASSWORD must be set");
-  return nodemailer.createTransport({ service: "gmail", auth: { user, pass } });
+  return nodemailer.createTransport({
+    service: "gmail",
+    auth: { user, pass },
+  });
 }
+
+// ── Sign-up / login OTP ───────────────────────────────────────────────────────
 
 export async function sendOTP(email: string, code: string): Promise<void> {
   const transporter = getTransporter();
   await transporter.sendMail({
-    from: `"Lumen" <${process.env.GMAIL_USER}>`,
-    to: email,
-    subject: "Your Lumen verification code",
-    html: buildCodeEmail("Your verification code", "Use this code to verify your Lumen account. It expires in 10 minutes.", code),
+    from:     `"Lumen" <${process.env.GMAIL_USER}>`,
+    replyTo:  process.env.GMAIL_USER,
+    to:       email,
+    // Put the code in the subject — matches what Discord, Steam, Apple do.
+    // Short, clear, no spam-trigger words like "verify" or "OTP".
+    subject:  `${code} is your Lumen code`,
+    text:     buildPlainText(code, "verification"),
+    html:     buildHtml(code, "verification"),
   });
 }
+
+// ── Forgot-password OTP ───────────────────────────────────────────────────────
 
 export async function sendPasswordResetOTP(
   email: string,
@@ -24,32 +35,113 @@ export async function sendPasswordResetOTP(
   name?: string
 ): Promise<void> {
   const transporter = getTransporter();
-  const greeting = name ? `Hi ${name},` : "Hi there,";
   await transporter.sendMail({
-    from: `"Lumen" <${process.env.GMAIL_USER}>`,
-    to: email,
-    subject: "Reset your Lumen password",
-    html: buildCodeEmail(
-      "Reset your password",
-      `${greeting} Use this 6-digit code to reset your Lumen password. It expires in <strong>10 minutes</strong>. If you didn't request this, ignore this email.`,
-      code
-    ),
+    from:     `"Lumen" <${process.env.GMAIL_USER}>`,
+    replyTo:  process.env.GMAIL_USER,
+    to:       email,
+    subject:  `${code} is your Lumen password reset code`,
+    text:     buildPlainText(code, "password reset", name),
+    html:     buildHtml(code, "password reset", name),
   });
 }
 
-function buildCodeEmail(title: string, body: string, code: string): string {
-  return `
-    <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:480px;margin:0 auto;padding:40px 24px;background:#fff;">
-      <div style="margin-bottom:32px;"><span style="font-size:20px;font-weight:600;color:#000;">✦ Lumen</span></div>
-      <h2 style="font-size:22px;font-weight:700;color:#111;margin:0 0 12px;">${title}</h2>
-      <p style="font-size:15px;color:#555;margin:0 0 28px;line-height:1.6;">${body}</p>
-      <div style="background:#f4f4f5;border-radius:12px;padding:24px;text-align:center;margin-bottom:28px;">
-        <span style="font-size:40px;font-weight:800;letter-spacing:12px;color:#111;font-family:monospace;">${code}</span>
-      </div>
-      <p style="font-size:13px;color:#999;margin:0;">Lumen · Berea College Academic Planner</p>
-    </div>
-  `;
+// ── Templates ─────────────────────────────────────────────────────────────────
+
+/**
+ * Plain-text version. Spam filters heavily penalise HTML-only emails;
+ * including a text/plain alternative significantly improves inbox placement.
+ */
+function buildPlainText(
+  code: string,
+  purpose: string,
+  name?: string
+): string {
+  const greeting = name ? `Hi ${name},` : "Hi there,";
+  return [
+    greeting,
+    "",
+    `Your Lumen ${purpose} code is: ${code}`,
+    "",
+    "This code expires in 10 minutes.",
+    "If you did not request this, you can safely ignore this email.",
+    "",
+    "— Lumen · Berea College Academic Planner",
+  ].join("\n");
 }
+
+/**
+ * HTML version — intentionally simple.
+ * Overly-styled "big OTP box" templates match common phishing patterns
+ * and score poorly with spam filters. Plain prose with an inline code
+ * looks more like a legitimate transactional email.
+ */
+function buildHtml(
+  code: string,
+  purpose: string,
+  name?: string
+): string {
+  const greeting = name ? `Hi ${name},` : "Hi there,";
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Your Lumen code</title>
+</head>
+<body style="margin:0;padding:0;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;color:#111111;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+    <tr>
+      <td align="center" style="padding:40px 16px;">
+        <table width="480" cellpadding="0" cellspacing="0" role="presentation" style="max-width:480px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td style="padding-bottom:24px;border-bottom:1px solid #e5e7eb;">
+              <span style="font-size:17px;font-weight:700;color:#111111;">✦ Lumen</span>
+              <span style="font-size:13px;color:#6b7280;margin-left:8px;">Berea College Academic Planner</span>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:28px 0 0;">
+              <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:#111111;">${greeting}</p>
+              <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#374151;">
+                Here is your Lumen ${purpose} code. It expires in <strong>10 minutes</strong>.
+              </p>
+
+              <!-- Code — inline, not a giant styled box -->
+              <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#374151;">
+                Your code: <strong style="font-size:22px;letter-spacing:4px;font-family:monospace;color:#111111;">${code}</strong>
+              </p>
+
+              <p style="margin:0 0 8px;font-size:13px;line-height:1.6;color:#6b7280;">
+                Enter this code on the Lumen sign-in page to continue.
+              </p>
+              <p style="margin:0;font-size:13px;line-height:1.6;color:#6b7280;">
+                If you did not request this, you can safely ignore this email — your account is not at risk.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding:28px 0 0;border-top:1px solid #f3f4f6;margin-top:28px;">
+              <p style="margin:0;font-size:12px;color:#9ca3af;">
+                Lumen · Berea College Academic Planner · This is an automated message, please do not reply.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+// ── OTP cleanup ───────────────────────────────────────────────────────────────
 
 export async function cleanupExpiredOTPs(): Promise<void> {
   try {
