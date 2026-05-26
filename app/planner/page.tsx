@@ -172,16 +172,13 @@ export default function PlannerPage() {
       ])
 
       if (resA.ok) {
-        const [dataA, dataB, dataC] = await Promise.all([
+        const [dataA] = await Promise.all([
           resA.json(),
           resB.ok ? resB.json() : null,
           resC.ok ? resC.json() : null,
         ])
-        // Pass all plan IDs to preview page so it shows "saved" banners with edit links
-        params.set("planId",  dataA.id)
-        if (dataB) params.set("planIdB", dataB.id)
-        if (dataC) params.set("planIdC", dataC.id)
-        router.push(`/plan?${params.toString()}`)
+        // Go directly to the saved Plan A — it has A/B/C tabs to switch to siblings
+        router.push(`/plan/${dataA.id}?saved=1`)
         return
       }
 

@@ -258,12 +258,12 @@ export default function ProfilePage() {
             <User className="h-7 w-7 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-foreground leading-tight">
+            <h1 className="text-2xl font-bold text-foreground leading-tight">
               {profile.name || "Your Dashboard"}
             </h1>
-            <p className="text-sm text-muted-foreground">{profile.email}</p>
+            <p className="text-base text-muted-foreground">{profile.email}</p>
             {profile.major && (
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-sm text-muted-foreground mt-0.5">
                 {profile.major}
                 {profile.minor ? ` · Minor: ${profile.minor}` : ""}
                 {profile.year ? ` · Year ${profile.year}` : ""}
@@ -300,11 +300,11 @@ export default function ProfilePage() {
             {/* Saved plans */}
             <section>
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="flex items-center gap-2 text-base font-semibold text-foreground">
-                  <BookOpen className="h-4 w-4 text-primary" />
+                <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
+                  <BookOpen className="h-5 w-5 text-primary" />
                   My Saved Plans
                   {plans.length > 0 && (
-                    <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground font-normal">
+                    <span className="rounded-full bg-muted px-2.5 py-0.5 text-sm text-muted-foreground font-normal">
                       {plans.length}
                     </span>
                   )}
@@ -319,9 +319,9 @@ export default function ProfilePage() {
                 <Card className="border-dashed border-border">
                   <CardContent className="py-10 text-center">
                     <BookOpen className="mx-auto mb-3 h-10 w-10 text-muted-foreground/40" />
-                    <p className="text-sm font-medium text-foreground">No saved plans yet</p>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Generate a plan and click &quot;Save Plan&quot; to keep it here.
+                    <p className="text-base font-semibold text-foreground">No saved plans yet</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      Generate a plan to get started — it saves automatically.
                     </p>
                     <Link href="/planner" className="mt-4 inline-block">
                       <Button size="sm" className="gap-1.5">
@@ -357,78 +357,75 @@ export default function ProfilePage() {
                         new Date(p.updatedAt) > new Date(latest) ? p.updatedAt : latest, rep.updatedAt);
 
                       return (
-                        <Card key={rep.groupId ?? rep.id} className="border-border hover:shadow-sm transition-shadow">
-                          <CardContent className="py-4">
-                            {/* Title row */}
-                            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-                              <div className="min-w-0">
-                                {/* Strip the " – A / – B / – C" suffix for the group title */}
-                                <p className="font-semibold text-foreground truncate">
-                                  {isGroup ? rep.name.replace(/ – [ABC]$/, "") : rep.name}
-                                </p>
-                                <p className="mt-0.5 text-xs text-muted-foreground truncate">
-                                  {majors.length > 0 && majors[0]}
-                                  {minors.length > 0 && ` · Minor: ${minors[0]}`}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  Updated {new Date(latestUpdate).toLocaleDateString()}
-                                </p>
-                              </div>
-                              {/* Delete (only shown for ungrouped plans or the whole group) */}
-                              {!isGroup && (
-                                <div className="flex items-center gap-2 shrink-0">
-                                  <Link href={`/plan/${rep.id}`}>
-                                    <Button size="sm" className="gap-1.5">
-                                      View <ArrowRight className="h-3.5 w-3.5" />
-                                    </Button>
-                                  </Link>
-                                  <Button
-                                    size="sm"
-                                    variant={confirmDeleteId === rep.id ? "destructive" : "ghost"}
-                                    onClick={() => handleDeletePlan(rep.id)}
-                                    disabled={deletingId === rep.id}
-                                    className="gap-1 shrink-0"
-                                  >
-                                    {deletingId === rep.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
-                                    {confirmDeleteId === rep.id ? "Confirm?" : ""}
-                                  </Button>
-                                  {confirmDeleteId === rep.id && (
-                                    <Button size="sm" variant="ghost" onClick={() => setConfirmDeleteId(null)} className="shrink-0 text-xs">
-                                      Cancel
-                                    </Button>
-                                  )}
-                                </div>
-                              )}
+                        <Card key={rep.groupId ?? rep.id} className="border-border transition-shadow hover:shadow-md">
+                          <CardContent className="py-5">
+                            {/* Title */}
+                            <div className="mb-1 flex min-w-0 items-start justify-between gap-2">
+                              <p className="text-base font-bold text-foreground leading-snug">
+                                {isGroup ? rep.name.replace(/ – [ABC]$/, "") : rep.name}
+                              </p>
+                              <p className="shrink-0 text-xs text-muted-foreground">
+                                {new Date(latestUpdate).toLocaleDateString()}
+                              </p>
                             </div>
+                            {(majors.length > 0 || minors.length > 0) && (
+                              <p className="mb-4 text-sm text-muted-foreground">
+                                {majors.join(", ")}
+                                {minors.length > 0 && ` · Minor: ${minors.join(", ")}`}
+                              </p>
+                            )}
 
-                            {/* A / B / C plan pills for grouped plans */}
-                            {isGroup && (
-                              <div className="mt-3 flex flex-wrap gap-2">
+                            {/* Plan A/B/C buttons — full-width stack on mobile, row on sm+ */}
+                            {isGroup ? (
+                              <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
                                 {group.map(p => (
-                                  <div key={p.id} className="flex items-center gap-1.5 rounded-lg border border-border bg-muted/30 px-3 py-2">
-                                    <span className="text-xs font-bold text-primary">Plan {p.planType}</span>
-                                    <Link href={`/plan/${p.id}`}>
-                                      <Button size="sm" variant="ghost" className="h-6 gap-1 px-2 text-xs">
-                                        View <ArrowRight className="h-3 w-3" />
+                                  <div key={p.id} className="flex min-w-0 flex-1 items-center gap-2 rounded-xl border border-border bg-muted/30 px-4 py-3">
+                                    <span className="text-sm font-bold text-primary shrink-0">Plan {p.planType}</span>
+                                    <div className="ml-auto flex items-center gap-1.5 shrink-0">
+                                      <Link href={`/plan/${p.id}`}>
+                                        <Button size="sm" className="h-8 gap-1.5 text-sm">
+                                          View <ArrowRight className="h-3.5 w-3.5" />
+                                        </Button>
+                                      </Link>
+                                      <Button
+                                        size="sm"
+                                        variant={confirmDeleteId === p.id ? "destructive" : "ghost"}
+                                        onClick={() => handleDeletePlan(p.id)}
+                                        disabled={deletingId === p.id}
+                                        className="h-8 w-8 p-0"
+                                      >
+                                        {deletingId === p.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
                                       </Button>
-                                    </Link>
-                                    <Button
-                                      size="sm"
-                                      variant={confirmDeleteId === p.id ? "destructive" : "ghost"}
-                                      onClick={() => handleDeletePlan(p.id)}
-                                      disabled={deletingId === p.id}
-                                      className="h-6 gap-1 px-2"
-                                    >
-                                      {deletingId === p.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />}
-                                      {confirmDeleteId === p.id ? "Confirm?" : ""}
-                                    </Button>
-                                    {confirmDeleteId === p.id && (
-                                      <Button size="sm" variant="ghost" onClick={() => setConfirmDeleteId(null)} className="h-6 px-2 text-xs">
-                                        Cancel
-                                      </Button>
-                                    )}
+                                      {confirmDeleteId === p.id && (
+                                        <Button size="sm" variant="ghost" onClick={() => setConfirmDeleteId(null)} className="h-8 px-2 text-xs">
+                                          Cancel
+                                        </Button>
+                                      )}
+                                    </div>
                                   </div>
                                 ))}
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-2">
+                                <Link href={`/plan/${rep.id}`} className="flex-1 sm:flex-none">
+                                  <Button className="w-full gap-1.5 sm:w-auto">
+                                    View Plan <ArrowRight className="h-4 w-4" />
+                                  </Button>
+                                </Link>
+                                <Button
+                                  variant={confirmDeleteId === rep.id ? "destructive" : "ghost"}
+                                  onClick={() => handleDeletePlan(rep.id)}
+                                  disabled={deletingId === rep.id}
+                                  className="shrink-0"
+                                >
+                                  {deletingId === rep.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                                  {confirmDeleteId === rep.id ? "Confirm?" : ""}
+                                </Button>
+                                {confirmDeleteId === rep.id && (
+                                  <Button variant="ghost" onClick={() => setConfirmDeleteId(null)} className="text-sm">
+                                    Cancel
+                                  </Button>
+                                )}
                               </div>
                             )}
                           </CardContent>

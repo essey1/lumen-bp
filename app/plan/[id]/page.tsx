@@ -64,7 +64,7 @@ function CourseCard({
       <div className={`rounded-md border px-2.5 py-2 text-xs ${color}`}>
         <div className="flex items-start gap-1.5">
           <span className="font-mono font-semibold shrink-0">{course.isPlaceholder ? "TBD" : course.code}</span>
-          <span className="flex-1 leading-tight">{course.name}</span>
+          <span className="flex-1 min-w-0 leading-tight break-words">{course.name}</span>
           <span className="shrink-0 text-[10px] opacity-60">{course.credits}cr</span>
         </div>
         {course.fulfills.length > 0 && (
@@ -120,15 +120,15 @@ function SemesterColumn({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+        <h3 className="text-sm font-semibold text-gray-800 flex items-center gap-1.5">
           {title}
           {isCompleted && <Lock className="h-3 w-3 text-muted-foreground" />}
         </h3>
-        <span className="text-xs text-muted-foreground">{semester.totalCredits}cr</span>
+        <span className="text-xs text-gray-500">{semester.totalCredits}cr</span>
       </div>
-      <div className={`rounded-lg border p-2 space-y-1.5 ${isCompleted ? "bg-muted/30 border-dashed" : "bg-card border-border"}`}>
+      <div className={`rounded-lg border p-2 space-y-1.5 ${isCompleted ? "bg-gray-50 border-dashed border-gray-200" : "bg-white border-gray-200"}`}>
         {isCompleted && (
-          <p className="text-[10px] text-muted-foreground italic px-1 pb-1 border-b border-border">Completed semester</p>
+          <p className="text-[10px] text-gray-400 italic px-1 pb-1 border-b border-gray-100">Completed semester</p>
         )}
         {semester.courses.map((course, idx) => (
           <CourseCard
@@ -444,6 +444,9 @@ export default function SavedPlanPage() {
           careerGoals: plan.careerGoals,
         }} />
 
+        {/* ── Plan grid — white panel for contrast ── */}
+        <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5 md:p-6">
+
         {/* ── Mobile: year tabs + semester pair ── */}
         <div className="md:hidden">
           {/* Year tab strip */}
@@ -454,9 +457,9 @@ export default function SavedPlanPage() {
                 onClick={() => setActiveYear(i)}
                 className="shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition-all"
                 style={{
-                  borderColor: activeYear === i ? "rgba(245,166,35,0.5)" : "rgba(255,255,255,0.10)",
-                  background:  activeYear === i ? "rgba(245,166,35,0.10)" : "transparent",
-                  color:       activeYear === i ? "#f5a623" : "#7aada0",
+                  borderColor: activeYear === i ? "rgba(245,166,35,0.6)" : "rgba(0,0,0,0.12)",
+                  background:  activeYear === i ? "rgba(245,166,35,0.12)" : "transparent",
+                  color:       activeYear === i ? "#b87a00" : "#6b7280",
                 }}
               >
                 {label}
@@ -492,7 +495,7 @@ export default function SavedPlanPage() {
           {years.map(({ label, fallTitle, springTitle, fallIdx, springIdx }) =>
             semesters[fallIdx] && semesters[springIdx] ? (
               <div key={label} className="space-y-4">
-                <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+                <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
                   <GraduationCap className="h-5 w-5 text-primary" />
                   {label}
                 </h2>
@@ -515,6 +518,9 @@ export default function SavedPlanPage() {
               </div>
             ) : null
           )}
+        </div>
+
+        {/* close white panel */}
         </div>
 
         {/* ── Plan Analysis ── */}
