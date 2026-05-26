@@ -1513,6 +1513,12 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
     const major = MAJORS[majorCode];
     if (!major) continue;
 
+    // Only courses from the major's own department count as "Major".
+    // e.g. for "CSC_MATH" the dept prefix is "CSC", so MAT courses are "Elective".
+    const majorDept = majorCode.split("_")[0];
+    const majorCat = (courseCode: string): "Major" | "Elective" =>
+      courseCode.split(" ")[0] === majorDept ? "Major" : "Elective";
+
     for (const req of major.requirements) {
       const cat = req.category.toLowerCase();
       const isCapstone = cat.includes("capstone");
@@ -1524,7 +1530,7 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
       // push them into year 3-4 even for non-upper-level requirements.
       const maxSem = 7;
 
-      // mustInclude courses — always "Major" since they are explicitly required
+      // mustInclude courses — "Major" only if from the major's own dept
       for (const code of (req.mustInclude ?? []).filter(c => !isInternshipCode(c))) {
         if (collected.has(code)) continue;
         const data = COURSE_CATALOG[code];
@@ -1536,7 +1542,7 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
             name: data.name,
             credits: data.credits,
             fulfills: [`${major.name}: ${req.category}`],
-            category: "Major",
+            category: majorCat(data.code),
           },
           minSem: isCapstone ? 6 : isCollateral ? 0 : level >= 300 ? 3 : 0,
           maxSem,
@@ -1571,7 +1577,7 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
                 name: data.name,
                 credits: data.credits,
                 fulfills: [`${major.name}: ${req.category} (${sub.category})`],
-                category: "Major",
+                category: majorCat(data.code),
                 scheduleDisclaimer: true,
               },
               minSem: 3,
@@ -1606,7 +1612,7 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
             const code = extraCandidates[i];
             const data = COURSE_CATALOG[code];
             result.push({
-              course: { code: data.code, name: data.name, credits: data.credits, fulfills: [`${major.name}: ${req.category}`], category: "Major", scheduleDisclaimer: true },
+              course: { code: data.code, name: data.name, credits: data.credits, fulfills: [`${major.name}: ${req.category}`], category: majorCat(data.code), scheduleDisclaimer: true },
               minSem: 3,
               maxSem: 7,
             });
@@ -1664,7 +1670,7 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
             name: data.name,
             credits: data.credits,
             fulfills: [`${major.name}: ${req.category}`],
-            category: "Major",
+            category: majorCat(data.code),
           },
           minSem: isCapstone ? 6 : isCollateral ? 0 : level >= 300 ? 3 : 0,
           maxSem,
@@ -1680,7 +1686,7 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
             name: `${req.category} course`,
             credits: 1,
             fulfills: [`${major.name}: ${req.category}`],
-            category: "Major",
+            category: "Major", // placeholder always belongs to the major dept
             isPlaceholder: true,
             placeholderCategory: req.category,
           },
@@ -1752,7 +1758,8 @@ function collectMinorCourses(profile: StudentProfile, collected: Set<string>, cr
 
 function collectMissingPrereqs(
   courses: CourseToPlace[],
-  collected: Set<string>
+  collected: Set<string>,
+  majorDepts: Set<string> = new Set()
 ): CourseToPlace[] {
   const extra: CourseToPlace[] = [];
   const toCheck = courses.map(c => c.course.code).filter(c => COURSE_CATALOG[c]);
@@ -1777,7 +1784,7 @@ function collectMissingPrereqs(
       const data = COURSE_CATALOG[best];
       const level = parseInt(best.match(/\d+/)?.[0] ?? "100");
       extra.push({
-        course: { code: data.code, name: data.name, credits: data.credits, fulfills: ["Prerequisite"], category: "Major" },
+        course: { code: data.code, name: data.name, credits: data.credits, fulfills: ["Prerequisite"], category: majorDepts.has(data.code.split(" ")[0]) ? "Major" : "Elective" },
         minSem: 0,
         maxSem: level >= 300 ? 6 : 5,
       });
@@ -1968,7 +1975,9 @@ export function generateAcademicPlan(
   }
   const majorCourses  = collectMajorCourses(profile, usedCodes, crossReqBonus, planType);
   const minorCourses  = collectMinorCourses(profile, usedCodes, crossReqBonus, planType);
-  const missingPrereqs = collectMissingPrereqs([...majorCourses, ...minorCourses], usedCodes);
+  // Dept prefixes for the user's majors — used to categorise pulled-in prerequisites
+  const majorDepts = new Set(profile.majors.map(m => m.split("_")[0]));
+  const missingPrereqs = collectMissingPrereqs([...majorCourses, ...minorCourses], usedCodes, majorDepts);
 
   // Each required course is tagged so the scheduler knows its budget category.
   interface Slot {
