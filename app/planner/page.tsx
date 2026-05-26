@@ -171,18 +171,16 @@ export default function PlannerPage() {
           body: JSON.stringify({ ...commonFields, name: `${baseName} – C`, planType: "C", semesters: planC.semesters }) }),
       ])
 
-      if (resA.ok) {
-        const [dataA] = await Promise.all([
-          resA.json(),
-          resB.ok ? resB.json() : null,
-          resC.ok ? resC.json() : null,
-        ])
-        // Go directly to the saved Plan A — it has A/B/C tabs to switch to siblings
-        router.push(`/plan/${dataA.id}?saved=1`)
-        return
-      }
+      // Drain response bodies (required before the responses are GC'd)
+      await Promise.all([
+        resA.ok ? resA.json() : null,
+        resB.ok ? resB.json() : null,
+        resC.ok ? resC.json() : null,
+      ])
 
-      // Not logged in or save failed — preview without save
+      // Always go to the full A/B/C preview page (shows all 3 plans + analysis).
+      // Add saved=1 when at least Plan A was saved so the page shows the banner.
+      if (resA.ok) params.set("saved", "1")
       router.push(`/plan?${params.toString()}`)
     } catch {
       setGenerateError("Something went wrong. Please try again.")

@@ -19,14 +19,22 @@ import type { CustomCourseEntry, StudentProfile as StudentProfileType, SemesterP
 import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types"
 import type { MathPlacement } from "@/lib/types"
 
-// ── Category theme (forest palette) ─────────────────────────────────────────
-const CAT: Record<string, { border: string; bg: string; code: string; codeText: string; tag: string; tagText: string }> = {
-  Major:    { border: "#5ba8c7", bg: "rgba(91,168,199,0.13)",   code: "#5ba8c7", codeText: "#a8dff5", tag: "rgba(91,168,199,0.22)",   tagText: "#a8dff5" },
-  Minor:    { border: "#b07fe8", bg: "rgba(176,127,232,0.13)",  code: "#b07fe8", codeText: "#d4b8f8", tag: "rgba(176,127,232,0.22)",  tagText: "#d4b8f8" },
-  GEM:      { border: "#6fcf97", bg: "rgba(111,207,151,0.13)",  code: "#6fcf97", codeText: "#a8eccc", tag: "rgba(111,207,151,0.22)",  tagText: "#a8eccc" },
-  Elective: { border: "#f5a623", bg: "rgba(245,166,35,0.11)",   code: "#f5a623", codeText: "#ffd080", tag: "rgba(245,166,35,0.20)",   tagText: "#ffd080" },
+// ── Category colors (light, for white grid background) ───────────────────────
+const CAT_CLS: Record<string, string> = {
+  Major:    "bg-blue-50 border-blue-200 text-blue-800",
+  Minor:    "bg-purple-50 border-purple-200 text-purple-800",
+  GEM:      "bg-green-50 border-green-200 text-green-800",
+  Elective: "bg-amber-50 border-amber-200 text-amber-800",
 }
-const getTheme = (cat: string) => CAT[cat] ?? CAT.Elective
+const getCatCls = (cat: string) => CAT_CLS[cat] ?? CAT_CLS.Elective
+
+// Keep CAT for the legend dots only
+const CAT_DOT: Record<string, string> = {
+  Major:    "#5ba8c7",
+  Minor:    "#b07fe8",
+  GEM:      "#6fcf97",
+  Elective: "#f5a623",
+}
 
 // ── Single course row ─────────────────────────────────────────────────────────
 function EditableCourseRow({
@@ -35,28 +43,20 @@ function EditableCourseRow({
   course: PlannedCourse; editMode: boolean
   onChange: (c: PlannedCourse) => void; onRemove: () => void
 }) {
-  const t = getTheme(course.category)
+  const cls = getCatCls(course.category)
 
   if (!editMode) {
     return (
-      <div className="group relative flex flex-col gap-1.5 rounded-lg px-3 py-2.5 transition-all hover:brightness-110"
-        style={{ background: t.bg, borderLeft: `3px solid ${t.border}` }}>
-        <div className="flex items-start justify-between gap-2">
-          <span className="font-mono text-[11px] font-bold shrink-0" style={{ color: t.codeText }}>
-            {course.isPlaceholder ? "TBD" : course.code}
-          </span>
-          <span className="text-[10px] font-semibold shrink-0" style={{ color: "rgba(255,255,255,0.50)" }}>
-            {course.credits}cr
-          </span>
+      <div className={`rounded-md border px-2.5 py-2 text-xs ${cls}`}>
+        <div className="flex items-start gap-1.5">
+          <span className="font-mono font-semibold shrink-0">{course.isPlaceholder ? "TBD" : course.code}</span>
+          <span className="flex-1 min-w-0 leading-tight break-words">{course.name}</span>
+          <span className="shrink-0 text-[10px] opacity-60">{course.credits}cr</span>
         </div>
-        <span className="text-[12px] font-medium leading-snug" style={{ color: "#ecf6f2" }}>{course.name}</span>
         {course.fulfills.length > 0 && (
-          <div className="mt-0.5 flex flex-wrap gap-1">
+          <div className="mt-1 flex flex-wrap gap-1">
             {course.fulfills.slice(0, 2).map(f => (
-              <span key={f} className="rounded-full px-2 py-0.5 text-[11px] font-semibold leading-tight"
-                style={{ background: t.tag, color: t.tagText }}>
-                {f}
-              </span>
+              <span key={f} className="rounded bg-black/5 px-1 py-0.5 text-[10px]">{f}</span>
             ))}
           </div>
         )}
@@ -65,16 +65,16 @@ function EditableCourseRow({
   }
 
   return (
-    <div className="flex items-center gap-1.5 rounded-lg px-2 py-1.5"
-      style={{ background: t.bg, borderLeft: `3px solid ${t.border}` }}>
-      <div className="flex-1 min-w-0">
-        <PlanCourseCombobox course={course} onChange={onChange} />
+    <div className={`rounded-md border px-2 py-1.5 text-xs ${cls}`}>
+      <div className="flex items-center gap-1.5">
+        <div className="flex-1 min-w-0">
+          <PlanCourseCombobox course={course} onChange={onChange} />
+        </div>
+        <button type="button" onClick={onRemove}
+          className="shrink-0 rounded p-1 transition-colors hover:bg-red-100 text-current opacity-50 hover:opacity-100 hover:text-red-600">
+          <Trash2 className="h-3 w-3" />
+        </button>
       </div>
-      <button type="button" onClick={onRemove}
-        className="shrink-0 rounded p-1 transition-colors hover:bg-red-500/20"
-        style={{ color: "rgba(255,255,255,0.4)" }}>
-        <Trash2 className="h-3 w-3" />
-      </button>
     </div>
   )
 }
@@ -96,25 +96,20 @@ function EditableSemesterCard({
       {/* Semester header */}
       <div className="flex items-center justify-between px-1 mb-1">
         <div className="flex items-center gap-1.5">
-          <span className="text-xs font-semibold tracking-wide" style={{ color: isFall ? "#f5a623" : "#6fcf97", fontFamily: "var(--font-cinzel)" }}>
+          <span className="text-xs font-semibold tracking-wide" style={{ color: isFall ? "#b87a00" : "#1a7a52", fontFamily: "var(--font-cinzel)" }}>
             {termLabel}
           </span>
-          {isDone && <Lock className="h-3 w-3" style={{ color: "rgba(255,255,255,0.25)" }} />}
+          {isDone && <Lock className="h-3 w-3 text-gray-400" />}
         </div>
-        <span className="text-[11px] font-mono font-semibold" style={{ color: "rgba(255,255,255,0.55)" }}>
+        <span className="text-[11px] font-mono font-semibold text-gray-400">
           {semester.totalCredits}cr
         </span>
       </div>
 
       {/* Course list */}
-      <div className="flex flex-col gap-1.5 rounded-xl p-2"
-        style={{
-          background: isDone ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.07)",
-          border: `1px solid ${isDone ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.13)"}`,
-          borderStyle: isDone ? "dashed" : "solid",
-        }}>
+      <div className={`flex flex-col gap-1.5 rounded-xl p-2 ${isDone ? "bg-gray-50 border border-dashed border-gray-200" : "bg-white border border-gray-200"}`}>
         {isDone && (
-          <p className="text-[10px] italic px-1 pb-1 mb-0.5" style={{ color: "rgba(255,255,255,0.45)", borderBottom: "1px solid rgba(255,255,255,0.10)" }}>
+          <p className="text-[10px] italic px-1 pb-1 mb-0.5 text-gray-400 border-b border-gray-100">
             Completed semester
           </p>
         )}
@@ -128,13 +123,7 @@ function EditableSemesterCard({
         ))}
         {editMode && !isDone && (
           <button type="button" onClick={onAddCourse}
-            className="flex w-full items-center justify-center gap-1 rounded-lg py-1.5 text-[11px] transition-colors"
-            style={{
-              border: "1px dashed rgba(245,166,35,0.25)",
-              color: "rgba(245,166,35,0.5)",
-            }}
-            onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(245,166,35,0.5)"; (e.currentTarget as HTMLButtonElement).style.color = "#f5a623" }}
-            onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(245,166,35,0.25)"; (e.currentTarget as HTMLButtonElement).style.color = "rgba(245,166,35,0.5)" }}>
+            className="flex w-full items-center justify-center gap-1 rounded-lg border border-dashed border-gray-300 py-1.5 text-[11px] text-gray-400 transition-colors hover:border-gray-400 hover:text-gray-600">
             <Plus className="h-3 w-3" /> Add course
           </button>
         )}
@@ -188,44 +177,40 @@ function PlanView({ initialPlan, profile }: {
   return (
     <div>
       {/* Edit controls */}
-      <div className="mb-6 flex justify-end gap-2">
+      <div className="mb-4 flex justify-end gap-2">
         {editMode ? (
           <>
-            <span className="flex items-center rounded-full px-3 py-1.5 text-xs"
-              style={{ background: "rgba(245,166,35,0.12)", color: "#f5a623", border: "1px solid rgba(245,166,35,0.25)" }}>
+            <span className="flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs text-amber-700">
               Editing — click any course to change it
             </span>
             <button onClick={() => setEditMode(false)}
-              className="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-medium transition"
-              style={{ background: "rgba(111,207,151,0.12)", color: "#6fcf97", border: "1px solid rgba(111,207,151,0.25)" }}>
+              className="flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-4 py-1.5 text-xs font-medium text-green-700 transition hover:bg-green-100">
               <Check className="h-3.5 w-3.5" /> Done
             </button>
             <button onClick={() => { setSemesters(initialPlan.semesters); setEditMode(false) }}
-              className="flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition"
-              style={{ color: "rgba(255,255,255,0.4)", border: "1px solid rgba(255,255,255,0.1)" }}>
+              className="flex items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-xs text-gray-500 transition hover:bg-gray-50">
               <X className="h-3 w-3" /> Reset
             </button>
           </>
         ) : (
           <button onClick={() => setEditMode(true)}
-            className="flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-medium transition hover:border-white/25"
-            style={{ color: "#c8e0d8", border: "1px solid rgba(255,255,255,0.12)" }}>
+            className="flex items-center gap-1.5 rounded-full border border-gray-200 px-4 py-1.5 text-xs font-medium text-gray-600 transition hover:bg-gray-50">
             <Pencil className="h-3.5 w-3.5" /> Edit Plan
           </button>
         )}
       </div>
 
-      {/* Year columns */}
+      {/* Year columns — white panel */}
+      <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5 md:p-6">
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {YEARS.map(({ label, num, fallIdx, springIdx }) => (
           <div key={label} className="flex flex-col gap-4">
             {/* Year header */}
-            <div className="flex items-baseline gap-2 border-b pb-2"
-              style={{ borderColor: "rgba(255,255,255,0.08)" }}>
-              <span className="text-2xl font-black" style={{ fontFamily: "var(--font-cinzel)", color: "#f5a623" }}>
+            <div className="flex items-baseline gap-2 border-b border-gray-200 pb-2">
+              <span className="text-2xl font-black" style={{ fontFamily: "var(--font-cinzel)", color: "#b87a00" }}>
                 {num}
               </span>
-              <span className="text-sm" style={{ color: "rgba(255,255,255,0.35)", fontFamily: "var(--font-cinzel)" }}>
+              <span className="text-sm font-semibold text-gray-500" style={{ fontFamily: "var(--font-cinzel)" }}>
                 {label}
               </span>
             </div>
@@ -249,6 +234,7 @@ function PlanView({ initialPlan, profile }: {
           </div>
         ))}
       </div>
+      </div>{/* end white panel */}
 
       {/* Overflow warning */}
       {(initialPlan.warnings.length > 0 || unfulfilledCourses.length > 0) && (
@@ -277,9 +263,9 @@ function PlanView({ initialPlan, profile }: {
 
       {/* Legend */}
       <div className="mt-4 flex flex-wrap items-center justify-center gap-4">
-        {Object.entries(CAT).map(([cat, t]) => (
+        {Object.entries(CAT_DOT).map(([cat, color]) => (
           <div key={cat} className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full" style={{ background: t.border }} />
+            <span className="h-2.5 w-2.5 rounded-full" style={{ background: color }} />
             <span className="text-[11px] font-medium" style={{ color: "rgba(255,255,255,0.65)" }}>{cat}</span>
           </div>
         ))}
@@ -300,11 +286,8 @@ function PlanView({ initialPlan, profile }: {
 // ── Page root ─────────────────────────────────────────────────────────────────
 function PlanPageInner() {
   const searchParams = useSearchParams()
-  // Plan IDs set when arriving from the planner after saving all 3 variants
-  const planId  = searchParams.get("planId")   // Plan A
-  const planIdB = searchParams.get("planIdB")  // Plan B
-  const planIdC = searchParams.get("planIdC")  // Plan C
-  const savedIds: Record<string, string | null> = { A: planId, B: planIdB, C: planIdC }
+  // saved=1 is set when arriving from the planner after successfully saving all 3 plans
+  const wasSaved = searchParams.get("saved") === "1"
   const [ready, setReady] = useState(false)
   const [profile, setProfile] = useState<StudentProfileType | null>(null)
   const [plans, setPlans] = useState<{
@@ -368,12 +351,15 @@ function PlanPageInner() {
       }}>
       <LumenFireflies className="fixed opacity-85" />
       <ForestNav actions={
-        <div className="flex items-center gap-3">
-          <Link href="/planner" className="flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm text-[#c8e0d8] transition hover:border-white/30">
-            <ArrowLeft className="h-4 w-4" /> Edit Preferences
-          </Link>
+        <div className="flex items-center gap-2 sm:gap-3">
           <Link href="/profile" className="flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm text-[#c8e0d8] transition hover:border-white/30">
-            <User className="h-4 w-4" /> Profile
+            <ArrowLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">Back to Dashboard</span>
+            <span className="sm:hidden">Dashboard</span>
+          </Link>
+          <Link href="/planner" className="flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm text-[#7aada0] transition hover:border-white/30 hover:text-[#c8e0d8]">
+            <Pencil className="h-4 w-4" />
+            <span className="hidden sm:inline">Edit Preferences</span>
           </Link>
           <ExportButton />
         </div>
@@ -387,39 +373,25 @@ function PlanPageInner() {
             Your Academic Journey
           </h1>
           <p className="text-sm italic" style={{ color: "#9abfb8" }}>
-            Preview and compare plans — sign in to save · min {MINIMUM_TOTAL_CREDITS} credits · {MINIMUM_CREDITS_OUTSIDE_MAJOR} outside your major
+            Compare all three variants · min {MINIMUM_TOTAL_CREDITS} credits · {MINIMUM_CREDITS_OUTSIDE_MAJOR} outside your major
           </p>
         </div>
 
         <StudentProfile profile={{ majors: profile.majors, minors: profile.minors, interests: profile.interests, careerGoals: profile.careerGoals }} />
 
         {/* Saved banner — shown when arriving from the planner after a successful save */}
-        {planId && (
-          <div className="mb-8 rounded-2xl p-5"
+        {wasSaved && (
+          <div className="mb-8 flex items-center gap-4 rounded-2xl p-5"
             style={{ background: "rgba(111,207,151,0.10)", border: "1px solid rgba(111,207,151,0.25)" }}>
-            <div className="mb-3 flex items-center gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
-                style={{ background: "rgba(111,207,151,0.20)" }}>
-                <Save className="h-4 w-4" style={{ color: "#6fcf97" }} />
-              </div>
-              <div>
-                <p className="text-sm font-semibold" style={{ color: "#6fcf97" }}>All three plans have been saved!</p>
-                <p className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>
-                  Browse Plans A, B, and C below. Click a plan&apos;s button to view and edit it.
-                </p>
-              </div>
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full"
+              style={{ background: "rgba(111,207,151,0.20)" }}>
+              <Save className="h-5 w-5" style={{ color: "#6fcf97" }} />
             </div>
-            <div className="flex flex-wrap gap-2">
-              {(["A","B","C"] as const).map(p => {
-                const sid = savedIds[p]
-                return sid ? (
-                  <Link key={p} href={`/plan/${sid}`}
-                    className="rounded-full px-4 py-1.5 text-xs font-semibold transition hover:brightness-110"
-                    style={{ background: "rgba(111,207,151,0.20)", color: "#6fcf97", border: "1px solid rgba(111,207,151,0.35)" }}>
-                    View &amp; Edit Plan {p} →
-                  </Link>
-                ) : null
-              })}
+            <div>
+              <p className="text-base font-bold" style={{ color: "#6fcf97" }}>All three plans saved to your account!</p>
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
+                Browse Plans A, B, and C below. Head to <Link href="/profile" className="underline" style={{ color: "#f5a623" }}>Dashboard</Link> to access them anytime.
+              </p>
             </div>
           </div>
         )}
