@@ -147,7 +147,7 @@ export default function PlannerPage() {
 
       if (res.ok) {
         const { id } = await res.json()
-        router.push(`/plan/${id}`)
+        router.push(`/plan/${id}?saved=1`)
         return
       }
 

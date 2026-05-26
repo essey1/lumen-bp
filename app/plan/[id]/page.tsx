@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft, Sparkles, Save, Pencil, Check, X, Trash2, GraduationCap, Loader2, Plus, Lock,
@@ -9,6 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PlanCourseCombobox } from "@/components/plan/course-combobox";
+import { CareerAdvice } from "@/components/plan/career-advice";
 import { LumenFireflies } from "@/components/lumen-ambience";
 import type { SemesterPlan, PlannedCourse } from "@/lib/types";
 
@@ -144,6 +145,7 @@ function SemesterColumn({
 export default function SavedPlanPage() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const id = params.id as string;
 
   const [plan, setPlan] = useState<SavedPlan | null>(null);
@@ -155,6 +157,16 @@ export default function SavedPlanPage() {
   const [deleteStatus, setDeleteStatus] = useState<"idle" | "confirming" | "deleting">("idle");
   const [error, setError] = useState("");
   const [activeYear, setActiveYear] = useState(0); // mobile tab index
+  const [showSavedBanner, setShowSavedBanner] = useState(false);
+
+  // Show "plan saved" banner when arriving fresh from the planner
+  useEffect(() => {
+    if (searchParams.get("saved") === "1") {
+      setShowSavedBanner(true);
+      const t = setTimeout(() => setShowSavedBanner(false), 4000);
+      return () => clearTimeout(t);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     fetch(`/api/plans/${id}`)
@@ -299,6 +311,22 @@ export default function SavedPlanPage() {
       </header>
 
       <main className="lumen-app-content container mx-auto px-4 py-6">
+
+        {/* ── "Plan saved" banner ── */}
+        {showSavedBanner && (
+          <div
+            className="mb-5 flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium transition-all"
+            style={{
+              borderColor: "rgba(111,207,151,0.4)",
+              background:  "rgba(111,207,151,0.12)",
+              color:       "#6fcf97",
+            }}
+          >
+            <Check className="h-4 w-4 shrink-0" />
+            Your plan has been saved! Scroll down to see your AI-powered career recommendations.
+          </div>
+        )}
+
         <Link href="/profile" className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-4 w-4" /> Back to Dashboard
         </Link>
@@ -430,6 +458,21 @@ export default function SavedPlanPage() {
             </div>
           </CardContent>
         </Card>
+
+        {/* ── AI Career Recommendations ── */}
+        {plan.careerGoals.length > 0 && (
+          <div className="mt-8">
+            <CareerAdvice
+              careerGoals={plan.careerGoals}
+              majors={plan.majors}
+              interests={plan.interests}
+              courses={semesters
+                .flatMap(sem => sem.courses)
+                .filter(c => !c.isPlaceholder)
+                .map(c => ({ code: c.code, name: c.name }))}
+            />
+          </div>
+        )}
       </main>
     </div>
   );
