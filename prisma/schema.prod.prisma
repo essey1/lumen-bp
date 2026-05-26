@@ -1,18 +1,16 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Production schema — PostgreSQL (Vercel / Neon / Supabase)
+// Used by Vercel via the build command in vercel.json.
+// Local dev uses prisma/schema.prisma (SQLite) instead.
 
 generator client {
   provider = "prisma-client-js"
   output   = "../prisma-client"
 }
 
-// ── Local dev: SQLite ──────────────────────────────────────────────────────────
-// Production uses prisma/schema.prod.prisma (PostgreSQL) via vercel.json build cmd.
-// The client is generated outside .prisma/client so VS Code's Prisma extension
-// cannot lock the query engine DLL on Windows.
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 model User {
@@ -24,12 +22,12 @@ model User {
   image         String?
   otpEnabled    Boolean   @default(true)
   major              String?
-  minor              String?  // minor program name (free text)
+  minor              String?
   year               Int?
   bio                String?
-  completedSemesters String?  // JSON array of CompletedSemesterData
-  mathPlacement      String?  @default("none") // highest math level completed/waived
-  waivedCourses      String?  // JSON array of course codes the student has waived
+  completedSemesters String?
+  mathPlacement      String?  @default("none")
+  waivedCourses      String?
   accounts      Account[]
   sessions      Session[]
   otps          OTP[]
@@ -88,14 +86,14 @@ model Plan {
   id            String   @id @default(cuid())
   userId        String
   name          String   @default("My Plan")
-  majors        String   // JSON array of major codes
-  minors        String   // JSON array of minor codes
-  interests     String   // JSON array
-  careerGoals   String   // JSON array
+  majors        String
+  minors        String
+  interests     String
+  careerGoals   String
   mathPlacement String   @default("none")
-  waivedCourses String   // JSON array of course codes
+  waivedCourses String
   planType      String   @default("A")
-  semesters     String   // JSON - SemesterPlan[] with any manual edits applied
+  semesters     String
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
