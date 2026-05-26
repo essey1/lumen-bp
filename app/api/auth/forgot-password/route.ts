@@ -21,9 +21,11 @@ export async function POST(req: Request) {
       select: { id: true, name: true },
     })
 
-    // Always return success to avoid leaking which emails are registered
     if (!user) {
-      return NextResponse.json({ success: true })
+      return NextResponse.json(
+        { error: "No account found with that email address." },
+        { status: 404 }
+      )
     }
 
     const existingOTP = await prisma.oTP.findFirst({
