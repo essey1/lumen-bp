@@ -18,7 +18,6 @@ node_modules
 
 # Generated Prisma client (recreated by `prisma generate` on every install/build)
 .prisma-seed/
-/prisma-client/
 
 # SQLite dev database (local only — never commit)
 *.db

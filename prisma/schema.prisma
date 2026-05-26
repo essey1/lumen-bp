@@ -3,13 +3,10 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../prisma-client"
 }
 
-// ── Local dev: SQLite ──────────────────────────────────────────────────────────
-// Production uses prisma/schema.prod.prisma (PostgreSQL) via vercel.json build cmd.
-// The client is generated outside .prisma/client so VS Code's Prisma extension
-// cannot lock the query engine DLL on Windows.
+// Local dev: SQLite. Production uses prisma/schema.prod.prisma (PostgreSQL)
+// via the build command in vercel.json.
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
