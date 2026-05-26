@@ -2066,12 +2066,18 @@ export function generateAcademicPlan(
         )
         .sort((a, b) => {
           // Primary: tightest deadline first (most urgent)
-          const urgency = (a.latest - b.latest) || (a.earliest - b.earliest);
-          if (urgency !== 0) return urgency;
-          // Secondary: courses satisfying more requirement pools first (helps double majors)
+          const deadlineDiff = a.latest - b.latest;
+          if (deadlineDiff !== 0) return deadlineDiff;
+          // Secondary: most downstream dependents first — placing this course ASAP
+          // unlocks the most future work (e.g. CSC 226 unlocks 5+ CSC courses so it
+          // must come before MAT 235 which might only unlock 1-2 courses).
+          const fanA = dependents.get(a.item.course.code)?.length ?? 0;
+          const fanB = dependents.get(b.item.course.code)?.length ?? 0;
+          if (fanA !== fanB) return fanB - fanA;
+          // Tertiary: courses satisfying more requirement pools first (helps double majors)
           const crossBonus = (crossReqBonus[b.item.course.code] ?? 0) - (crossReqBonus[a.item.course.code] ?? 0);
           if (crossBonus !== 0) return crossBonus;
-          // Tertiary: interest/career alignment — pick the course the student cares about
+          // Quaternary: interest/career alignment
           const interestA = scoreCourseFit(a.item.course.code, profile, planType);
           const interestB = scoreCourseFit(b.item.course.code, profile, planType);
           if (interestA !== interestB) return interestB - interestA;
@@ -2090,9 +2096,10 @@ export function generateAcademicPlan(
         });
     }
 
-    // Double majors get 3 major slots/semester so all requirements can fit.
-    // Single major stays at 2 to preserve room for GEM and electives.
-    const maxMajorSlots = profile.majors.length >= 2 ? 3 : 2;
+    // Allow up to 3 major/collateral courses per semester.
+    // Prerequisites (e.g. MAT for CSC, CHM for BIO) count as Major and need slots too.
+    // The 2.5cr/dept cap still prevents stacking more than 2 same-dept courses in one term.
+    const maxMajorSlots = 3;
     let majorPlaced = 0;
 
     // Track credits per department already in this semester
@@ -2197,24 +2204,22 @@ export function generateAcademicPlan(
     if (!placed) unfulfilledRequirements.push(`${s.item.course.name} (${s.item.course.fulfills.join(", ")})`);
   }
 
-  // 6. Electives — only filled when ALL requirements are successfully placed.
-  //    If any requirement is unfulfilled, every open slot stays as a placeholder
-  //    so the student can see exactly how many free slots remain and fill them
-  //    manually once the schedule conflict is resolved.
-  if (unfulfilledRequirements.length === 0) {
-    for (let sem = 0; sem < 8; sem++) {
-      for (let i = 0; i < semesters[sem].courses.length; i++) {
-        const c = semesters[sem].courses[i];
-        if (!c.isPlaceholder || c.category !== "Elective") continue;
-        const elective = findInterestElective(sem, usedCodes, profile, pref, placedMap, semesters[sem].courses, planType);
-        if (elective) {
-          semesters[sem].courses[i] = elective;
-          // totalCredits unchanged (both 1 credit); update tracking maps
-          placedMap.set(elective.code, sem);
-          usedCodes.add(elective.code);
-        }
-        // If no elective found, the placeholder stays as-is
+  // 6. Fill all remaining open slots with interest/career-aligned electives.
+  //    Always run — never leave TBD placeholders in the output. If a specific
+  //    requirement is unfulfilled that is shown in the warnings; the free slots
+  //    still get real courses the student will actually want to take.
+  for (let sem = 0; sem < 8; sem++) {
+    for (let i = 0; i < semesters[sem].courses.length; i++) {
+      const c = semesters[sem].courses[i];
+      if (!c.isPlaceholder || c.category !== "Elective") continue;
+      const elective = findInterestElective(sem, usedCodes, profile, pref, placedMap, semesters[sem].courses, planType);
+      if (elective) {
+        semesters[sem].courses[i] = elective;
+        placedMap.set(elective.code, sem);
+        usedCodes.add(elective.code);
       }
+      // If no matching elective exists in the catalog, leave the placeholder as a named
+      // elective (e.g. "Computer Science Elective") rather than blank "TBD"
     }
   }
 
