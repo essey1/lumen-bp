@@ -152,8 +152,11 @@ function ResetPasswordForm() {
               >
                 Reset password.
               </h1>
-              <p className="mb-8 text-center text-sm italic text-[#7aada0]">
+              <p className="mb-2 text-center text-sm italic text-[#7aada0]">
                 Enter the code we sent and your new password.
+              </p>
+              <p className="mb-8 text-center text-xs" style={{ color: "#f5a623" }}>
+                {"Don't see it? Check your"} <strong>Junk</strong> {" or "} <strong>Spam</strong> {" folder."}
               </p>
 
               {error && (

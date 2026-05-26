@@ -96,7 +96,7 @@ export default function PlannerPage() {
       return
     }
 
-    // ── Final step: generate Plan A and auto-save ─────────────────────────────
+    // ── Final step: generate Plans A, B, C and auto-save all three ──────────────
     setGenerating(true)
     setGenerateError("")
 
@@ -123,35 +123,12 @@ export default function PlannerPage() {
 
       const customCourseEntries: CustomCourseEntry[] = Object.values(customCourses)
 
-      const plan = generateAcademicPlan(profile, {
-        planType: "A",
-        completedSemesters: completedSemesterInputs,
-        customCourses: customCourseEntries,
-      })
+      // Generate all three plan variants
+      const planA = generateAcademicPlan(profile, { planType: "A", completedSemesters: completedSemesterInputs, customCourses: customCourseEntries })
+      const planB = generateAcademicPlan(profile, { planType: "B", completedSemesters: completedSemesterInputs, customCourses: customCourseEntries })
+      const planC = generateAcademicPlan(profile, { planType: "C", completedSemesters: completedSemesterInputs, customCourses: customCourseEntries })
 
-      const res = await fetch("/api/plans", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name:          formData.planName.trim() || `${formData.majors[0] ?? "My"} Plan`,
-          majors:        formData.majors,
-          minors:        formData.minors,
-          interests:     formData.interests,
-          careerGoals:   formData.careerGoals,
-          mathPlacement: profileMathPlacement,
-          waivedCourses: profileWaivedCourses,
-          planType:      "A",
-          semesters:     plan.semesters,
-        }),
-      })
-
-      if (res.ok) {
-        const { id } = await res.json()
-        router.push(`/plan/${id}?saved=1`)
-        return
-      }
-
-      // Not logged in or save failed — fall back to the preview page
+      // Build preview URL params (used for both success and fallback paths)
       const params = new URLSearchParams()
       if (formData.majors.length > 0)      params.set("majors",      formData.majors.join(","))
       if (formData.minors.length > 0)      params.set("minors",      formData.minors.join(","))
@@ -172,6 +149,41 @@ export default function PlannerPage() {
         sessionStorage.removeItem("customCourses")
       }
 
+      const baseName = formData.planName.trim() || `${formData.majors[0] ?? "My"} Plan`
+      const commonFields = {
+        majors:        formData.majors,
+        minors:        formData.minors,
+        interests:     formData.interests,
+        careerGoals:   formData.careerGoals,
+        mathPlacement: profileMathPlacement,
+        waivedCourses: profileWaivedCourses,
+      }
+
+      // Save all three plans in parallel
+      const [resA, resB, resC] = await Promise.all([
+        fetch("/api/plans", { method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...commonFields, name: `${baseName} – A`, planType: "A", semesters: planA.semesters }) }),
+        fetch("/api/plans", { method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...commonFields, name: `${baseName} – B`, planType: "B", semesters: planB.semesters }) }),
+        fetch("/api/plans", { method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...commonFields, name: `${baseName} – C`, planType: "C", semesters: planC.semesters }) }),
+      ])
+
+      if (resA.ok) {
+        const [dataA, dataB, dataC] = await Promise.all([
+          resA.json(),
+          resB.ok ? resB.json() : null,
+          resC.ok ? resC.json() : null,
+        ])
+        // Pass all plan IDs to preview page so it shows "saved" banners with edit links
+        params.set("planId",  dataA.id)
+        if (dataB) params.set("planIdB", dataB.id)
+        if (dataC) params.set("planIdC", dataC.id)
+        router.push(`/plan?${params.toString()}`)
+        return
+      }
+
+      // Not logged in or save failed — preview without save
       router.push(`/plan?${params.toString()}`)
     } catch {
       setGenerateError("Something went wrong. Please try again.")

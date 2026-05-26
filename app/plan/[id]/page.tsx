@@ -1,17 +1,20 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft, Sparkles, Save, Pencil, Check, X, Trash2, GraduationCap, Loader2, Plus, Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { PlanCourseCombobox } from "@/components/plan/course-combobox";
 import { CareerAdvice } from "@/components/plan/career-advice";
+import { StudentProfile } from "@/components/plan/student-profile";
+import { OverflowWarning } from "@/components/plan/overflow-warning";
 import { LumenFireflies } from "@/components/lumen-ambience";
-import type { SemesterPlan, PlannedCourse } from "@/lib/types";
+import { generateAcademicPlan } from "@/lib/plan-generator";
+import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types";
+import type { SemesterPlan, PlannedCourse, MathPlacement } from "@/lib/types";
 
 interface SavedPlan {
   id: string;
@@ -158,6 +161,7 @@ export default function SavedPlanPage() {
   const [error, setError] = useState("");
   const [activeYear, setActiveYear] = useState(0); // mobile tab index
   const [showSavedBanner, setShowSavedBanner] = useState(false);
+  const [generatedPlan, setGeneratedPlan] = useState<{ unfulfilledRequirements: string[]; warnings: string[] } | null>(null);
 
   // Show "plan saved" banner when arriving fresh from the planner
   useEffect(() => {
@@ -178,6 +182,20 @@ export default function SavedPlanPage() {
         setPlan(data);
         setSemesters(data.semesters);
         setPlanName(data.name);
+        // Regenerate to get unfulfilled requirements + warnings
+        const gen = generateAcademicPlan(
+          {
+            majors:        data.majors,
+            minors:        data.minors,
+            interests:     data.interests,
+            hobbies:       [],
+            careerGoals:   data.careerGoals,
+            mathPlacement: data.mathPlacement as MathPlacement,
+            waivedCourses: data.waivedCourses,
+          },
+          { planType: (data.planType ?? "A") as "A" | "B" | "C" }
+        );
+        setGeneratedPlan({ unfulfilledRequirements: gen.unfulfilledRequirements, warnings: gen.warnings });
       })
       .catch(() => router.push("/profile"));
   }, [id, router]);
@@ -239,6 +257,17 @@ export default function SavedPlanPage() {
     await fetch(`/api/plans/${id}`, { method: "DELETE" });
     router.push("/profile");
   }
+
+  const stats = useMemo(() => {
+    if (semesters.length === 0) return null;
+    const totalCredits        = semesters.reduce((s, sem) => s + sem.totalCredits, 0);
+    const totalCourses        = semesters.reduce((s, sem) => s + sem.courses.length, 0);
+    const majorCourses        = semesters.reduce((s, sem) => s + sem.courses.filter(c => c.category === "Major").length, 0);
+    const creditsOutsideMajor = semesters.reduce((s, sem) => s + sem.courses.filter(c => c.category !== "Major").reduce((a, c) => a + c.credits, 0), 0);
+    const placeholderCourses  = semesters.reduce((s, sem) => s + sem.courses.filter(c => c.isPlaceholder).length, 0);
+    const overloadedSemesters = semesters.filter(s => s.isOverloaded).length;
+    return { totalCredits, totalCourses, majorCourses, creditsOutsideMajor, placeholderCourses, overloadedSemesters };
+  }, [semesters]);
 
   const years = plan
     ? [
@@ -361,6 +390,14 @@ export default function SavedPlanPage() {
           {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
         </div>
 
+        {/* Student profile summary */}
+        <StudentProfile profile={{
+          majors:      plan.majors,
+          minors:      plan.minors,
+          interests:   plan.interests,
+          careerGoals: plan.careerGoals,
+        }} />
+
         {/* ── Mobile: year tabs + semester pair ── */}
         <div className="md:hidden">
           {/* Year tab strip */}
@@ -434,30 +471,99 @@ export default function SavedPlanPage() {
           )}
         </div>
 
-        <Card className="lumen-surface mt-8">
-          <CardContent className="py-6">
-            <div className="grid gap-6 text-center md:grid-cols-3">
-              <div>
-                <p className="text-3xl font-bold text-primary">
-                  {semesters.reduce((s, sem) => s + sem.totalCredits, 0)}
-                </p>
-                <p className="text-sm text-muted-foreground">Total Credits</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-primary">
-                  {semesters.reduce((s, sem) => s + sem.courses.length, 0)}
-                </p>
-                <p className="text-sm text-muted-foreground">Total Courses</p>
-              </div>
-              <div>
-                <p className="text-3xl font-bold text-primary">
-                  {semesters.reduce((s, sem) => s + sem.courses.filter(c => c.category === "Major").length, 0)}
-                </p>
-                <p className="text-sm text-muted-foreground">Major Courses</p>
-              </div>
+        {/* ── Plan Analysis ── */}
+        {stats && (
+          <>
+            {/* 6-stat strip */}
+            <div className="mt-8 grid grid-cols-3 gap-3 rounded-2xl p-5 sm:grid-cols-6"
+              style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+              {([
+                { v: stats.totalCredits,         l: "Credits",       ok: stats.totalCredits >= MINIMUM_TOTAL_CREDITS },
+                { v: stats.totalCourses,         l: "Courses" },
+                { v: stats.majorCourses,         l: "Major" },
+                { v: stats.creditsOutsideMajor,  l: "Outside Major", ok: stats.creditsOutsideMajor >= MINIMUM_CREDITS_OUTSIDE_MAJOR },
+                { v: stats.placeholderCourses,   l: "TBD",           warn: stats.placeholderCourses > 0 },
+                { v: stats.overloadedSemesters,  l: "Overloaded",    warn: stats.overloadedSemesters > 0 },
+              ] as { v: number; l: string; ok?: boolean; warn?: boolean }[]).map(({ v, l, ok, warn }) => (
+                <div key={l} className="text-center">
+                  <p className="text-2xl font-black" style={{
+                    fontFamily: "var(--font-cinzel)",
+                    color: warn ? "#f5a623" : ok === true ? "#6fcf97" : ok === false ? "#f5a623" : "#5ba8c7",
+                  }}>{v}</p>
+                  <p className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>{l}</p>
+                </div>
+              ))}
             </div>
-          </CardContent>
-        </Card>
+
+            {/* Requirements check */}
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              {[
+                {
+                  label:  "Credit Requirement",
+                  met:    stats.totalCredits >= MINIMUM_TOTAL_CREDITS,
+                  detail: `${stats.totalCredits} / ${MINIMUM_TOTAL_CREDITS} credits`,
+                },
+                {
+                  label:  "Outside-Major Credits",
+                  met:    stats.creditsOutsideMajor >= MINIMUM_CREDITS_OUTSIDE_MAJOR,
+                  detail: `${stats.creditsOutsideMajor} / ${MINIMUM_CREDITS_OUTSIDE_MAJOR} required`,
+                },
+                {
+                  label:  "Major Requirements",
+                  met:    (generatedPlan?.unfulfilledRequirements.length ?? 1) === 0,
+                  detail: generatedPlan
+                    ? generatedPlan.unfulfilledRequirements.length === 0
+                      ? "All requirements covered"
+                      : `${generatedPlan.unfulfilledRequirements.length} unfulfilled`
+                    : "Checking…",
+                },
+              ].map(({ label, met, detail }) => (
+                <div key={label} className="flex items-start gap-3 rounded-xl p-4"
+                  style={{
+                    background: met ? "rgba(111,207,151,0.08)" : "rgba(245,166,35,0.08)",
+                    border: `1px solid ${met ? "rgba(111,207,151,0.2)" : "rgba(245,166,35,0.2)"}`,
+                  }}>
+                  <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+                    style={{
+                      background: met ? "rgba(111,207,151,0.2)" : "rgba(245,166,35,0.2)",
+                      color: met ? "#6fcf97" : "#f5a623",
+                    }}>
+                    {met ? "✓" : "!"}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold" style={{ color: met ? "#6fcf97" : "#f5a623" }}>{label}</p>
+                    <p className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>{detail}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Unfulfilled requirements */}
+            {generatedPlan && (generatedPlan.unfulfilledRequirements.length > 0 || generatedPlan.warnings.length > 0) && (
+              <div className="mt-4">
+                <OverflowWarning
+                  courses={generatedPlan.unfulfilledRequirements.map((req, i) => ({ code: `REQ ${i + 1}`, name: req, credits: 1 }))}
+                  warnings={generatedPlan.warnings}
+                />
+              </div>
+            )}
+
+            {/* Legend */}
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-4">
+              {[
+                { label: "Major",    color: "#5ba8c7" },
+                { label: "Minor",    color: "#b07fe8" },
+                { label: "GEM",      color: "#6fcf97" },
+                { label: "Elective", color: "#f5a623" },
+              ].map(({ label, color }) => (
+                <div key={label} className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full" style={{ background: color }} />
+                  <span className="text-[11px] font-medium" style={{ color: "rgba(255,255,255,0.65)" }}>{label}</span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
 
         {/* ── AI Career Recommendations ── */}
         {plan.careerGoals.length > 0 && (

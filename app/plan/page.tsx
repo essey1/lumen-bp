@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowLeft, Pencil, X, Plus, Trash2, Check, Lock, Sparkles, User } from "lucide-react"
+import { ArrowLeft, Pencil, X, Plus, Trash2, Check, Lock, Sparkles, User, Save } from "lucide-react"
 import { ForestNav } from "@/components/forest-nav"
 import { LumenFireflies } from "@/components/lumen-ambience"
 import { StudentProfile } from "@/components/plan/student-profile"
@@ -300,6 +300,11 @@ function PlanView({ initialPlan, profile }: {
 // ── Page root ─────────────────────────────────────────────────────────────────
 function PlanPageInner() {
   const searchParams = useSearchParams()
+  // Plan IDs set when arriving from the planner after saving all 3 variants
+  const planId  = searchParams.get("planId")   // Plan A
+  const planIdB = searchParams.get("planIdB")  // Plan B
+  const planIdC = searchParams.get("planIdC")  // Plan C
+  const savedIds: Record<string, string | null> = { A: planId, B: planIdB, C: planIdC }
   const [ready, setReady] = useState(false)
   const [profile, setProfile] = useState<StudentProfileType | null>(null)
   const [plans, setPlans] = useState<{
@@ -387,6 +392,37 @@ function PlanPageInner() {
         </div>
 
         <StudentProfile profile={{ majors: profile.majors, minors: profile.minors, interests: profile.interests, careerGoals: profile.careerGoals }} />
+
+        {/* Saved banner — shown when arriving from the planner after a successful save */}
+        {planId && (
+          <div className="mb-8 rounded-2xl p-5"
+            style={{ background: "rgba(111,207,151,0.10)", border: "1px solid rgba(111,207,151,0.25)" }}>
+            <div className="mb-3 flex items-center gap-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
+                style={{ background: "rgba(111,207,151,0.20)" }}>
+                <Save className="h-4 w-4" style={{ color: "#6fcf97" }} />
+              </div>
+              <div>
+                <p className="text-sm font-semibold" style={{ color: "#6fcf97" }}>All three plans have been saved!</p>
+                <p className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>
+                  Browse Plans A, B, and C below. Click a plan&apos;s button to view and edit it.
+                </p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {(["A","B","C"] as const).map(p => {
+                const sid = savedIds[p]
+                return sid ? (
+                  <Link key={p} href={`/plan/${sid}`}
+                    className="rounded-full px-4 py-1.5 text-xs font-semibold transition hover:brightness-110"
+                    style={{ background: "rgba(111,207,151,0.20)", color: "#6fcf97", border: "1px solid rgba(111,207,151,0.35)" }}>
+                    View &amp; Edit Plan {p} →
+                  </Link>
+                ) : null
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Plan tabs */}
         <Tabs defaultValue="A" className="mt-10">
