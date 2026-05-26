@@ -41,35 +41,49 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Plan data is required" }, { status: 400 });
   }
 
-  const baseData = {
-    userId: user.id,
-    name: name || "My Plan",
-    majors: JSON.stringify(majors ?? []),
-    minors: JSON.stringify(minors ?? []),
-    interests: JSON.stringify(interests ?? []),
-    careerGoals: JSON.stringify(careerGoals ?? []),
-    mathPlacement: mathPlacement ?? "none",
-    waivedCourses: JSON.stringify(waivedCourses ?? []),
-    planType: planType ?? "A",
-    semesters: JSON.stringify(semesters),
-  };
+  // Use raw SQL for the INSERT so we have full control over which columns are
+  // referenced. Prisma's typed API always includes every schema column in both
+  // the INSERT and RETURNING clauses — if groupId doesn't exist in the DB yet
+  // that causes a hard error. Raw SQL lets us omit groupId entirely from the
+  // main INSERT and add it later via a separate UPDATE (which fails silently
+  // if the column doesn't exist yet, so the plan is never lost).
+  const { randomUUID } = await import("crypto");
+  const planId = randomUUID();
 
-  // Always select only `id`.
-  // This keeps the RETURNING clause as `RETURNING "id"` — no other column
-  // is referenced after INSERT, so a missing `groupId` column can't break saves.
-  let plan: { id: string };
-  try {
-    plan = await prisma.plan.create({
-      data: groupId ? { ...baseData, groupId } : baseData,
-      select: { id: true },
-    });
-  } catch {
-    // groupId column might not exist in production yet — save without it.
-    plan = await prisma.plan.create({
-      data: baseData,
-      select: { id: true },
-    });
+  const planName    = name || "My Plan";
+  const majorsJson  = JSON.stringify(majors ?? []);
+  const minorsJson  = JSON.stringify(minors ?? []);
+  const interestsJson   = JSON.stringify(interests ?? []);
+  const careerGoalsJson = JSON.stringify(careerGoals ?? []);
+  const mathPlacementVal = mathPlacement ?? "none";
+  const waivedJson  = JSON.stringify(waivedCourses ?? []);
+  const planTypeVal = planType ?? "A";
+  const semestersJson = JSON.stringify(semesters);
+
+  await prisma.$executeRaw`
+    INSERT INTO "Plan" (
+      "id", "userId", "name", "majors", "minors", "interests",
+      "careerGoals", "mathPlacement", "waivedCourses", "planType",
+      "semesters", "createdAt", "updatedAt"
+    ) VALUES (
+      ${planId}, ${user.id}, ${planName},
+      ${majorsJson}, ${minorsJson}, ${interestsJson},
+      ${careerGoalsJson}, ${mathPlacementVal}, ${waivedJson},
+      ${planTypeVal}, ${semestersJson},
+      NOW(), NOW()
+    )
+  `;
+
+  // Best-effort: set groupId so A/B/C plans can be linked.
+  // If the column doesn't exist yet this UPDATE fails silently — the plan
+  // is already saved above and will work fine without groupId.
+  if (groupId) {
+    try {
+      await prisma.$executeRaw`
+        UPDATE "Plan" SET "groupId" = ${groupId} WHERE "id" = ${planId}
+      `;
+    } catch { /* groupId column not in DB yet — plan saved, just not grouped */ }
   }
 
-  return NextResponse.json({ id: plan.id }, { status: 201 });
+  return NextResponse.json({ id: planId }, { status: 201 });
 }
