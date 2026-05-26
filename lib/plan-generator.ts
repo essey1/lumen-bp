@@ -2301,10 +2301,23 @@ export function generateAcademicPlan(
     }
   }
 
-  // Recompute totals with completed semesters included
+  // Recompute totals with completed semesters included.
+  // Use code-prefix matching — NOT category — so that:
+  //   • MAT courses required by CSC major (category "Major") count as OUTSIDE major
+  //   • CSC courses in completed semesters (category forced to "Elective") count as INSIDE major
   const finalTotalCredits = semesters.reduce((s, sem) => s + sem.totalCredits, 0);
+  const majorPrefixList = profile.majors.map(code => code.split("_")[0]);
+  const isInsideMajorByCode = (courseCode: string) =>
+    majorPrefixList.some(p => courseCode.startsWith(p + " ") || courseCode === p);
   const finalCreditsOutsideMajor = semesters.reduce((s, sem) =>
-    s + sem.courses.filter(c => c.category !== "Major").reduce((x, c) => x + c.credits, 0), 0);
+    s + sem.courses.filter(c => !isInsideMajorByCode(c.code)).reduce((x, c) => x + c.credits, 0), 0);
+
+  // Warn if outside-major credits are insufficient (recheck after completed sems are merged)
+  const existingOutsideWarningIdx = warnings.findIndex(w => w.startsWith("Credits outside major"));
+  if (existingOutsideWarningIdx !== -1) warnings.splice(existingOutsideWarningIdx, 1);
+  if (finalCreditsOutsideMajor < MINIMUM_CREDITS_OUTSIDE_MAJOR) {
+    warnings.push(`Credits outside major (${finalCreditsOutsideMajor}) is below the minimum of ${MINIMUM_CREDITS_OUTSIDE_MAJOR}. Only courses outside your major department count toward this requirement.`);
+  }
 
   return { student: profile, semesters, totalCredits: finalTotalCredits, creditsOutsideMajor: finalCreditsOutsideMajor, unfulfilledRequirements, warnings };
 }

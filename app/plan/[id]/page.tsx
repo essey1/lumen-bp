@@ -268,14 +268,20 @@ export default function SavedPlanPage() {
 
   const stats = useMemo(() => {
     if (semesters.length === 0) return null;
+    // Use code-prefix matching — NOT category — so that:
+    //   • MAT courses required by CSC major (category "Major") count as OUTSIDE major
+    //   • CSC courses in completed semesters (category forced to "Elective") count as INSIDE major
+    const majorPrefixList = (plan?.majors ?? []).map(code => code.split("_")[0]);
+    const isInsideMajor = (courseCode: string) =>
+      majorPrefixList.some(p => courseCode.startsWith(p + " ") || courseCode === p);
     const totalCredits        = semesters.reduce((s, sem) => s + sem.totalCredits, 0);
     const totalCourses        = semesters.reduce((s, sem) => s + sem.courses.length, 0);
     const majorCourses        = semesters.reduce((s, sem) => s + sem.courses.filter(c => c.category === "Major").length, 0);
-    const creditsOutsideMajor = semesters.reduce((s, sem) => s + sem.courses.filter(c => c.category !== "Major").reduce((a, c) => a + c.credits, 0), 0);
+    const creditsOutsideMajor = semesters.reduce((s, sem) => s + sem.courses.filter(c => !isInsideMajor(c.code)).reduce((a, c) => a + c.credits, 0), 0);
     const placeholderCourses  = semesters.reduce((s, sem) => s + sem.courses.filter(c => c.isPlaceholder).length, 0);
     const overloadedSemesters = semesters.filter(s => s.isOverloaded).length;
     return { totalCredits, totalCourses, majorCourses, creditsOutsideMajor, placeholderCourses, overloadedSemesters };
-  }, [semesters]);
+  }, [semesters, plan]);
 
   const years = plan
     ? [

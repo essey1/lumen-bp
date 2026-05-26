@@ -246,17 +246,61 @@ function PlanView({ initialPlan, profile }: {
       {/* Stats strip */}
       <div className="mt-8 grid grid-cols-3 gap-3 rounded-2xl p-5 md:grid-cols-6"
         style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)" }}>
-        {[
-          { v: stats.totalCredits,         l: "Credits"       },
-          { v: stats.totalCourses,         l: "Courses"       },
-          { v: stats.majorCourses,         l: "Major"         },
-          { v: stats.creditsOutsideMajor,  l: "Outside Major" },
-          { v: stats.placeholderCourses,   l: "TBD"           },
-          { v: stats.overloadedSemesters,  l: "Overloaded", warn: stats.overloadedSemesters > 0 },
-        ].map(({ v, l, warn }) => (
+        {([
+          { v: stats.totalCredits,        l: "Credits",       ok: stats.totalCredits >= MINIMUM_TOTAL_CREDITS },
+          { v: stats.totalCourses,        l: "Courses"       },
+          { v: stats.majorCourses,        l: "Major"         },
+          { v: stats.creditsOutsideMajor, l: "Outside Major", ok: stats.creditsOutsideMajor >= MINIMUM_CREDITS_OUTSIDE_MAJOR },
+          { v: stats.placeholderCourses,  l: "TBD",          warn: stats.placeholderCourses > 0 },
+          { v: stats.overloadedSemesters, l: "Overloaded",   warn: stats.overloadedSemesters > 0 },
+        ] as { v: number; l: string; ok?: boolean; warn?: boolean }[]).map(({ v, l, ok, warn }) => (
           <div key={l} className="text-center">
-            <p className="text-2xl font-black" style={{ fontFamily: "var(--font-cinzel)", color: warn ? "#f5a623" : "#5ba8c7" }}>{v}</p>
+            <p className="text-2xl font-black" style={{
+              fontFamily: "var(--font-cinzel)",
+              color: warn ? "#f5a623" : ok === true ? "#6fcf97" : ok === false ? "#f5a623" : "#5ba8c7",
+            }}>{v}</p>
             <p className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>{l}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Requirements check cards */}
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        {[
+          {
+            label:  "Credit Requirement",
+            met:    stats.totalCredits >= MINIMUM_TOTAL_CREDITS,
+            detail: `${stats.totalCredits} / ${MINIMUM_TOTAL_CREDITS} credits`,
+          },
+          {
+            label:  "Outside-Major Credits",
+            met:    stats.creditsOutsideMajor >= MINIMUM_CREDITS_OUTSIDE_MAJOR,
+            detail: `${stats.creditsOutsideMajor} / ${MINIMUM_CREDITS_OUTSIDE_MAJOR} required`,
+          },
+          {
+            label:  "Major Requirements",
+            met:    initialPlan.unfulfilledRequirements.length === 0,
+            detail: initialPlan.unfulfilledRequirements.length === 0
+              ? "All requirements covered"
+              : `${initialPlan.unfulfilledRequirements.length} unfulfilled`,
+          },
+        ].map(({ label, met, detail }) => (
+          <div key={label} className="flex items-start gap-3 rounded-xl p-4"
+            style={{
+              background: met ? "rgba(111,207,151,0.08)" : "rgba(245,166,35,0.08)",
+              border: `1px solid ${met ? "rgba(111,207,151,0.2)" : "rgba(245,166,35,0.2)"}`,
+            }}>
+            <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+              style={{
+                background: met ? "rgba(111,207,151,0.2)" : "rgba(245,166,35,0.2)",
+                color: met ? "#6fcf97" : "#f5a623",
+              }}>
+              {met ? "✓" : "!"}
+            </div>
+            <div>
+              <p className="text-sm font-semibold" style={{ color: met ? "#6fcf97" : "#f5a623" }}>{label}</p>
+              <p className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>{detail}</p>
+            </div>
           </div>
         ))}
       </div>
