@@ -246,21 +246,21 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="lumen-app-shell" style={{ fontFamily: "var(--font-lora),Georgia,serif" }}>
+    <div className="lumen-app-shell">
       <LumenFireflies className="fixed opacity-80" />
       <ForestNav />
 
-      <main className="lumen-app-content container mx-auto max-w-3xl px-4 py-8 pt-24">
+      <main className="lumen-app-content container mx-auto max-w-3xl px-4 sm:px-6 py-8 pt-24">
         {/* User identity strip */}
-        <div className="mb-6 flex items-center gap-4">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 shrink-0">
-            <User className="h-7 w-7 text-primary" />
+        <div className="mb-6 flex items-center gap-3 sm:gap-4">
+          <div className="flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-primary/10 shrink-0">
+            <User className="h-6 w-6 sm:h-7 sm:w-7 text-primary" />
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground leading-tight">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground leading-tight break-words">
               {profile.name || "Your Dashboard"}
             </h1>
-            <p className="text-base text-muted-foreground">{profile.email}</p>
+            <p className="text-sm sm:text-base text-muted-foreground break-all">{profile.email}</p>
             {profile.major && (
               <p className="text-sm text-muted-foreground mt-0.5">
                 {profile.major}
@@ -296,12 +296,12 @@ export default function ProfilePage() {
               </Link>
             </div>
 
-            {/* Saved plans */}
+          {/* Saved plans */}
             <section>
-              <div className="mb-4 flex items-center justify-between">
-                <h2 className="flex items-center gap-2 text-xl font-bold text-foreground">
-                  <BookOpen className="h-5 w-5 text-primary" />
-                  My Saved Plans
+              <div className="mb-4 flex items-center justify-between flex-wrap gap-2">
+                <h2 className="flex items-center gap-2 text-lg sm:text-xl font-bold text-foreground">
+                  <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                  <span className="break-words">My Saved Plans</span>
                   {plans.length > 0 && (
                     <span className="rounded-full bg-muted px-2.5 py-0.5 text-sm text-muted-foreground font-normal">
                       {plans.length}
@@ -337,33 +337,33 @@ export default function ProfilePage() {
                     const minors = (() => { try { return JSON.parse(plan.minors) as string[]; } catch { return []; } })();
                     return (
                       <Card key={plan.id} className="border-border transition-shadow hover:shadow-md">
-                        <CardContent className="py-5">
-                          <div className="mb-1 flex min-w-0 items-start justify-between gap-2">
-                            <p className="text-base font-bold text-foreground leading-snug">{plan.name}</p>
-                            <p className="shrink-0 text-xs text-muted-foreground">
+                        <CardContent className="py-4 sm:py-5">
+                          <div className="mb-1 flex min-w-0 items-start justify-between gap-2 flex-wrap">
+                            <p className="text-sm sm:text-base font-bold text-foreground leading-snug break-words">{plan.name}</p>
+                            <p className="shrink-0 text-xs text-muted-foreground whitespace-nowrap">
                               {new Date(plan.updatedAt).toLocaleDateString()}
                             </p>
                           </div>
                           {(majors.length > 0 || minors.length > 0) && (
-                            <p className="mb-4 text-sm text-muted-foreground">
+                            <p className="mb-3 sm:mb-4 text-sm text-muted-foreground break-words">
                               {majors.join(", ")}
                               {minors.length > 0 && ` · Minor: ${minors.join(", ")}`}
                             </p>
                           )}
-                          <div className="flex items-center gap-2">
-                            <Link href={`/plan/${plan.id}`} className="flex-1 sm:flex-none">
-                              <Button className="w-full gap-1.5 sm:w-auto">
-                                View Plan <ArrowRight className="h-4 w-4" />
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Link href={`/plan/${plan.id}`} className="flex-1 sm:flex-none min-w-[120px]">
+                              <Button className="w-full gap-1.5 sm:w-auto text-sm">
+                                View Plan <ArrowRight className="h-3.5 w-3.5" />
                               </Button>
                             </Link>
                             <Button
                               variant={confirmDeleteId === plan.id ? "destructive" : "ghost"}
                               onClick={() => handleDeletePlan(plan.id)}
                               disabled={deletingId === plan.id}
-                              className="shrink-0"
+                              className="shrink-0 text-sm"
                             >
-                              {deletingId === plan.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
-                              {confirmDeleteId === plan.id ? "Confirm?" : ""}
+                              {deletingId === plan.id ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Trash2 className="h-3.5 w-3.5" />}
+                              <span className="hidden sm:inline">{confirmDeleteId === plan.id ? "Confirm?" : ""}</span>
                             </Button>
                             {confirmDeleteId === plan.id && (
                               <Button variant="ghost" onClick={() => setConfirmDeleteId(null)} className="text-sm">

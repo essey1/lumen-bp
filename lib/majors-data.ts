@@ -1065,6 +1065,28 @@ export const MAJORS: Record<string, Major> = {
     code: "BUS",
     name: "Business Administration",
     degree: "B.S.",
+    totalMajorCredits: 12,
+    requirements: [
+      {
+        category: "Required Core",
+        description: "Core business courses",
+        coursesRequired: 8,
+        courses: ["BUS 114", "BUS 120", "BUS 130", "BUS 240", "BUS 315", "BUS 363", "BUS 366", "BUS 475"],
+        mustInclude: ["BUS 114", "BUS 120", "BUS 130", "BUS 240", "BUS 315", "BUS 363", "BUS 366", "BUS 475"],
+      },
+      {
+        category: "Collateral",
+        description: "Choose from ECO and MAT collateral courses",
+        coursesRequired: 4,
+        courses: ["ECO 101", "ECO 102", "ECO 250", "MAT 115", "MAT 125", "MAT 135"],
+      },
+    ],
+  },
+
+  BUS_ACC: {
+    code: "BUS_ACC",
+    name: "Business Administration: Accounting Concentration",
+    degree: "B.S.",
     totalMajorCredits: 16,
     requirements: [
       {
@@ -1076,31 +1098,99 @@ export const MAJORS: Record<string, Major> = {
       },
       {
         category: "Collateral",
-        description: "Collateral courses",
+        description: "Choose from ECO and MAT collateral courses",
         coursesRequired: 4,
         courses: ["ECO 101", "ECO 102", "ECO 250", "MAT 115", "MAT 125", "MAT 135"],
       },
       {
-        category: "Concentration - Accounting",
-        description: "Accounting concentration",
+        category: "Concentration",
+        description: "Accounting concentration courses",
         coursesRequired: 4,
         courses: ["BUS 323", "BUS 324", "BUS 326", "BUS 327"],
+        mustInclude: ["BUS 323", "BUS 324", "BUS 326", "BUS 327"],
+      },
+    ],
+  },
+
+  BUS_FIN: {
+    code: "BUS_FIN",
+    name: "Business Administration: Finance Concentration",
+    degree: "B.S.",
+    totalMajorCredits: 16,
+    requirements: [
+      {
+        category: "Required Core",
+        description: "Core business courses",
+        coursesRequired: 8,
+        courses: ["BUS 114", "BUS 120", "BUS 130", "BUS 240", "BUS 315", "BUS 363", "BUS 366", "BUS 475"],
+        mustInclude: ["BUS 114", "BUS 120", "BUS 130", "BUS 240", "BUS 315", "BUS 363", "BUS 366", "BUS 475"],
       },
       {
-        category: "Concentration - Finance",
-        description: "Finance concentration",
+        category: "Collateral",
+        description: "Choose from ECO and MAT collateral courses",
+        coursesRequired: 4,
+        courses: ["ECO 101", "ECO 102", "ECO 250", "MAT 115", "MAT 125", "MAT 135"],
+      },
+      {
+        category: "Concentration",
+        description: "Finance concentration courses",
         coursesRequired: 4,
         courses: ["ECO 332", "BUS 346", "BUS 368", "ECO 357"],
+        mustInclude: ["ECO 332", "BUS 346", "BUS 368", "ECO 357"],
+      },
+    ],
+  },
+
+  BUS_MGMT: {
+    code: "BUS_MGMT",
+    name: "Business Administration: Management Concentration",
+    degree: "B.S.",
+    totalMajorCredits: 16,
+    requirements: [
+      {
+        category: "Required Core",
+        description: "Core business courses",
+        coursesRequired: 8,
+        courses: ["BUS 114", "BUS 120", "BUS 130", "BUS 240", "BUS 315", "BUS 363", "BUS 366", "BUS 475"],
+        mustInclude: ["BUS 114", "BUS 120", "BUS 130", "BUS 240", "BUS 315", "BUS 363", "BUS 366", "BUS 475"],
       },
       {
-        category: "Concentration - Management",
-        description: "Management concentration",
+        category: "Collateral",
+        description: "Choose from ECO and MAT collateral courses",
+        coursesRequired: 4,
+        courses: ["ECO 101", "ECO 102", "ECO 250", "MAT 115", "MAT 125", "MAT 135"],
+      },
+      {
+        category: "Concentration",
+        description: "Choose 4 management concentration courses",
         coursesRequired: 4,
         courses: ["BUS 345", "BUS 364", "BUS 221", "BUS 324", "BUS 371", "COM 302", "PSY 210", "SOC 348"],
       },
+    ],
+  },
+
+  BUS_MKT: {
+    code: "BUS_MKT",
+    name: "Business Administration: Marketing Concentration",
+    degree: "B.S.",
+    totalMajorCredits: 16,
+    requirements: [
       {
-        category: "Concentration - Marketing",
-        description: "Marketing concentration",
+        category: "Required Core",
+        description: "Core business courses",
+        coursesRequired: 8,
+        courses: ["BUS 114", "BUS 120", "BUS 130", "BUS 240", "BUS 315", "BUS 363", "BUS 366", "BUS 475"],
+        mustInclude: ["BUS 114", "BUS 120", "BUS 130", "BUS 240", "BUS 315", "BUS 363", "BUS 366", "BUS 475"],
+      },
+      {
+        category: "Collateral",
+        description: "Choose from ECO and MAT collateral courses",
+        coursesRequired: 4,
+        courses: ["ECO 101", "ECO 102", "ECO 250", "MAT 115", "MAT 125", "MAT 135"],
+      },
+      {
+        category: "Concentration",
+        description: "Choose 4 marketing concentration courses",
         coursesRequired: 4,
         courses: ["BUS 257", "BUS 367", "BUS 221", "BUS 328", "BUS 371", "COM 312", "COM 315"],
       },
@@ -2997,6 +3087,10 @@ export const AVAILABLE_MAJORS = [
   { code: "ECO", name: "Economics", degree: "B.A." },
   { code: "ECO_QUANT", name: "Quantitative Economics", degree: "B.S." },
   { code: "BUS", name: "Business Administration", degree: "B.S." },
+  { code: "BUS_ACC",  name: "Business Administration: Accounting Concentration",   degree: "B.S." },
+  { code: "BUS_FIN",  name: "Business Administration: Finance Concentration",       degree: "B.S." },
+  { code: "BUS_MGMT", name: "Business Administration: Management Concentration",    degree: "B.S." },
+  { code: "BUS_MKT",  name: "Business Administration: Marketing Concentration",     degree: "B.S." },
   { code: "EDS", name: "Education Studies", degree: "B.A." },
   { code: "ETAD", name: "Engineering Technologies and Applied Design (General)", degree: "B.S." },
   { code: "ETAD_MGMT", name: "Engineering Technologies and Applied Design (Technology Management)", degree: "B.S." },

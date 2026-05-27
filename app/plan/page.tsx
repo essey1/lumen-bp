@@ -47,16 +47,16 @@ function EditableCourseRow({
 
   if (!editMode) {
     return (
-      <div className={`rounded-md border px-2.5 py-2 text-xs ${cls}`}>
-        <div className="flex items-start gap-1.5">
-          <span className="font-mono font-semibold shrink-0">{course.isPlaceholder ? "TBD" : course.code}</span>
-          <span className="flex-1 min-w-0 leading-tight break-words">{course.name}</span>
-          <span className="shrink-0 text-[10px] opacity-60">{course.credits}cr</span>
+      <div className={`rounded-md border px-3 py-2.5 text-sm ${cls}`}>
+        <div className="flex items-start gap-2">
+          <span className="font-mono font-semibold shrink-0 text-xs sm:text-sm">{course.isPlaceholder ? "TBD" : course.code}</span>
+          <span className="flex-1 min-w-0 leading-snug break-words">{course.name}</span>
+          <span className="shrink-0 text-xs opacity-60">{course.credits}cr</span>
         </div>
         {course.fulfills.length > 0 && (
-          <div className="mt-1 flex flex-wrap gap-1">
+          <div className="mt-1.5 flex flex-wrap gap-1">
             {course.fulfills.slice(0, 2).map(f => (
-              <span key={f} className="rounded bg-black/5 px-1 py-0.5 text-[10px]">{f}</span>
+              <span key={f} className="rounded bg-black/5 px-1.5 py-0.5 text-xs">{f}</span>
             ))}
           </div>
         )}
@@ -65,14 +65,14 @@ function EditableCourseRow({
   }
 
   return (
-    <div className={`rounded-md border px-2 py-1.5 text-xs ${cls}`}>
-      <div className="flex items-center gap-1.5">
+    <div className={`rounded-md border px-2.5 py-2 text-sm ${cls}`}>
+      <div className="flex items-center gap-2">
         <div className="flex-1 min-w-0">
           <PlanCourseCombobox course={course} onChange={onChange} />
         </div>
         <button type="button" onClick={onRemove}
           className="shrink-0 rounded p-1 transition-colors hover:bg-red-100 text-current opacity-50 hover:opacity-100 hover:text-red-600">
-          <Trash2 className="h-3 w-3" />
+          <Trash2 className="h-3.5 w-3.5" />
         </button>
       </div>
     </div>
@@ -92,24 +92,24 @@ function EditableSemesterCard({
   const termLabel = isFall ? "Fall" : "Spring"
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-2">
       {/* Semester header */}
       <div className="flex items-center justify-between px-1 mb-1">
-        <div className="flex items-center gap-1.5">
-          <span className="text-xs font-semibold tracking-wide" style={{ color: isFall ? "#b87a00" : "#1a7a52", fontFamily: "var(--font-cinzel)" }}>
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold tracking-wide" style={{ color: isFall ? "#b87a00" : "#1a7a52", fontFamily: "var(--font-cinzel)" }}>
             {termLabel}
           </span>
-          {isDone && <Lock className="h-3 w-3 text-gray-400" />}
+          {isDone && <Lock className="h-3.5 w-3.5 text-gray-400" />}
         </div>
-        <span className="text-[11px] font-mono font-semibold text-gray-400">
+        <span className="text-sm font-mono font-semibold text-gray-500">
           {semester.totalCredits}cr
         </span>
       </div>
 
       {/* Course list */}
-      <div className={`flex flex-col gap-1.5 rounded-xl p-2 ${isDone ? "bg-gray-50 border border-dashed border-gray-200" : "bg-white border border-gray-200"}`}>
+      <div className={`flex flex-col gap-2 rounded-xl p-3 ${isDone ? "bg-gray-50 border border-dashed border-gray-200" : "bg-white border border-gray-200"}`}>
         {isDone && (
-          <p className="text-[10px] italic px-1 pb-1 mb-0.5 text-gray-400 border-b border-gray-100">
+          <p className="text-xs italic px-1 pb-2 mb-1 text-gray-400 border-b border-gray-100">
             Completed semester
           </p>
         )}
@@ -123,8 +123,8 @@ function EditableSemesterCard({
         ))}
         {editMode && !isDone && (
           <button type="button" onClick={onAddCourse}
-            className="flex w-full items-center justify-center gap-1 rounded-lg border border-dashed border-gray-300 py-1.5 text-[11px] text-gray-400 transition-colors hover:border-gray-400 hover:text-gray-600">
-            <Plus className="h-3 w-3" /> Add course
+            className="flex w-full items-center justify-center gap-1.5 rounded-lg border border-dashed border-gray-300 py-2 text-sm text-gray-500 transition-colors hover:border-gray-400 hover:text-gray-700">
+            <Plus className="h-4 w-4" /> Add course
           </button>
         )}
       </div>
@@ -206,11 +206,11 @@ function PlanView({ initialPlan, profile }: {
         {YEARS.map(({ label, num, fallIdx, springIdx }) => (
           <div key={label} className="flex flex-col gap-4">
             {/* Year header */}
-            <div className="flex items-baseline gap-2 border-b border-gray-200 pb-2">
-              <span className="text-2xl font-black" style={{ fontFamily: "var(--font-cinzel)", color: "#b87a00" }}>
+            <div className="flex items-center gap-1.5 border-b border-gray-200 pb-1.5">
+              <span className="text-base font-black" style={{ fontFamily: "var(--font-cinzel)", color: "#b87a00" }}>
                 {num}
               </span>
-              <span className="text-sm font-semibold text-gray-500" style={{ fontFamily: "var(--font-cinzel)" }}>
+              <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider" style={{ fontFamily: "var(--font-cinzel)" }}>
                 {label}
               </span>
             </div>
@@ -385,7 +385,6 @@ function PlanPageInner() {
 
   return (
     <div className="lumen-app-shell" style={{
-        fontFamily: "var(--font-lora),Georgia,serif",
         background: [
           "radial-gradient(ellipse 90% 55% at 50% -5%, rgba(245,166,35,0.18) 0%, transparent 65%)",
           "radial-gradient(ellipse 50% 40% at 15% 50%, rgba(245,166,35,0.07) 0%, transparent 60%)",

@@ -26,7 +26,7 @@ export function LumenFireflies({ className = "" }: LumenFirefliesProps) {
       {fireflies.map((fly, index) => (
         <span
           key={index}
-          className="lumen-float-fly absolute h-1 w-1 rounded-full bg-[#f5a623] shadow-[0_0_6px_2px_rgba(245,166,35,0.6)]"
+          className="lumen-float-fly absolute h-2.5 w-2.5 rounded-full bg-[#f5a623] shadow-[0_0_14px_5px_rgba(245,166,35,0.65)]"
           style={
             {
               left: fly.left,

@@ -81,12 +81,12 @@ export function ForestNav({ actions }: ForestNavProps) {
 
   return (
     <nav
-      className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-sm md:px-10"
+      className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 backdrop-blur-sm md:px-10"
       style={{ background: "linear-gradient(to bottom, rgba(7,20,16,0.95) 0%, rgba(7,20,16,0.80) 100%)", borderBottom: "1px solid rgba(255,255,255,0.05)" }}
     >
-      <Link href="/" className="flex items-center gap-2.5" style={{ color: "#f5a623" }}>
-        <BearMark size={26} />
-        <span className="text-lg font-bold tracking-wide" style={{ fontFamily: "var(--font-cinzel)" }}>
+      <Link href="/" className="flex items-center gap-2 sm:gap-2.5" style={{ color: "#f5a623" }}>
+        <BearMark size={24} />
+        <span className="text-base sm:text-lg font-bold tracking-wide" style={{ fontFamily: "var(--font-cinzel)" }}>
           Lumen
         </span>
       </Link>

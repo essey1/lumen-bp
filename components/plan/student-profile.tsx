@@ -2,6 +2,23 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { BookOpen, BookMarked, Briefcase, Heart } from "lucide-react"
 
+const MAX_BADGES = 3
+
+function BadgeList({ items, variant }: { items: string[]; variant: "default" | "secondary" | "outline" }) {
+  const visible = items.slice(0, MAX_BADGES)
+  const overflow = items.length - MAX_BADGES
+  return (
+    <div className="flex flex-wrap gap-1">
+      {visible.map(item => (
+        <Badge key={item} variant={variant} className="text-[10px] px-1.5 py-0.5">{item}</Badge>
+      ))}
+      {overflow > 0 && (
+        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-black/10 text-current/60">+{overflow}</span>
+      )}
+    </div>
+  )
+}
+
 interface StudentProfileProps {
   profile: {
     majors: string[]
@@ -15,57 +32,41 @@ export function StudentProfile({ profile }: StudentProfileProps) {
   const hasMinors = (profile.minors ?? []).length > 0
 
   return (
-    <Card className="mb-8 border-border bg-card">
-      <CardContent className="py-6">
-        <div className={`grid gap-6 ${hasMinors ? "md:grid-cols-4" : "md:grid-cols-3"}`}>
+    <Card className="mb-4 border-border bg-card">
+      <CardContent className="py-3">
+        <div className={`grid gap-2.5 ${hasMinors ? "grid-cols-2 md:grid-cols-4" : "grid-cols-2 md:grid-cols-3"}`}>
           <div>
-            <div className="mb-2 flex items-center gap-2">
-              <BookOpen className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">Majors</span>
+            <div className="mb-1 flex items-center gap-1.5">
+              <BookOpen className="h-3.5 w-3.5 text-primary shrink-0" />
+              <span className="text-xs font-semibold text-foreground uppercase tracking-wide">Major</span>
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              {profile.majors.map(m => (
-                <Badge key={m} variant="default" className="text-xs">{m}</Badge>
-              ))}
-            </div>
+            <BadgeList items={profile.majors} variant="default" />
           </div>
 
           {hasMinors && (
             <div>
-              <div className="mb-2 flex items-center gap-2">
-                <BookMarked className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium text-foreground">Minors</span>
+              <div className="mb-1 flex items-center gap-1.5">
+                <BookMarked className="h-3.5 w-3.5 text-primary shrink-0" />
+                <span className="text-xs font-semibold text-foreground uppercase tracking-wide">Minor</span>
               </div>
-              <div className="flex flex-wrap gap-1.5">
-                {(profile.minors ?? []).map(m => (
-                  <Badge key={m} variant="secondary" className="text-xs">{m}</Badge>
-                ))}
-              </div>
+              <BadgeList items={profile.minors ?? []} variant="secondary" />
             </div>
           )}
 
           <div>
-            <div className="mb-2 flex items-center gap-2">
-              <Heart className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">Interests</span>
+            <div className="mb-1 flex items-center gap-1.5">
+              <Heart className="h-3.5 w-3.5 text-primary shrink-0" />
+              <span className="text-xs font-semibold text-foreground uppercase tracking-wide">Interests</span>
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              {profile.interests.map(i => (
-                <Badge key={i} variant="outline" className="text-xs">{i}</Badge>
-              ))}
-            </div>
+            <BadgeList items={profile.interests} variant="outline" />
           </div>
 
           <div>
-            <div className="mb-2 flex items-center gap-2">
-              <Briefcase className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-foreground">Career Goals</span>
+            <div className="mb-1 flex items-center gap-1.5">
+              <Briefcase className="h-3.5 w-3.5 text-primary shrink-0" />
+              <span className="text-xs font-semibold text-foreground uppercase tracking-wide">Goals</span>
             </div>
-            <div className="flex flex-wrap gap-1.5">
-              {profile.careerGoals.map(g => (
-                <Badge key={g} variant="outline" className="text-xs">{g}</Badge>
-              ))}
-            </div>
+            <BadgeList items={profile.careerGoals} variant="outline" />
           </div>
         </div>
       </CardContent>

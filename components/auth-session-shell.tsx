@@ -79,6 +79,7 @@ function IdleSessionGuard({ children }: { children: ReactNode }) {
   const pathname = usePathname()
 
   const isAuthPage    = pathname.startsWith("/auth")
+  const hasOwnNav     = pathname.startsWith("/plan") || pathname.startsWith("/profile") || pathname.startsWith("/planner")
   const shouldProtect = status === "authenticated" && !isAuthPage
 
   const timeoutRef       = useRef<number | null>(null)
@@ -147,7 +148,7 @@ function IdleSessionGuard({ children }: { children: ReactNode }) {
 
   return (
     <>
-      {shouldProtect && (
+      {shouldProtect && !hasOwnNav && (
         <div className="fixed right-4 top-4 z-50">
           <LogoutButton />
         </div>

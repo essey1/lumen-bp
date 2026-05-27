@@ -4,8 +4,9 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
-  ArrowLeft, Sparkles, Save, Pencil, Check, X, Trash2, GraduationCap, Loader2, Plus, Lock,
+  ArrowLeft, Save, Pencil, Check, X, Trash2, GraduationCap, Loader2, Plus, Lock, LogOut,
 } from "lucide-react";
+import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { PlanCourseCombobox } from "@/components/plan/course-combobox";
 import { CareerAdvice } from "@/components/plan/career-advice";
@@ -15,6 +16,28 @@ import { LumenFireflies } from "@/components/lumen-ambience";
 import { generateAcademicPlan } from "@/lib/plan-generator";
 import { MINIMUM_TOTAL_CREDITS, MINIMUM_CREDITS_OUTSIDE_MAJOR } from "@/lib/types";
 import type { SemesterPlan, PlannedCourse, MathPlacement } from "@/lib/types";
+
+function BearMark({ size = 26 }: { size?: number }) {
+  const h = Math.round(size * 1.54)
+  return (
+    <svg width={size} height={h} viewBox="0 0 130 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="65" cy="145" rx="40" ry="48" fill="#5ba8c7" />
+      <ellipse cx="65" cy="90"  rx="34" ry="32" fill="#5ba8c7" />
+      <circle  cx="38" cy="65" r="13" fill="#5ba8c7" /><circle  cx="92" cy="65" r="13" fill="#5ba8c7" />
+      <circle  cx="38" cy="65" r="7"  fill="#7dc1dd" /><circle  cx="92" cy="65" r="7"  fill="#7dc1dd" />
+      <ellipse cx="65" cy="100" rx="18" ry="14" fill="#f0f8ff" opacity="0.7" />
+      <circle  cx="55" cy="86" r="4" fill="#2a4a5a" /><circle  cx="75" cy="86" r="4" fill="#2a4a5a" />
+      <ellipse cx="65" cy="104" rx="6" ry="4" fill="#2a4a5a" />
+      <ellipse cx="28" cy="148" rx="13" ry="30" fill="#5ba8c7" transform="rotate(-15 28 148)" />
+      <ellipse cx="102" cy="148" rx="13" ry="30" fill="#5ba8c7" transform="rotate(15 102 148)" />
+      <ellipse cx="48" cy="187" rx="14" ry="12" fill="#4a95b5" /><ellipse cx="82" cy="187" rx="14" ry="12" fill="#4a95b5" />
+      <rect x="24" y="158" width="20" height="24" rx="4" fill="#c97d1a" />
+      <rect x="26" y="160" width="16" height="20" rx="3" fill="#f5a623" />
+      <circle cx="34" cy="170" r="7" fill="#fff3c4" opacity="0.9" />
+      <circle cx="34" cy="170" r="4" fill="#f5a623" opacity="0.6" />
+    </svg>
+  )
+}
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -62,16 +85,25 @@ function CourseCard({
 
   if (!editMode) {
     return (
-      <div className={`rounded-md border px-2.5 py-2 text-xs ${color}`}>
-        <div className="flex items-start gap-1.5">
-          <span className="font-mono font-semibold shrink-0">{course.isPlaceholder ? "TBD" : course.code}</span>
-          <span className="flex-1 min-w-0 leading-tight break-words">{course.name}</span>
+      <div className={`rounded-md border px-2.5 py-2 ${color}`}>
+        <div className="flex items-center justify-between gap-1.5">
+          <span className="font-semibold text-xs shrink-0">
+            {course.isPlaceholder ? (
+              <span className="flex items-center gap-1">
+                <span className="text-[10px] bg-black/10 px-1 py-0.5 rounded">TBD</span>
+                <span className="text-xs">{course.placeholderCategory || "Elective"}</span>
+              </span>
+            ) : course.code}
+          </span>
           <span className="shrink-0 text-[10px] opacity-60">{course.credits}cr</span>
         </div>
+        {!course.isPlaceholder && (
+          <p className="mt-0.5 text-xs leading-snug text-current/80">{course.name}</p>
+        )}
         {course.fulfills.length > 0 && (
           <div className="mt-1 flex flex-wrap gap-1">
             {course.fulfills.slice(0, 2).map(f => (
-              <span key={f} className="rounded bg-black/5 px-1 py-0.5 text-[10px]">{f}</span>
+              <span key={f} className="rounded bg-black/10 px-1 py-0.5 text-[10px] leading-tight">{f}</span>
             ))}
           </div>
         )}
@@ -124,7 +156,7 @@ function SemesterColumn({
       </div>
       <div className={`rounded-lg border p-2 space-y-1.5 ${isCompleted ? "bg-gray-50 border-dashed border-gray-200" : "bg-white border-gray-200"}`}>
         {isCompleted && (
-          <p className="text-[10px] text-gray-400 italic px-1 pb-1 border-b border-gray-100">Completed semester</p>
+          <p className="text-xs text-gray-400 italic px-1 pb-1 border-b border-gray-100">Completed semester</p>
         )}
         {semester.courses.map((course, idx) => (
           <CourseCard
@@ -324,7 +356,7 @@ export default function SavedPlanPage() {
       majorPrefixList.some(p => courseCode.startsWith(p + " ") || courseCode === p);
     const totalCredits        = currentSemesters.reduce((s, sem) => s + sem.totalCredits, 0);
     const totalCourses        = currentSemesters.reduce((s, sem) => s + sem.courses.length, 0);
-    const majorCourses        = currentSemesters.reduce((s, sem) => s + sem.courses.filter(c => c.category === "Major").length, 0);
+    const majorCourses        = currentSemesters.reduce((s, sem) => s + sem.courses.filter(c => isInsideMajor(c.code)).length, 0);
     const creditsOutsideMajor = currentSemesters.reduce((s, sem) =>
       s + sem.courses.filter(c => !isInsideMajor(c.code)).reduce((a, c) => a + c.credits, 0), 0);
     const placeholderCourses  = currentSemesters.reduce((s, sem) => s + sem.courses.filter(c => c.isPlaceholder).length, 0);
@@ -333,10 +365,10 @@ export default function SavedPlanPage() {
   }, [currentSemesters, plan]);
 
   const years = plan ? [
-    { label: "Year 1", fallTitle: "Fall – Year 1", springTitle: "Spring – Year 1", fallIdx: 0, springIdx: 1 },
-    { label: "Year 2", fallTitle: "Fall – Year 2", springTitle: "Spring – Year 2", fallIdx: 2, springIdx: 3 },
-    { label: "Year 3", fallTitle: "Fall – Year 3", springTitle: "Spring – Year 3", fallIdx: 4, springIdx: 5 },
-    { label: "Year 4", fallTitle: "Fall – Year 4", springTitle: "Spring – Year 4", fallIdx: 6, springIdx: 7 },
+    { label: "Year 1", fallTitle: "Fall", springTitle: "Spring", fallIdx: 0, springIdx: 1 },
+    { label: "Year 2", fallTitle: "Fall", springTitle: "Spring", fallIdx: 2, springIdx: 3 },
+    { label: "Year 3", fallTitle: "Fall", springTitle: "Spring", fallIdx: 4, springIdx: 5 },
+    { label: "Year 4", fallTitle: "Fall", springTitle: "Spring", fallIdx: 6, springIdx: 7 },
   ] : [];
 
   // ── Loading state ──────────────────────────────────────────────────────────────
@@ -358,14 +390,12 @@ export default function SavedPlanPage() {
       <header className="lumen-app-content border-b border-white/15 bg-white/10 backdrop-blur-md">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between gap-2">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary shrink-0">
-                <Sparkles className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <span className="text-lg font-semibold text-foreground hidden sm:inline">Lumen</span>
+            <Link href="/" className="flex items-center gap-2" style={{ color: "#f5a623" }}>
+              <BearMark size={24} />
+              <span className="text-base font-bold tracking-wide hidden sm:inline" style={{ fontFamily: "var(--font-cinzel)" }}>Lumen</span>
             </Link>
 
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1 sm:gap-1.5">
               {editMode ? (
                 <>
                   <Button size="sm" onClick={handleSaveChanges} disabled={saveStatus === "saving"} className="gap-1.5 min-h-[36px]">
@@ -388,19 +418,29 @@ export default function SavedPlanPage() {
                 variant={deleteStatus === "confirming" ? "destructive" : "ghost"}
                 onClick={handleDelete}
                 disabled={deleteStatus === "deleting"}
-                className="gap-1.5 min-h-[36px]"
+                className="gap-1 min-h-[36px]"
               >
                 {deleteStatus === "deleting" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                 <span className="hidden sm:inline">
                   {deleteStatus === "confirming" ? "Confirm" : deleteStatus === "deleting" ? "Deleting…" : "Delete"}
                 </span>
               </Button>
+              <div className="mx-0.5 h-5 w-px bg-white/20 hidden sm:block" />
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="gap-1 min-h-[36px] text-muted-foreground hover:text-foreground"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Sign Out</span>
+              </Button>
             </div>
           </div>
         </div>
       </header>
 
-      <main className="lumen-app-content container mx-auto px-4 py-6">
+      <main className="lumen-app-content container mx-auto px-4 py-4 sm:py-6">
 
         {/* ── "Plan saved" banner ── */}
         {showSavedBanner && (
@@ -413,15 +453,15 @@ export default function SavedPlanPage() {
           </div>
         )}
 
-        <Link href="/profile" className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
-          <ArrowLeft className="h-4 w-4" /> Back to Dashboard
+        <Link href="/profile" className="mb-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <ArrowLeft className="h-3.5 w-3.5" /> Back to Dashboard
         </Link>
 
         {/* Plan title + meta */}
-        <div className="mb-5">
+        <div className="mb-4">
           {editingName ? (
             <input
-              className="w-full bg-transparent border-b-2 border-primary text-xl font-bold focus:outline-none sm:text-2xl"
+              className="w-full bg-transparent border-b-2 border-primary text-lg font-bold focus:outline-none sm:text-xl"
               value={planName}
               onChange={e => setPlanName(e.target.value)}
               onBlur={() => setEditingName(false)}
@@ -430,11 +470,11 @@ export default function SavedPlanPage() {
             />
           ) : (
             <button onClick={() => setEditingName(true)} className="group flex items-center gap-2 text-left w-full">
-              <h1 className="text-xl font-bold text-foreground sm:text-2xl">{planName}</h1>
+              <h1 className="text-lg font-bold text-foreground sm:text-xl">{planName}</h1>
               <Pencil className="h-4 w-4 shrink-0 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
             </button>
           )}
-          <p className="mt-1 text-xs text-muted-foreground sm:text-sm line-clamp-2">
+          <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
             {plan.majors.join(", ")}
             {plan.minors.length > 0 && ` · Minor: ${plan.minors.join(", ")}`}
             {" · "}Updated {new Date(plan.updatedAt).toLocaleDateString()}
@@ -450,7 +490,7 @@ export default function SavedPlanPage() {
         {/* ── Plan A / B / C variant switcher (multi-variant plans only) ── */}
         {isMultiVariant && (
           <div className="mb-5 flex items-center gap-2 flex-wrap">
-            <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
+            <span className="text-sm font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.4)" }}>
               Plan
             </span>
             <div className="flex gap-2">
@@ -470,7 +510,7 @@ export default function SavedPlanPage() {
                 </button>
               ))}
             </div>
-            <span className="text-xs italic" style={{ color: "rgba(255,255,255,0.35)" }}>
+            <span className="text-sm italic" style={{ color: "rgba(255,255,255,0.35)" }}>
               — switch between plan variants
             </span>
           </div>
@@ -485,16 +525,16 @@ export default function SavedPlanPage() {
         }} />
 
         {/* ── Plan grid — white panel ── */}
-        <div className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-black/5 md:p-6">
+        <div className="rounded-2xl bg-white p-3 shadow-sm ring-1 ring-black/5 sm:p-4 md:p-6">
 
           {/* Mobile: year tabs */}
           <div className="md:hidden">
-            <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
+            <div className="mb-3 flex gap-1.5 overflow-x-auto pb-1">
               {years.map(({ label }, i) => (
                 <button
                   key={label}
                   onClick={() => setActiveYear(i)}
-                  className="shrink-0 rounded-lg border px-4 py-2 text-sm font-semibold transition-all"
+                  className="shrink-0 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all"
                   style={{
                     borderColor: activeYear === i ? "rgba(245,166,35,0.6)" : "rgba(0,0,0,0.12)",
                     background:  activeYear === i ? "rgba(245,166,35,0.12)" : "transparent",
@@ -506,9 +546,9 @@ export default function SavedPlanPage() {
               ))}
             </div>
             {years[activeYear] && currentSemesters[years[activeYear].fallIdx] && currentSemesters[years[activeYear].springIdx] && (
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <SemesterColumn
-                  title={years[activeYear].fallTitle.replace(" – ", "\n")}
+                  title={years[activeYear].fallTitle}
                   semester={currentSemesters[years[activeYear].fallIdx]}
                   editMode={editMode}
                   onCourseChange={(ci, c) => updateCourse(years[activeYear].fallIdx, ci, c)}
@@ -516,7 +556,7 @@ export default function SavedPlanPage() {
                   onRemoveCourse={ci => removeCourse(years[activeYear].fallIdx, ci)}
                 />
                 <SemesterColumn
-                  title={years[activeYear].springTitle.replace(" – ", "\n")}
+                  title={years[activeYear].springTitle}
                   semester={currentSemesters[years[activeYear].springIdx]}
                   editMode={editMode}
                   onCourseChange={(ci, c) => updateCourse(years[activeYear].springIdx, ci, c)}
@@ -532,8 +572,8 @@ export default function SavedPlanPage() {
             {years.map(({ label, fallTitle, springTitle, fallIdx, springIdx }) =>
               currentSemesters[fallIdx] && currentSemesters[springIdx] ? (
                 <div key={label} className="space-y-4">
-                  <h2 className="flex items-center gap-2 text-lg font-semibold text-gray-900">
-                    <GraduationCap className="h-5 w-5 text-primary" />
+                  <h2 className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    <GraduationCap className="h-3 w-3 text-primary" />
                     {label}
                   </h2>
                   <SemesterColumn
@@ -577,7 +617,7 @@ export default function SavedPlanPage() {
                     fontFamily: "var(--font-cinzel)",
                     color: warn ? "#f5a623" : ok === true ? "#6fcf97" : ok === false ? "#f5a623" : "#5ba8c7",
                   }}>{v}</p>
-                  <p className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>{l}</p>
+                  <p className="text-xs uppercase tracking-widest mt-0.5" style={{ color: "rgba(255,255,255,0.5)" }}>{l}</p>
                 </div>
               ))}
             </div>
@@ -645,7 +685,7 @@ export default function SavedPlanPage() {
               ].map(({ label, color }) => (
                 <div key={label} className="flex items-center gap-1.5">
                   <span className="h-2.5 w-2.5 rounded-full" style={{ background: color }} />
-                  <span className="text-[11px] font-medium" style={{ color: "rgba(255,255,255,0.65)" }}>{label}</span>
+                  <span className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.65)" }}>{label}</span>
                 </div>
               ))}
             </div>

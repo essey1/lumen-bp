@@ -50,31 +50,35 @@ export default function LandingPage() {
     >
 
       {/* ── Nav ──────────────────────────────────────────────────────────── */}
-      <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-6 py-4 backdrop-blur-sm md:px-10"
-           style={{ background: "linear-gradient(to bottom, rgba(7,20,16,0.92) 0%, transparent 100%)" }}>
+      <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 backdrop-blur-sm md:px-10"
+           style={{ background: "linear-gradient(to bottom, rgba(7,20,16,0.95) 0%, rgba(7,20,16,0.85) 100%)" }}>
 
-        <Link href="/" className="flex items-center gap-2.5" style={{ color: "#f5a623" }}>
-          <BearMark size={26} />
-          <span className="text-lg font-bold tracking-wide" style={{ fontFamily: "var(--font-cinzel)" }}>
+        <Link href="/" className="flex items-center gap-2 sm:gap-2.5" style={{ color: "#f5a623" }}>
+          <span className="inline-flex">
+            <BearMark size={24} />
+          </span>
+          <span className="text-base sm:text-lg font-bold tracking-wide" style={{ fontFamily: "var(--font-cinzel)" }}>
             Lumen
           </span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Link href="/auth/login"
-            className="rounded-full border border-white/20 px-4 py-1.5 text-sm text-[#c8e0d8] transition hover:border-white/40 hover:text-white">
-            Sign In
+            className="rounded-full border border-white/20 px-3 py-2 sm:px-4 sm:py-1.5 text-sm text-[#c8e0d8] transition hover:border-white/40 hover:text-white min-h-[40px]">
+            <span className="hidden sm:inline">Sign In</span>
+            <span className="sm:hidden">Sign In</span>
           </Link>
           <Link href="/auth/signup"
-            className="rounded-full px-4 py-1.5 text-sm font-semibold text-[#071410] transition hover:-translate-y-0.5"
+            className="rounded-full px-3 py-2 sm:px-4 sm:py-1.5 text-sm font-semibold text-[#071410] transition hover:-translate-y-0.5 min-h-[40px]"
             style={{ background: "#f5a623", boxShadow: "0 6px 20px rgba(245,166,35,0.28)" }}>
-            Sign Up
+            <span className="hidden sm:inline">Sign Up</span>
+            <span className="sm:hidden">Sign Up</span>
           </Link>
         </div>
       </nav>
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pt-16">
+      <section className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 sm:px-6 pt-20 sm:pt-16">
 
         {/* Sky-to-earth gradient */}
         <div className="absolute inset-0"
@@ -122,10 +126,10 @@ export default function LandingPage() {
         </div>
 
         {/* Hero text */}
-        <div className="lumen-fade-up relative z-10 mx-auto max-w-3xl px-2 text-center">
+        <div className="lumen-fade-up relative z-10 mx-auto max-w-3xl px-4 text-center">
 
-          <h1 className="leading-[1.06] tracking-tight text-[#f0ede0]"
-            style={{ fontFamily: "var(--font-cinzel)", fontSize: "clamp(2.6rem, 7vw, 5.2rem)", fontWeight: 900 }}>
+          <h1 className="leading-tight tracking-tight text-[#f0ede0]"
+            style={{ fontFamily: "var(--font-cinzel)", fontSize: "clamp(2rem, 8vw, 4.5rem)", fontWeight: 900, lineHeight: "1.1" }}>
             Let the light
             <br />
             <em className="not-italic" style={{ color: "#f5a623", textShadow: "0 0 60px rgba(245,166,35,0.4)" }}>
@@ -133,15 +137,18 @@ export default function LandingPage() {
             </em>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-md text-base leading-7"
+          <p className="mx-auto mt-6 max-w-md text-sm sm:text-base leading-relaxed"
             style={{ color: "#7aada0", fontStyle: "italic" }}>
-            Your personalized 4-year academic roadmap,<br />
-            built for Berea College.
+            Your personalized 4-year academic roadmap
+          </p>
+          <p className="mx-auto mt-1 max-w-md text-xl sm:text-2xl font-medium"
+            style={{ color: "#7aada0", fontStyle: "italic" }}>
+            Built for Berea College.
           </p>
 
           <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:justify-center sm:gap-4">
             <Link href="/auth/signup"
-              className="w-full rounded-full px-8 py-4 text-center text-sm font-bold tracking-wide transition hover:-translate-y-0.5 sm:w-auto sm:py-3.5"
+              className="w-full rounded-full px-6 py-3.5 text-center text-base font-bold tracking-wide transition hover:-translate-y-0.5 sm:w-auto sm:px-8 sm:py-4"
               style={{
                 background: "#f5a623",
                 color: "#071410",
@@ -151,7 +158,7 @@ export default function LandingPage() {
               Begin Your Journey
             </Link>
             <a href="#how"
-              className="w-full rounded-full border border-white/20 px-8 py-4 text-center text-sm text-[#c8e0d8] transition hover:border-white/40 hover:bg-white/5 sm:w-auto sm:py-3.5">
+              className="w-full rounded-full border border-white/20 px-6 py-3.5 text-center text-base text-[#c8e0d8] transition hover:border-white/40 hover:bg-white/5 sm:w-auto sm:px-8 sm:py-4">
               How it works
             </a>
           </div>
@@ -162,12 +169,12 @@ export default function LandingPage() {
       </section>
 
       {/* ── How it works ─────────────────────────────────────────────────── */}
-      <section id="how" className="mx-auto max-w-5xl px-6 py-16 sm:py-28">
-        <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.22em]"
+      <section id="how" className="mx-auto max-w-5xl px-4 sm:px-6 py-16 sm:py-24">
+        <p className="mb-3 text-sm sm:text-base font-bold uppercase tracking-[0.18em]"
           style={{ color: "#f5a623", fontFamily: "var(--font-cinzel)" }}>
           The path
         </p>
-        <h2 className="mb-14 text-3xl font-bold tracking-tight text-[#f0ede0] md:text-4xl"
+        <h2 className="mb-10 sm:mb-14 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#f0ede0]"
           style={{ fontFamily: "var(--font-cinzel)" }}>
           Three steps through the forest.
         </h2>
@@ -177,21 +184,21 @@ export default function LandingPage() {
             const Icon = step.icon
             return (
               <article key={step.num}
-                className="group relative overflow-hidden rounded-2xl border border-white/8 p-7 transition duration-300 hover:-translate-y-1 hover:border-[#f5a623]/25"
+                className="group relative overflow-hidden rounded-2xl border border-white/8 p-5 sm:p-7 transition duration-300 hover:-translate-y-1 hover:border-[#f5a623]/25"
                 style={{ background: "rgba(255,255,255,0.03)" }}>
                 <div className="absolute inset-0 opacity-0 transition group-hover:opacity-100"
                   style={{ background: "radial-gradient(circle at 30% 20%, rgba(245,166,35,0.06) 0%, transparent 65%)" }} />
                 <div className="relative">
-                  <p className="mb-5 select-none text-5xl font-black leading-none"
+                  <p className="mb-4 sm:mb-5 select-none text-4xl sm:text-5xl font-black leading-none"
                     style={{ fontFamily: "var(--font-cinzel)", color: "rgba(245,166,35,0.12)" }}>
                     {step.num}
                   </p>
-                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border"
+                  <div className="mb-3 sm:mb-4 flex h-10 w-10 items-center justify-center rounded-xl border"
                     style={{ borderColor: "rgba(245,166,35,0.2)", background: "rgba(245,166,35,0.08)" }}>
                     <Icon className="h-4 w-4" style={{ color: "#f5a623" }} />
                   </div>
-                  <h3 className="text-sm font-semibold text-[#e2ede8]"
-                    style={{ fontFamily: "var(--font-cinzel)", letterSpacing: "0.04em" }}>
+                  <h3 className="text-base sm:text-lg font-semibold text-[#e2ede8]"
+                    style={{ fontFamily: "var(--font-cinzel)", letterSpacing: "0.02em" }}>
                     {step.title}
                   </h3>
                 </div>
@@ -202,14 +209,14 @@ export default function LandingPage() {
       </section>
 
       {/* ── Features ─────────────────────────────────────────────────────── */}
-      <section id="features" className="px-6 py-14 sm:py-24"
+      <section id="features" className="px-4 sm:px-6 py-14 sm:py-24"
         style={{ background: "rgba(255,255,255,0.015)" }}>
         <div className="mx-auto max-w-5xl">
-          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.22em]"
+          <p className="mb-3 text-sm sm:text-base font-bold uppercase tracking-[0.18em]"
             style={{ color: "#f5a623", fontFamily: "var(--font-cinzel)" }}>
             What Lumen offers
           </p>
-          <h2 className="mb-14 text-3xl font-bold tracking-tight text-[#f0ede0] md:text-4xl"
+          <h2 className="mb-8 sm:mb-14 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#f0ede0]"
             style={{ fontFamily: "var(--font-cinzel)" }}>
             Every tree, every trail — mapped.
           </h2>
@@ -217,14 +224,14 @@ export default function LandingPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((f) => (
               <article key={f.title}
-                className="rounded-2xl border border-white/8 p-6 transition hover:-translate-y-1 hover:border-[#f5a623]/20"
+                className="rounded-2xl border border-white/8 p-5 sm:p-6 transition hover:-translate-y-1 hover:border-[#f5a623]/20"
                 style={{ background: "rgba(255,255,255,0.03)" }}>
-                <span className="mb-3 inline-block rounded-full px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest"
+                <span className="mb-3 inline-block rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide"
                   style={{ background: "rgba(245,166,35,0.10)", color: "#f5a623", fontFamily: "var(--font-cinzel)" }}>
                   {f.tag}
                 </span>
-                <h3 className="text-sm font-semibold text-[#e2ede8]"
-                  style={{ fontFamily: "var(--font-cinzel)", letterSpacing: "0.03em" }}>
+                <h3 className="text-base sm:text-lg font-semibold text-[#e2ede8]"
+                  style={{ fontFamily: "var(--font-cinzel)", letterSpacing: "0.02em" }}>
                   {f.title}
                 </h3>
               </article>
@@ -234,22 +241,22 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ──────────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden px-6 py-20 text-center sm:py-36">
+      <section className="relative overflow-hidden px-4 sm:px-6 py-16 text-center sm:py-24">
         <div className="absolute inset-0"
           style={{ background: "radial-gradient(ellipse 60% 70% at 50% 50%, rgba(245,166,35,0.06) 0%, transparent 70%)" }} />
         <LumenFireflies className="absolute opacity-50" />
         <div className="relative z-10">
           <h2 className="font-black tracking-tight text-[#f0ede0]"
-            style={{ fontFamily: "var(--font-cinzel)", fontSize: "clamp(2rem, 5vw, 3.5rem)" }}>
+            style={{ fontFamily: "var(--font-cinzel)", fontSize: "clamp(1.75rem, 6vw, 3rem)" }}>
             Ready to{" "}
             <span style={{ color: "#f5a623", textShadow: "0 0 40px rgba(245,166,35,0.35)" }}>begin?</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-sm text-[#7aada0]" style={{ fontStyle: "italic" }}>
+          <p className="mx-auto mt-4 max-w-sm text-base sm:text-lg text-[#7aada0]" style={{ fontStyle: "italic" }}>
             Your guide is already waiting in the forest.
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:justify-center sm:gap-4">
             <Link href="/auth/signup"
-              className="w-full rounded-full px-8 py-4 text-center text-sm font-bold tracking-wide transition hover:-translate-y-0.5 sm:w-auto sm:py-3.5"
+              className="w-full rounded-full px-6 py-3.5 text-center text-base font-bold tracking-wide transition hover:-translate-y-0.5 sm:w-auto sm:px-8 sm:py-4"
               style={{
                 background: "#f5a623",
                 color: "#071410",
@@ -259,7 +266,7 @@ export default function LandingPage() {
               Get Started — Free
             </Link>
             <Link href="/auth/login"
-              className="w-full rounded-full border border-white/20 px-8 py-4 text-center text-sm text-[#c8e0d8] transition hover:bg-white/6 sm:w-auto sm:py-3.5">
+              className="w-full rounded-full border border-white/20 px-6 py-3.5 text-center text-base text-[#c8e0d8] transition hover:bg-white/6 sm:w-auto sm:px-8 sm:py-4">
               Sign In
             </Link>
           </div>
@@ -267,13 +274,13 @@ export default function LandingPage() {
       </section>
 
       {/* ── Footer ───────────────────────────────────────────────────────── */}
-      <footer className="flex flex-col items-center justify-between gap-4 border-t border-white/6 px-6 py-8 text-center md:flex-row md:px-12 md:text-left">
+      <footer className="flex flex-col items-center justify-between gap-4 border-t border-white/6 px-4 sm:px-6 py-8 text-center md:flex-row md:px-12 md:text-left">
         <div className="flex items-center gap-2" style={{ color: "#f5a623" }}>
           <BearMark size={22} />
           <span className="text-base font-bold" style={{ fontFamily: "var(--font-cinzel)" }}>Lumen</span>
         </div>
-        <p className="text-xs" style={{ color: "#4a7a72" }}>Made with care for Berea College students.</p>
-        <div className="flex gap-5 text-xs" style={{ color: "#4a7a72" }}>
+        <p className="text-sm" style={{ color: "#4a7a72" }}>Made with care for Berea College students.</p>
+        <div className="flex gap-4 sm:gap-5 text-sm" style={{ color: "#4a7a72" }}>
           <Link href="/planner" className="transition hover:text-[#e2ede8]">Plan</Link>
           <Link href="/auth/login" className="transition hover:text-[#e2ede8]">Sign In</Link>
           <Link href="/auth/signup" className="transition hover:text-[#e2ede8]">Sign Up</Link>

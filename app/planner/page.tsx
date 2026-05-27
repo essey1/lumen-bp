@@ -229,7 +229,7 @@ export default function PlannerPage() {
 
       {/* Progress */}
       <div className="border-b pt-[57px]" style={{ borderColor: "rgba(245,166,35,0.12)", background: "rgba(245,166,35,0.03)" }}>
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-4 sm:py-6">
           <div className="mb-4 h-1.5 w-full overflow-hidden rounded-full" style={{ background: "rgba(255,255,255,0.06)" }}>
             <div className="h-full rounded-full transition-all duration-500" style={{ width: `${progress}%`, background: "#f5a623" }} />
           </div>
@@ -245,13 +245,13 @@ export default function PlannerPage() {
                   }}>
                   {step.id < currentStep ? <Check className="h-4 w-4" /> : step.id}
                 </div>
-                <span className="text-xs font-medium" style={{ fontFamily: "var(--font-cinzel)" }}>{step.title}</span>
+                <span className="text-xs font-medium hidden lg:inline" style={{ fontFamily: "var(--font-cinzel)" }}>{step.title}</span>
               </div>
             ))}
           </div>
           <div className="flex items-center justify-center gap-2 md:hidden">
-            <span className="text-lg font-semibold" style={{ color: "#f5a623", fontFamily: "var(--font-cinzel)" }}>{STEPS[currentStep - 1].title}</span>
-            <span style={{ color: "#4a7a72" }}>({currentStep}/{STEPS.length})</span>
+            <span className="text-base sm:text-lg font-semibold" style={{ color: "#f5a623", fontFamily: "var(--font-cinzel)" }}>{STEPS[currentStep - 1].title}</span>
+            <span className="text-sm" style={{ color: "#4a7a72" }}>({currentStep}/{STEPS.length})</span>
           </div>
         </div>
       </div>
@@ -262,13 +262,13 @@ export default function PlannerPage() {
       />
 
       {/* Form Content */}
-      <main className="lumen-app-content container mx-auto px-4 py-8 md:py-12">
+      <main className="lumen-app-content container mx-auto px-4 sm:px-6 py-8 md:py-12">
         <div className="mx-auto max-w-2xl">
           <div className="mb-8 text-center">
-            <h1 className="mb-2 text-2xl font-bold md:text-3xl" style={{ fontFamily: "var(--font-cinzel)", color: "#f0ede0" }}>
+            <h1 className="mb-2 text-xl sm:text-2xl md:text-3xl font-bold" style={{ fontFamily: "var(--font-cinzel)", color: "#f0ede0" }}>
               {STEPS[currentStep - 1].title}
             </h1>
-            <p className="italic" style={{ color: "#7aada0" }}>{STEPS[currentStep - 1].description}</p>
+            <p className="text-sm sm:text-base italic" style={{ color: "#7aada0" }}>{STEPS[currentStep - 1].description}</p>
           </div>
 
           <div className="mb-8">
@@ -302,16 +302,16 @@ export default function PlannerPage() {
           <div className="flex items-center justify-between gap-3">
             <Button variant="outline" onClick={handleBack}
               disabled={currentStep === 1 || generating}
-              className="min-h-[44px] gap-2 px-5">
+              className="min-h-[48px] gap-2 px-4 sm:px-5 text-sm sm:text-base">
               <ArrowLeft className="h-4 w-4" />
-              Back
+              <span className="hidden sm:inline">Back</span>
             </Button>
             <Button onClick={handleNext} disabled={!canProceed()}
-              className="min-h-[44px] gap-2 px-6">
+              className="min-h-[48px] gap-2 px-5 sm:px-6 text-sm sm:text-base">
               {generating ? (
-                <><Loader2 className="h-4 w-4 animate-spin" /> Generating…</>
+                <><Loader2 className="h-4 w-4 animate-spin" /> <span className="hidden sm:inline">Generating…</span></>
               ) : currentStep === STEPS.length ? (
-                <><Sparkles className="h-4 w-4" /> Generate Plan</>
+                <><Sparkles className="h-4 w-4" /> <span className="hidden sm:inline">Generate Plan</span></>
               ) : (
                 <>
                   {currentStep === 2 && formData.minors.length === 0 ? "Skip" : "Next"}

@@ -20,120 +20,148 @@ import {
 import { Badge } from "@/components/ui/badge"
 
 const INTERESTS = [
-  // A
-  "Abstract Algebra", "Accounting", "Acting", "Activism", "Acoustics",
+  // Science — specific sub-fields
+  "Anatomy", "Astrophysics", "Biochemistry", "Bioinformatics", "Botany",
+  "Cell Biology", "Conservation Biology", "Ecology", "Epidemiology", "Evolutionary Biology",
+  "Genetics", "Geology", "GIS & Mapping", "Hydrology", "Immunology",
+  "Marine Biology", "Materials Science", "Meteorology", "Microbiology",
+  "Nanotechnology", "Neuroscience", "Nuclear Physics", "Organic Chemistry",
+  "Paleontology", "Pharmacology", "Physiology", "Quantum Mechanics",
+  "Soil Science", "Thermodynamics", "Toxicology", "Wildlife Biology",
+
+  // Computing & Technology
+  "Artificial Intelligence", "Blockchain", "Cloud Computing", "Cybersecurity",
+  "Data Analytics", "Data Science", "Data Visualization", "Database Design",
+  "Embedded Systems", "Game Development", "Information Systems", "IoT",
+  "Machine Learning", "Mobile App Development", "Robotics", "Software Architecture",
+  "Software Development", "UI/UX Design", "Virtual Reality", "Web Development",
+
+  // Engineering & Making
+  "3D Printing", "CAD Design", "Electrical Engineering", "Electrical Systems",
+  "Manufacturing", "Mechanical Design", "Mechatronics", "Product Design",
+  "Renewable Energy Systems", "Structural Engineering", "Sustainable Design", "Woodworking",
+
+  // Math & Logic
+  "Abstract Algebra", "Actuarial Science", "Applied Mathematics",
+  "Game Theory", "Logic", "Number Theory", "Operations Research",
+  "Probability", "Statistics", "Systems Thinking",
+
+  // Health & Medicine
+  "Community Health", "Exercise Science", "Global Health",
+  "Health Education", "Health Policy", "Kinesiology", "Mental Health",
+  "Nutrition", "Pediatrics", "Physical Therapy", "Public Health",
+  "Sports Medicine", "Strength & Conditioning",
+
+  // Psychology — specific areas
+  "Behavioral Science", "Child Development", "Cognitive Science", "Counseling",
+  "Family Counseling", "Forensic Psychology", "Gerontology",
+  "Organizational Psychology", "Social Psychology",
+
+  // Business & Economics
+  "Accounting", "Behavioral Economics", "Content Strategy",
+  "Digital Marketing", "Economics", "Entrepreneurship", "Finance",
+  "Financial Modeling", "Grant Writing", "Human Resources",
+  "Innovation", "Labor Economics", "Marketing Strategy", "Negotiation",
+  "Operations Management", "Project Management",
+  "Risk Management", "Supply Chain Management",
+
+  // Agriculture & Food
+  "Agricultural Policy", "Animal Behavior", "Animal Science",
+  "Beekeeping", "Crop Science", "Farm Management",
+  "Food Policy", "Food Science", "Food Systems",
+  "Horticulture", "Livestock Management", "Natural Resource Management",
+  "Sustainable Agriculture", "Water Conservation", "Wildlife Management",
+
+  // Environment & Sustainability
+  "Climate Change", "Ecological Restoration", "Environmental Policy",
+  "Renewable Energy", "Sustainability",
+
+  // Education
+  "Child Advocacy", "Curriculum Development", "Early Childhood Education",
+  "Educational Technology", "Mentoring", "Special Education", "Teaching",
+
+  // Arts & Craft
+  "Animation", "Ceramics", "Drawing", "Fashion Design",
+  "Film Production", "Graphic Design", "Industrial Design",
+  "Interior Design", "Landscape Architecture", "Lighting Design",
+  "Mixed Media", "Painting", "Photography", "Printmaking",
+  "Sculpture", "Set Design", "Stage Management",
+  "Studio Art", "Textile Arts", "Video Production",
+
+  // Music & Performing Arts
+  "Band", "Choir", "Composition", "Drama", "Film Studies",
+  "Music Education", "Music History", "Music Performance",
+  "Music Production", "Music Theory", "Music Therapy",
+  "Musical Theatre", "Songwriting", "Sound Design", "Theatre",
+  "Voice & Movement",
+
+  // Writing & Literature
+  "Comparative Literature", "Creative Writing", "Journalism",
+  "Literary Analysis", "Oral History", "Poetry", "Prose Fiction",
+  "Public Speaking", "Publishing", "Rhetoric", "Screenwriting",
+  "Technical Writing",
+
+  // Language & Culture
+  "Chinese Language", "Cross-Cultural Communication", "French Language",
+  "German Language", "Intercultural Communication", "Japanese Language",
+  "Language Learning", "Linguistics", "Spanish Language", "Translation",
+
+  // History & Culture
   "African American Culture", "African American History", "African Studies",
-  "Agricultural Policy", "Agriculture", "American Government", "American History",
-  "Animal Behavior", "Animal Science", "Animation", "Anthropology",
-  "Applied Ethics", "Applied Mathematics", "Appalachian Culture", "Appalachian Studies",
-  "Arabic", "Archaeology", "Architecture", "Art Criticism", "Art Education", "Art History",
-  "Artificial Intelligence", "Arts", "Asian Cinema", "Asian Culture", "Asian History",
-  "Astrophysics", "Astronomy", "Athletics", "Audio Engineering", "Auditing",
-  // B
-  "Band", "Behavioral Economics", "Behavioral Science", "Biblical Studies",
-  "Biochemistry", "Bioethics", "Bioinformatics", "Biology", "Biophysics",
-  "Black Literature", "Blockchain", "Botany", "Broadcasting", "Buddhism", "Business",
-  // C
-  "CAD Design", "Campaign Management", "Ceramics", "Chemistry", "Child Advocacy",
-  "Child Development", "Chinese Language", "Choir", "Civil Liberties",
-  "Civil Rights", "Climate Change", "Clinical Psychology", "Cloud Computing",
-  "Coaching", "Cognitive Science", "Communication", "Community Development",
-  "Community Health", "Community Service", "Comparative Literature", "Comparative Politics",
-  "Comparative Religion", "Composition", "Conflict Resolution", "Conservation",
-  "Constitutional Law", "Content Strategy", "Counseling", "Creative Writing",
-  "Criminal Justice", "Criminology", "Crop Science", "Cross-Cultural Communication",
-  "Cultural Anthropology", "Cultural Heritage", "Cultural Studies", "Culinary Arts",
-  "Curriculum Development", "Cybersecurity",
-  // D
-  "Data Science", "Data Visualization", "Database Design", "Decision Theory",
-  "Demographics", "Design", "Development Economics", "Diaspora Studies",
-  "Digital Marketing", "Digital Media", "Directing", "Diversity & Inclusion",
-  "Drama", "Drawing",
-  // E
-  "Early Childhood Education", "East Asian Studies", "Ecology", "Economics",
-  "Education", "Educational Technology", "Elections", "Electrical Systems",
-  "Elementary Education", "Energy Systems", "Engineering", "English Literature",
-  "Entrepreneurship", "Environmental Engineering", "Environmental Policy",
-  "Environmental Science", "Epidemiology", "Ethics", "Exercise Science",
-  // F
-  "Faith & Culture", "Family Counseling", "Farm Management", "Fashion",
-  "Feminist Theory", "Film Production", "Film Studies", "Finance",
-  "Fine Arts", "Fitness", "Food Policy", "Food Science", "Food Systems",
-  "Foreign Languages", "Foreign Policy", "Forensic Science", "French Language",
-  // G
-  "Game Development", "Game Theory", "Gender & Society", "Gender Equity",
-  "Genetics", "Geography", "Geology", "German Language", "GIS & Mapping",
-  "Global Health", "Global Markets", "Grammar", "Grant Writing",
-  "Graphic Design", "Group Dynamics",
-  // H
-  "Health Education", "Health Policy", "Healthcare", "Historical Research",
-  "History", "Horticulture", "Human Rights", "Human Resources", "Hydrology",
-  // I
-  "Immigration", "Immunology", "Inequality", "Innovation", "Insurance",
-  "Intercultural Communication", "Interfaith Dialogue", "Interior Design",
-  "International Law", "International Relations", "Investment", "IoT",
-  // J – K
-  "Japanese Language", "Journalism", "Kinesiology",
-  // L
-  "Labor Economics", "Landscape Architecture", "Language Learning", "Law",
-  "Leadership", "LGBTQ+ Studies", "Lighting Design", "Linguistics",
-  "Literary Analysis", "Literature", "Livestock Management", "Logic", "Logistics",
-  // M
-  "Mandarin", "Manufacturing", "Marine Biology", "Marine Science",
-  "Marketing", "Materials Science", "Mathematics", "Media", "Media Production",
-  "Mentoring", "Meteorology", "Microbiology", "Military History",
-  "Mixed Media", "Mobile Apps", "Modern History", "Music Education",
-  "Music History", "Music Performance", "Music Production", "Music Theory",
-  "Music Therapy", "Musical Theatre",
-  // N
-  "Nanotechnology", "Natural Resource Management", "Negotiation",
-  "Neuroscience", "Nonviolent Resistance", "Nuclear Physics",
-  "Number Theory", "Nursing", "Nutrition",
-  // O
-  "Operations", "Operations Research", "Oral History", "Organic Chemistry",
-  "Organizational Psychology", "Outdoor Sports",
-  // P
-  "Painting", "Paleontology", "Pan-Africanism", "Parenting", "Peace Studies",
-  "Peacebuilding", "Pediatrics", "Pharmacology", "Philosophy",
-  "Philosophy of Mind", "Photography", "Physics", "Physiology",
-  "Poetry", "Political Philosophy", "Political Science", "Printmaking",
-  "Probability", "Project Management", "Prose Fiction", "Public Administration",
-  "Public Health", "Public Policy", "Public Relations", "Public Speaking",
-  "Publishing",
-  // Q – R
-  "Quantum Mechanics", "Race & Ethnicity", "Racial Justice",
-  "Renewable Energy", "Religious Studies", "Research", "Restorative Justice",
-  "Rhetoric", "Risk Management", "Robotics", "Romance Languages",
-  // S
-  "Sales", "Screenwriting", "Sculpture", "Secondary Education",
-  "Social Activism", "Social Impact", "Social Justice", "Social Media",
-  "Social Movements", "Social Theory", "Social Work", "Sociology",
-  "Soil Science", "Software Development", "Songwriting", "Sound Design",
-  "Spanish Language", "Special Education", "Speech", "Spirituality",
-  "Sports Broadcasting", "Sports Performance", "Stage Management", "Startups",
-  "Statistics", "Strength & Conditioning", "Studio Art", "Supply Chain",
-  "Sustainability", "Sustainable Agriculture", "Sustainable Design",
-  "Systems Thinking",
-  // T
-  "Teaching", "Technical Writing", "Technology", "Textile Arts", "Theatre",
-  "Theology", "Thermodynamics", "Toxicology", "Translation",
-  // U – V
-  "Urban Planning", "Urban Studies", "UX/UI", "Video Production",
-  "Virtual Reality", "Voice & Movement",
-  // W – Z
-  "Water Conservation", "Water Sports", "Web Development",
-  "Wildlife Biology", "Wildlife Management", "Women's History",
-  "Women's Leadership", "Woodworking", "World History", "World Religions",
-  "Writing",
+  "American History", "Appalachian Culture", "Appalachian Studies",
+  "Archaeology", "Asian Cinema", "Asian Culture", "Asian History",
+  "Black Literature", "Cultural Anthropology", "Cultural Heritage",
+  "Cultural Studies", "Diaspora Studies", "East Asian Studies",
+  "Historical Research", "Military History", "Modern History", "World History",
+
+  // Law, Justice & Policy
+  "Civil Liberties", "Civil Rights", "Conflict Resolution", "Constitutional Law",
+  "Criminal Justice", "Criminology", "Foreign Policy", "Forensic Science",
+  "Human Rights", "Immigration", "International Law", "International Relations",
+  "Nonviolent Resistance", "Pan-Africanism", "Peace Studies", "Peacebuilding",
+  "Public Administration", "Public Policy", "Restorative Justice",
+  "Social Activism", "Social Justice", "Social Movements",
+
+  // Communication & Media
+  "Audio Engineering", "Broadcasting", "Communication",
+  "Digital Media", "Directing", "Media Production",
+  "Public Relations", "Social Media", "Sports Broadcasting",
+
+  // Social Science
+  "Community Development", "Demographics", "Development Economics",
+  "Diversity & Inclusion", "Inequality", "Political Science",
+  "Race & Ethnicity", "Racial Justice", "Social Theory",
+  "Sociology", "Urban Planning", "Urban Studies",
+
+  // Philosophy & Religion
+  "Applied Ethics", "Biblical Studies", "Bioethics", "Buddhism",
+  "Comparative Religion", "Faith & Culture", "Feminist Theory",
+  "Gender & Society", "Gender Equity", "Interfaith Dialogue",
+  "LGBTQ+ Studies", "Philosophy of Mind", "Political Philosophy",
+  "Religious Studies", "Social Work", "Spirituality",
+  "Theology", "Women's History", "Women's Leadership", "World Religions",
+
+  // Sports & Fitness
+  "Athletic Coaching", "Outdoor Sports", "Sports Performance", "Water Sports",
 ].sort((a, b) => a.localeCompare(b))
 
-// A small curated showcase — just examples to spark ideas
+// Specific, relatable examples spanning different areas
 const EXAMPLE_PICKS = [
-  "Data Science", "Biology", "Psychology",
-  "Creative Writing", "Political Science", "Music Performance",
-  "Business", "Environmental Science", "Nursing",
-  "Engineering", "Film Studies", "Agriculture",
-  "Philosophy", "Theatre", "History",
+  "Child Development",
+  "Robotics",
+  "Woodworking",
+  "Anatomy",
+  "Criminal Justice",
+  "Graphic Design",
+  "Food Science",
+  "Songwriting",
+  "Entrepreneurship",
+  "Machine Learning",
+  "Creative Writing",
+  "Ecology",
+  "Sports Performance",
+  "Community Development",
+  "Photography",
 ]
 
 const MAX_SELECTIONS = 5
@@ -151,8 +179,6 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
       onChange(selected.filter(c => c !== id))
     } else if (selected.length < MAX_SELECTIONS) {
       onChange([...selected, id])
-      // Do NOT close the popover — let the user keep picking more interests
-      // without having to reopen the dropdown (also prevents scroll-to-top).
     }
   }
 
@@ -160,7 +186,7 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
     <div className="space-y-6">
       <div className="text-center">
         <p className="text-sm text-muted-foreground">
-          Select up to {MAX_SELECTIONS} academic interests •{" "}
+          Select up to {MAX_SELECTIONS} specific interests •{" "}
           <span className={cn("font-medium", selected.length >= 1 ? "text-primary" : "text-muted-foreground")}>
             {selected.length} selected
           </span>
@@ -213,7 +239,6 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
                     key={id}
                     value={id}
                     onSelect={() => toggle(id)}
-                    // Disable (but still show) when at max and this item isn't already selected
                     className={cn(!selected.includes(id) && selected.length >= MAX_SELECTIONS && "opacity-40 pointer-events-none")}
                   >
                     <Check className={cn("mr-2 h-4 w-4", selected.includes(id) ? "opacity-100" : "opacity-0")} />
@@ -228,7 +253,7 @@ export function InterestsStep({ selected, onChange }: InterestsStepProps) {
 
       <div>
         <p className="mb-3 text-center text-xs font-medium uppercase tracking-widest text-muted-foreground">
-          Quick picks — or search above for hundreds more
+          Quick picks — or search above for more
         </p>
         <div className="flex flex-wrap justify-center gap-2">
           {EXAMPLE_PICKS.map(id => (

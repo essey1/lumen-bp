@@ -3,7 +3,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ============================================
+   LUMEN DESIGN SYSTEM - ACCESSIBILITY UPDATES
+   ============================================
+   - Minimum font size: 14px (0.875rem) for body text
+   - Minimum touch target: 44px height
+   - Proper line-height for readability (1.5-1.7)
+   - Responsive breakpoints with mobile-first approach
+   ============================================ */
+
 :root {
+  /* Light mode colors - keeping the forest theme */
   --background: oklch(0.99 0.005 250);
   --foreground: oklch(0.2 0.03 250);
   --card: oklch(1 0 0);
@@ -484,4 +494,45 @@
     opacity: 0.95;
     transform: translateX(18px);
   }
+}
+
+/* Typography & accessibility */
+body {
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Minimum touch targets */
+button, .button, [role="button"], input[type="submit"], input[type="button"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Overflow protection */
+.lumen-surface, .card, [role="article"] {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;
+}
+
+@media (max-width: 640px) {
+  .container, main {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Prevent horizontal scroll */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Images and media - responsive */
+img, video, iframe {
+  max-width: 100%;
+  height: auto;
 }
