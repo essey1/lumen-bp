@@ -87,23 +87,23 @@ function CourseCard({
     return (
       <div className={`rounded-md border px-2.5 py-2 ${color}`}>
         <div className="flex items-center justify-between gap-1.5">
-          <span className="font-semibold text-xs shrink-0">
+          <span className="font-semibold text-xs lg:text-sm shrink-0">
             {course.isPlaceholder ? (
               <span className="flex items-center gap-1">
-                <span className="text-[10px] bg-black/10 px-1 py-0.5 rounded">TBD</span>
-                <span className="text-xs">{course.placeholderCategory || "Elective"}</span>
+                <span className="text-[10px] lg:text-xs bg-black/10 px-1 py-0.5 rounded">TBD</span>
+                <span className="text-xs lg:text-sm">{course.placeholderCategory || "Elective"}</span>
               </span>
             ) : course.code}
           </span>
-          <span className="shrink-0 text-[10px] opacity-60">{course.credits}cr</span>
+          <span className="shrink-0 text-[10px] lg:text-xs opacity-60">{course.credits}cr</span>
         </div>
         {!course.isPlaceholder && (
-          <p className="mt-0.5 text-xs leading-snug text-current/80">{course.name}</p>
+          <p className="mt-0.5 text-xs lg:text-sm leading-snug text-current/80">{course.name}</p>
         )}
         {course.fulfills.length > 0 && (
           <div className="mt-1 flex flex-wrap gap-1">
             {course.fulfills.slice(0, 2).map(f => (
-              <span key={f} className="rounded bg-black/10 px-1 py-0.5 text-[10px] leading-tight">{f}</span>
+              <span key={f} className="rounded bg-black/10 px-1 py-0.5 text-[10px] lg:text-xs leading-tight">{f}</span>
             ))}
           </div>
         )}
@@ -148,11 +148,11 @@ function SemesterColumn({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-gray-800 flex items-center gap-1.5">
+        <h3 className="text-sm lg:text-base font-semibold text-gray-800 flex items-center gap-1.5">
           {title}
           {isCompleted && <Lock className="h-3 w-3 text-muted-foreground" />}
         </h3>
-        <span className="text-xs text-gray-500">{semester.totalCredits}cr</span>
+        <span className="text-xs lg:text-sm text-gray-500">{semester.totalCredits}cr</span>
       </div>
       <div className={`rounded-lg border p-2 space-y-1.5 ${isCompleted ? "bg-gray-50 border-dashed border-gray-200" : "bg-white border-gray-200"}`}>
         {isCompleted && (
