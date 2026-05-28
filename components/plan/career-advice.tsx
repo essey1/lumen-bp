@@ -6,13 +6,17 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, RefreshCw, Loader2 } from "lucide-react";
 
 interface CareerAdviceProps {
+  planId: string;
   careerGoals: string[];
   majors: string[];
   courses: { code: string; name: string }[];
   interests: string[];
 }
 
+const CACHE_KEY = (id: string) => `career-advice-${id}`;
+
 export function CareerAdvice({
+  planId,
   careerGoals,
   majors,
   courses,
@@ -23,7 +27,17 @@ export function CareerAdvice({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchAdvice = async () => {
+  const fetchAdvice = async (force = false) => {
+    if (!force) {
+      const cached = localStorage.getItem(CACHE_KEY(planId));
+      if (cached) {
+        const { advice: a, provider: p } = JSON.parse(cached);
+        setAdvice(a);
+        setProvider(p);
+        return;
+      }
+    }
+
     setLoading(true);
     setError(null);
 
@@ -31,36 +45,30 @@ export function CareerAdvice({
       const response = await fetch("/api/career-advice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          careerGoals,
-          majors,
-          courses,
-          interests,
-        }),
+        body: JSON.stringify({ careerGoals, majors, courses, interests }),
       });
 
       const data = await response.json();
-      
+
       if (!response.ok) {
-        console.error("[v0] API Error:", data);
         throw new Error(data.details || "Failed to get career advice");
       }
 
       setAdvice(data.advice);
       setProvider(data.provider ?? null);
+      localStorage.setItem(CACHE_KEY(planId), JSON.stringify({ advice: data.advice, provider: data.provider ?? null }));
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Unknown error";
       setError(`Unable to generate career advice: ${errorMessage}`);
-      console.error("[v0] Career advice fetch error:", err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Auto-fetch on mount
+  // Auto-fetch on mount — skips if cached
   useEffect(() => {
     if (careerGoals.length > 0) {
-      fetchAdvice();
+      fetchAdvice(false);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -90,7 +98,7 @@ export function CareerAdvice({
             <Button
               variant="outline"
               size="sm"
-              onClick={fetchAdvice}
+              onClick={() => fetchAdvice(true)}
               className="gap-2"
             >
               <RefreshCw className="h-4 w-4" />
@@ -187,7 +195,7 @@ export function CareerAdvice({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={fetchAdvice}
+                onClick={() => fetchAdvice(true)}
                 className="gap-2 text-muted-foreground hover:text-foreground"
               >
                 <RefreshCw className="h-4 w-4" />

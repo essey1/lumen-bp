@@ -694,6 +694,7 @@ export default function SavedPlanPage() {
         {plan.careerGoals.length > 0 && (
           <div className="mt-8">
             <CareerAdvice
+              planId={plan.id}
               careerGoals={plan.careerGoals}
               majors={plan.majors}
               interests={plan.interests}
