@@ -1,11 +1,18 @@
 import { generateText } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
+import { google } from "@ai-sdk/google";
+import { groq } from "@ai-sdk/groq";
+
+const PROVIDERS = [
+  { name: "Anthropic", model: () => anthropic("claude-sonnet-4-5") },
+  { name: "Gemini",    model: () => google("gemini-2.0-flash") },
+  { name: "Groq",      model: () => groq("llama-3.3-70b-versatile") },
+];
 
 export async function POST(req: Request) {
   try {
     const { careerGoals, majors, courses, interests } = await req.json();
 
-    // Build a prompt for career advice
     const coursesText = courses
       .map((c: { code: string; name: string }) => `${c.code}: ${c.name}`)
       .join("\n");
@@ -47,15 +54,20 @@ One concrete suggestion for gaining relevant experience (internships, projects, 
 
 Keep the tone encouraging and practical. Be specific to Berea College's unique work-study culture and their career goals.`;
 
-    const result = await generateText({
-      model: anthropic("claude-sonnet-4-5"),
-      prompt,
-    });
+    let lastError: unknown;
+    for (const provider of PROVIDERS) {
+      try {
+        const result = await generateText({ model: provider.model(), prompt });
+        return Response.json({ advice: result.text, provider: provider.name });
+      } catch (err) {
+        console.warn(`[career-advice] ${provider.name} failed, trying next provider:`, err);
+        lastError = err;
+      }
+    }
 
-    return Response.json({ advice: result.text });
+    throw lastError;
   } catch (error) {
-    console.error("[v0] Career advice API error:", error);
-    console.error("[v0] Error details:", JSON.stringify(error, Object.getOwnPropertyNames(error)));
+    console.error("[career-advice] All providers failed:", error);
     return Response.json(
       { error: "Failed to generate career advice", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
