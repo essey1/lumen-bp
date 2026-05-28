@@ -132,6 +132,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   // Step 2
   const [majors, setMajors] = useState<string[]>([]);
+  const [majorSearch, setMajorSearch] = useState("");
   // Step 3
   const [year, setYear] = useState("");
   // Step 4
@@ -356,7 +357,7 @@ export default function SignupPage() {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <label className={labelCls}>Major(s)</label>
-                <span className="text-xs text-[#4a7a72]">{majors.length === 0 ? "Select at least one" : `${majors.length} selected`}</span>
+                <span className="text-xs text-[#4a7a72]">{majors.length === 0 ? "Select at least one (max 3)" : `${majors.length}/3 selected`}</span>
               </div>
               {majors.length > 0 && (
                 <div className="flex flex-wrap gap-1.5">
@@ -369,19 +370,29 @@ export default function SignupPage() {
                   ))}
                 </div>
               )}
+              <input
+                type="text"
+                placeholder="Search majors…"
+                value={majorSearch}
+                onChange={e => setMajorSearch(e.target.value)}
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-[#c8e0d8] placeholder:text-[#4a7a72] outline-none focus:border-[#f5a623]/40"
+              />
               <div className="max-h-64 overflow-y-auto rounded-xl border border-white/10" style={{ background: "rgba(255,255,255,0.03)" }}>
-                {MAJORS.map(m => {
+                {MAJORS.filter(m => m.toLowerCase().includes(majorSearch.toLowerCase())).map(m => {
                   const isSelected = majors.includes(m)
-                  const blocked = !isSelected && isMajorNameBlocked(m, majors)
+                  const atMax = !isSelected && majors.length >= 3
+                  const blocked = !isSelected && !atMax && isMajorNameBlocked(m, majors)
+                  const disabled = blocked || atMax
                   return (
-                    <button key={m} type="button" disabled={blocked}
-                      title={blocked ? "You already selected a major from this department" : undefined}
-                      onClick={() => setMajors(prev => isSelected ? prev.filter(x => x !== m) : blocked ? prev : [...prev, m])}
-                      className={`flex w-full items-center justify-between border-b border-white/6 px-4 py-2.5 text-left text-sm last:border-0 transition-colors ${isSelected ? "font-medium" : blocked ? "cursor-not-allowed opacity-30 line-through" : "hover:bg-white/5"}`}
+                    <button key={m} type="button" disabled={disabled}
+                      title={blocked ? "You already selected a major from this department" : atMax ? "Maximum 3 majors allowed" : undefined}
+                      onClick={() => setMajors(prev => isSelected ? prev.filter(x => x !== m) : disabled ? prev : [...prev, m])}
+                      className={`flex w-full items-center justify-between border-b border-white/6 px-4 py-2.5 text-left text-sm last:border-0 transition-colors ${isSelected ? "font-medium" : disabled ? "cursor-not-allowed opacity-30 line-through" : "hover:bg-white/5"}`}
                       style={{ color: isSelected ? "#f5a623" : "#c8e0d8" }}>
                       {m}
                       {isSelected && <Check className="ml-2 h-4 w-4 shrink-0" />}
                       {blocked && <span className="ml-2 text-[10px] text-[#4a7a72] no-underline">same dept</span>}
+                      {atMax && <span className="ml-2 text-[10px] text-[#4a7a72] no-underline">max reached</span>}
                     </button>
                   )
                 })}

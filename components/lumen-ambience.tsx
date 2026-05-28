@@ -117,12 +117,6 @@ export function LumenGuideBear({
           </g>
         </svg>
       </div>
-      <div
-        className={`pointer-events-none ${fixed ? "fixed bottom-[185px] left-[10%]" : "absolute bottom-[185px] left-[14%]"} z-20 hidden rounded-xl bg-white/95 px-3 py-1.5 text-xs font-medium text-[#1a3a38] shadow-[0_4px_16px_rgba(0,0,0,0.15)] sm:block`}
-      >
-        Come follow me
-        <div className="absolute bottom-[-8px] left-5 h-0 w-0 border-l-[8px] border-r-[8px] border-t-[8px] border-l-transparent border-r-transparent border-t-white/95" />
-      </div>
     </>
   )
 }

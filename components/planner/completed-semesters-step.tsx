@@ -274,7 +274,7 @@ export function CompletedSemestersStep({
         </div>
         <p className="mt-2 text-xs text-muted-foreground">
           {completedCount === 0
-            ? "You're just starting — we'll plan all 8 semesters."
+            ? "You're just starting, we'll plan all 8 semesters."
             : `${completedCount} semester${completedCount > 1 ? "s" : ""} done. We'll plan the remaining ${8 - completedCount}.`}
         </p>
       </div>

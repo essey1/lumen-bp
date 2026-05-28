@@ -30,16 +30,16 @@ function BearMark({ size = 28 }: { size?: number }) {
 }
 
 const steps = [
-  { num: "01", icon: Leaf,         title: "Tell us who you are"   },
-  { num: "02", icon: Map,          title: "Map your semesters"    },
-  { num: "03", icon: CheckCircle2, title: "Follow the light"      },
+  { num: "01", icon: Leaf,         title: "Tell us your interests and goals"   },
+  { num: "02", icon: Map,          title: "Generate your plan"    },
+  { num: "03", icon: CheckCircle2, title: "Make changes as you grow"      },
 ]
 
 const features = [
-  { tag: "Roadmap",  title: "Full 4-year view"             },
+  { tag: "Roadmap",  title: "Full 4-year Plans"             },
   { tag: "Berea",    title: "Requirements-aware"           },
   { tag: "Goals",    title: "Shaped by your direction"     },
-  { tag: "Progress", title: "Revisit as you grow"          },
+  { tag: "Progress", title: "Specific Career Advice"          },
 ]
 
 export default function LandingPage() {
@@ -133,17 +133,14 @@ export default function LandingPage() {
             Let the light
             <br />
             <em className="not-italic" style={{ color: "#f5a623", textShadow: "0 0 60px rgba(245,166,35,0.4)" }}>
-              guide your path.
+              guide your path
             </em>
           </h1>
 
-          <p className="mx-auto mt-6 max-w-md text-sm sm:text-base leading-relaxed"
-            style={{ color: "#7aada0", fontStyle: "italic" }}>
-            Your personalized 4-year academic roadmap
-          </p>
+         <br />
           <p className="mx-auto mt-1 max-w-md text-xl sm:text-2xl font-medium"
             style={{ color: "#7aada0", fontStyle: "italic" }}>
-            Built for Berea College.
+            Built for Berea College
           </p>
 
           <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:justify-center sm:gap-4">
@@ -216,10 +213,8 @@ export default function LandingPage() {
             style={{ color: "#f5a623", fontFamily: "var(--font-cinzel)" }}>
             What Lumen offers
           </p>
-          <h2 className="mb-8 sm:mb-14 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[#f0ede0]"
-            style={{ fontFamily: "var(--font-cinzel)" }}>
-            Every tree, every trail — mapped.
-          </h2>
+          <br/>
+
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {features.map((f) => (
@@ -251,9 +246,7 @@ export default function LandingPage() {
             Ready to{" "}
             <span style={{ color: "#f5a623", textShadow: "0 0 40px rgba(245,166,35,0.35)" }}>begin?</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-sm text-base sm:text-lg text-[#7aada0]" style={{ fontStyle: "italic" }}>
-            Your guide is already waiting in the forest.
-          </p>
+        
           <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:justify-center sm:gap-4">
             <Link href="/auth/signup"
               className="w-full rounded-full px-6 py-3.5 text-center text-base font-bold tracking-wide transition hover:-translate-y-0.5 sm:w-auto sm:px-8 sm:py-4"
@@ -263,7 +256,7 @@ export default function LandingPage() {
                 fontFamily: "var(--font-cinzel)",
                 boxShadow: "0 12px 32px rgba(245,166,35,0.26)",
               }}>
-              Get Started — Free
+              Get Started
             </Link>
             <Link href="/auth/login"
               className="w-full rounded-full border border-white/20 px-6 py-3.5 text-center text-base text-[#c8e0d8] transition hover:bg-white/6 sm:w-auto sm:px-8 sm:py-4">
@@ -279,9 +272,8 @@ export default function LandingPage() {
           <BearMark size={22} />
           <span className="text-base font-bold" style={{ fontFamily: "var(--font-cinzel)" }}>Lumen</span>
         </div>
-        <p className="text-sm" style={{ color: "#4a7a72" }}>Made with care for Berea College students.</p>
+        <p className="text-sm" style={{ color: "#4a7a72" }}>@ 2026 Lumen</p>
         <div className="flex gap-4 sm:gap-5 text-sm" style={{ color: "#4a7a72" }}>
-          <Link href="/planner" className="transition hover:text-[#e2ede8]">Plan</Link>
           <Link href="/auth/login" className="transition hover:text-[#e2ede8]">Sign In</Link>
           <Link href="/auth/signup" className="transition hover:text-[#e2ede8]">Sign Up</Link>
         </div>

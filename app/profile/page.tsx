@@ -320,7 +320,7 @@ export default function ProfilePage() {
                     <BookOpen className="mx-auto mb-3 h-10 w-10 text-muted-foreground/40" />
                     <p className="text-base font-semibold text-foreground">No saved plans yet</p>
                     <p className="mt-1 text-sm text-muted-foreground">
-                      Generate a plan to get started — it saves automatically.
+                      Generate a plan to get started, it saves automatically.
                     </p>
                     <Link href="/planner" className="mt-4 inline-block">
                       <Button size="sm" className="gap-1.5">
