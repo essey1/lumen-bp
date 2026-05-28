@@ -1,29 +1,27 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
 
-function getTransporter() {
-  const user = process.env.GMAIL_USER;
-  const pass = process.env.GMAIL_APP_PASSWORD;
-  if (!user || !pass) throw new Error("GMAIL_USER and GMAIL_APP_PASSWORD must be set");
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: { user, pass },
-  });
+function getResend() {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) throw new Error("RESEND_API_KEY must be set");
+  return new Resend(key);
 }
+
+// Resend requires a verified domain for the from address in production.
+// Until you verify a domain at resend.com/domains, use their sandbox address.
+// Once verified, change this to e.g. "Lumen <noreply@yourdomain.com>".
+const FROM = "Lumen <onboarding@resend.dev>";
 
 // ── Sign-up / login OTP ───────────────────────────────────────────────────────
 
 export async function sendOTP(email: string, code: string): Promise<void> {
-  const transporter = getTransporter();
-  await transporter.sendMail({
-    from:     `"Lumen" <${process.env.GMAIL_USER}>`,
-    replyTo:  process.env.GMAIL_USER,
-    to:       email,
-    // Put the code in the subject — matches what Discord, Steam, Apple do.
-    // Short, clear, no spam-trigger words like "verify" or "OTP".
-    subject:  `${code} is your Lumen code`,
-    text:     buildPlainText(code, "verification"),
-    html:     buildHtml(code, "verification"),
+  const resend = getResend();
+  await resend.emails.send({
+    from:    FROM,
+    to:      email,
+    subject: `${code} is your Lumen code`,
+    text:    buildPlainText(code, "verification"),
+    html:    buildHtml(code, "verification"),
   });
 }
 
@@ -34,28 +32,19 @@ export async function sendPasswordResetOTP(
   code: string,
   name?: string
 ): Promise<void> {
-  const transporter = getTransporter();
-  await transporter.sendMail({
-    from:     `"Lumen" <${process.env.GMAIL_USER}>`,
-    replyTo:  process.env.GMAIL_USER,
-    to:       email,
-    subject:  `${code} is your Lumen password reset code`,
-    text:     buildPlainText(code, "password reset", name),
-    html:     buildHtml(code, "password reset", name),
+  const resend = getResend();
+  await resend.emails.send({
+    from:    FROM,
+    to:      email,
+    subject: `${code} is your Lumen password reset code`,
+    text:    buildPlainText(code, "password reset", name),
+    html:    buildHtml(code, "password reset", name),
   });
 }
 
 // ── Templates ─────────────────────────────────────────────────────────────────
 
-/**
- * Plain-text version. Spam filters heavily penalise HTML-only emails;
- * including a text/plain alternative significantly improves inbox placement.
- */
-function buildPlainText(
-  code: string,
-  purpose: string,
-  name?: string
-): string {
+function buildPlainText(code: string, purpose: string, name?: string): string {
   const greeting = name ? `Hi ${name},` : "Hi there,";
   return [
     greeting,
@@ -69,17 +58,7 @@ function buildPlainText(
   ].join("\n");
 }
 
-/**
- * HTML version — intentionally simple.
- * Overly-styled "big OTP box" templates match common phishing patterns
- * and score poorly with spam filters. Plain prose with an inline code
- * looks more like a legitimate transactional email.
- */
-function buildHtml(
-  code: string,
-  purpose: string,
-  name?: string
-): string {
+function buildHtml(code: string, purpose: string, name?: string): string {
   const greeting = name ? `Hi ${name},` : "Hi there,";
   return `<!DOCTYPE html>
 <html lang="en">
@@ -109,12 +88,9 @@ function buildHtml(
               <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#374151;">
                 Here is your Lumen ${purpose} code. It expires in <strong>10 minutes</strong>.
               </p>
-
-              <!-- Code — inline, not a giant styled box -->
               <p style="margin:0 0 24px;font-size:15px;line-height:1.6;color:#374151;">
                 Your code: <strong style="font-size:22px;letter-spacing:4px;font-family:monospace;color:#111111;">${code}</strong>
               </p>
-
               <p style="margin:0 0 8px;font-size:13px;line-height:1.6;color:#6b7280;">
                 Enter this code on the Lumen sign-in page to continue.
               </p>
