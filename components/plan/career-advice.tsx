@@ -1,9 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sparkles, RefreshCw, Loader2 } from "lucide-react";
+import { Sparkles, RefreshCw, Loader2, BookOpen, Zap, Building2, Users, Compass } from "lucide-react";
 
 interface CareerAdviceProps {
   planId: string;
@@ -15,13 +14,89 @@ interface CareerAdviceProps {
 
 const CACHE_KEY = (id: string) => `career-advice-${id}`;
 
-export function CareerAdvice({
-  planId,
-  careerGoals,
-  majors,
-  courses,
-  interests,
-}: CareerAdviceProps) {
+const SECTION_META: Record<string, { Icon: React.ComponentType<{ className?: string }>, accent: string }> = {
+  "COURSES TO PRIORITIZE":               { Icon: BookOpen,  accent: "#f5a623" },
+  "SKILLS TO DEVELOP":                   { Icon: Zap,       accent: "#6fcf97" },
+  "COMPANIES TO PURSUE":                 { Icon: Building2, accent: "#56b4e9" },
+  "BEREA COLLEGE ALUMNI TO NETWORK WITH":{ Icon: Users,     accent: "#e07d60" },
+  "EXPERIENCE OUTSIDE CLASSROOM":        { Icon: Compass,   accent: "#b49be8" },
+};
+
+function parseSections(raw: string): { title: string; content: string }[] {
+  const sections: { title: string; content: string }[] = [];
+  let title = "";
+  let lines: string[] = [];
+  for (const line of raw.split("\n")) {
+    const m = line.match(/^\*\*([^*]+)\*\*\s*$/);
+    if (m) {
+      if (title) sections.push({ title: title.trim(), content: lines.join("\n").trim() });
+      title = m[1].trim();
+      lines = [];
+    } else {
+      lines.push(line);
+    }
+  }
+  if (title) sections.push({ title: title.trim(), content: lines.join("\n").trim() });
+  return sections;
+}
+
+function renderBold(text: string) {
+  return text.split(/(\*\*[^*]+\*\*)/).map((part, i) =>
+    part.startsWith("**") && part.endsWith("**")
+      ? <strong key={i} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>
+      : <span key={i}>{part}</span>
+  );
+}
+
+function SectionContent({ content }: { content: string }) {
+  const blocks = content.split(/\n\n+/).filter(Boolean);
+  return (
+    <div className="space-y-3">
+      {blocks.map((block, i) => {
+        const trimmed = block.trim();
+        if (/^(\d+\.\s)/.test(trimmed)) {
+          const items = trimmed.split(/\n(?=\d+\.\s)/).filter(Boolean);
+          return (
+            <ol key={i} className="space-y-2">
+              {items.map((item, j) => {
+                const [num, ...rest] = item.split(/^(\d+\.\s)/);
+                const text = (rest.join("") || num).replace(/^\d+\.\s*/, "");
+                return (
+                  <li key={j} className="flex gap-2.5 text-sm leading-relaxed text-foreground/85">
+                    <span className="shrink-0 font-bold text-[currentColor] opacity-50 w-4 text-right">
+                      {j + 1}.
+                    </span>
+                    <span>{renderBold(text)}</span>
+                  </li>
+                );
+              })}
+            </ol>
+          );
+        }
+        if (/^[-•]\s/.test(trimmed)) {
+          const items = trimmed.split(/\n(?=[-•]\s)/).filter(Boolean);
+          return (
+            <ul key={i} className="space-y-2">
+              {items.map((item, j) => (
+                <li key={j} className="flex gap-2.5 text-sm leading-relaxed text-foreground/85">
+                  <span className="shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full bg-current opacity-40" />
+                  <span>{renderBold(item.replace(/^[-•]\s*/, ""))}</span>
+                </li>
+              ))}
+            </ul>
+          );
+        }
+        return (
+          <p key={i} className="text-sm leading-relaxed text-foreground/80">
+            {renderBold(trimmed)}
+          </p>
+        );
+      })}
+    </div>
+  );
+}
+
+export function CareerAdvice({ planId, careerGoals, majors, courses, interests }: CareerAdviceProps) {
   const [advice, setAdvice] = useState<string | null>(null);
   const [provider, setProvider] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -32,184 +107,109 @@ export function CareerAdvice({
       const cached = localStorage.getItem(CACHE_KEY(planId));
       if (cached) {
         const { advice: a, provider: p } = JSON.parse(cached);
-        setAdvice(a);
-        setProvider(p);
+        setAdvice(a); setProvider(p);
         return;
       }
     }
-
     setLoading(true);
     setError(null);
-
     try {
-      const response = await fetch("/api/career-advice", {
+      const res = await fetch("/api/career-advice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ careerGoals, majors, courses, interests }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.details || "Failed to get career advice");
-      }
-
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.details || "Failed to get career advice");
       setAdvice(data.advice);
       setProvider(data.provider ?? null);
       localStorage.setItem(CACHE_KEY(planId), JSON.stringify({ advice: data.advice, provider: data.provider ?? null }));
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Unknown error";
-      setError(`Unable to generate career advice: ${errorMessage}`);
+      setError(`Unable to generate career advice: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setLoading(false);
     }
   };
 
-  // Auto-fetch on mount — skips if cached
   useEffect(() => {
-    if (careerGoals.length > 0) {
-      fetchAdvice(false);
-    }
+    if (careerGoals.length > 0) fetchAdvice(false);
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (careerGoals.length === 0) {
-    return null;
-  }
+  if (careerGoals.length === 0) return null;
+
+  const sections = advice ? parseSections(advice) : [];
 
   return (
-    <Card className="mt-8 border-primary/20 bg-gradient-to-br from-card to-primary/5">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Sparkles className="h-5 w-5 text-primary" />
-          Career Advice for {careerGoals.join(", ")}
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        {loading && (
-          <div className="flex items-center gap-3 py-6 text-muted-foreground">
-            <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Generating personalized advice based on your goals...</span>
-          </div>
-        )}
+    <div className="mt-8">
+      {/* Header */}
+      <div className="mb-5 flex items-center gap-2.5">
+        <Sparkles className="h-5 w-5 text-primary" />
+        <h2 className="text-lg font-semibold text-foreground">
+          Career Advice — {careerGoals.join(", ")}
+        </h2>
+      </div>
 
-        {error && (
-          <div className="py-4">
-            <p className="text-destructive mb-3">{error}</p>
+      {loading && (
+        <div className="flex items-center gap-3 rounded-2xl border border-border bg-card px-6 py-8 text-muted-foreground">
+          <Loader2 className="h-5 w-5 animate-spin shrink-0" />
+          <span className="text-sm">Generating personalized advice based on your goals…</span>
+        </div>
+      )}
+
+      {error && (
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/5 px-6 py-5">
+          <p className="text-sm text-destructive mb-3">{error}</p>
+          <Button variant="outline" size="sm" onClick={() => fetchAdvice(true)} className="gap-2">
+            <RefreshCw className="h-4 w-4" /> Try Again
+          </Button>
+        </div>
+      )}
+
+      {advice && !loading && (
+        <>
+          <div className="grid gap-4 lg:grid-cols-2">
+            {sections.map(({ title, content }, i) => {
+              const meta = SECTION_META[title];
+              const Icon = meta?.Icon ?? Sparkles;
+              const accent = meta?.accent ?? "#f5a623";
+              const isWide = title === "COMPANIES TO PURSUE" || title === "BEREA COLLEGE ALUMNI TO NETWORK WITH";
+              return (
+                <div
+                  key={i}
+                  className={`rounded-2xl border border-border bg-card p-5 ${isWide ? "lg:col-span-2" : ""}`}
+                >
+                  <div className="mb-3.5 flex items-center gap-2.5">
+                    <span
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+                      style={{ background: `${accent}18` }}
+                    >
+                      <Icon className="h-3.5 w-3.5" style={{ color: accent }} />
+                    </span>
+                    <h3 className="text-sm font-semibold tracking-wide uppercase" style={{ color: accent }}>
+                      {title}
+                    </h3>
+                  </div>
+                  <SectionContent content={content} />
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-4 flex items-center justify-between">
             <Button
-              variant="outline"
+              variant="ghost"
               size="sm"
               onClick={() => fetchAdvice(true)}
-              className="gap-2"
+              className="gap-2 text-muted-foreground hover:text-foreground"
             >
-              <RefreshCw className="h-4 w-4" />
-              Try Again
+              <RefreshCw className="h-4 w-4" /> Regenerate Advice
             </Button>
+            {provider && (
+              <span className="text-xs text-muted-foreground/50">Generated by {provider}</span>
+            )}
           </div>
-        )}
-
-        {advice && !loading && (
-          <div className="space-y-4">
-            <div className="prose prose-sm max-w-none text-foreground">
-              {advice.split("\n\n").map((block, idx) => {
-                // Check if it's a header (starts with **)
-                if (block.startsWith("**") && block.includes("**\n")) {
-                  const [header, ...rest] = block.split("\n");
-                  const headerText = header.replace(/\*\*/g, "");
-                  return (
-                    <div key={idx} className="mb-4">
-                      <h3 className="text-base font-semibold text-primary mb-2 mt-4 first:mt-0">
-                        {headerText}
-                      </h3>
-                      {rest.length > 0 && (
-                        <div className="text-sm leading-relaxed text-muted-foreground">
-                          {rest.join("\n")}
-                        </div>
-                      )}
-                    </div>
-                  );
-                }
-                
-                // Check for numbered lists (1. 2. etc)
-                if (/^\d+\./.test(block.trim())) {
-                  const items = block.split(/\n(?=\d+\.)/).filter(Boolean);
-                  return (
-                    <ol key={idx} className="list-decimal list-inside space-y-2 mb-4 text-sm">
-                      {items.map((item, i) => {
-                        const content = item.replace(/^\d+\.\s*/, "");
-                        // Handle bold text within items
-                        const parts = content.split(/(\*\*[^*]+\*\*)/);
-                        return (
-                          <li key={i} className="leading-relaxed">
-                            {parts.map((part, j) => {
-                              if (part.startsWith("**") && part.endsWith("**")) {
-                                return <strong key={j} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
-                              }
-                              return <span key={j} className="text-muted-foreground">{part}</span>;
-                            })}
-                          </li>
-                        );
-                      })}
-                    </ol>
-                  );
-                }
-                
-                // Check for bullet lists (- or *)
-                if (block.trim().startsWith("-") || block.trim().startsWith("*")) {
-                  const items = block.split(/\n(?=[-*]\s)/).filter(Boolean);
-                  return (
-                    <ul key={idx} className="list-disc list-inside space-y-2 mb-4 text-sm">
-                      {items.map((item, i) => {
-                        const content = item.replace(/^[-*]\s*/, "");
-                        // Handle bold text within items
-                        const parts = content.split(/(\*\*[^*]+\*\*)/);
-                        return (
-                          <li key={i} className="leading-relaxed">
-                            {parts.map((part, j) => {
-                              if (part.startsWith("**") && part.endsWith("**")) {
-                                return <strong key={j} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
-                              }
-                              return <span key={j} className="text-muted-foreground">{part}</span>;
-                            })}
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  );
-                }
-                
-                // Regular paragraph with potential bold text
-                const parts = block.split(/(\*\*[^*]+\*\*)/);
-                return (
-                  <p key={idx} className="text-sm leading-relaxed mb-3 text-muted-foreground">
-                    {parts.map((part, j) => {
-                      if (part.startsWith("**") && part.endsWith("**")) {
-                        return <strong key={j} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
-                      }
-                      return <span key={j}>{part}</span>;
-                    })}
-                  </p>
-                );
-              })}
-            </div>
-            <div className="pt-2 border-t border-border flex items-center justify-between">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => fetchAdvice(true)}
-                className="gap-2 text-muted-foreground hover:text-foreground"
-              >
-                <RefreshCw className="h-4 w-4" />
-                Regenerate Advice
-              </Button>
-              {provider && (
-                <span className="text-xs text-muted-foreground/60">
-                  Generated by {provider}
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+        </>
+      )}
+    </div>
   );
 }
