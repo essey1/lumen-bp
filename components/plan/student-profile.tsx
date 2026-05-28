@@ -10,10 +10,10 @@ function BadgeList({ items, variant }: { items: string[]; variant: "default" | "
   return (
     <div className="flex flex-wrap gap-1">
       {visible.map(item => (
-        <Badge key={item} variant={variant} className="text-[10px] px-1.5 py-0.5">{item}</Badge>
+        <Badge key={item} variant={variant} className="text-[10px] lg:text-xs px-1.5 py-0.5">{item}</Badge>
       ))}
       {overflow > 0 && (
-        <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-black/10 text-current/60">+{overflow}</span>
+        <span className="text-[10px] lg:text-xs px-1.5 py-0.5 rounded-full bg-black/10 text-current/60">+{overflow}</span>
       )}
     </div>
   )
@@ -37,8 +37,8 @@ export function StudentProfile({ profile }: StudentProfileProps) {
         <div className={`grid gap-2.5 ${hasMinors ? "grid-cols-2 md:grid-cols-4" : "grid-cols-2 md:grid-cols-3"}`}>
           <div>
             <div className="mb-1 flex items-center gap-1.5">
-              <BookOpen className="h-3.5 w-3.5 text-primary shrink-0" />
-              <span className="text-xs font-semibold text-foreground uppercase tracking-wide">Major</span>
+              <BookOpen className="h-3.5 w-3.5 lg:h-4 lg:w-4 text-primary shrink-0" />
+              <span className="text-xs lg:text-sm font-semibold text-foreground uppercase tracking-wide">Major</span>
             </div>
             <BadgeList items={profile.majors} variant="default" />
           </div>
@@ -46,7 +46,7 @@ export function StudentProfile({ profile }: StudentProfileProps) {
           {hasMinors && (
             <div>
               <div className="mb-1 flex items-center gap-1.5">
-                <BookMarked className="h-3.5 w-3.5 text-primary shrink-0" />
+                <BookMarked className="h-3.5 w-3.5 lg:h-4 lg:w-4 text-primary shrink-0" />
                 <span className="text-xs font-semibold text-foreground uppercase tracking-wide">Minor</span>
               </div>
               <BadgeList items={profile.minors ?? []} variant="secondary" />
@@ -55,16 +55,16 @@ export function StudentProfile({ profile }: StudentProfileProps) {
 
           <div>
             <div className="mb-1 flex items-center gap-1.5">
-              <Heart className="h-3.5 w-3.5 text-primary shrink-0" />
-              <span className="text-xs font-semibold text-foreground uppercase tracking-wide">Interests</span>
+              <Heart className="h-3.5 w-3.5 lg:h-4 lg:w-4 text-primary shrink-0" />
+              <span className="text-xs lg:text-sm font-semibold text-foreground uppercase tracking-wide">Interests</span>
             </div>
             <BadgeList items={profile.interests} variant="outline" />
           </div>
 
           <div>
             <div className="mb-1 flex items-center gap-1.5">
-              <Briefcase className="h-3.5 w-3.5 text-primary shrink-0" />
-              <span className="text-xs font-semibold text-foreground uppercase tracking-wide">Goals</span>
+              <Briefcase className="h-3.5 w-3.5 lg:h-4 lg:w-4 text-primary shrink-0" />
+              <span className="text-xs lg:text-sm font-semibold text-foreground uppercase tracking-wide">Goals</span>
             </div>
             <BadgeList items={profile.careerGoals} variant="outline" />
           </div>
