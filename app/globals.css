@@ -504,6 +504,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Slightly larger type on bigger screens — all rem-based sizes scale with this */
+@media (min-width: 1024px) {
+  html { font-size: 17px; }
+}
+@media (min-width: 1280px) {
+  html { font-size: 18px; }
+}
+
 /* Minimum touch targets */
 button, .button, [role="button"], input[type="submit"], input[type="button"] {
   min-height: 44px;
