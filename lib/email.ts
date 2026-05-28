@@ -1,22 +1,26 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
 
-function getResend() {
-  const key = process.env.RESEND_API_KEY;
-  if (!key) throw new Error("RESEND_API_KEY must be set");
-  return new Resend(key);
+function getTransporter() {
+  const key = process.env.BREVO_SMTP_KEY;
+  if (!key) throw new Error("BREVO_SMTP_KEY must be set");
+  return nodemailer.createTransport({
+    host: "smtp-relay.brevo.com",
+    port: 587,
+    auth: {
+      user: process.env.GMAIL_USER, // your verified sender email (lumen.berea@gmail.com)
+      pass: key,
+    },
+  });
 }
 
-// Resend requires a verified domain for the from address in production.
-// Until you verify a domain at resend.com/domains, use their sandbox address.
-// Once verified, change this to e.g. "Lumen <noreply@yourdomain.com>".
-const FROM = "Lumen <onboarding@resend.dev>";
+const FROM = `"Lumen" <${process.env.GMAIL_USER ?? "lumen.berea@gmail.com"}>`;
 
 // ── Sign-up / login OTP ───────────────────────────────────────────────────────
 
 export async function sendOTP(email: string, code: string): Promise<void> {
-  const resend = getResend();
-  await resend.emails.send({
+  const transporter = getTransporter();
+  await transporter.sendMail({
     from:    FROM,
     to:      email,
     subject: `${code} is your Lumen code`,
@@ -32,8 +36,8 @@ export async function sendPasswordResetOTP(
   code: string,
   name?: string
 ): Promise<void> {
-  const resend = getResend();
-  await resend.emails.send({
+  const transporter = getTransporter();
+  await transporter.sendMail({
     from:    FROM,
     to:      email,
     subject: `${code} is your Lumen password reset code`,
