@@ -510,9 +510,7 @@ export default function SavedPlanPage() {
                 </button>
               ))}
             </div>
-            <span className="text-sm italic" style={{ color: "rgba(255,255,255,0.35)" }}>
-              — switch between plan variants
-            </span>
+            
           </div>
         )}
 
