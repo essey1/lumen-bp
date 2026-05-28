@@ -460,7 +460,7 @@ export default function SignupPage() {
               <div>
                 <label className={labelCls}>Password</label>
                 <Input type="password" value={password} onChange={e => setPassword(e.target.value)}
-                  placeholder="Create a strong password" autoFocus className="forest-input" />
+                  placeholder="Create a strong password" autoFocus autoComplete="new-password" className="forest-input" />
               </div>
               {password.length > 0 && (
                 <ul className="space-y-1.5 rounded-xl border border-white/8 bg-white/3 px-4 py-3">
@@ -484,7 +484,7 @@ export default function SignupPage() {
               <div>
                 <label className={labelCls}>Confirm Password</label>
                 <Input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
-                  placeholder="Re-enter your password" onKeyDown={e => e.key === "Enter" && handleNext()}
+                  placeholder="Re-enter your password" autoComplete="new-password" onKeyDown={e => e.key === "Enter" && handleNext()}
                   className="forest-input" />
                 {confirmPassword.length > 0 && password !== confirmPassword && (
                   <p className="mt-1.5 text-xs text-red-400">Passwords do not match.</p>

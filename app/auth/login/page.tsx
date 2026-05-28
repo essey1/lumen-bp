@@ -73,7 +73,7 @@ export default function LoginPage() {
                 </Link>
               </div>
               <input type="password" value={password} onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••" required disabled={loading}
+                placeholder="••••••••" required disabled={loading} autoComplete="current-password"
                 className={inputCls} />
             </div>
             <button type="submit" disabled={loading}
