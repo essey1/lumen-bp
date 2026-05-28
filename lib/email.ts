@@ -2,15 +2,12 @@ import nodemailer from "nodemailer";
 import { prisma } from "@/lib/prisma";
 
 function getTransporter() {
-  const key = process.env.BREVO_SMTP_KEY;
-  if (!key) throw new Error("BREVO_SMTP_KEY must be set");
+  const user = process.env.GMAIL_USER;
+  const pass = process.env.GMAIL_APP_PASSWORD;
+  if (!user || !pass) throw new Error("GMAIL_USER and GMAIL_APP_PASSWORD must be set");
   return nodemailer.createTransport({
-    host: "smtp-relay.brevo.com",
-    port: 587,
-    auth: {
-      user: process.env.GMAIL_USER, // your verified sender email (lumen.berea@gmail.com)
-      pass: key,
-    },
+    service: "gmail",
+    auth: { user, pass },
   });
 }
 
