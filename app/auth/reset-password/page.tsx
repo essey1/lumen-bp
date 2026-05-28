@@ -212,6 +212,7 @@ function ResetPasswordForm() {
                       placeholder="At least 8 characters"
                       required
                       disabled={loading}
+                      autoComplete="new-password"
                       className={`${inputCls} pr-11`}
                     />
                     <button
@@ -234,6 +235,7 @@ function ResetPasswordForm() {
                     placeholder="Re-enter password"
                     required
                     disabled={loading}
+                    autoComplete="new-password"
                     className={inputCls}
                   />
                 </div>
