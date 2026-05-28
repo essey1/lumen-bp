@@ -351,14 +351,25 @@ export default function SavedPlanPage() {
   // ── Stats ─────────────────────────────────────────────────────────────────────
   const stats = useMemo(() => {
     if (currentSemesters.length === 0) return null;
-    const majorPrefixList = (plan?.majors ?? []).map(code => code.split("_")[0]);
+    const majors = plan?.majors ?? [];
+    const majorPrefixList = majors.map(code => code.split("_")[0]);
     const isInsideMajor = (courseCode: string) =>
       majorPrefixList.some(p => courseCode.startsWith(p + " ") || courseCode === p);
-    const totalCredits        = currentSemesters.reduce((s, sem) => s + sem.totalCredits, 0);
-    const totalCourses        = currentSemesters.reduce((s, sem) => s + sem.courses.length, 0);
-    const majorCourses        = currentSemesters.reduce((s, sem) => s + sem.courses.filter(c => isInsideMajor(c.code)).length, 0);
-    const creditsOutsideMajor = currentSemesters.reduce((s, sem) =>
-      s + sem.courses.filter(c => !isInsideMajor(c.code)).reduce((a, c) => a + c.credits, 0), 0);
+    const totalCredits = currentSemesters.reduce((s, sem) => s + sem.totalCredits, 0);
+    const totalCourses = currentSemesters.reduce((s, sem) => s + sem.courses.length, 0);
+    // Major courses = any course from any major's department combined
+    const majorCourses = currentSemesters.reduce((s, sem) => s + sem.courses.filter(c => isInsideMajor(c.code)).length, 0);
+    // Outside-major: compute per-major (each major's dept is "inside", everything else is "outside")
+    // then take the minimum — both must exceed 20 to graduate
+    const creditsOutsideMajor = (() => {
+      if (majors.length === 0) return totalCredits;
+      const outsideEach = majorPrefixList.map(prefix => {
+        const inside = currentSemesters.reduce((s, sem) =>
+          s + sem.courses.filter(c => c.code.startsWith(prefix + " ") || c.code === prefix).reduce((a, c) => a + c.credits, 0), 0);
+        return totalCredits - inside;
+      });
+      return Math.min(...outsideEach);
+    })();
     const placeholderCourses  = currentSemesters.reduce((s, sem) => s + sem.courses.filter(c => c.isPlaceholder).length, 0);
     const overloadedSemesters = currentSemesters.filter(s => s.isOverloaded).length;
     return { totalCredits, totalCourses, majorCourses, creditsOutsideMajor, placeholderCourses, overloadedSemesters };
