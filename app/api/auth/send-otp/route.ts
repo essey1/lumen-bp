@@ -43,7 +43,12 @@ export async function POST(req: Request) {
       data: { hashedCode, userId: user.id, expiresAt: getOTPExpiry() }
     })
 
-    await sendOTP(email, code)
+    try {
+      await sendOTP(email, code)
+    } catch (emailError) {
+      console.error("Failed to send OTP email:", emailError)
+      return NextResponse.json({ error: "Failed to send verification email. Please try again." }, { status: 500 })
+    }
 
     const response = NextResponse.json({ success: true })
     response.cookies.set("otp_email", email, {

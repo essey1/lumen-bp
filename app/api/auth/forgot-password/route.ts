@@ -53,7 +53,12 @@ export async function POST(req: Request) {
       },
     })
 
-    await sendPasswordResetOTP(normalizedEmail, code, user.name ?? undefined)
+    try {
+      await sendPasswordResetOTP(normalizedEmail, code, user.name ?? undefined)
+    } catch (emailError) {
+      console.error("Failed to send password reset email:", emailError)
+      return NextResponse.json({ error: "Failed to send reset email. Please try again." }, { status: 500 })
+    }
 
     const response = NextResponse.json({ success: true })
     response.cookies.set("reset_email", normalizedEmail, {
