@@ -113,10 +113,10 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0" align="start">
-          <Command>
+        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+          <Command className="[&_[cmdk-item]]:whitespace-normal [&_[cmdk-item]]:h-auto [&_[cmdk-item]]:py-2">
             <CommandInput placeholder="Search majors..." />
-            <CommandList>
+            <CommandList className="overflow-x-auto">
               <CommandEmpty>No major found.</CommandEmpty>
               <CommandGroup>
                 {MAJORS.map((major) => {
@@ -126,7 +126,7 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
                       key={major.code}
                       value={major.label}
                       disabled={blocked && !selected.includes(major.code)}
-                      className="items-start py-2"
+                      className="items-start"
                       onSelect={() => {
                         if (blocked && !selected.includes(major.code)) return
                         toggleMajor(major.code)
@@ -134,7 +134,7 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
                       }}
                     >
                       <Check className={cn("mr-2 mt-0.5 h-4 w-4 shrink-0", selected.includes(major.code) ? "opacity-100" : "opacity-0")} />
-                      <span className={cn("flex-1 whitespace-normal break-words", blocked && !selected.includes(major.code) && "opacity-40 line-through")}>
+                      <span className={cn("min-w-0 flex-1 whitespace-normal break-words", blocked && !selected.includes(major.code) && "opacity-40 line-through")}>
                         {major.label}
                       </span>
                       {blocked && !selected.includes(major.code) && (

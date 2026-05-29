@@ -92,10 +92,10 @@ export function MinorStep({ selected, onChange, selectedMajors = [] }: MinorStep
             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0" align="start">
-          <Command>
+        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+          <Command className="[&_[cmdk-item]]:whitespace-normal [&_[cmdk-item]]:h-auto [&_[cmdk-item]]:py-2">
             <CommandInput placeholder="Search minors..." />
-            <CommandList>
+            <CommandList className="overflow-x-auto">
               <CommandEmpty>No minor found.</CommandEmpty>
               <CommandGroup>
                 {MINORS.map(m => {
@@ -105,11 +105,11 @@ export function MinorStep({ selected, onChange, selectedMajors = [] }: MinorStep
                     key={m.code}
                     value={m.label}
                     disabled={blocked}
-                    className="items-start py-2"
+                    className="items-start"
                     onSelect={() => toggle(m.code)}
                   >
                     <Check className={cn("mr-2 mt-0.5 h-4 w-4 shrink-0", selected.includes(m.code) ? "opacity-100" : "opacity-0")} />
-                    <span className={cn("flex-1 whitespace-normal break-words", blocked && "opacity-40 line-through")}>{m.label}</span>
+                    <span className={cn("min-w-0 flex-1 whitespace-normal break-words", blocked && "opacity-40 line-through")}>{m.label}</span>
                     {blocked && <span className="ml-2 mt-0.5 shrink-0 text-[10px] text-muted-foreground">same as major</span>}
                   </CommandItem>
                 )
