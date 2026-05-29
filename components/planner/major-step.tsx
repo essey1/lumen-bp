@@ -84,7 +84,7 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
             <Badge
               key={code}
               variant="secondary"
-              className="gap-1 px-3 py-1.5 text-sm"
+              className="max-w-full whitespace-normal break-words gap-1 px-3 py-1.5 text-sm text-left"
             >
               {getMajorLabel(code)}
               <button

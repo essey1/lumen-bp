@@ -1618,7 +1618,6 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
                 credits: data.credits,
                 fulfills: [`${major.name}: ${req.category} (${sub.category})`],
                 category: majorCat(data.code),
-                scheduleDisclaimer: true,
               },
               minSem: 3,
               maxSem: 7,
@@ -1652,7 +1651,7 @@ function collectMajorCourses(profile: StudentProfile, collected: Set<string>, cr
             const code = extraCandidates[i];
             const data = COURSE_CATALOG[code];
             result.push({
-              course: { code: data.code, name: data.name, credits: data.credits, fulfills: [`${major.name}: ${req.category}`], category: majorCat(data.code), scheduleDisclaimer: true },
+              course: { code: data.code, name: data.name, credits: data.credits, fulfills: [`${major.name}: ${req.category}`], category: majorCat(data.code) },
               minSem: 3,
               maxSem: 7,
             });

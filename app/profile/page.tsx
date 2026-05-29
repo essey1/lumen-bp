@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
@@ -11,11 +11,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Sparkles, LogOut, Save, User, BookOpen, Trash2, ArrowRight, PlusCircle, Loader2,
-  LayoutDashboard, Settings,
+  LayoutDashboard, Settings, Search, X,
 } from "lucide-react";
 import { ForestNav } from "@/components/forest-nav";
 import { CompletedSemestersStep, type CompletedSemesterData } from "@/components/planner/completed-semesters-step";
+import { MathPlacementStep } from "@/components/planner/math-placement-step";
 import { LumenFireflies } from "@/components/lumen-ambience";
+import { COURSE_CATALOG } from "@/lib/course-catalog";
+import type { MathPlacement } from "@/lib/types";
 
 const MINORS_LIST = [
   "African and African American Studies",
@@ -123,7 +126,95 @@ type Profile = {
   year: number | null;
   bio: string | null;
   completedSemesters: string | null;
+  mathPlacement: string | null;
+  waivedCourses: string | null;
 };
+
+const ALL_CATALOG = Object.values(COURSE_CATALOG).sort((a, b) => a.code.localeCompare(b.code));
+
+function WaivedCoursesField({ selected, onChange }: { selected: string[]; onChange: (v: string[]) => void }) {
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+        setQuery("");
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
+  const filtered = useMemo(() => {
+    const q = query.toLowerCase();
+    const base = q
+      ? ALL_CATALOG.filter(c => c.code.toLowerCase().includes(q) || c.name.toLowerCase().includes(q))
+      : ALL_CATALOG.slice(0, 30);
+    return base.filter(c => !selected.includes(c.code)).slice(0, 30);
+  }, [query, selected]);
+
+  function add(code: string) {
+    onChange([...selected, code]);
+    setQuery("");
+    setOpen(false);
+    setTimeout(() => inputRef.current?.focus(), 0);
+  }
+
+  return (
+    <div className="space-y-3">
+      <div ref={containerRef} className="relative">
+        <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+        <input
+          ref={inputRef}
+          type="text"
+          value={query}
+          placeholder="Search by code or name…"
+          className="h-9 w-full rounded-md border border-input bg-background pl-8 pr-3 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-ring"
+          onChange={e => { setQuery(e.target.value); setOpen(true); }}
+          onFocus={() => setOpen(true)}
+        />
+        {open && (
+          <div className="absolute left-0 right-0 top-full z-50 mt-1 max-h-48 overflow-y-auto rounded-md border border-border bg-popover text-popover-foreground shadow-lg">
+            {filtered.length === 0 ? (
+              <p className="px-3 py-3 text-center text-xs text-muted-foreground">No courses found.</p>
+            ) : filtered.map(c => (
+              <button
+                key={c.code}
+                type="button"
+                onMouseDown={e => { e.preventDefault(); add(c.code); }}
+                className="flex w-full items-baseline gap-2 px-3 py-2 text-left hover:bg-muted transition-colors"
+              >
+                <span className="w-20 shrink-0 font-mono text-xs font-semibold">{c.code}</span>
+                <span className="flex-1 min-w-0 truncate text-xs text-muted-foreground">{c.name}</span>
+                <span className="shrink-0 text-[10px] text-muted-foreground/60">{c.credits}cr</span>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      {selected.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {selected.map(code => {
+            const name = COURSE_CATALOG[code]?.name;
+            return (
+              <span key={code} className="inline-flex items-center gap-1 rounded-full border border-primary/30 bg-primary/5 px-2.5 py-1 text-xs font-medium text-primary">
+                <span className="font-mono font-semibold">{code}</span>
+                {name && <span className="opacity-60">— {name.length > 24 ? name.slice(0, 24) + "…" : name}</span>}
+                <button type="button" onClick={() => onChange(selected.filter(c => c !== code))} className="ml-0.5 opacity-50 hover:opacity-100">
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
 
 type SavedPlanSummary = {
   id: string;
@@ -139,6 +230,8 @@ export default function ProfilePage() {
   const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [form, setForm] = useState({ name: "", major: "", minor: "", year: "", bio: "" });
+  const [mathPlacement, setMathPlacement] = useState<MathPlacement>("none");
+  const [waivedCourses, setWaivedCourses] = useState<string[]>([]);
   const [completedCount, setCompletedCount] = useState(0);
   const [completedSemesters, setCompletedSemesters] = useState<CompletedSemesterData[]>([]);
   const [profileStatus, setProfileStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
@@ -164,6 +257,10 @@ export default function ProfilePage() {
           year: data.year?.toString() ?? "",
           bio: data.bio ?? "",
         });
+        if (data.mathPlacement) setMathPlacement(data.mathPlacement as MathPlacement);
+        if (data.waivedCourses) {
+          try { setWaivedCourses(JSON.parse(data.waivedCourses)); } catch { /* ignore */ }
+        }
         if (data.completedSemesters) {
           try {
             const parsed = JSON.parse(data.completedSemesters) as CompletedSemesterData[];
@@ -209,6 +306,8 @@ export default function ProfilePage() {
         year: form.year ? parseInt(form.year) : null,
         bio: form.bio || null,
         completedSemesters: completedSemesters.length > 0 ? completedSemesters : null,
+        mathPlacement,
+        waivedCourses: waivedCourses.length > 0 ? waivedCourses : null,
       }),
     });
 
@@ -262,7 +361,7 @@ export default function ProfilePage() {
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground break-all">{profile.email}</p>
             {profile.major && (
-              <p className="text-sm text-muted-foreground mt-0.5">
+              <p className="text-sm text-muted-foreground mt-0.5 break-words">
                 {profile.major}
                 {profile.minor ? ` · Minor: ${profile.minor}` : ""}
                 {profile.year ? ` · Year ${profile.year}` : ""}
@@ -457,6 +556,26 @@ export default function ProfilePage() {
                       maxLength={500}
                     />
                     <p className="text-xs text-muted-foreground text-right">{form.bio.length}/500</p>
+                  </div>
+
+                  <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground">Math Placement</h3>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        The highest developmental or college math level you have already completed or waived.
+                      </p>
+                    </div>
+                    <MathPlacementStep selected={mathPlacement} onChange={setMathPlacement} />
+                  </div>
+
+                  <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">
+                    <div>
+                      <h3 className="text-sm font-semibold text-foreground">Waived / AP Courses</h3>
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        Courses you've already completed or received credit for (other than math above).
+                      </p>
+                    </div>
+                    <WaivedCoursesField selected={waivedCourses} onChange={setWaivedCourses} />
                   </div>
 
                   <div className="space-y-3 rounded-lg border border-border bg-muted/20 p-4">

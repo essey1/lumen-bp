@@ -6,7 +6,7 @@ import { useEffect, useState, useCallback, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowLeft, Pencil, X, Plus, Trash2, Check, Lock, Sparkles, User, Save } from "lucide-react"
+import { ArrowLeft, Pencil, X, Plus, Trash2, Check, Lock, Sparkles, Save } from "lucide-react"
 import { ForestNav } from "@/components/forest-nav"
 import { LumenFireflies } from "@/components/lumen-ambience"
 import { StudentProfile } from "@/components/plan/student-profile"
@@ -38,10 +38,11 @@ const CAT_DOT: Record<string, string> = {
 
 // ── Single course row ─────────────────────────────────────────────────────────
 function EditableCourseRow({
-  course, editMode, onChange, onRemove,
+  course, editMode, onChange, onRemove, semesterIndex,
 }: {
   course: PlannedCourse; editMode: boolean
   onChange: (c: PlannedCourse) => void; onRemove: () => void
+  semesterIndex?: number
 }) {
   const cls = getCatCls(course.category)
 
@@ -68,7 +69,7 @@ function EditableCourseRow({
     <div className={`rounded-md border px-2.5 py-2 text-sm ${cls}`}>
       <div className="flex items-center gap-2">
         <div className="flex-1 min-w-0">
-          <PlanCourseCombobox course={course} onChange={onChange} />
+          <PlanCourseCombobox course={course} onChange={onChange} semesterIndex={semesterIndex} />
         </div>
         <button type="button" onClick={onRemove}
           className="shrink-0 rounded p-1 transition-colors hover:bg-red-100 text-current opacity-50 hover:opacity-100 hover:text-red-600">
@@ -81,9 +82,10 @@ function EditableCourseRow({
 
 // ── Semester card ─────────────────────────────────────────────────────────────
 function EditableSemesterCard({
-  title, semester, editMode, onCourseChange, onAddCourse, onRemoveCourse,
+  title, semester, editMode, semesterIndex, onCourseChange, onAddCourse, onRemoveCourse,
 }: {
   title: string; semester: SemesterPlan; editMode: boolean
+  semesterIndex: number
   onCourseChange: (idx: number, c: PlannedCourse) => void
   onAddCourse: () => void; onRemoveCourse: (idx: number) => void
 }) {
@@ -119,6 +121,7 @@ function EditableSemesterCard({
             editMode={editMode && !isDone}
             onChange={u => onCourseChange(i, u)}
             onRemove={() => onRemoveCourse(i)}
+            semesterIndex={semesterIndex}
           />
         ))}
         {editMode && !isDone && (
@@ -181,7 +184,7 @@ function PlanView({ initialPlan, profile }: {
         {editMode ? (
           <>
             <span className="flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs text-amber-700">
-              Editing — click any course to change it
+              Tap a course to swap it · <strong className="ml-1">+</strong>&nbsp;adds a slot · 🗑 removes · search includes &ldquo;Add new course&rdquo; for unlisted courses
             </span>
             <button onClick={() => setEditMode(false)}
               className="flex items-center gap-1.5 rounded-full border border-green-200 bg-green-50 px-4 py-1.5 text-xs font-medium text-green-700 transition hover:bg-green-100">
@@ -219,6 +222,7 @@ function PlanView({ initialPlan, profile }: {
             <EditableSemesterCard
               title={`Fall – ${label}`} semester={semesters[fallIdx]}
               editMode={editMode}
+              semesterIndex={fallIdx}
               onCourseChange={(ci, c) => updateCourse(fallIdx, ci, c)}
               onAddCourse={() => addCourse(fallIdx)}
               onRemoveCourse={ci => removeCourse(fallIdx, ci)}
@@ -227,6 +231,7 @@ function PlanView({ initialPlan, profile }: {
             <EditableSemesterCard
               title={`Spring – ${label}`} semester={semesters[springIdx]}
               editMode={editMode}
+              semesterIndex={springIdx}
               onCourseChange={(ci, c) => updateCourse(springIdx, ci, c)}
               onAddCourse={() => addCourse(springIdx)}
               onRemoveCourse={ci => removeCourse(springIdx, ci)}
@@ -235,6 +240,11 @@ function PlanView({ initialPlan, profile }: {
         ))}
       </div>
       </div>{/* end white panel */}
+
+      {/* Semester availability disclaimer */}
+      <p className="mt-3 text-center text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+        Course offerings vary by semester. Verify availability in the course catalog before registering.
+      </p>
 
       {/* Overflow warning */}
       {(initialPlan.warnings.length > 0 || unfulfilledCourses.length > 0) && (
@@ -318,6 +328,7 @@ function PlanView({ initialPlan, profile }: {
       {/* Career advice */}
       <div className="mt-10">
         <CareerAdvice
+          planId={`preview-${profile.majors.join("-")}`}
           careerGoals={profile.careerGoals} majors={profile.majors}
           courses={semesters.flatMap(s => s.courses.map(c => ({ code: c.code, name: c.name })))}
           interests={profile.interests}

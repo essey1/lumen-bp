@@ -74,12 +74,13 @@ const CATEGORY_COLORS: Record<string, string> = {
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function CourseCard({
-  course, editMode, onChange, onRemove,
+  course, editMode, onChange, onRemove, semesterIndex,
 }: {
   course: PlannedCourse;
   editMode: boolean;
   onChange: (c: PlannedCourse) => void;
   onRemove: () => void;
+  semesterIndex?: number;
 }) {
   const color = CATEGORY_COLORS[course.category] ?? CATEGORY_COLORS.Elective;
 
@@ -114,7 +115,7 @@ function CourseCard({
   return (
     <div className={`rounded-md border px-2 py-1.5 text-xs ${color}`}>
       <div className="flex items-center gap-1.5">
-        <PlanCourseCombobox course={course} onChange={onChange} />
+        <PlanCourseCombobox course={course} onChange={onChange} semesterIndex={semesterIndex} />
         <select
           className="shrink-0 rounded border border-current/30 bg-transparent text-xs px-1 py-0.5 focus:outline-none cursor-pointer"
           value={course.category}
@@ -134,11 +135,12 @@ function CourseCard({
 }
 
 function SemesterColumn({
-  title, semester, editMode, onCourseChange, onAddCourse, onRemoveCourse,
+  title, semester, editMode, semesterIndex, onCourseChange, onAddCourse, onRemoveCourse,
 }: {
   title: string;
   semester: SemesterPlan;
   editMode: boolean;
+  semesterIndex: number;
   onCourseChange: (idx: number, c: PlannedCourse) => void;
   onAddCourse: () => void;
   onRemoveCourse: (idx: number) => void;
@@ -165,6 +167,7 @@ function SemesterColumn({
             editMode={editMode && !isCompleted}
             onChange={updated => onCourseChange(idx, updated)}
             onRemove={() => onRemoveCourse(idx)}
+            semesterIndex={semesterIndex}
           />
         ))}
         {editMode && !isCompleted && (
@@ -485,14 +488,21 @@ export default function SavedPlanPage() {
               <Pencil className="h-4 w-4 shrink-0 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
             </button>
           )}
-          <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+          <p className="mt-1 text-xs text-muted-foreground break-words">
             {plan.majors.join(", ")}
             {plan.minors.length > 0 && ` · Minor: ${plan.minors.join(", ")}`}
             {" · "}Updated {new Date(plan.updatedAt).toLocaleDateString()}
           </p>
-          {editMode && (
+          {editMode ? (
             <p className="mt-2 rounded-md bg-amber-50 border border-amber-200 px-3 py-2 text-xs text-amber-800 sm:text-sm">
-              Edit mode: tap a course to change it. Use + to add, trash to remove. Locked semesters are completed.
+              Tap any course to swap it — search by name or code. Use <strong>+</strong> to add a slot, <strong>🗑</strong> to remove. You can also add courses not in our catalog (look for &ldquo;Add a new course&rdquo; at the bottom of the search list). Locked semesters are already completed.
+            </p>
+          ) : (
+            <p className="mt-1.5 text-xs text-muted-foreground">
+              Want to swap a course, add your own, or remove something?{" "}
+              <button onClick={() => setEditMode(true)} className="underline underline-offset-2 hover:text-foreground transition-colors">
+                Edit this plan
+              </button>
             </p>
           )}
           {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
@@ -560,6 +570,7 @@ export default function SavedPlanPage() {
                   title={years[activeYear].fallTitle}
                   semester={currentSemesters[years[activeYear].fallIdx]}
                   editMode={editMode}
+                  semesterIndex={years[activeYear].fallIdx}
                   onCourseChange={(ci, c) => updateCourse(years[activeYear].fallIdx, ci, c)}
                   onAddCourse={() => addCourse(years[activeYear].fallIdx)}
                   onRemoveCourse={ci => removeCourse(years[activeYear].fallIdx, ci)}
@@ -568,6 +579,7 @@ export default function SavedPlanPage() {
                   title={years[activeYear].springTitle}
                   semester={currentSemesters[years[activeYear].springIdx]}
                   editMode={editMode}
+                  semesterIndex={years[activeYear].springIdx}
                   onCourseChange={(ci, c) => updateCourse(years[activeYear].springIdx, ci, c)}
                   onAddCourse={() => addCourse(years[activeYear].springIdx)}
                   onRemoveCourse={ci => removeCourse(years[activeYear].springIdx, ci)}
@@ -589,6 +601,7 @@ export default function SavedPlanPage() {
                     title={fallTitle}
                     semester={currentSemesters[fallIdx]}
                     editMode={editMode}
+                    semesterIndex={fallIdx}
                     onCourseChange={(ci, c) => updateCourse(fallIdx, ci, c)}
                     onAddCourse={() => addCourse(fallIdx)}
                     onRemoveCourse={ci => removeCourse(fallIdx, ci)}
@@ -597,6 +610,7 @@ export default function SavedPlanPage() {
                     title={springTitle}
                     semester={currentSemesters[springIdx]}
                     editMode={editMode}
+                    semesterIndex={springIdx}
                     onCourseChange={(ci, c) => updateCourse(springIdx, ci, c)}
                     onAddCourse={() => addCourse(springIdx)}
                     onRemoveCourse={ci => removeCourse(springIdx, ci)}
@@ -606,6 +620,11 @@ export default function SavedPlanPage() {
             )}
           </div>
         </div>
+
+        {/* Semester availability disclaimer */}
+        <p className="mt-3 text-center text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+          Course offerings vary by semester. Verify availability in the course catalog before registering.
+        </p>
 
         {/* ── Plan Analysis ── */}
         {stats && (
@@ -675,14 +694,28 @@ export default function SavedPlanPage() {
             </div>
 
             {/* Unfulfilled requirements */}
-            {generatedPlan && (generatedPlan.unfulfilledRequirements.length > 0 || generatedPlan.warnings.length > 0) && (
-              <div className="mt-4">
-                <OverflowWarning
-                  courses={generatedPlan.unfulfilledRequirements.map((req, i) => ({ code: `REQ ${i + 1}`, name: req, credits: 1 }))}
-                  warnings={generatedPlan.warnings}
-                />
-              </div>
-            )}
+            {generatedPlan && stats && (() => {
+              // Strip the stale outside-major warning — it was generated for a freshly-
+              // re-generated plan, not for the semesters the user is actually viewing.
+              // Replace it with a check against the live stats instead.
+              const filteredWarnings = generatedPlan.warnings.filter(
+                w => !w.startsWith("Credits outside major")
+              );
+              if (stats.creditsOutsideMajor < MINIMUM_CREDITS_OUTSIDE_MAJOR) {
+                filteredWarnings.push(
+                  `Credits outside major (${stats.creditsOutsideMajor}) is below the minimum of ${MINIMUM_CREDITS_OUTSIDE_MAJOR}. Only courses outside your major department count toward this requirement.`
+                );
+              }
+              if (generatedPlan.unfulfilledRequirements.length === 0 && filteredWarnings.length === 0) return null;
+              return (
+                <div className="mt-4">
+                  <OverflowWarning
+                    courses={generatedPlan.unfulfilledRequirements.map((req, i) => ({ code: `REQ ${i + 1}`, name: req, credits: 1 }))}
+                    warnings={filteredWarnings}
+                  />
+                </div>
+              );
+            })()}
 
             {/* Legend */}
             <div className="mt-4 flex flex-wrap items-center justify-center gap-4">

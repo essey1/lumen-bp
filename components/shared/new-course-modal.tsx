@@ -158,7 +158,7 @@ export function NewCourseModal({ open, onClose, onCreated, initialCode = "" }: P
               value={code}
               onChange={e => handleCodeChange(e.target.value)}
               placeholder="e.g. BIO 215"
-              className="forest-input font-mono"
+              className="font-mono bg-white/8 border-white/15 text-white placeholder:text-white/30 focus-visible:ring-primary/40"
             />
           </div>
 
@@ -180,7 +180,7 @@ export function NewCourseModal({ open, onClose, onCreated, initialCode = "" }: P
               onChange={e => upd({ name: e.target.value })}
               placeholder={`e.g. "Ecology and Evolution"`}
               disabled={nameUnknown}
-              className={cn("forest-input", nameUnknown && "opacity-40")}
+              className={cn("bg-white/8 border-white/15 text-white placeholder:text-white/30 focus-visible:ring-primary/40", nameUnknown && "opacity-40")}
             />
           </div>
 
@@ -216,7 +216,7 @@ export function NewCourseModal({ open, onClose, onCreated, initialCode = "" }: P
               onChange={e => upd({ prerequisites: e.target.value })}
               placeholder="e.g. BIO 115, CHM 101 (comma-separated)"
               disabled={prereqUnknown}
-              className={cn("forest-input", prereqUnknown && "opacity-40")}
+              className={cn("bg-white/8 border-white/15 text-white placeholder:text-white/30 focus-visible:ring-primary/40", prereqUnknown && "opacity-40")}
             />
           </div>
 

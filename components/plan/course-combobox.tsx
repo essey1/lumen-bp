@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect } from "react";
-import { Search, X, Check, Plus } from "lucide-react";
+import { Search, X, Check, Plus, AlertTriangle } from "lucide-react";
 import { COURSE_CATALOG } from "@/lib/course-catalog";
+import { isCourseAvailable } from "@/lib/course-schedule-data";
 import type { PlannedCourse } from "@/lib/types";
 import { NewCourseModal, type NewCourseResult } from "@/components/shared/new-course-modal";
 
@@ -13,14 +14,21 @@ const SESSION_COURSES = Object.values(COURSE_CATALOG).sort((a, b) => a.code.loca
 interface Props {
   course: PlannedCourse;
   onChange: (updated: PlannedCourse) => void;
+  semesterIndex?: number;
 }
 
-export function PlanCourseCombobox({ course, onChange }: Props) {
+export function PlanCourseCombobox({ course, onChange, semesterIndex }: Props) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [showNewCourse, setShowNewCourse] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const selectedNotOffered =
+    semesterIndex !== undefined &&
+    !!course.code &&
+    !course.isPlaceholder &&
+    !isCourseAvailable(course.code, semesterIndex);
 
   useEffect(() => {
     function handler(e: MouseEvent) {
@@ -76,19 +84,29 @@ export function PlanCourseCombobox({ course, onChange }: Props) {
     <>
       <div ref={containerRef} className="relative flex-1 min-w-0">
         {isSelected ? (
-          <div className="flex items-center gap-1.5 h-8 rounded border border-current/30 bg-black/5 px-2">
-            <Check className="h-3 w-3 shrink-0 opacity-60" />
-            <span className="flex-1 min-w-0 truncate text-xs">
-              <span className="font-mono font-semibold">{course.code}</span>
-              <span className="opacity-70"> — {course.name}</span>
-            </span>
-            <button
-              type="button"
-              onMouseDown={(e) => { e.preventDefault(); clear(); }}
-              className="shrink-0 opacity-50 hover:opacity-100"
-            >
-              <X className="h-3 w-3" />
-            </button>
+          <div className="flex flex-col gap-0.5">
+            <div className={`flex items-center gap-1.5 h-8 rounded border px-2 ${selectedNotOffered ? "border-amber-400 bg-amber-50" : "border-current/30 bg-black/5"}`}>
+              <Check className="h-3 w-3 shrink-0 opacity-60" />
+              <span className="flex-1 min-w-0 truncate text-xs">
+                <span className="font-mono font-semibold">{course.code}</span>
+                <span className="opacity-70"> — {course.name}</span>
+              </span>
+              {selectedNotOffered && (
+                <AlertTriangle className="h-3 w-3 shrink-0 text-amber-500" title="Not offered this semester" />
+              )}
+              <button
+                type="button"
+                onMouseDown={(e) => { e.preventDefault(); clear(); }}
+                className="shrink-0 opacity-50 hover:opacity-100"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+            {selectedNotOffered && (
+              <p className="text-[10px] text-amber-600 leading-tight px-0.5">
+                Not offered this semester — confirm with your advisor
+              </p>
+            )}
           </div>
         ) : (
           <div className="relative">
@@ -112,24 +130,32 @@ export function PlanCourseCombobox({ course, onChange }: Props) {
                 No courses found.
               </div>
             ) : (
-              filtered.map((c) => (
-                <button
-                  key={c.code}
-                  type="button"
-                  onMouseDown={(e) => { e.preventDefault(); select(c); }}
-                  className="flex w-full items-baseline gap-2 px-3 py-2 text-left hover:bg-muted transition-colors"
-                >
-                  <span className="w-20 shrink-0 font-mono text-xs font-semibold text-foreground">
-                    {c.code}
-                  </span>
-                  <span className="flex-1 min-w-0 truncate text-xs text-muted-foreground">
-                    {c.name}
-                  </span>
-                  <span className="shrink-0 text-[10px] text-muted-foreground/60">
-                    {c.credits}cr
-                  </span>
-                </button>
-              ))
+              filtered.map((c) => {
+                const notOffered =
+                  semesterIndex !== undefined && !isCourseAvailable(c.code, semesterIndex);
+                return (
+                  <button
+                    key={c.code}
+                    type="button"
+                    onMouseDown={(e) => { e.preventDefault(); select(c); }}
+                    className="flex w-full items-baseline gap-2 px-3 py-2 text-left hover:bg-muted transition-colors"
+                  >
+                    <span className="w-20 shrink-0 font-mono text-xs font-semibold text-foreground">
+                      {c.code}
+                    </span>
+                    <span className="flex-1 min-w-0 truncate text-xs text-muted-foreground">
+                      {c.name}
+                    </span>
+                    {notOffered ? (
+                      <span className="shrink-0 text-[10px] text-amber-500 font-medium">not offered</span>
+                    ) : (
+                      <span className="shrink-0 text-[10px] text-muted-foreground/60">
+                        {c.credits}cr
+                      </span>
+                    )}
+                  </button>
+                );
+              })
             )}
 
             {/* Always-visible "Add new course" row */}
