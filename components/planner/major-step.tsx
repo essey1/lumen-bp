@@ -126,18 +126,19 @@ export function MajorStep({ selected, onChange }: MajorStepProps) {
                       key={major.code}
                       value={major.label}
                       disabled={blocked && !selected.includes(major.code)}
+                      className="items-start py-2"
                       onSelect={() => {
                         if (blocked && !selected.includes(major.code)) return
                         toggleMajor(major.code)
                         if (!selected.includes(major.code)) setOpen(false)
                       }}
                     >
-                      <Check className={cn("mr-2 h-4 w-4", selected.includes(major.code) ? "opacity-100" : "opacity-0")} />
-                      <span className={cn(blocked && !selected.includes(major.code) && "opacity-40 line-through")}>
+                      <Check className={cn("mr-2 mt-0.5 h-4 w-4 shrink-0", selected.includes(major.code) ? "opacity-100" : "opacity-0")} />
+                      <span className={cn("flex-1 whitespace-normal break-words", blocked && !selected.includes(major.code) && "opacity-40 line-through")}>
                         {major.label}
                       </span>
                       {blocked && !selected.includes(major.code) && (
-                        <span className="ml-auto text-[10px] text-muted-foreground">same dept</span>
+                        <span className="ml-2 mt-0.5 shrink-0 text-[10px] text-muted-foreground">same dept</span>
                       )}
                     </CommandItem>
                   )

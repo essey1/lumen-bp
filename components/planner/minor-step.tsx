@@ -105,11 +105,12 @@ export function MinorStep({ selected, onChange, selectedMajors = [] }: MinorStep
                     key={m.code}
                     value={m.label}
                     disabled={blocked}
+                    className="items-start py-2"
                     onSelect={() => toggle(m.code)}
                   >
-                    <Check className={cn("mr-2 h-4 w-4", selected.includes(m.code) ? "opacity-100" : "opacity-0")} />
-                    <span className={cn(blocked && "opacity-40 line-through")}>{m.label}</span>
-                    {blocked && <span className="ml-auto text-[10px] text-muted-foreground">same as major</span>}
+                    <Check className={cn("mr-2 mt-0.5 h-4 w-4 shrink-0", selected.includes(m.code) ? "opacity-100" : "opacity-0")} />
+                    <span className={cn("flex-1 whitespace-normal break-words", blocked && "opacity-40 line-through")}>{m.label}</span>
+                    {blocked && <span className="ml-2 mt-0.5 shrink-0 text-[10px] text-muted-foreground">same as major</span>}
                   </CommandItem>
                 )
               })}
