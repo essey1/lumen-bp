@@ -235,10 +235,18 @@ export default function SavedPlanPage() {
 
   // ── Auto-regen when navigated from profile with ?regen=1 ────────────────────
   useEffect(() => {
-    if (plan && searchParams.get("regen") === "1") {
+    if (!plan) return;
+    if (searchParams.get("regen") === "1") {
       router.replace(`/plan/${id}`, { scroll: false });
       doRegenerate();
+      return;
     }
+    // Silently re-generate and save if any completed course is missing fulfills data
+    const sems = isMultiVariant ? variantSemesters.A : (plan.semesters as SemesterPlan[]);
+    const needsEnrich = Array.isArray(sems) && sems.some(
+      s => s.isCompleted && s.courses.some(c => !c.isPlaceholder && c.code !== "—" && c.fulfills.length === 0)
+    );
+    if (needsEnrich) doRegenerate(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [plan]);
 
@@ -361,9 +369,9 @@ export default function SavedPlanPage() {
     setEditMode(false);
   }
 
-  async function doRegenerate() {
+  async function doRegenerate(silent = false) {
     if (!plan) return;
-    setRegenStatus("regenerating");
+    if (!silent) setRegenStatus("regenerating");
     try {
       const profileRes = await fetch("/api/profile");
       const profile = profileRes.ok ? await profileRes.json() : {};
@@ -400,21 +408,21 @@ export default function SavedPlanPage() {
         setGeneratedPlan({ unfulfilledRequirements: gen.unfulfilledRequirements, warnings: gen.warnings });
       }
 
-      // Auto-save immediately using the freshly computed semesters
-      setSaveStatus("saving");
+      // Auto-save immediately
+      if (!silent) setSaveStatus("saving");
       const res = await fetch(`/api/plans/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: planName, semesters: newSemesters }),
       });
-      if (res.ok) {
+      if (res.ok && !silent) {
         setSaveStatus("saved");
         setTimeout(() => setSaveStatus("idle"), 2000);
-      } else {
+      } else if (!silent) {
         setSaveStatus("idle");
       }
     } finally {
-      setRegenStatus("idle");
+      if (!silent) setRegenStatus("idle");
     }
   }
 
@@ -579,7 +587,7 @@ export default function SavedPlanPage() {
             style={{ borderColor: "rgba(245,166,35,0.3)", background: "rgba(245,166,35,0.08)", color: "#f5a623" }}
           >
             <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
-            Regenerating your plan using your latest profile settings…
+            Plan regenerated from latest profile changes
           </div>
         )}
 
@@ -633,7 +641,7 @@ export default function SavedPlanPage() {
             ) ? (
               <p className="mt-2 rounded-md border px-3 py-2 text-xs font-medium"
                 style={{ borderColor: "rgba(245,166,35,0.35)", background: "rgba(245,166,35,0.08)", color: "#f5a623" }}>
-                Plan regenerated from your latest profile.{" "}
+                Plan regenerated from latest profile changes.{" "}
                 <button onClick={handleSaveChanges} className="underline underline-offset-2 hover:opacity-80 transition-opacity">
                   Save to keep changes.
                 </button>
