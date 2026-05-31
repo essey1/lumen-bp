@@ -11,15 +11,6 @@ import { NewCourseModal, type NewCourseResult } from "@/components/shared/new-co
 // Using a mutable array so all mounted comboboxes share the same list.
 const SESSION_COURSES = Object.values(COURSE_CATALOG).sort((a, b) => a.code.localeCompare(b.code));
 
-// CSC upper-level distribution courses: availability varies each semester.
-// At least one per category (Design/Foundations/Systems) is offered each term,
-// but individual courses rotate — hence the disclaimer below.
-const CSC_DISTRIBUTION_CODES = new Set([
-  "CSC 300","CSC 301","CSC 303","CSC 330","CSC 335",
-  "CSC 410","CSC 412","CSC 420","CSC 425","CSC 426",
-  "CSC 433","CSC 440","CSC 445","CSC 450",
-]);
-
 interface Props {
   course: PlannedCourse;
   onChange: (updated: PlannedCourse) => void;
@@ -39,7 +30,6 @@ export function PlanCourseCombobox({ course, onChange, semesterIndex }: Props) {
     !course.isPlaceholder &&
     !isCourseAvailable(course.code, semesterIndex);
 
-  const isCscDistribution = !!course.code && !course.isPlaceholder && CSC_DISTRIBUTION_CODES.has(course.code);
 
   useEffect(() => {
     function handler(e: MouseEvent) {
@@ -116,11 +106,6 @@ export function PlanCourseCombobox({ course, onChange, semesterIndex }: Props) {
             {selectedNotOffered && (
               <p className="text-[10px] text-amber-600 leading-tight px-0.5">
                 Not offered this semester — confirm with your advisor
-              </p>
-            )}
-            {isCscDistribution && !selectedNotOffered && (
-              <p className="text-[10px] text-muted-foreground leading-tight px-0.5">
-                This course may not be offered this semester — at least one course from this category is offered each term
               </p>
             )}
           </div>
