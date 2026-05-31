@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { LogoutButton } from "@/components/logout-button";
 
 // ── Timing constants ──────────────────────────────────────────────────────────
-const IDLE_TIMEOUT_MS    = 60 * 60 * 1000   // 1 hour total idle
+const IDLE_TIMEOUT_MS    = 90 * 60 * 1000   // 90 min total idle
 const WARNING_BEFORE_MS  = 5  * 60 * 1000   // show warning 5 min before signout
 const ACTIVITY_EVENTS    = ["click", "keydown", "mousemove", "scroll", "touchstart"] as const
 const LAST_ACTIVITY_KEY  = "lumen:lastActivityAt"
