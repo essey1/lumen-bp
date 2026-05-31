@@ -48,39 +48,44 @@ function renderBold(text: string) {
   );
 }
 
+function normalizeContent(content: string): string {
+  return content
+    // Break inline numbered items onto their own lines: "...text. 2. Next" → "...text.\n2. Next"
+    .replace(/(?<=[^\n])(\s+)(?=\d+\.\s)/g, "\n")
+    // Break inline bullet items: "...text. * Next" → "...text.\n* Next"
+    .replace(/(?<=[^\n])(\s+)(?=[*\-•]\s)/g, "\n")
+    .trim();
+}
+
 function SectionContent({ content }: { content: string }) {
-  const blocks = content.split(/\n\n+/).filter(Boolean);
+  const blocks = normalizeContent(content).split(/\n\n+/).filter(Boolean);
   return (
     <div className="space-y-3">
       {blocks.map((block, i) => {
         const trimmed = block.trim();
-        if (/^(\d+\.\s)/.test(trimmed)) {
+        if (/^\d+\.\s/.test(trimmed)) {
           const items = trimmed.split(/\n(?=\d+\.\s)/).filter(Boolean);
           return (
             <ol key={i} className="space-y-2">
-              {items.map((item, j) => {
-                const [num, ...rest] = item.split(/^(\d+\.\s)/);
-                const text = (rest.join("") || num).replace(/^\d+\.\s*/, "");
-                return (
-                  <li key={j} className="flex gap-2.5 text-sm leading-relaxed text-foreground/85">
-                    <span className="shrink-0 font-bold text-[currentColor] opacity-50 w-4 text-right">
-                      {j + 1}.
-                    </span>
-                    <span>{renderBold(text)}</span>
-                  </li>
-                );
-              })}
+              {items.map((item, j) => (
+                <li key={j} className="flex gap-2.5 text-sm leading-relaxed text-foreground/85">
+                  <span className="shrink-0 font-bold text-[currentColor] opacity-50 w-4 text-right">
+                    {j + 1}.
+                  </span>
+                  <span>{renderBold(item.replace(/^\d+\.\s*/, ""))}</span>
+                </li>
+              ))}
             </ol>
           );
         }
-        if (/^[-•]\s/.test(trimmed)) {
-          const items = trimmed.split(/\n(?=[-•]\s)/).filter(Boolean);
+        if (/^[-•*]\s/.test(trimmed)) {
+          const items = trimmed.split(/\n(?=[-•*]\s)/).filter(Boolean);
           return (
             <ul key={i} className="space-y-2">
               {items.map((item, j) => (
                 <li key={j} className="flex gap-2.5 text-sm leading-relaxed text-foreground/85">
                   <span className="shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full bg-current opacity-40" />
-                  <span>{renderBold(item.replace(/^[-•]\s*/, ""))}</span>
+                  <span>{renderBold(item.replace(/^[-•*]\s*/, ""))}</span>
                 </li>
               ))}
             </ul>
