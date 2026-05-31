@@ -55,7 +55,9 @@ export function OverflowWarning({ courses, warnings = [] }: OverflowWarningProps
                       <span className="mx-2 text-muted-foreground">—</span>
                       <span className="text-foreground">{course.name}</span>
                     </div>
-                    <Badge variant="outline">{course.credits} credits</Badge>
+                    {course.credits > 0 && (
+                      <Badge variant="outline">{course.credits} credits</Badge>
+                    )}
                   </div>
                 ))}
               </div>

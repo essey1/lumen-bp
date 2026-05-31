@@ -2449,32 +2449,43 @@ export function generateAcademicPlan(
   }
 
   // ── GEM completeness check ─────────────────────────────────────────────────
-  // Inspect gemTracker and surface any unfulfilled GEM slots so they show in
-  // the "Additional Requirements" section alongside major/minor requirements.
-  for (const [wok, count] of Object.entries(gemTracker.waysOfKnowing)) {
-    for (let i = 0; i < (count ?? 0); i++)
-      unfulfilledRequirements.push(`GEM: Ways of Knowing — ${wok} (1 course needed)`);
+  // The gemTracker reflects what the generator placed, not the final plan
+  // (completed semesters may have replaced generated courses). Reset it and
+  // recompute from every course actually in the final semesters so the check
+  // is accurate.
+  const finalGEMTracker = freshGEMTracker();
+  for (const sem of semesters) {
+    for (const course of sem.courses) {
+      if (!course.isPlaceholder && course.code && course.code !== "—") {
+        applyGEM(finalGEMTracker, course.code);
+      }
+    }
   }
-  if (gemTracker.writingRich > 0)
-    unfulfilledRequirements.push(`GEM: Writing Rich (${gemTracker.writingRich} course${gemTracker.writingRich > 1 ? "s" : ""} needed)`);
-  if (gemTracker.internationallyRich > 0)
-    unfulfilledRequirements.push("GEM: Internationally Rich (1 course needed)");
-  if (gemTracker.quantitativelyRich > 0)
-    unfulfilledRequirements.push("GEM: Quantitatively Rich (1 course needed)");
-  if (gemTracker.beyondBorders > 0)
-    unfulfilledRequirements.push("GEM: Beyond the Borders (1 course needed)");
-  if (gemTracker.holisticWellness > 0)
-    unfulfilledRequirements.push("GEM: Holistic Wellness (1 course needed)");
-  if (gemTracker.powerEquity > 0)
-    unfulfilledRequirements.push("GEM: Power & Equity (1 course needed)");
-  if (gemTracker.seekingMeaning > 0)
-    unfulfilledRequirements.push("GEM: Seeking Meaning (1 course needed)");
-  if (gemTracker.sustainability > 0)
-    unfulfilledRequirements.push("GEM: Sustainability (1 course needed)");
-  if (gemTracker.ale > 0)
-    unfulfilledRequirements.push("GEM: ALE — Academic Life Experience (1 course needed)");
-  if (gemTracker.physicalActivity > 0)
-    unfulfilledRequirements.push(`GEM: Physical Activity (${gemTracker.physicalActivity} course${gemTracker.physicalActivity > 1 ? "s" : ""} needed)`);
+
+  for (const [wok, count] of Object.entries(finalGEMTracker.waysOfKnowing)) {
+    for (let i = 0; i < (count ?? 0); i++)
+      unfulfilledRequirements.push(`GEM: Ways of Knowing — ${wok}`);
+  }
+  if (finalGEMTracker.writingRich > 0)
+    unfulfilledRequirements.push(`GEM: Writing Rich (${finalGEMTracker.writingRich} more course${finalGEMTracker.writingRich > 1 ? "s" : ""} needed)`);
+  if (finalGEMTracker.internationallyRich > 0)
+    unfulfilledRequirements.push("GEM: Internationally Rich");
+  if (finalGEMTracker.quantitativelyRich > 0)
+    unfulfilledRequirements.push("GEM: Quantitatively Rich");
+  if (finalGEMTracker.beyondBorders > 0)
+    unfulfilledRequirements.push("GEM: Beyond the Borders");
+  if (finalGEMTracker.holisticWellness > 0)
+    unfulfilledRequirements.push("GEM: Holistic Wellness");
+  if (finalGEMTracker.powerEquity > 0)
+    unfulfilledRequirements.push("GEM: Power & Equity");
+  if (finalGEMTracker.seekingMeaning > 0)
+    unfulfilledRequirements.push("GEM: Seeking Meaning");
+  if (finalGEMTracker.sustainability > 0)
+    unfulfilledRequirements.push("GEM: Sustainability");
+  if (finalGEMTracker.ale > 0)
+    unfulfilledRequirements.push("GEM: ALE — Academic Life Experience");
+  if (finalGEMTracker.physicalActivity > 0)
+    unfulfilledRequirements.push(`GEM: Physical Activity (${finalGEMTracker.physicalActivity} × 0.25cr course${finalGEMTracker.physicalActivity > 1 ? "s" : ""} needed)`);
 
   return { student: profile, semesters, totalCredits: finalTotalCredits, creditsOutsideMajor: finalCreditsOutsideMajor, unfulfilledRequirements, warnings };
 }

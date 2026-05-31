@@ -867,7 +867,12 @@ export default function SavedPlanPage() {
               return (
                 <div className="mt-4">
                   <OverflowWarning
-                    courses={generatedPlan.unfulfilledRequirements.map((req, i) => ({ code: `REQ ${i + 1}`, name: req, credits: 1 }))}
+                    courses={generatedPlan.unfulfilledRequirements.map((req, i) => ({
+                      code: `REQ ${i + 1}`,
+                      name: req,
+                      // GEM entries have no fixed credit value — show 0 so the UI omits the badge
+                      credits: req.startsWith("GEM:") ? 0 : 1,
+                    }))}
                     warnings={filteredWarnings}
                   />
                 </div>
