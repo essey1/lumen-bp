@@ -373,11 +373,11 @@ export default function ProfilePage() {
         {/* Tabs: Dashboard | Settings */}
         <Tabs defaultValue="dashboard">
           <TabsList className="mb-6 w-full justify-start">
-            <TabsTrigger value="dashboard" className="gap-1.5">
+            <TabsTrigger value="dashboard" className="gap-1.5 data-[state=active]:bg-[#f5a623] data-[state=active]:text-[#071410]">
               <LayoutDashboard className="h-4 w-4" />
               Dashboard
             </TabsTrigger>
-            <TabsTrigger value="settings" className="gap-1.5">
+            <TabsTrigger value="settings" className="gap-1.5 data-[state=active]:bg-[#f5a623] data-[state=active]:text-[#071410]">
               <Settings className="h-4 w-4" />
               Profile Settings
             </TabsTrigger>
