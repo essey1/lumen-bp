@@ -3,9 +3,11 @@ import { anthropic } from "@ai-sdk/anthropic";
 import { google } from "@ai-sdk/google";
 import { groq } from "@ai-sdk/groq";
 
+export const maxDuration = 60;
+
 const PROVIDERS = [
-  { name: "Anthropic", model: () => anthropic("claude-sonnet-4-5") },
-  { name: "Gemini",    model: () => google("gemini-2.0-flash") },
+  { name: "Anthropic", model: () => anthropic("claude-sonnet-4-6") },
+  { name: "Gemini",    model: () => google("gemini-2.5-flash") },
   { name: "Groq",      model: () => groq("llama-3.3-70b-versatile") },
 ];
 
