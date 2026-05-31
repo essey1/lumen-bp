@@ -4,8 +4,8 @@ export const maxDuration = 60;
 
 const PROVIDERS = [
   { name: "Anthropic", model: () => gateway("anthropic/claude-sonnet-4-6") },
-  { name: "Gemini",    model: () => gateway("google/gemini-2.5-pro") },
   { name: "Groq",      model: () => gateway("groq/llama-3.3-70b-versatile") },
+  { name: "Gemini",    model: () => gateway("google/gemini-2.5-pro") },
 ];
 
 export async function POST(req: Request) {
