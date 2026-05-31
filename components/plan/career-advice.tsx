@@ -22,20 +22,34 @@ const SECTION_META: Record<string, { Icon: React.ComponentType<{ className?: str
   "EXPERIENCE OUTSIDE CLASSROOM":        { Icon: Compass,   accent: "#b49be8" },
 };
 
+// Only these exact names create top-level section cards.
+// Everything else (sub-headers, sub-groups) stays as content within its section.
+const KNOWN_SECTIONS = new Set([
+  "COURSES TO PRIORITIZE",
+  "SKILLS TO DEVELOP",
+  "COMPANIES TO PURSUE",
+  "BEREA COLLEGE ALUMNI TO NETWORK WITH",
+  "EXPERIENCE OUTSIDE CLASSROOM",
+]);
+
 function parseSections(raw: string): { title: string; content: string }[] {
   const sections: { title: string; content: string }[] = [];
   let title = "";
   let lines: string[] = [];
   for (const line of raw.split("\n")) {
-    // Match **TITLE** or ## Title (both bold and markdown heading formats)
-    const m = line.match(/^\*\*([^*]+)\*\*\s*$/) ?? line.match(/^#{1,3}\s+(.+)$/);
-    if (m) {
-      if (title) sections.push({ title: title.trim(), content: lines.join("\n").trim() });
-      title = m[1].trim().replace(/\*\*/g, "");
-      lines = [];
-    } else {
-      lines.push(line);
+    const bold    = line.match(/^\*\*([^*]+)\*\*\s*$/);
+    const heading = line.match(/^#{1,3}\s+(.+)$/);
+    const candidate = bold ?? heading;
+    if (candidate) {
+      const name = candidate[1].trim().replace(/\*\*/g, "").replace(/:$/, "").toUpperCase();
+      if (KNOWN_SECTIONS.has(name)) {
+        if (title) sections.push({ title: title.trim(), content: lines.join("\n").trim() });
+        title = name;
+        lines = [];
+        continue;
+      }
     }
+    lines.push(line);
   }
   if (title) sections.push({ title: title.trim(), content: lines.join("\n").trim() });
   return sections;
@@ -56,16 +70,26 @@ function renderInline(text: string) {
 const renderBold = renderInline;
 
 function normalizeContent(content: string): string {
-  // Merge a bare number line ("1.") with the following content line
-  const merged = content.replace(/^(\d+\.)\s*\n([^\n])/gm, "$1 $2");
-  return merged
-    // Skip --- dividers
-    .replace(/^---+\s*$/gm, "")
-    // Only break truly inline numbered items (space-separated, not already on new lines)
+  return content
+    // Normalise line endings
+    .replace(/\r\n/g, "\n").replace(/\r/g, "\n")
+    // Strip --- dividers (and em-dash lines)
+    .replace(/^[-—]{2,}\s*$/gm, "")
+    // Merge a bare number line ("1.") with the following content line
+    .replace(/^(\d+\.)\s*\n([^\n])/gm, "$1 $2")
+    // Break truly inline numbered items after punctuation
     .replace(/([.!?:,])[ \t]+(?=\d+\.\s)/g, "$1\n")
-    // Only break truly inline * bullets (not ones already after a newline)
+    // Break truly inline * bullets
     .replace(/(?<=[^*\n])[ \t]+(?=\*\s)/g, "\n")
     .trim();
+}
+
+function isSubHeader(line: string): boolean {
+  // Bold line on its own: **Sub Header** or **Sub Header:**
+  if (/^\*\*[^*]+\*\*:?\s*$/.test(line)) return true;
+  // All-caps label ending with colon, reasonably short (not a full sentence)
+  if (/^[A-Z][A-Z &/\-]{2,}:\s*$/.test(line) && line.length < 60) return true;
+  return false;
 }
 
 function SectionContent({ content }: { content: string }) {
@@ -83,7 +107,7 @@ function SectionContent({ content }: { content: string }) {
           {listItems.map((item, j) => (
             <li key={j} className="flex gap-2.5 text-sm leading-relaxed text-foreground/85">
               <span className="shrink-0 font-bold text-[currentColor] opacity-50 w-4 text-right">{j + 1}.</span>
-              <span>{renderBold(item)}</span>
+              <span>{renderInline(item)}</span>
             </li>
           ))}
         </ol>
@@ -94,7 +118,7 @@ function SectionContent({ content }: { content: string }) {
           {listItems.map((item, j) => (
             <li key={j} className="flex gap-2.5 text-sm leading-relaxed text-foreground/85">
               <span className="shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full bg-current opacity-40" />
-              <span>{renderBold(item)}</span>
+              <span>{renderInline(item)}</span>
             </li>
           ))}
         </ul>
@@ -113,18 +137,26 @@ function SectionContent({ content }: { content: string }) {
       if (listType !== "ul") flush();
       listType = "ul";
       listItems.push(line.replace(/^[-•*]\s*/, ""));
+    } else if (isSubHeader(line)) {
+      flush();
+      const label = line.replace(/^\*\*|\*\*:?\s*$|:\s*$/g, "").trim();
+      elements.push(
+        <p key={elements.length} className="mt-2 text-xs font-semibold uppercase tracking-wide opacity-60">
+          {label}
+        </p>
+      );
     } else {
       flush();
       elements.push(
         <p key={elements.length} className="text-sm leading-relaxed text-foreground/80">
-          {renderBold(line)}
+          {renderInline(line)}
         </p>
       );
     }
   }
   flush();
 
-  return <div className="space-y-3">{elements}</div>;
+  return <div className="space-y-2">{elements}</div>;
 }
 
 export function CareerAdvice({ planId, careerGoals, majors, courses, interests }: CareerAdviceProps) {
