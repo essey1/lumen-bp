@@ -50,55 +50,70 @@ function renderBold(text: string) {
 
 function normalizeContent(content: string): string {
   return content
-    // Break inline numbered items after punctuation: "...text. 2. Next" → "...text.\n2. Next"
-    .replace(/([.!?:,])\s+(?=\d+\.\s)/g, "$1\n")
-    // Break inline * bullets anywhere not preceded by another * (avoids splitting **bold**)
-    .replace(/(?<=[^*\n])\s+(?=\*\s)/g, "\n")
+    // Only break truly inline numbered items (space-separated, not already on new lines)
+    .replace(/([.!?:,])[ \t]+(?=\d+\.\s)/g, "$1\n")
+    // Only break truly inline * bullets (not ones already after a newline)
+    .replace(/(?<=[^*\n])[ \t]+(?=\*\s)/g, "\n")
     .trim();
 }
 
 function SectionContent({ content }: { content: string }) {
-  const blocks = normalizeContent(content).split(/\n\n+/).filter(Boolean);
-  return (
-    <div className="space-y-3">
-      {blocks.map((block, i) => {
-        const trimmed = block.trim();
-        if (/^\d+\.\s/.test(trimmed)) {
-          const items = trimmed.split(/\n(?=\d+\.\s)/).filter(Boolean);
-          return (
-            <ol key={i} className="space-y-2">
-              {items.map((item, j) => (
-                <li key={j} className="flex gap-2.5 text-sm leading-relaxed text-foreground/85">
-                  <span className="shrink-0 font-bold text-[currentColor] opacity-50 w-4 text-right">
-                    {j + 1}.
-                  </span>
-                  <span>{renderBold(item.replace(/^\d+\.\s*/, ""))}</span>
-                </li>
-              ))}
-            </ol>
-          );
-        }
-        if (/^[-•*]\s/.test(trimmed)) {
-          const items = trimmed.split(/\n(?=[-•*]\s)/).filter(Boolean);
-          return (
-            <ul key={i} className="space-y-2">
-              {items.map((item, j) => (
-                <li key={j} className="flex gap-2.5 text-sm leading-relaxed text-foreground/85">
-                  <span className="shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full bg-current opacity-40" />
-                  <span>{renderBold(item.replace(/^[-•*]\s*/, ""))}</span>
-                </li>
-              ))}
-            </ul>
-          );
-        }
-        return (
-          <p key={i} className="text-sm leading-relaxed text-foreground/80">
-            {renderBold(trimmed)}
-          </p>
-        );
-      })}
-    </div>
-  );
+  const lines = normalizeContent(content).split("\n").map(l => l.trim()).filter(Boolean);
+
+  const elements: React.ReactNode[] = [];
+  let listType: "ol" | "ul" | null = null;
+  let listItems: string[] = [];
+
+  const flush = () => {
+    if (!listItems.length) return;
+    if (listType === "ol") {
+      elements.push(
+        <ol key={elements.length} className="space-y-2">
+          {listItems.map((item, j) => (
+            <li key={j} className="flex gap-2.5 text-sm leading-relaxed text-foreground/85">
+              <span className="shrink-0 font-bold text-[currentColor] opacity-50 w-4 text-right">{j + 1}.</span>
+              <span>{renderBold(item)}</span>
+            </li>
+          ))}
+        </ol>
+      );
+    } else {
+      elements.push(
+        <ul key={elements.length} className="space-y-2">
+          {listItems.map((item, j) => (
+            <li key={j} className="flex gap-2.5 text-sm leading-relaxed text-foreground/85">
+              <span className="shrink-0 mt-1.5 h-1.5 w-1.5 rounded-full bg-current opacity-40" />
+              <span>{renderBold(item)}</span>
+            </li>
+          ))}
+        </ul>
+      );
+    }
+    listType = null;
+    listItems = [];
+  };
+
+  for (const line of lines) {
+    if (/^\d+\.\s/.test(line)) {
+      if (listType !== "ol") flush();
+      listType = "ol";
+      listItems.push(line.replace(/^\d+\.\s*/, ""));
+    } else if (/^[-•*]\s/.test(line)) {
+      if (listType !== "ul") flush();
+      listType = "ul";
+      listItems.push(line.replace(/^[-•*]\s*/, ""));
+    } else {
+      flush();
+      elements.push(
+        <p key={elements.length} className="text-sm leading-relaxed text-foreground/80">
+          {renderBold(line)}
+        </p>
+      );
+    }
+  }
+  flush();
+
+  return <div className="space-y-3">{elements}</div>;
 }
 
 export function CareerAdvice({ planId, careerGoals, majors, courses, interests }: CareerAdviceProps) {

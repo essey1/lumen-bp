@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
-  ArrowLeft, Save, Pencil, Check, X, Trash2, GraduationCap, Loader2, Plus, Lock, LogOut,
+  ArrowLeft, Save, Pencil, Check, X, Trash2, GraduationCap, Loader2, Plus, Lock, LogOut, RefreshCw,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
@@ -202,6 +202,7 @@ export default function SavedPlanPage() {
   const [activeYear, setActiveYear] = useState(0);
   const [showSavedBanner, setShowSavedBanner] = useState(false);
   const [generatedPlan, setGeneratedPlan] = useState<{ unfulfilledRequirements: string[]; warnings: string[] } | null>(null);
+  const [regenStatus, setRegenStatus] = useState<"idle" | "confirming" | "regenerating">("idle");
 
   // Multi-variant support (new plans: semesters = { A, B, C })
   const [isMultiVariant, setIsMultiVariant] = useState(false);
@@ -344,6 +345,52 @@ export default function SavedPlanPage() {
     setEditMode(false);
   }
 
+  async function handleRegenerate() {
+    if (!plan) return;
+    if (regenStatus === "confirming") {
+      setRegenStatus("regenerating");
+      try {
+        // Pull latest profile data so waived courses / math placement / completed semesters
+        // reflect any changes made since this plan was first generated.
+        const profileRes = await fetch("/api/profile");
+        const profile = profileRes.ok ? await profileRes.json() : {};
+        const mathPlacement = (profile.mathPlacement ?? plan.mathPlacement ?? "none") as MathPlacement;
+        const waivedCourses: string[] = profile.waivedCourses
+          ? JSON.parse(profile.waivedCourses) : (plan.waivedCourses ?? []);
+        const completedSemesters = profile.completedSemesters
+          ? JSON.parse(profile.completedSemesters) : [];
+
+        const baseProfile = {
+          majors:      plan.majors,
+          minors:      plan.minors,
+          interests:   plan.interests,
+          hobbies:     [] as string[],
+          careerGoals: plan.careerGoals,
+          mathPlacement,
+          waivedCourses,
+        };
+
+        if (isMultiVariant) {
+          const genA = generateAcademicPlan(baseProfile, { planType: "A", completedSemesters });
+          const genB = generateAcademicPlan(baseProfile, { planType: "B", completedSemesters });
+          const genC = generateAcademicPlan(baseProfile, { planType: "C", completedSemesters });
+          setVariantSemesters({ A: genA.semesters, B: genB.semesters, C: genC.semesters });
+          setGeneratedPlan({ unfulfilledRequirements: genA.unfulfilledRequirements, warnings: genA.warnings });
+        } else {
+          const planType = (["A", "B", "C"].includes(plan.planType) ? plan.planType : "A") as "A" | "B" | "C";
+          const gen = generateAcademicPlan(baseProfile, { planType, completedSemesters });
+          setSingleSemesters(gen.semesters);
+          setGeneratedPlan({ unfulfilledRequirements: gen.unfulfilledRequirements, warnings: gen.warnings });
+        }
+        setSaveStatus("idle");
+      } finally {
+        setRegenStatus("idle");
+      }
+    } else {
+      setRegenStatus("confirming");
+    }
+  }
+
   async function handleDelete() {
     if (deleteStatus === "idle") { setDeleteStatus("confirming"); return; }
     setDeleteStatus("deleting");
@@ -422,10 +469,32 @@ export default function SavedPlanPage() {
                   </Button>
                 </>
               ) : (
-                <Button size="sm" variant="outline" onClick={() => setEditMode(true)} className="gap-1.5 min-h-[36px]">
-                  <Pencil className="h-4 w-4" />
-                  <span className="hidden sm:inline">Edit</span>
-                </Button>
+                <>
+                  <Button size="sm" variant="outline" onClick={() => setEditMode(true)} className="gap-1.5 min-h-[36px]">
+                    <Pencil className="h-4 w-4" />
+                    <span className="hidden sm:inline">Edit</span>
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant={regenStatus === "confirming" ? "outline" : "ghost"}
+                    onClick={handleRegenerate}
+                    disabled={regenStatus === "regenerating"}
+                    className="gap-1.5 min-h-[36px]"
+                    style={regenStatus === "confirming" ? { borderColor: "rgba(245,166,35,0.5)", color: "#f5a623" } : {}}
+                  >
+                    {regenStatus === "regenerating"
+                      ? <Loader2 className="h-4 w-4 animate-spin" />
+                      : <RefreshCw className="h-4 w-4" />}
+                    <span className="hidden sm:inline">
+                      {regenStatus === "confirming" ? "Confirm?" : regenStatus === "regenerating" ? "Regenerating…" : "Regenerate"}
+                    </span>
+                  </Button>
+                  {regenStatus === "confirming" && (
+                    <Button size="sm" variant="ghost" onClick={() => setRegenStatus("idle")} className="min-h-[36px] text-muted-foreground">
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </>
               )}
               <Button
                 size="sm"
@@ -467,6 +536,17 @@ export default function SavedPlanPage() {
           </div>
         )}
 
+        {/* ── Regenerating spinner banner ── */}
+        {regenStatus === "regenerating" && (
+          <div
+            className="mb-5 flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium"
+            style={{ borderColor: "rgba(245,166,35,0.3)", background: "rgba(245,166,35,0.08)", color: "#f5a623" }}
+          >
+            <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
+            Regenerating your plan using your latest profile settings…
+          </div>
+        )}
+
         <Link href="/profile" className="mb-3 inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
           <ArrowLeft className="h-3.5 w-3.5" /> Back to Dashboard
         </Link>
@@ -504,6 +584,25 @@ export default function SavedPlanPage() {
                 Edit this plan
               </button>
             </p>
+          )}
+          {saveStatus === "idle" && !editMode && regenStatus === "idle" && !showSavedBanner && (
+            /* Show a prompt to save after regeneration — only visible when semesters
+               have been updated but the plan hasn't been saved yet. We detect this by
+               checking that the displayed semesters differ from plan.semesters. */
+            currentSemesters.length > 0 &&
+            JSON.stringify(currentSemesters) !== JSON.stringify(
+              isMultiVariant
+                ? (plan.semesters as MultiVariantSemesters)[activeVariant]
+                : plan.semesters
+            ) ? (
+              <p className="mt-2 rounded-md border px-3 py-2 text-xs font-medium"
+                style={{ borderColor: "rgba(245,166,35,0.35)", background: "rgba(245,166,35,0.08)", color: "#f5a623" }}>
+                Plan regenerated from your latest profile.{" "}
+                <button onClick={handleSaveChanges} className="underline underline-offset-2 hover:opacity-80 transition-opacity">
+                  Save to keep changes.
+                </button>
+              </p>
+            ) : null
           )}
           {error && <p className="mt-2 text-sm text-destructive">{error}</p>}
         </div>
