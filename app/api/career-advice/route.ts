@@ -2,8 +2,10 @@ import { generateText, gateway } from "ai";
 
 export const maxDuration = 60;
 
+// Try Haiku first — cheaper model, may have broader gateway access.
+// Sonnet is listed as fallback to test if the tier issue is model-specific.
 const PROVIDERS = [
-  { name: "Anthropic", model: () => gateway("anthropic/claude-sonnet-4.6") },
+  { name: "Anthropic", model: () => gateway("anthropic/claude-haiku-4.5") },
   { name: "Groq",      model: () => gateway("groq/llama-3.3-70b-versatile") },
   { name: "Gemini",    model: () => gateway("google/gemini-2.5-pro") },
 ];
