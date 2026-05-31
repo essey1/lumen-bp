@@ -1,13 +1,16 @@
 import { generateText } from "ai";
-import { anthropic } from "@ai-sdk/anthropic";
-import { google } from "@ai-sdk/google";
+import { createAnthropic } from "@ai-sdk/anthropic";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { groq } from "@ai-sdk/groq";
 
 export const maxDuration = 60;
 
+const anthropicClient = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const googleClient    = createGoogleGenerativeAI({ apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY });
+
 const PROVIDERS = [
-  { name: "Anthropic", model: () => anthropic("claude-sonnet-4-6") },
-  { name: "Gemini",    model: () => google("gemini-2.5-flash") },
+  { name: "Anthropic", model: () => anthropicClient("claude-sonnet-4-6") },
+  { name: "Gemini",    model: () => googleClient("gemini-2.5-flash") },
   { name: "Groq",      model: () => groq("llama-3.3-70b-versatile") },
 ];
 
@@ -56,20 +59,24 @@ One concrete suggestion for gaining relevant experience (internships, projects, 
 
 Keep the tone encouraging and practical. Be specific to Berea College's unique work-study culture and their career goals.`;
 
-    let lastError: unknown;
+    const providerErrors: Record<string, string> = {};
     for (const provider of PROVIDERS) {
       try {
         const result = await generateText({ model: provider.model(), prompt });
-        return Response.json({ advice: result.text, provider: provider.name });
+        return Response.json({ advice: result.text, provider: provider.name, providerErrors });
       } catch (err) {
-        console.warn(`[career-advice] ${provider.name} failed, trying next provider:`, err);
-        lastError = err;
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`[career-advice] ${provider.name} failed:`, msg);
+        providerErrors[provider.name] = msg;
       }
     }
 
-    throw lastError;
+    return Response.json(
+      { error: "All providers failed", providerErrors },
+      { status: 500 }
+    );
   } catch (error) {
-    console.error("[career-advice] All providers failed:", error);
+    console.error("[career-advice] Unexpected error:", error);
     return Response.json(
       { error: "Failed to generate career advice", details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
