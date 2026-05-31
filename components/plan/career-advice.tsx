@@ -50,10 +50,10 @@ function renderBold(text: string) {
 
 function normalizeContent(content: string): string {
   return content
-    // Break inline numbered items onto their own lines: "...text. 2. Next" → "...text.\n2. Next"
-    .replace(/(?<=[^\n])(\s+)(?=\d+\.\s)/g, "\n")
-    // Break inline bullet items: "...text. * Next" → "...text.\n* Next"
-    .replace(/(?<=[^\n])(\s+)(?=[*\-•]\s)/g, "\n")
+    // Break inline numbered items after punctuation: "...text. 2. Next" → "...text.\n2. Next"
+    .replace(/([.!?:,])\s+(?=\d+\.\s)/g, "$1\n")
+    // Break inline * bullets anywhere not preceded by another * (avoids splitting **bold**)
+    .replace(/(?<=[^*\n])\s+(?=\*\s)/g, "\n")
     .trim();
 }
 
