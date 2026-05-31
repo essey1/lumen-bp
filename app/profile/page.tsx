@@ -11,7 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Sparkles, LogOut, Save, User, BookOpen, Trash2, ArrowRight, PlusCircle, Loader2,
-  LayoutDashboard, Settings, Search, X,
+  LayoutDashboard, Settings, Search, X, RefreshCw,
 } from "lucide-react";
 import { ForestNav } from "@/components/forest-nav";
 import { CompletedSemestersStep, type CompletedSemesterData } from "@/components/planner/completed-semesters-step";
@@ -453,6 +453,12 @@ export default function ProfilePage() {
                             <Link href={`/plan/${plan.id}`} className="flex-1 sm:flex-none min-w-[120px]">
                               <Button className="w-full gap-1.5 sm:w-auto text-sm">
                                 View Plan <ArrowRight className="h-3.5 w-3.5" />
+                              </Button>
+                            </Link>
+                            <Link href={`/plan/${plan.id}?regen=1`} className="shrink-0">
+                              <Button variant="outline" size="sm" className="gap-1.5 text-sm">
+                                <RefreshCw className="h-3.5 w-3.5" />
+                                <span className="hidden sm:inline">Regenerate</span>
                               </Button>
                             </Link>
                             <Button

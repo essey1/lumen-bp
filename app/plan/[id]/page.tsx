@@ -226,6 +226,15 @@ export default function SavedPlanPage() {
     }
   }, [searchParams]);
 
+  // ── Auto-regen when navigated from profile with ?regen=1 ────────────────────
+  useEffect(() => {
+    if (plan && searchParams.get("regen") === "1") {
+      router.replace(`/plan/${id}`, { scroll: false });
+      doRegenerate();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [plan]);
+
   // ── Load plan ───────────────────────────────────────────────────────────────
   useEffect(() => {
     fetch(`/api/plans/${id}`)
@@ -345,47 +354,50 @@ export default function SavedPlanPage() {
     setEditMode(false);
   }
 
+  async function doRegenerate() {
+    if (!plan) return;
+    setRegenStatus("regenerating");
+    try {
+      const profileRes = await fetch("/api/profile");
+      const profile = profileRes.ok ? await profileRes.json() : {};
+      const mathPlacement = (profile.mathPlacement ?? plan.mathPlacement ?? "none") as MathPlacement;
+      const waivedCourses: string[] = profile.waivedCourses
+        ? JSON.parse(profile.waivedCourses) : (plan.waivedCourses ?? []);
+      const completedSemesters = profile.completedSemesters
+        ? JSON.parse(profile.completedSemesters) : [];
+
+      const baseProfile = {
+        majors:      plan.majors,
+        minors:      plan.minors,
+        interests:   plan.interests,
+        hobbies:     [] as string[],
+        careerGoals: plan.careerGoals,
+        mathPlacement,
+        waivedCourses,
+      };
+
+      if (isMultiVariant) {
+        const genA = generateAcademicPlan(baseProfile, { planType: "A", completedSemesters });
+        const genB = generateAcademicPlan(baseProfile, { planType: "B", completedSemesters });
+        const genC = generateAcademicPlan(baseProfile, { planType: "C", completedSemesters });
+        setVariantSemesters({ A: genA.semesters, B: genB.semesters, C: genC.semesters });
+        setGeneratedPlan({ unfulfilledRequirements: genA.unfulfilledRequirements, warnings: genA.warnings });
+      } else {
+        const planType = (["A", "B", "C"].includes(plan.planType) ? plan.planType : "A") as "A" | "B" | "C";
+        const gen = generateAcademicPlan(baseProfile, { planType, completedSemesters });
+        setSingleSemesters(gen.semesters);
+        setGeneratedPlan({ unfulfilledRequirements: gen.unfulfilledRequirements, warnings: gen.warnings });
+      }
+      setSaveStatus("idle");
+    } finally {
+      setRegenStatus("idle");
+    }
+  }
+
   async function handleRegenerate() {
     if (!plan) return;
     if (regenStatus === "confirming") {
-      setRegenStatus("regenerating");
-      try {
-        // Pull latest profile data so waived courses / math placement / completed semesters
-        // reflect any changes made since this plan was first generated.
-        const profileRes = await fetch("/api/profile");
-        const profile = profileRes.ok ? await profileRes.json() : {};
-        const mathPlacement = (profile.mathPlacement ?? plan.mathPlacement ?? "none") as MathPlacement;
-        const waivedCourses: string[] = profile.waivedCourses
-          ? JSON.parse(profile.waivedCourses) : (plan.waivedCourses ?? []);
-        const completedSemesters = profile.completedSemesters
-          ? JSON.parse(profile.completedSemesters) : [];
-
-        const baseProfile = {
-          majors:      plan.majors,
-          minors:      plan.minors,
-          interests:   plan.interests,
-          hobbies:     [] as string[],
-          careerGoals: plan.careerGoals,
-          mathPlacement,
-          waivedCourses,
-        };
-
-        if (isMultiVariant) {
-          const genA = generateAcademicPlan(baseProfile, { planType: "A", completedSemesters });
-          const genB = generateAcademicPlan(baseProfile, { planType: "B", completedSemesters });
-          const genC = generateAcademicPlan(baseProfile, { planType: "C", completedSemesters });
-          setVariantSemesters({ A: genA.semesters, B: genB.semesters, C: genC.semesters });
-          setGeneratedPlan({ unfulfilledRequirements: genA.unfulfilledRequirements, warnings: genA.warnings });
-        } else {
-          const planType = (["A", "B", "C"].includes(plan.planType) ? plan.planType : "A") as "A" | "B" | "C";
-          const gen = generateAcademicPlan(baseProfile, { planType, completedSemesters });
-          setSingleSemesters(gen.semesters);
-          setGeneratedPlan({ unfulfilledRequirements: gen.unfulfilledRequirements, warnings: gen.warnings });
-        }
-        setSaveStatus("idle");
-      } finally {
-        setRegenStatus("idle");
-      }
+      await doRegenerate();
     } else {
       setRegenStatus("confirming");
     }

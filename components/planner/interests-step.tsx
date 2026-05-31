@@ -21,30 +21,44 @@ import { Badge } from "@/components/ui/badge"
 
 const INTERESTS = [
   // Science — specific sub-fields
-  "Anatomy", "Astrophysics", "Biochemistry", "Bioinformatics", "Botany",
-  "Cell Biology", "Conservation Biology", "Ecology", "Epidemiology", "Evolutionary Biology",
-  "Genetics", "Geology", "GIS & Mapping", "Hydrology", "Immunology",
+  "Anatomy", "Astrobiology", "Astrophysics", "Atmospheric Science",
+  "Biochemistry", "Bioinformatics", "Biophysics", "Botany",
+  "Cell Biology", "Computational Biology", "Computational Chemistry",
+  "Conservation Biology", "Ecology", "Epidemiology", "Evolutionary Biology",
+  "Genetics", "Geology", "Geophysics", "GIS & Mapping", "Hydrology", "Immunology",
   "Marine Biology", "Materials Science", "Meteorology", "Microbiology",
-  "Nanotechnology", "Neuroscience", "Nuclear Physics", "Organic Chemistry",
-  "Paleontology", "Pharmacology", "Physiology", "Quantum Mechanics",
-  "Soil Science", "Thermodynamics", "Toxicology", "Wildlife Biology",
+  "Nanotechnology", "Neuroscience", "Nuclear Physics", "Oceanography",
+  "Organic Chemistry", "Paleontology", "Pharmacology", "Physiology",
+  "Quantum Mechanics", "Remote Sensing", "Soil Science", "Space Exploration",
+  "Thermodynamics", "Toxicology", "Wildlife Biology",
 
   // Computing & Technology
-  "Artificial Intelligence", "Blockchain", "Cloud Computing", "Cybersecurity",
+  "Artificial Intelligence", "Autonomous Systems", "Blockchain", "Cloud Computing",
+  "Compiler Design", "Computer Architecture", "Computer Graphics", "Computer Networks",
+  "Computer Simulation", "Computer Vision", "Cybersecurity",
   "Data Analytics", "Data Science", "Data Visualization", "Database Design",
-  "Embedded Systems", "Game Development", "Information Systems", "IoT",
-  "Machine Learning", "Mobile App Development", "Robotics", "Software Architecture",
-  "Software Development", "UI/UX Design", "Virtual Reality", "Web Development",
+  "Deep Learning", "Distributed Systems", "Embedded Systems", "Game Development",
+  "Human-Computer Interaction", "Information Systems", "IoT",
+  "Machine Learning", "Mobile App Development", "Natural Language Processing",
+  "Operating Systems", "Parallel Computing", "Programming Languages",
+  "Quantum Computing", "Reinforcement Learning", "Robotics",
+  "Signal Processing", "Software Architecture", "Software Development",
+  "UI/UX Design", "Virtual Reality", "Web Development",
 
   // Engineering & Making
-  "3D Printing", "CAD Design", "Electrical Engineering", "Electrical Systems",
+  "3D Printing", "Aerospace Engineering", "Automation", "Biomechanics",
+  "CAD Design", "Chemical Engineering", "Civil Engineering", "Control Systems",
+  "Electrical Engineering", "Electrical Systems", "Fluid Dynamics",
   "Manufacturing", "Mechanical Design", "Mechatronics", "Product Design",
   "Renewable Energy Systems", "Structural Engineering", "Sustainable Design", "Woodworking",
 
   // Math & Logic
   "Abstract Algebra", "Actuarial Science", "Applied Mathematics",
-  "Game Theory", "Logic", "Number Theory", "Operations Research",
-  "Probability", "Statistics", "Systems Thinking",
+  "Combinatorics", "Computational Mathematics", "Differential Equations",
+  "Discrete Mathematics", "Game Theory", "Graph Theory", "Linear Algebra",
+  "Logic", "Mathematical Finance", "Mathematical Modeling", "Number Theory",
+  "Numerical Analysis", "Operations Research", "Probability", "Statistics",
+  "Systems Thinking", "Topology",
 
   // Health & Medicine
   "Community Health", "Exercise Science", "Global Health",
@@ -81,12 +95,14 @@ const INTERESTS = [
   "Educational Technology", "Mentoring", "Special Education", "Teaching",
 
   // Arts & Craft
-  "Animation", "Ceramics", "Drawing", "Fashion Design",
-  "Film Production", "Graphic Design", "Industrial Design",
-  "Interior Design", "Landscape Architecture", "Lighting Design",
-  "Mixed Media", "Painting", "Photography", "Printmaking",
-  "Sculpture", "Set Design", "Stage Management",
-  "Studio Art", "Textile Arts", "Video Production",
+  "Animation", "Book Arts", "Calligraphy", "Ceramics", "Collage",
+  "Concept Art", "Digital Art", "Drawing", "Fashion Design",
+  "Fiber Arts", "Film Production", "Glassblowing", "Graphic Design",
+  "Illustration", "Industrial Design", "Installation Art",
+  "Interior Design", "Jewelry Design", "Landscape Architecture", "Lighting Design",
+  "Metalworking", "Mixed Media", "Mural Art", "Painting", "Performance Art",
+  "Photography", "Printmaking", "Sculpture", "Set Design", "Stage Management",
+  "Street Art", "Studio Art", "Textile Arts", "Video Production",
 
   // Music & Performing Arts
   "Band", "Choir", "Composition", "Drama", "Film Studies",
@@ -142,7 +158,14 @@ const INTERESTS = [
   "Theology", "Women's History", "Women's Leadership", "World Religions",
 
   // Sports & Fitness
-  "Athletic Coaching", "Outdoor Sports", "Sports Performance", "Water Sports",
+  "Athletic Coaching", "Dance", "Gymnastics", "Martial Arts",
+  "Outdoor Sports", "Sports Performance", "Water Sports", "Yoga",
+
+  // Cross-disciplinary & Emerging
+  "Archival Studies", "Digital Humanities", "Environmental History",
+  "Futurism", "Information Science", "Media Studies", "Permaculture",
+  "Science Communication", "Science & Technology Studies",
+  "Technoethics", "Urban Farming",
 ].sort((a, b) => a.localeCompare(b))
 
 // Specific, relatable examples spanning different areas
