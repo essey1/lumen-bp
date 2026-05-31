@@ -6,7 +6,7 @@ import { groq } from "@ai-sdk/groq";
 export const maxDuration = 60;
 
 const anthropicClient = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const googleClient    = createGoogleGenerativeAI({ apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY });
+const googleClient    = createGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const PROVIDERS = [
   { name: "Anthropic", model: () => anthropicClient("claude-sonnet-4-6") },
