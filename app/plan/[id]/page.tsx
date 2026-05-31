@@ -376,19 +376,36 @@ export default function SavedPlanPage() {
         waivedCourses,
       };
 
+      let newSemesters: typeof variantSemesters | typeof singleSemesters;
+
       if (isMultiVariant) {
         const genA = generateAcademicPlan(baseProfile, { planType: "A", completedSemesters });
         const genB = generateAcademicPlan(baseProfile, { planType: "B", completedSemesters });
         const genC = generateAcademicPlan(baseProfile, { planType: "C", completedSemesters });
-        setVariantSemesters({ A: genA.semesters, B: genB.semesters, C: genC.semesters });
+        newSemesters = { A: genA.semesters, B: genB.semesters, C: genC.semesters };
+        setVariantSemesters(newSemesters as typeof variantSemesters);
         setGeneratedPlan({ unfulfilledRequirements: genA.unfulfilledRequirements, warnings: genA.warnings });
       } else {
         const planType = (["A", "B", "C"].includes(plan.planType) ? plan.planType : "A") as "A" | "B" | "C";
         const gen = generateAcademicPlan(baseProfile, { planType, completedSemesters });
-        setSingleSemesters(gen.semesters);
+        newSemesters = gen.semesters;
+        setSingleSemesters(newSemesters as typeof singleSemesters);
         setGeneratedPlan({ unfulfilledRequirements: gen.unfulfilledRequirements, warnings: gen.warnings });
       }
-      setSaveStatus("idle");
+
+      // Auto-save immediately using the freshly computed semesters
+      setSaveStatus("saving");
+      const res = await fetch(`/api/plans/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: planName, semesters: newSemesters }),
+      });
+      if (res.ok) {
+        setSaveStatus("saved");
+        setTimeout(() => setSaveStatus("idle"), 2000);
+      } else {
+        setSaveStatus("idle");
+      }
     } finally {
       setRegenStatus("idle");
     }
