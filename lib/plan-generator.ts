@@ -2448,6 +2448,34 @@ export function generateAcademicPlan(
     warnings.push(`Credits outside major (${finalCreditsOutsideMajor}) is below the minimum of ${MINIMUM_CREDITS_OUTSIDE_MAJOR}. Only courses outside your major department count toward this requirement.`);
   }
 
+  // ── GEM completeness check ─────────────────────────────────────────────────
+  // Inspect gemTracker and surface any unfulfilled GEM slots so they show in
+  // the "Additional Requirements" section alongside major/minor requirements.
+  for (const [wok, count] of Object.entries(gemTracker.waysOfKnowing)) {
+    for (let i = 0; i < (count ?? 0); i++)
+      unfulfilledRequirements.push(`GEM: Ways of Knowing — ${wok} (1 course needed)`);
+  }
+  if (gemTracker.writingRich > 0)
+    unfulfilledRequirements.push(`GEM: Writing Rich (${gemTracker.writingRich} course${gemTracker.writingRich > 1 ? "s" : ""} needed)`);
+  if (gemTracker.internationallyRich > 0)
+    unfulfilledRequirements.push("GEM: Internationally Rich (1 course needed)");
+  if (gemTracker.quantitativelyRich > 0)
+    unfulfilledRequirements.push("GEM: Quantitatively Rich (1 course needed)");
+  if (gemTracker.beyondBorders > 0)
+    unfulfilledRequirements.push("GEM: Beyond the Borders (1 course needed)");
+  if (gemTracker.holisticWellness > 0)
+    unfulfilledRequirements.push("GEM: Holistic Wellness (1 course needed)");
+  if (gemTracker.powerEquity > 0)
+    unfulfilledRequirements.push("GEM: Power & Equity (1 course needed)");
+  if (gemTracker.seekingMeaning > 0)
+    unfulfilledRequirements.push("GEM: Seeking Meaning (1 course needed)");
+  if (gemTracker.sustainability > 0)
+    unfulfilledRequirements.push("GEM: Sustainability (1 course needed)");
+  if (gemTracker.ale > 0)
+    unfulfilledRequirements.push("GEM: ALE — Academic Life Experience (1 course needed)");
+  if (gemTracker.physicalActivity > 0)
+    unfulfilledRequirements.push(`GEM: Physical Activity (${gemTracker.physicalActivity} course${gemTracker.physicalActivity > 1 ? "s" : ""} needed)`);
+
   return { student: profile, semesters, totalCredits: finalTotalCredits, creditsOutsideMajor: finalCreditsOutsideMajor, unfulfilledRequirements, warnings };
 }
 
