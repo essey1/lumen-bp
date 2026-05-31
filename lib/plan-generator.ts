@@ -2321,12 +2321,42 @@ export function generateAcademicPlan(
     warnings.push(`${unfulfilledRequirements.length} requirement(s) could not fit in 8 semesters.`);
   }
 
-  // Build a lookup so completed courses can inherit requirement tags from allSlots
-  const slotByCode = new Map(
-    allSlots
-      .filter(s => !s.item.course.isPlaceholder && s.item.course.code)
-      .map(s => [s.item.course.code, s.item.course])
-  );
+  // Build a comprehensive code → fulfills map from ALL major/minor requirement definitions.
+  // Unlike slotByCode (which only had the one course the generator happened to pick),
+  // this covers every valid course listed in every requirement category.
+  const fulfillsMap = new Map<string, { fulfills: string[]; category: PlannedCourse["category"] }>();
+
+  for (const majorCode of profile.majors) {
+    const major = MAJORS[majorCode];
+    if (!major) continue;
+    for (const req of major.requirements) {
+      const tag = `${major.name}: ${req.category}`;
+      for (const code of req.courses) {
+        const existing = fulfillsMap.get(code);
+        if (existing) {
+          if (!existing.fulfills.includes(tag)) existing.fulfills.push(tag);
+        } else {
+          fulfillsMap.set(code, { fulfills: [tag], category: "Major" });
+        }
+      }
+    }
+  }
+
+  for (const minorCode of profile.minors) {
+    const minor = MINORS[minorCode];
+    if (!minor) continue;
+    for (const req of minor.requirements) {
+      const tag = `${minor.name}: ${req.category}`;
+      for (const code of req.courses) {
+        const existing = fulfillsMap.get(code);
+        if (existing) {
+          if (!existing.fulfills.includes(tag)) existing.fulfills.push(tag);
+        } else {
+          fulfillsMap.set(code, { fulfills: [tag], category: "Minor" });
+        }
+      }
+    }
+  }
 
   // Replace generated semesters with the student's actual completed semester data
   for (let i = 0; i < completedCount && i < semesters.length; i++) {
@@ -2335,13 +2365,13 @@ export function generateAcademicPlan(
       .filter(c => c.code.trim() || c.name.trim())
       .map(c => {
         const code = c.code.trim() || "—";
-        const slot = slotByCode.get(code);
+        const match = fulfillsMap.get(code);
         return {
           code,
           name: c.name.trim() || "Unknown Course",
           credits: c.credits,
-          fulfills: slot?.fulfills ?? [] as string[],
-          category: (slot?.category ?? "Elective") as PlannedCourse["category"],
+          fulfills: match?.fulfills ?? [] as string[],
+          category: (match?.category ?? "Elective") as PlannedCourse["category"],
           isPlaceholder: false,
         };
       });
