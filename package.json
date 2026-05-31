@@ -16,6 +16,7 @@
     "dev:all": "npm run nuke && npx concurrently -k -p \"[{name}]\" -n \"Next,Auth\" -c \"cyan.bold,green.bold\" \"npm run dev\" \"npm run auth\""
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.81",
     "@ai-sdk/groq": "^3.0.35",
     "@auth/core": "^0.34.3",
     "@auth/prisma-adapter": "^2.11.2",

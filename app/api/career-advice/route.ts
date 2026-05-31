@@ -1,9 +1,12 @@
 import { generateText, gateway } from "ai";
+import { createAnthropic } from "@ai-sdk/anthropic";
 
 export const maxDuration = 60;
 
+const anthropicClient = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
 const PROVIDERS = [
-  { name: "Anthropic", model: () => gateway("anthropic/claude-3-5-sonnet-20241022") },
+  { name: "Anthropic", model: () => anthropicClient("claude-sonnet-4-6") },
   { name: "Groq",      model: () => gateway("groq/llama-3.3-70b-versatile") },
   { name: "Gemini",    model: () => gateway("google/gemini-2.5-pro") },
 ];
