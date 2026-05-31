@@ -2321,24 +2321,22 @@ export function generateAcademicPlan(
     warnings.push(`${unfulfilledRequirements.length} requirement(s) could not fit in 8 semesters.`);
   }
 
-  // Build a comprehensive code → fulfills map from ALL major/minor requirement definitions.
-  // Unlike slotByCode (which only had the one course the generator happened to pick),
-  // this covers every valid course listed in every requirement category.
+  // Build a comprehensive code → fulfills map from ALL major/minor requirement definitions
+  // AND GEM catalog attributes, so completed courses show full requirement context.
   const fulfillsMap = new Map<string, { fulfills: string[]; category: PlannedCourse["category"] }>();
+
+  const addTag = (code: string, tag: string, cat: PlannedCourse["category"]) => {
+    const e = fulfillsMap.get(code);
+    if (e) { if (!e.fulfills.includes(tag)) e.fulfills.push(tag); }
+    else    fulfillsMap.set(code, { fulfills: [tag], category: cat });
+  };
 
   for (const majorCode of profile.majors) {
     const major = MAJORS[majorCode];
     if (!major) continue;
     for (const req of major.requirements) {
       const tag = `${major.name}: ${req.category}`;
-      for (const code of req.courses) {
-        const existing = fulfillsMap.get(code);
-        if (existing) {
-          if (!existing.fulfills.includes(tag)) existing.fulfills.push(tag);
-        } else {
-          fulfillsMap.set(code, { fulfills: [tag], category: "Major" });
-        }
-      }
+      for (const code of req.courses) addTag(code, tag, "Major");
     }
   }
 
@@ -2347,15 +2345,22 @@ export function generateAcademicPlan(
     if (!minor) continue;
     for (const req of minor.requirements) {
       const tag = `${minor.name}: ${req.category}`;
-      for (const code of req.courses) {
-        const existing = fulfillsMap.get(code);
-        if (existing) {
-          if (!existing.fulfills.includes(tag)) existing.fulfills.push(tag);
-        } else {
-          fulfillsMap.set(code, { fulfills: [tag], category: "Minor" });
-        }
-      }
+      for (const code of req.courses) addTag(code, tag, "Minor");
     }
+  }
+
+  // GEM tags from the course catalog
+  for (const [code, course] of Object.entries(COURSE_CATALOG)) {
+    for (const wok of course.waysOfKnowing ?? [])
+      addTag(code, `GEM: ${wok}`, "GEM");
+    for (const r of course.richnesses ?? [])
+      addTag(code, `GEM: ${r}`, "GEM");
+    for (const v of (course as { values?: string[] }).values ?? [])
+      addTag(code, `GEM: ${v}`, "GEM");
+    if ((course as { ale?: boolean }).ale)
+      addTag(code, "GEM: ALE", "GEM");
+    if ((course as { physicalActivity?: boolean }).physicalActivity)
+      addTag(code, "GEM: Physical Activity", "GEM");
   }
 
   // Replace generated semesters with the student's actual completed semester data
