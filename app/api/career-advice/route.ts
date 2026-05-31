@@ -3,7 +3,7 @@ import { generateText, gateway } from "ai";
 export const maxDuration = 60;
 
 const PROVIDERS = [
-  { name: "Anthropic", model: () => gateway("anthropic/claude-sonnet-4-6") },
+  { name: "Anthropic", model: () => gateway("anthropic/claude-3-5-sonnet-20241022") },
   { name: "Groq",      model: () => gateway("groq/llama-3.3-70b-versatile") },
   { name: "Gemini",    model: () => gateway("google/gemini-2.5-pro") },
 ];
