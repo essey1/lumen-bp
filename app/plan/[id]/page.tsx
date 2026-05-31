@@ -737,6 +737,20 @@ export default function SavedPlanPage() {
           Course offerings vary by semester. Verify availability in the course catalog before registering.
         </p>
 
+        {/* Regenerate nudge */}
+        <p className="mt-2 text-center text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+          Made changes to your profile?{" "}
+          <button
+            onClick={doRegenerate}
+            disabled={regenStatus === "regenerating"}
+            className="underline underline-offset-2 transition-opacity hover:opacity-70"
+            style={{ color: "#f5a623" }}
+          >
+            {regenStatus === "regenerating" ? "Regenerating…" : "Regenerate"}
+          </button>
+          {" "}to update your plan.
+        </p>
+
         {/* ── Plan Analysis ── */}
         {stats && (
           <>
