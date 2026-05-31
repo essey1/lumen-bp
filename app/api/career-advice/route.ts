@@ -1,17 +1,11 @@
-import { generateText } from "ai";
-import { createAnthropic } from "@ai-sdk/anthropic";
-import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { groq } from "@ai-sdk/groq";
+import { generateText, gateway } from "ai";
 
 export const maxDuration = 60;
 
-const anthropicClient = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const googleClient    = createGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
-
 const PROVIDERS = [
-  { name: "Anthropic", model: () => anthropicClient("claude-sonnet-4-6") },
-  { name: "Gemini",    model: () => googleClient("gemini-2.5-flash") },
-  { name: "Groq",      model: () => groq("llama-3.3-70b-versatile") },
+  { name: "Anthropic", model: () => gateway("anthropic/claude-sonnet-4-6") },
+  { name: "Gemini",    model: () => gateway("google/gemini-2.5-flash") },
+  { name: "Groq",      model: () => gateway("groq/llama-3.3-70b-versatile") },
 ];
 
 export async function POST(req: Request) {
