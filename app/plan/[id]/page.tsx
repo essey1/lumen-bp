@@ -74,15 +74,18 @@ const CATEGORY_COLORS: Record<string, string> = {
 // ── Sub-components ────────────────────────────────────────────────────────────
 
 function CourseCard({
-  course, editMode, onChange, onRemove, semesterIndex,
+  course, editMode, onChange, onRemove, semesterIndex, isCompleted,
 }: {
   course: PlannedCourse;
   editMode: boolean;
   onChange: (c: PlannedCourse) => void;
   onRemove: () => void;
   semesterIndex?: number;
+  isCompleted?: boolean;
 }) {
-  const color = CATEGORY_COLORS[course.category] ?? CATEGORY_COLORS.Elective;
+  const color = isCompleted
+    ? "border-gray-200 bg-gray-50 text-gray-500"
+    : (CATEGORY_COLORS[course.category] ?? CATEGORY_COLORS.Elective);
 
   if (!editMode) {
     return (
@@ -104,7 +107,10 @@ function CourseCard({
         {course.fulfills.length > 0 && (
           <div className="mt-1 flex flex-wrap gap-1">
             {course.fulfills.slice(0, 2).map(f => (
-              <span key={f} className="rounded bg-black/10 px-1 py-0.5 text-[10px] lg:text-xs leading-tight">{f}</span>
+              <span
+                key={f}
+                className={`rounded px-1 py-0.5 text-[10px] lg:text-xs leading-tight ${isCompleted ? "bg-gray-200 text-gray-400" : "bg-black/10"}`}
+              >{f}</span>
             ))}
           </div>
         )}
@@ -168,6 +174,7 @@ function SemesterColumn({
             onChange={updated => onCourseChange(idx, updated)}
             onRemove={() => onRemoveCourse(idx)}
             semesterIndex={semesterIndex}
+            isCompleted={isCompleted}
           />
         ))}
         {editMode && !isCompleted && (

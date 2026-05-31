@@ -2321,19 +2321,30 @@ export function generateAcademicPlan(
     warnings.push(`${unfulfilledRequirements.length} requirement(s) could not fit in 8 semesters.`);
   }
 
+  // Build a lookup so completed courses can inherit requirement tags from allSlots
+  const slotByCode = new Map(
+    allSlots
+      .filter(s => !s.item.course.isPlaceholder && s.item.course.code)
+      .map(s => [s.item.course.code, s.item.course])
+  );
+
   // Replace generated semesters with the student's actual completed semester data
   for (let i = 0; i < completedCount && i < semesters.length; i++) {
     const src = completedSems[i];
     const courses = src.courses
       .filter(c => c.code.trim() || c.name.trim())
-      .map(c => ({
-        code: c.code.trim() || "—",
-        name: c.name.trim() || "Unknown Course",
-        credits: c.credits,
-        fulfills: [] as string[],
-        category: "Elective" as const,
-        isPlaceholder: false,
-      }));
+      .map(c => {
+        const code = c.code.trim() || "—";
+        const slot = slotByCode.get(code);
+        return {
+          code,
+          name: c.name.trim() || "Unknown Course",
+          credits: c.credits,
+          fulfills: slot?.fulfills ?? [] as string[],
+          category: (slot?.category ?? "Elective") as PlannedCourse["category"],
+          isPlaceholder: false,
+        };
+      });
     const total = courses.reduce((s, c) => s + c.credits, 0);
     semesters[i] = { year: src.year, semester: src.semester, courses, totalCredits: total, isOverloaded: false, isCompleted: true };
   }
