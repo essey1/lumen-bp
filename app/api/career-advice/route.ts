@@ -28,7 +28,12 @@ The student has the following profile:
 Their planned courses include:
 ${coursesText}
 
-Based on their career goals, provide actionable advice in these sections:
+Based on their career goals, provide actionable advice in these five sections. IMPORTANT FORMATTING RULES — follow exactly:
+- Use **SECTION NAME** (double asterisks, all caps) on its own line to start each section
+- Number list items as "1. text" on a single line, incrementing correctly (1, 2, 3...)
+- Use bullet items as "- text" on a single line
+- Do NOT use ## markdown headers, --- dividers, or bold sub-headers inside sections
+- Do NOT add extra sections beyond the five listed below
 
 **COURSES TO PRIORITIZE**
 Which 3-4 courses from their plan are most critical for their career goals and why they should focus extra effort on these.
@@ -37,18 +42,10 @@ Which 3-4 courses from their plan are most critical for their career goals and w
 Key skills or topics they should focus on during their studies that will make them competitive in their target industry.
 
 **COMPANIES TO PURSUE**
-List 5-7 specific companies that align with their career goals and interests. Include a mix of:
-- Large established companies in their field
-- Growing mid-size companies with good entry-level programs
-- Companies known for hiring liberal arts graduates
-For each company, briefly note why it's a good fit.
+List 5-7 specific companies that align with their career goals and interests. Include a mix of large established companies, growing mid-size companies with good entry-level programs, and companies known for hiring liberal arts graduates. For each company, include the name and a brief note on why it's a good fit.
 
 **BEREA COLLEGE ALUMNI TO NETWORK WITH**
-Suggest types of Berea College alumni the student should look for on LinkedIn who work at these companies or in their target industry. Include:
-- Job titles to search for
-- Departments or teams to look for
-- Tips for reaching out to alumni (mention shared Berea connection, labor program experience, etc.)
-- Specific advice on how Berea's work-study/labor program experience translates to their career goals
+Suggest types of Berea College alumni the student should look for on LinkedIn who work at these companies or in their target industry. Include job titles to search for, departments or teams to look for, and tips for reaching out (mention shared Berea connection, labor program experience, etc.).
 
 **EXPERIENCE OUTSIDE CLASSROOM**
 One concrete suggestion for gaining relevant experience (internships, projects, research, labor position alignment, etc.)

@@ -27,10 +27,11 @@ function parseSections(raw: string): { title: string; content: string }[] {
   let title = "";
   let lines: string[] = [];
   for (const line of raw.split("\n")) {
-    const m = line.match(/^\*\*([^*]+)\*\*\s*$/);
+    // Match **TITLE** or ## Title (both bold and markdown heading formats)
+    const m = line.match(/^\*\*([^*]+)\*\*\s*$/) ?? line.match(/^#{1,3}\s+(.+)$/);
     if (m) {
       if (title) sections.push({ title: title.trim(), content: lines.join("\n").trim() });
-      title = m[1].trim();
+      title = m[1].trim().replace(/\*\*/g, "");
       lines = [];
     } else {
       lines.push(line);
@@ -40,16 +41,26 @@ function parseSections(raw: string): { title: string; content: string }[] {
   return sections;
 }
 
-function renderBold(text: string) {
-  return text.split(/(\*\*[^*]+\*\*)/).map((part, i) =>
-    part.startsWith("**") && part.endsWith("**")
-      ? <strong key={i} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>
-      : <span key={i}>{part}</span>
-  );
+function renderInline(text: string) {
+  // Handle **bold** and *italic* inline markers
+  return text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/).map((part, i) => {
+    if (part.startsWith("**") && part.endsWith("**"))
+      return <strong key={i} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
+    if (part.startsWith("*") && part.endsWith("*"))
+      return <em key={i}>{part.slice(1, -1)}</em>;
+    return <span key={i}>{part}</span>;
+  });
 }
 
+// Keep backward-compatible alias
+const renderBold = renderInline;
+
 function normalizeContent(content: string): string {
-  return content
+  // Merge a bare number line ("1.") with the following content line
+  const merged = content.replace(/^(\d+\.)\s*\n([^\n])/gm, "$1 $2");
+  return merged
+    // Skip --- dividers
+    .replace(/^---+\s*$/gm, "")
     // Only break truly inline numbered items (space-separated, not already on new lines)
     .replace(/([.!?:,])[ \t]+(?=\d+\.\s)/g, "$1\n")
     // Only break truly inline * bullets (not ones already after a newline)
