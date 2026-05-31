@@ -1,29 +1,21 @@
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { prisma } from "@/lib/prisma";
 
-function getTransporter() {
-  const user = process.env.GMAIL_USER;
-  const pass = process.env.GMAIL_APP_PASSWORD;
-  if (!user || !pass) throw new Error("GMAIL_USER and GMAIL_APP_PASSWORD must be set");
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: { user, pass },
-  });
-}
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-const FROM = `"Lumen" <${process.env.GMAIL_USER ?? "lumen.berea@gmail.com"}>`;
+const FROM = process.env.RESEND_FROM_EMAIL ?? "Lumen <onboarding@resend.dev>";
 
 // ── Sign-up / login OTP ───────────────────────────────────────────────────────
 
 export async function sendOTP(email: string, code: string): Promise<void> {
-  const transporter = getTransporter();
-  await transporter.sendMail({
+  const { error } = await resend.emails.send({
     from:    FROM,
-    to:      email,
+    to:      [email],
     subject: `${code} is your Lumen code`,
     text:    buildPlainText(code, "verification"),
     html:    buildHtml(code, "verification"),
   });
+  if (error) throw new Error(error.message);
 }
 
 // ── Forgot-password OTP ───────────────────────────────────────────────────────
@@ -33,14 +25,14 @@ export async function sendPasswordResetOTP(
   code: string,
   name?: string
 ): Promise<void> {
-  const transporter = getTransporter();
-  await transporter.sendMail({
+  const { error } = await resend.emails.send({
     from:    FROM,
-    to:      email,
+    to:      [email],
     subject: `${code} is your Lumen password reset code`,
     text:    buildPlainText(code, "password reset", name),
     html:    buildHtml(code, "password reset", name),
   });
+  if (error) throw new Error(error.message);
 }
 
 // ── Templates ─────────────────────────────────────────────────────────────────
