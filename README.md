@@ -1,4 +1,4 @@
-# Lumen
+# [Lumen](https://v0-lumen-berea.vercel.app/)
 > An AI-powered 4-year academic planner built for Berea College students.
 
 **Topic: Solve a Campus Problem**
