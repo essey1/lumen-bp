@@ -11,7 +11,7 @@ function getTransporter() {
   });
 }
 
-const FROM = `"Lumen" <${process.env.GMAIL_USER ?? "lumen.berea@gmail.com"}>`;
+const FROM = `"Lumen" <${process.env.GMAIL_USER ?? "lumenbc26@gmail.com"}>`;
 
 // ── Sign-up / login OTP ───────────────────────────────────────────────────────
 
