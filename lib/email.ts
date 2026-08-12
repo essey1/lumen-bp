@@ -16,14 +16,20 @@ const FROM = `"Lumen" <${process.env.GMAIL_USER ?? "lumen.berea@gmail.com"}>`;
 // ── Sign-up / login OTP ───────────────────────────────────────────────────────
 
 export async function sendOTP(email: string, code: string): Promise<void> {
-  const transporter = getTransporter();
-  await transporter.sendMail({
-    from:    FROM,
-    to:      email,
-    subject: `${code} is your Lumen code`,
-    text:    buildPlainText(code, "verification"),
-    html:    buildHtml(code, "verification"),
-  });
+  // Temporarily disabled real email sending because the Gmail account
+  // (lumen.berea@gmail.com) is compromised. When ready to re-enable,
+  // restore the transporter/sendMail calls below.
+  // const transporter = getTransporter();
+  // await transporter.sendMail({
+  //   from:    FROM,
+  //   to:      email,
+  //   subject: `${code} is your Lumen code`,
+  //   text:    buildPlainText(code, "verification"),
+  //   html:    buildHtml(code, "verification"),
+  // });
+
+  console.warn("OTP sending disabled. OTP for", email, "would be:", code);
+  return;
 }
 
 // ── Forgot-password OTP ───────────────────────────────────────────────────────
@@ -33,14 +39,20 @@ export async function sendPasswordResetOTP(
   code: string,
   name?: string
 ): Promise<void> {
-  const transporter = getTransporter();
-  await transporter.sendMail({
-    from:    FROM,
-    to:      email,
-    subject: `${code} is your Lumen password reset code`,
-    text:    buildPlainText(code, "password reset", name),
-    html:    buildHtml(code, "password reset", name),
-  });
+  // Temporarily disabled real email sending because the Gmail account
+  // (lumen.berea@gmail.com) is compromised. When ready to re-enable,
+  // restore the transporter/sendMail calls below.
+  // const transporter = getTransporter();
+  // await transporter.sendMail({
+  //   from:    FROM,
+  //   to:      email,
+  //   subject: `${code} is your Lumen password reset code`,
+  //   text:    buildPlainText(code, "password reset", name),
+  //   html:    buildHtml(code, "password reset", name),
+  // });
+
+  console.warn("Password-reset OTP sending disabled. OTP for", email, "would be:", code);
+  return;
 }
 
 // ── Templates ─────────────────────────────────────────────────────────────────

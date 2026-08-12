@@ -5,9 +5,10 @@ export const maxDuration = 60;
 // Try Haiku first — cheaper model, may have broader gateway access.
 // Sonnet is listed as fallback to test if the tier issue is model-specific.
 const PROVIDERS = [
+  { name: "OpenAI",    model: () => gateway("openai/gpt-5.4-mini") },
   { name: "Anthropic", model: () => gateway("anthropic/claude-haiku-4.5") },
-  { name: "Groq",      model: () => gateway("groq/llama-3.3-70b-versatile") },
   { name: "Gemini",    model: () => gateway("google/gemini-2.5-pro") },
+  { name: "Groq",      model: () => gateway("groq/llama-3.3-70b-versatile") },
 ];
 
 export async function POST(req: Request) {
