@@ -1,10 +1,12 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { deleteDemoPlanById, getDemoPlanById, isDemoSession, setDemoPlanById } from "@/lib/demo-data";
 import { NextResponse } from "next/server";
 
 async function getAuthUser() {
   const session = await auth();
   if (!session?.user?.email) return null;
+  if (isDemoSession(session.user.email)) return { id: "demo-recruiter-user", email: session.user.email } as any;
   return prisma.user.findUnique({ where: { email: session.user.email } });
 }
 
@@ -21,6 +23,12 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
+
+  if (isDemoSession((user as any).email)) {
+    const plan = getDemoPlanById(id);
+    if (!plan) return NextResponse.json({ error: "Plan not found" }, { status: 404 });
+    return NextResponse.json(plan);
+  }
 
   // Raw SQL — no groupId reference so it works regardless of DB migration state
   const rows = await prisma.$queryRaw<FullPlanRow[]>`
@@ -51,6 +59,17 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
+
+  if (isDemoSession((user as any).email)) {
+    const existing = getDemoPlanById(id);
+    if (!existing) return NextResponse.json({ error: "Plan not found" }, { status: 404 });
+    const { name, semesters } = await req.json();
+    setDemoPlanById(id, {
+      ...(name !== undefined ? { name: String(name) } : {}),
+      ...(semesters !== undefined ? { semesters } : {}),
+    });
+    return NextResponse.json({ id, name: name ?? existing.name, updatedAt: new Date().toISOString() });
+  }
 
   // Ownership check — only selects id/userId, never touches groupId
   const [existing] = await prisma.$queryRaw<{ id: string; userId: string }[]>`
@@ -84,6 +103,13 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
+
+  if (isDemoSession((user as any).email)) {
+    const existing = getDemoPlanById(id);
+    if (!existing) return NextResponse.json({ error: "Plan not found" }, { status: 404 });
+    deleteDemoPlanById(id);
+    return NextResponse.json({ success: true });
+  }
 
   const [existing] = await prisma.$queryRaw<{ id: string; userId: string }[]>`
     SELECT "id", "userId" FROM "Plan" WHERE "id" = ${id}

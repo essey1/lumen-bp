@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { compare } from "bcryptjs"
+import { DEMO_EMAIL, DEMO_PASSWORD, isDemoCredentials } from "@/lib/demo-data"
 
 /**
  * Verify credentials and check if OTP is required
@@ -16,6 +17,14 @@ export async function POST(req: Request) {
         { error: "Email and password are required" },
         { status: 400 }
       )
+    }
+
+    if (isDemoCredentials(String(email).trim().toLowerCase(), String(password))) {
+      return NextResponse.json({
+        success: true,
+        otpRequired: false,
+        email: DEMO_EMAIL,
+      })
     }
 
     const user = await prisma.user.findUnique({

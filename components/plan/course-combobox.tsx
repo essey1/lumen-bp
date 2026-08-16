@@ -93,7 +93,7 @@ export function PlanCourseCombobox({ course, onChange, semesterIndex }: Props) {
                 <span className="opacity-70"> — {course.name}</span>
               </span>
               {selectedNotOffered && (
-                <AlertTriangle className="h-3 w-3 shrink-0 text-amber-500" title="Not offered this semester" />
+                <AlertTriangle className="h-3 w-3 shrink-0 text-amber-500" aria-label="Not offered this semester" />
               )}
               <button
                 type="button"

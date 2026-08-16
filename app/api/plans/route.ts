@@ -1,10 +1,12 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { addDemoPlan, getDemoPlans, isDemoSession } from "@/lib/demo-data";
 import { NextResponse } from "next/server";
 
 async function getAuthUser() {
   const session = await auth();
   if (!session?.user?.email) return null;
+  if (isDemoSession(session.user.email)) return { id: "demo-recruiter-user", email: session.user.email } as any;
   return prisma.user.findUnique({ where: { email: session.user.email } });
 }
 
@@ -21,6 +23,18 @@ type PlanListRow = {
 export async function GET() {
   const user = await getAuthUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (isDemoSession((user as any).email)) {
+    return NextResponse.json(getDemoPlans().map(plan => ({
+      id: plan.id,
+      name: plan.name,
+      majors: JSON.stringify(plan.majors),
+      minors: JSON.stringify(plan.minors),
+      planType: plan.planType,
+      createdAt: plan.createdAt,
+      updatedAt: plan.updatedAt,
+    })));
+  }
 
   // Raw SQL — never references groupId so it works regardless of DB migration state
   const basePlans = await prisma.$queryRaw<PlanListRow[]>`
@@ -46,6 +60,27 @@ export async function GET() {
 export async function POST(req: Request) {
   const user = await getAuthUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  if (isDemoSession((user as any).email)) {
+    const { name, majors, minors, interests, careerGoals, mathPlacement, waivedCourses, semesters } = await req.json();
+    const planId = crypto.randomUUID();
+    const newPlan = {
+      id: planId,
+      name: name || "Demo Plan",
+      majors: Array.isArray(majors) ? majors : [],
+      minors: Array.isArray(minors) ? minors : [],
+      interests: Array.isArray(interests) ? interests : [],
+      careerGoals: Array.isArray(careerGoals) ? careerGoals : [],
+      mathPlacement: mathPlacement ?? "MAT 125",
+      waivedCourses: Array.isArray(waivedCourses) ? waivedCourses : [],
+      planType: "A",
+      semesters: semesters ?? [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    addDemoPlan(newPlan as any);
+    return NextResponse.json({ id: planId }, { status: 201 });
+  }
 
   const { name, majors, minors, interests, careerGoals, mathPlacement, waivedCourses, semesters } =
     await req.json();

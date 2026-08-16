@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { getDemoProfile, isDemoSession } from "@/lib/demo-data";
 import { NextResponse } from "next/server";
 
 // Base fields that definitely exist in every schema version
@@ -20,6 +21,10 @@ export async function GET() {
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (isDemoSession(session.user.email)) {
+    return NextResponse.json(getDemoProfile());
   }
 
   try {
@@ -44,6 +49,23 @@ export async function PUT(request: Request) {
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  if (isDemoSession(session.user.email)) {
+    const current = getDemoProfile();
+    const { name, major, minor, year, bio, completedSemesters, mathPlacement, waivedCourses } = await request.json();
+    const next = {
+      ...current,
+      ...(name !== undefined ? { name: typeof name === "string" && name.trim() ? name.trim() : current.name } : {}),
+      ...(major !== undefined ? { major: typeof major === "string" ? major || null : current.major } : {}),
+      ...(minor !== undefined ? { minor: typeof minor === "string" ? minor || null : current.minor } : {}),
+      ...(year !== undefined ? { year: typeof year === "number" ? year : current.year } : {}),
+      ...(bio !== undefined ? { bio: typeof bio === "string" ? bio || null : current.bio } : {}),
+      ...(completedSemesters !== undefined ? { completedSemesters: completedSemesters ? JSON.stringify(completedSemesters) : null } : {}),
+      ...(mathPlacement !== undefined ? { mathPlacement: mathPlacement || "none" } : {}),
+      ...(waivedCourses !== undefined ? { waivedCourses: waivedCourses ? JSON.stringify(waivedCourses) : null } : {}),
+    };
+    return NextResponse.json(next);
   }
 
   const { name, major, minor, year, bio, completedSemesters, mathPlacement, waivedCourses } = await request.json();

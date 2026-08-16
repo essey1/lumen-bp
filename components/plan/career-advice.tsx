@@ -14,7 +14,7 @@ interface CareerAdviceProps {
 
 const CACHE_KEY = (id: string) => `career-advice-${id}`;
 
-const SECTION_META: Record<string, { Icon: React.ComponentType<{ className?: string }>, accent: string }> = {
+const SECTION_META: Record<string, { Icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>, accent: string }> = {
   "COURSES TO PRIORITIZE":               { Icon: BookOpen,  accent: "#f5a623" },
   "SKILLS TO DEVELOP":                   { Icon: Zap,       accent: "#6fcf97" },
   "COMPANIES TO PURSUE":                 { Icon: Building2, accent: "#56b4e9" },
@@ -245,6 +245,7 @@ export function CareerAdvice({ planId, careerGoals, majors, courses, interests }
                     <span
                       className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
                       style={{ background: `${accent}18` }}
+                      aria-label={title}
                     >
                       <Icon className="h-3.5 w-3.5" style={{ color: accent }} />
                     </span>
