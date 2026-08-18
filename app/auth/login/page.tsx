@@ -6,12 +6,11 @@ import Link from "next/link"
 import { signIn } from "next-auth/react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ForestNav } from "@/components/forest-nav"
-import { DEMO_PASSWORD, DEMO_USERNAME } from "@/lib/demo-data"
 
 export default function LoginPage() {
   const router = useRouter()
-  const [email, setEmail]       = useState(DEMO_USERNAME)
-  const [password, setPassword] = useState(DEMO_PASSWORD)
+  const [email, setEmail]       = useState("")
+  const [password, setPassword] = useState("")
   const [error, setError]       = useState("")
   const [loading, setLoading]   = useState(false)
 
@@ -51,10 +50,6 @@ export default function LoginPage() {
           </h1>
           <p className="mb-3 text-sm italic text-[#7aada0]">Sign in to continue your journey.</p>
 
-          <div className="mb-5 rounded-xl border border-[#f5a623]/30 bg-[#f5a623]/10 px-3 py-2 text-xs text-[#f7d9a2]">
-            Demo recruiter login: <span className="font-semibold">Username {DEMO_USERNAME}</span> / <span className="font-semibold">Password {DEMO_PASSWORD}</span>
-          </div>
-
           {error && (
             <Alert variant="destructive" className="mb-5 border-red-500/30 bg-red-500/10 text-red-300">
               <AlertDescription>{error}</AlertDescription>
@@ -65,7 +60,7 @@ export default function LoginPage() {
             <div>
               <label className={labelCls}>Username or email</label>
               <input type="text" value={email} onChange={e => setEmail(e.target.value)}
-                placeholder="abcd or abcd@berea.edu" required disabled={loading} autoFocus
+                placeholder="yourname@berea.edu" required disabled={loading} autoFocus
                 className={inputCls} />
             </div>
             <div>
